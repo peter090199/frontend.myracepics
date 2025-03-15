@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>{{ user.fullname }}</h2>
+<mat-dialog-content>
+    <img [src]="user.photo_pic" alt="Profile Picture" class="user-img" />
+    <p><strong>Status:</strong> {{ user.status }}</p>
+    <p><strong>Skills:</strong> {{ user.skills }}</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="closeModal()">Close</button>
+</mat-dialog-actions>

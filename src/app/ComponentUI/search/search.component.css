@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     max-width: 500px;
-    background: #cfd1d3;
+    background: #fafbfc;
     border-radius: 10px;
     padding: 0px;
     display: flex;
@@ -13,7 +13,7 @@
   .input-group-text {
     background: transparent;
     border: none;
-    color: #606770;
+    color: #7e7e7e;
     font-size: 18px;
   }
   
@@ -26,7 +26,7 @@
   }
   
   .form-control::placeholder {
-    color: #b0b3b8;
+    color: #c6c7c8;
   }
   
   .dropdown-menu {
@@ -53,6 +53,19 @@
   
   .dropdown-item:hover {
     background: #f2f2f2;
+  }
+  .clear-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #0354f4;
+  }
+  
+  .clear-icon:hover {
+    color: #da0303;
   }
   
   @media (max-width: 768px) {

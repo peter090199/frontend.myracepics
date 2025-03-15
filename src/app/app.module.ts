@@ -74,6 +74,8 @@ import { UserProfileUiComponent } from './ComponentSharedUI/Individual/user-prof
 import { PostUIComponent } from './ComponentSharedUI/Public/post-ui/post-ui.component';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { SearchComponent } from './ComponentUI/search/search.component';
+import { UserListComponent } from './ComponentUI/search/user-list/user-list.component';
+import { SearchModalComponent } from './ComponentUI/search/search-modal/search-modal.component';
 
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -140,6 +142,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     PostUIComponent,
     PrintLayoutComponent,
     SearchComponent,
+    UserListComponent,
+    SearchModalComponent,
     
   
  

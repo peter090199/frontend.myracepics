@@ -75,12 +75,14 @@ section{
 }
 /* Overall Layout */
 body {
-  background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748));
+ /* // background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748)); */
   font-family: Verdana, sans-serif;
   line-height: 1;
   margin: 0px !important;
   height: auto;
+  background: transparent;
 }
+
 
 .example-container {
   display: flex;

@@ -26,6 +26,7 @@ import { PrintCVComponent } from './ComponentSharedUI/Individual/print-cv/print-
 import { PrintReceiptComponent } from './print-layout/print-receipt/print-receipt.component';
 import { PrintReceiptsComponent } from './print-layout/print-receipts/print-receipts.component';
 import { PrintComponent } from './print-layout/print/print.component';
+import { UserListComponent } from './ComponentUI/search/user-list/user-list.component';
 
 
 const routes: Routes = [
@@ -54,6 +55,7 @@ const routes: Routes = [
     children: [
       { path: 'profile/:code', component:ProfileUIComponent },
       { path: 'home', component: HomeUIComponent },
+      { path: 'search', component: UserListComponent },
     ]
   },
   { 

@@ -1,28 +1,26 @@
-<!-- <mat-form-field class="search-container">
-    <mat-label>Search</mat-label>
-    <input matInput type="text" [(ngModel)]="searchQuery" (input)="onSearch()"/>
-</mat-form-field>
-  
-  <mat-card *ngIf="results.length > 0" class="search-dropdown">
-    <mat-list>
-      <mat-list-item *ngFor="let result of results" (click)="selectResult(result)">
-        <img matListAvatar [src]="result.profilePic" alt="Profile" />
-        <h4 matLine>{{ result.name }}</h4>
-      </mat-list-item>
-    </mat-list>
-  </mat-card>
-   -->
-   <div class="input-group custom-search-bar">
-    <input type="text" class="form-control" placeholder="Search Nexsuz" [(ngModel)]="searchQuery" (input)="onSearch()"/>
-    <div *ngIf="results.length > 0" class="dropdown-menu show" 
-         style="max-height: 600px; overflow-y: auto; position: absolute; width: 100%; z-index: 999; color: black;">
-        <a style="color: black;" *ngFor="let item of results" 
-           class="dropdown-item" 
-           [routerLink]="'/profile/' + item.code"
-           (click)="reloadPage()">
-            <img matListAvatar [src]="item.profilePic" alt="Profile" />
-            <span matLine>{{ item.name }}</span>
-        </a>
-    </div>
-</div>
+<div class="input-group custom-search-bar position-relative">
+  <input matInput input="text" class="form-control" placeholder="Search Nexsuz"
+         [(ngModel)]="searchQuery" (input)="onSearch()" />
 
+         <button class="clear-icon" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+  <div *ngIf="searchQuery && users.length > 0"
+       class="dropdown-menu show"
+       style="max-height: 400px; overflow-y: auto; position: absolute; width: 100%; z-index: 999; color: black;">
+     
+    <a *ngFor="let item of users"  
+       class="dropdown-item d-flex align-items-center p-2"
+       [routerLink]="['/search']" 
+       [queryParams]="{ search: item.fullname }"
+    >
+      
+      <img [src]="item.photo_pic || 'assets/images/default2.png'" alt="{{ item.fullname }}" class="rounded-circle me-2"
+           style="width: 40px; height: 40px; object-fit: cover;" />
+      <span>{{ item.fullname }}</span>
+      
+    </a>
+    
+  </div>
+</div>
