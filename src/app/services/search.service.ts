@@ -9,7 +9,10 @@ import { _url } from 'src/global-variables';
 export class SearchService {
 
   constructor(private http: HttpClient) { }
+  private storageKey = 'loggedInUser';
+  private user = { code: 702, fullname: "Pedro Yorpo" }; // Example
 
+  
   private getAuthToken(): string {
     return localStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
   }
@@ -25,6 +28,23 @@ export class SearchService {
   private createParams(): HttpParams {
     return new HttpParams().set('search', '');
   }
+
+
+  setLoggedInUser(user: any) {
+    if (user) {
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      console.log('User saved:', user);
+    } else {
+      console.error('Invalid user data.');
+    }
+  }
+
+  getLoggedInUser(): any {
+    const user = localStorage.getItem(this.storageKey);
+    return user ? JSON.parse(user) : null;
+  }
+ 
+  
 
   getSecurityRoles(): Observable<any> {
     const headers = this.createHeaders();
@@ -47,7 +67,7 @@ export class SearchService {
     return of(null); // Return an observable with a fallback value
   }
 
-  private apiUrl = 'http://localhost:8000/api/searchUsers';
+
 
   getSearch(searchQuery: string = ''): Observable<any> {
     const headers = new HttpHeaders({
@@ -55,128 +75,22 @@ export class SearchService {
       'Content-Type': 'application/json'
     });
 
-    const url = `${this.apiUrl}?search=${encodeURIComponent(searchQuery)}`;
+    const url = `${_url}searchUsers?search=${encodeURIComponent(searchQuery)}`;
     return this.http.get<any>(url, { headers });
   }
 
-
-  // getSearch(): Observable<any> {
-  //   const headers = this.createHeaders();
-  //   const params = this.createParams();
-  //   return this.http.get(`${_url}searchUsers`, { headers, params });
-  // }
-
-
-  // getSecurityRolesByDesc_Code(rolecode: string): Observable<any> {
-  //   const headers = this.createHeaders();
-  //   return this.http.get(`${_url}security/${rolecode}`, { headers });
-  // }
-
-  // postData(endpoint: string, body: any): Observable<any> {
-  //   const headers = this.createHeaders();
-  //   return this.http.post(`${_url}${endpoint}`, body, { headers });
-  // }
-
-  // putData(endpoint: string, body: any): Observable<any> {
-  //   const headers = this.createHeaders();
-  //   return this.http.put(`${_url}${endpoint}`, body, { headers });
-  // }
-
-  // deleteData(endpoint: string): Observable<any> {
-  //   const headers = this.createHeaders();
-  //   return this.http.delete(`${_url}${endpoint}`, { headers });
-  // }
-
-  // submitData(formData: any): Observable<any> {
-  //   const headers = this.createHeaders();
-  //   return this.http.post(`${_url}security`,formData, { headers });
-  // }
+  searchUsers(query: string = ''): Observable<{ online: any[]; offline: any[] }> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.getAuthToken()}`, // Attach token dynamically
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.get<{ online: any[]; offline: any[] }>(
+      `${_url}searchUsers?search=${query}`, 
+      { headers } // Pass headers here
+    );
+  }
+  
 
 }
 
-
-
-// import { Injectable } from '@angular/core';
-// import { Component, OnInit } from '@angular/core';
-// import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import { Subject, Observable, tap, of } from 'rxjs';
-// import { _url } from 'src/global-variables';
-// import { catchError } from 'rxjs/operators';
-
-// interface User {
-//   name: any;
-//   code: number;
-//   status: string;
-//   fullname: string;
-//   skills: string;
-//   photo_pic: string;
-// }
-
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class SearchService implements OnInit  {
-//   users: User[] = [];
-//   searchQuery: string = '';
-
- 
-//   constructor(private http: HttpClient) {}
-
-//   ngOnInit(): void {
-//     this.fetchUsers();
-//   }
-//   getToken(): string {
-//     return localStorage.getItem('token') || '';  // Retrieve token dynamically
-//   }
-
-
-//   // private users = [
-//   //   // { code: 701, name: 'John Nexzuz', profilePic: 'assets/images/default.png' },
-//   //   // { code: 702, name: 'Pedro Yorpo', profilePic: 'assets/images/default.png' },
-//   //   // { code: 703, name: 'Elizabeth Punay', profilePic: 'assets/images/default.png' },
-//   //   // { code: 711, name: 'Renjun Laride', profilePic: 'assets/images/default.png' },
-//   //   // { code: 705, name: 'David Dela Cruz', profilePic: 'assets/images/default.png' }
-
-//   // ];
-
-//   getUsers(searchQuery: string = ''): Observable<User[]> {
-//     const headers = new HttpHeaders({
-//       'Authorization': `Bearer ${this.getToken()}`, // Attach token dynamically
-//       'Content-Type': 'application/json'
-//     });
-
-//     const url = `${this.apiUrl}?search=${encodeURIComponent(searchQuery)}`;
-//     return this.http.get<User[]>(url, { headers });
-//   }
-  
-// fetchUsers(): void {
-//     const apiUrl = `http://localhost:8000/api/searchUsers?search=${this.searchQuery}`;
-
-//     const headers = new HttpHeaders({
-//       'Authorization': `Bearer ${this.getToken()}`,  // Attach dynamic token
-//       'Content-Type': 'application/json'
-//     });
-
-//     this.http.get<User[]>(apiUrl, { headers }).subscribe(response => {
-//       this.users = response;
-      
-//     }, error => {
-//       console.error('Error fetching users:', error);
-//     });
-//   }
-
-//   search(query: string): any[] {
-//     if (!query.trim()) return [];
-    
-//     return this.users.filter(user =>
-//       user.fullname.toLowerCase().includes(query.toLowerCase())
-//     );
-//   }
-  
-//   onSearch(): void {
-//     this.fetchUsers();
-//   }
-
-
-// }

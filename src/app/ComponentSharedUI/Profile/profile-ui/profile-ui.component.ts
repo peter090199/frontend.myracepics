@@ -5,7 +5,7 @@ import { UploadProfileComponent } from '../../Individual/upload-profile/upload-p
 import { UserCVComponent } from '../../Individual/user-cv/user-cv.component';
 import { UserProfileUiComponent } from '../../Individual/user-profile-ui/user-profile-ui.component';
 import { ActivatedRoute } from '@angular/router';
-
+import { AuthGuard } from 'src/app/AuthGuard/auth.guard';
 
 
 @Component({
@@ -19,13 +19,15 @@ export class ProfileUIComponent implements OnInit {
   profiles: any;
   users: any;
   btnCurriculum: boolean = false;
- 
+  isUserOnline: boolean = false;
   code:any;
-  constructor(private profile:ProfileService,public dialog:MatDialog,private route: ActivatedRoute,
+  constructor(private profile:ProfileService,public dialog:MatDialog,private route: ActivatedRoute,private authService: AuthGuard,
 
   ) { }
  
   ngOnInit(): void {
+
+
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;

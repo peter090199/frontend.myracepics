@@ -13,49 +13,13 @@
     </div>
     <nav *ngIf="!isMobile" class="nav" [ngClass]="{'d-none d-md-flex': isDesktop}">
       <div class="fb-header-left" *ngIf="!isMobile">
-        <!-- <div class="input-group custom-search-bar">
-          <div class="input-group-prepend">
-            <span class="input-group-text bg-white border-0"><i class="fas fa-search"></i></span>
-          </div>
-          <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Search"
-            [(ngModel)]="searchQuery"
-            (input)="filterData()"
-          />
-          <div 
-            *ngIf="filteredData.length > 0" 
-            class="dropdown-menu show" 
-            style="max-height: 200px; overflow-y: auto; position: absolute; width: 100%; z-index: 999; color: black;">
-            <a style="color: black;" *ngFor="let item of filteredData" class="dropdown-item" href="/search">{{ item }}</a>
-          </div>
-        </div> -->
-
-        <!-- <div class="search-container">
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search people..."
-            [(ngModel)]="searchQuery"
-            (input)="onSearch()"
-          />
-          <ul *ngIf="results.length > 0" class="search-dropdown">
-            <li *ngFor="let result of results" (click)="selectResult(result)">
-              <img [src]="result.profilePic" alt="Profile" class="profile-pic" />
-              <span>{{ result.name }}</span>
-            </li>
-          </ul>
-        </div> -->
-        <!-- <app-user-list></app-user-list> -->
-
-        <app-search></app-search>
-        
+        <app-search *ngIf="!isMobile"></app-search>
       </div>
-      
-      <div *ngFor="let link of nav_module" class="nav-item" [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">
+
+
+      <div *ngFor="let link of nav_module" [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">
         <div *ngIf="link.submenus && link.submenus.length > 0; else regularLink">
-          <button mat-button [matMenuTriggerFor]="menu" class="nav-link" color="primary">{{ link.description }}</button>
+          <button mat-button [matMenuTriggerFor]="menu"  style="color: rgb(255, 254, 254);">{{ link.description }}</button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item *ngFor="let submenu of link.submenus" [routerLink]="[submenu.route]" style="color: black;">
               {{submenu.description}}
@@ -63,16 +27,18 @@
           </mat-menu>
         </div>
         <ng-template #regularLink>
-          <button mat-button class="nav-link" [routerLink]="[link.route]">
+          <button mat-button [routerLink]="[link.route]">
             <i class="{{ link.icon }}"></i> {{ link.description }}
           </button>
         </ng-template>
       </div>
+
       <button mat-icon-button (click)="onLogout()">
         <mat-icon>logout</mat-icon>
       </button>
     </nav>
     <button class="navbar-toggler" type="button" (click)="toggleSidebar()" aria-label="Toggle navigation" *ngIf="isMobile">
+
       <mat-icon>{{ isSidebarOpen ? 'close' : 'menu' }}</mat-icon>
     </button>
   </mat-toolbar>
@@ -104,9 +70,12 @@
 
   <!-- Main Content -->
   <div class="content">
+    <app-search *ngIf="isMobile"></app-search>
     <router-outlet></router-outlet>
+   
   </div>
 
   <!-- Footer -->
-  <app-footer></app-footer>
+    <!-- <app-footer></app-footer> -->
+
 </div>

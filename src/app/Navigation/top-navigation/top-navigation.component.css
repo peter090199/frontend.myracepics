@@ -11,6 +11,11 @@
   background-color: transparent;
 }
 
+/* Ensure the rest of the page doesn't overlap */
+.router-outlet + * {
+  margin-top: 60px; /* Adjust based on .content height */
+}
+
 
 .dropdown-item {
   color: #111111; /* Font color */

@@ -2,11 +2,59 @@
 .post-box-container {
   width: 100%;
   max-width: 600px; /* Limit the width for large screens */
-  margin: 20px auto; /* Center align */
+  margin: 30px auto; /* Center align */
   padding: 26px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.avatar-container {
+  position: relative;
+  width: 120px; /* Adjust size as needed */
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profile-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.avatar-container:hover .edit-overlay {
+  opacity: 1;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
 .input-section {
@@ -188,6 +236,8 @@
   background-color: #f9f9f9; /* Optional: Background color */
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow */
   z-index: 1000;
+  margin-top: 40px;
+  border-radius: 10px;
 }
 
 /* Scrollbar Styling (Optional) */
@@ -208,11 +258,7 @@
 .right-column::-webkit-scrollbar-thumb:hover {
   background: #aaa;
 }
-.middle-column {
-  height: auto;
-  margin-left: 60px;
-  
-}
+
 
 
 .post-display-card {
@@ -230,7 +276,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin: 18px;
+  margin-top: 22px;
 }
 
 .clients-list img,
@@ -243,17 +290,44 @@ button {
   white-space: nowrap;
 }
 
-
 .main-container {
   display: grid;
-  gap: 95px;
-  padding-top: 0px;
-  overflow: hidden;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: 10px;
-
+  gap: 12px;
+  padding-top: 10px;
+  margin-top: 5px;
+  width: 100%;
+  height: auto; /* Allows content to expand */
+  max-height: 90vh; /* Prevents exceeding the viewport */
+  overflow-y: auto; /* Enables scrolling if content overflows */
+  scrollbar-width: thin; /* Firefox - Thin scrollbar */
+  -webkit-overflow-scrolling: touch;
 }
+@media (max-width: 768px) {
+  .main-container {
+    padding: 8px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container {
+    padding: 5px;
+    gap: 5px;
+  }
+}
+/* Hide scrollbar for Chrome, Edge, Safari */
+.main-container::-webkit-scrollbar {
+  width: 6px; /* Makes scrollbar thin */
+}
+
+.main-container::-webkit-scrollbar-thumb {
+  background: transparent; /* Hide scrollbar thumb */
+}
+
+.main-container:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* Show scrollbar on hover */
+}
+
 
 /* Desktop Layout */
 @media (min-width: 768px) {
@@ -280,12 +354,6 @@ button {
     height: auto;
     
   }
-  /* .fb-header-left{
-    margin-top: 0px;
-    margin-bottom: 20px;
-    
-  } */
-
   .left-column,
   .middle-column,
   .right-column {
@@ -303,8 +371,8 @@ button {
 .example-container {
   display: flex;
   flex-direction: column;
-  height: auto;
-  margin:0px;
+  height: 90vh;
+  margin:5px;
 }
 
   .fb-header-left {
@@ -330,8 +398,7 @@ button {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 5px;
-  width: 380px;
+  width: 100%;
 }
 
 .profile-card img {

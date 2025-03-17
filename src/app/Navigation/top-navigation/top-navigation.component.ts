@@ -1,12 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.service';
 import { slideUp, slideFade } from 'src/app/animations';
-import { AuthGuard } from 'src/app/AuthGuard/auth.guard';
 import { MatMenuPanel } from '@angular/material/menu';
 import { firstValueFrom, Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import {map, startWith} from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { SigInService } from 'src/app/services/signIn/sig-in.service';
+import { Router } from '@angular/router';
 
 export interface User {
   name: string;
@@ -30,8 +31,8 @@ export class TopNavigationComponent implements OnInit {
   success:boolean = false;
   
   constructor(
-    private authService: AuthGuard,
-    private navigationService: TNavigationService // Inject the TNavigationService
+    private authService: SigInService,
+    private navigationService: TNavigationService,private router: Router// Inject the TNavigationService
   ) {
     this.updateMobileState(); // Set initial state
   }
@@ -83,9 +84,18 @@ export class TopNavigationComponent implements OnInit {
   }
 
   onLogout(): void {
-    this.authService.logout();
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/homepage']); // Redirect after logout
+      },
+      error: (err) => {
+        console.error('Logout failed:', err);
+      }
+    });
   }
 
+
+  
   // getModule() {
 
   //   try{

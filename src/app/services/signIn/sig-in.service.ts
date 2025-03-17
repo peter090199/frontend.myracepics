@@ -76,6 +76,18 @@ export class SigInService {
     });
   }
   
+   // Logout method
+   logout(): Observable<any> {
+    return this.http.post(`${_url}logout`, {}, { headers: this.createHeaders() }).pipe(
+      tap(() => {
+        localStorage.removeItem(this.tokenKey); // Remove token
+        this._refreshrequired.next(); // Notify about refresh
+      }),
+      catchError(this.handleError('logout'))
+    );
+  }
+  
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error); 

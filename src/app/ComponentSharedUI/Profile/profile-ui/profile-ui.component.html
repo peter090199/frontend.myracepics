@@ -1,27 +1,42 @@
+<div class="content-body">
   <div class="cover-photo">
     <img src="
-    https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
-     alt="Cover Photo" class="cover-photo-img" />
+        https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
+        alt="Cover Photo" class="cover-photo-img" />
     <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button>
   </div>
 
   <div class="profile-info">
     <div class="profile-picture">
-      <img *ngIf="profiles" [src]="profiles.photo_pic || 'assets/images/default.png'"  alt="Profile Picture" class="profile-img" />
-      <button *ngIf="profiles?.btnCurriculum === 1"  mat-icon-button class="edit-profile-btn" (click)="uploadPic()">
-        <mat-icon>photo_camera</mat-icon>
-      </button>
-      
-    </div>
-    <div class="profile-details" *ngIf="profiles">
-      <h1>{{ profiles.fname }} {{ profiles.lname }} <small style="color: white;">({{ profiles.profession }})</small></h1>
-      <p>761 followers · 369 following</p>
-      <button *ngIf="profiles?.btnCurriculum === 1" mat-raised-button class="edit-btn" (click)="UserCV()">New Curriculum Vitae</button>
-    </div>
+      <div class="avatar-container">
+        <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default2.png'" alt="Profile"/>
+        <mat-icon class="status-icon online">circle</mat-icon>
+     </div>
+    
+      <!-- Upload Button (Shown only when btnCurriculum is 1) -->
+   
+    
+
   </div>
   
+  <div class="profile-details" *ngIf="profiles">
+     <h1>{{ profiles.fname }} {{ profiles.lname }} <small style="color: rgb(24, 24, 24);">({{ profiles.profession }})</small></h1>
+          <p>761 followers · 369 following</p>
+          
+          <div class="button-gap">
+            <button *ngIf="profiles?.btnCurriculum === 1" mat-flat-button (click)="UserCV()" color="primary">New Curriculum Vitae</button>
+    
+            <button *ngIf="profiles?.btnCurriculum === 1" mat-raised-button (click)="uploadPic()">
+              <mat-icon>cloud_upload</mat-icon> Upload
+          </button>
+          </div>
+    </div>
+  </div>
+
   <mat-tab-group class="tabs-container">
     <mat-tab label="Posts">
+      <h2>Post</h2>
+      <mat-divider></mat-divider>
       <div class="tab-content">
         <!-- Posts content goes here -->
       </div>
@@ -31,6 +46,7 @@
       <div class="tab-content">
         <h2>Basic Information</h2>
         <mat-divider></mat-divider>
+        
         <mat-card-content>
           <!-- Display static information -->
           <mat-list>
@@ -62,6 +78,7 @@
             </mat-list-item>
           </mat-list>
           <!-- Language Section -->
+
           <section class="cv-section" *ngIf="profiles?.lines?.language?.length">
             <h2>Language</h2>
             <mat-list>
@@ -222,6 +239,8 @@
     </mat-tab>
   </mat-tab-group>
   
+  
+</div>
 
 <!-- 
   <div class="tab-footer">

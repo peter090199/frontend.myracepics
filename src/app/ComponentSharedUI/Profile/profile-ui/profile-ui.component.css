@@ -1,9 +1,39 @@
 .cover-photo-container {
   position: relative;
-  width: 50%;
-  max-width: 50%;
-  background: linear-gradient(45deg, #6a11cb, #2575fc); /* Gradient background */
-  padding: 40px; /* Add some spacing around the cover-photo */
+  width: 100%;
+  margin: 0px;
+  background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748));
+}
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  width: 50px; /* Adjust as needed */
+  height: 50px;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+.status-icon {
+  position: absolute;
+ 
+  font-size: 20px; /* Adjust size as needed */
+  border-radius: 50%;
+  background-color: white;
+  padding: 2px;
+}
+
+.online {
+  color: #4CAF50; /* Green for online */
+}
+
+.offline {
+  color: #bbb; /* Gray for offline */
 }
 
 .cover-photo {
@@ -77,13 +107,17 @@
 }
 
 .profile-details {
-  margin-left: 20px;
+  margin-left: 90px;
   margin-top: 90px;
 }
 
 .profile-details h1 {
   font-size: 24px;
-  margin: 0;
+  margin: 30px;
+}
+.profile-details p {
+  font-size: 16px;
+  margin: 30px;
 }
 
 .profile-details small {
@@ -110,22 +144,36 @@
 
 /* General styling for the container */
 .tabs-container {
-  padding-top: 10px;
-  padding-right: 100px;
-  padding-left: 100px;
-  background: #fffbfb;
-  padding-bottom: 60px;
+  height: 75vh;
+  overflow-y: auto; /* Use 'auto' instead of 'hidden' for usability */
+  margin: 85px auto; /* Centering the container if needed */
+  width: 100%; /* Ensures responsiveness */
+  scrollbar-width: thin; /* Makes scrollbar less intrusive */
+  scrollbar-color: transparent transparent; /* Hides scrollbar for Firefox */
 }
+
+/* Hides scrollbar for Webkit browsers (Chrome, Safari) */
+.tabs-container::-webkit-scrollbar {
+  width: 0px;
+}
+
+.tabs-container::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
 
 .tab-content {
   justify-content: center;
-  height: 100vh;
-
+  height: 90vh;
+  margin: 0px;
+  width: 100%;
+  padding: 10px;
 }
 
 h2 {
   font-size: 1.5rem;
-  margin-bottom: 12px;
+  text-align: left;
+  margin-left: 20px;
 }
 
 mat-divider {
@@ -223,7 +271,11 @@ mat-tab[label="Work Experience"] .mat-tab-label {
   .tabs-container {
     padding: 0px;
   }
-
+  .tabs-container {
+    overflow: auto;
+    margin: 0px;
+  }
+  
   .tab-content {
     padding: 0px;
   }
@@ -243,6 +295,20 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     padding: 0px;
 
   }
+  .tabs-container {
+    overflow: auto;
+    margin: 0px;
+  }
+  .profile-details {
+    margin: 0px;
+  }
+  
+  .profile-details h1 {
+    margin: 0px;
+  }
+  .profile-details p {
+    margin: 0px;
+  }
 
   .tab-content {
     padding: 0px;
@@ -258,8 +324,9 @@ mat-tab[label="Work Experience"] .mat-tab-label {
    
   }
 
+
   .cover-photo-img{
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     height: 200px;
     max-height: 200px;
     width: 100%;
@@ -281,6 +348,17 @@ mat-tab[label="Work Experience"] .mat-tab-label {
 }
 
 
+
+
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+  .tabs-container {
+    width: 100%;
+  }
+
+  
+}
+
+
 @media (max-width: 600px) {
   mat-card {
     display: flex;
@@ -292,16 +370,22 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     flex-direction: column;
 
   }
-
+  .tabs-container {
+    margin: 0px;
+  }
+  
 
   .profile-info {
     flex-direction: column; 
     text-align: center; 
   }
-
+  .profile-details p {
+    margin-top: 0px;
+    margin-left: 0px;
+  }
   .profile-details {
-    margin-top: 20px;
-    margin-left: 0;
+    margin-top: 0px;
+    margin-left: 0px;
   }
 }
 
@@ -328,5 +412,10 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     align-items: center;
     padding: 10px 0;
   }
+  .tabs-container {
+    overflow: auto;
+    margin: 0px;
+  }
+  
 }
 

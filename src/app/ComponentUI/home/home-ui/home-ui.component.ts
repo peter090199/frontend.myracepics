@@ -125,6 +125,36 @@ createPost() {
       reposts: 25,
       sends: 20,
     },
+    {
+      id: 10,
+      author: 'Charlie Brown',
+      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+      timestamp: new Date('2024-11-25T16:20:00'),
+      likes: 300,
+      comments: 100,
+      reposts: 25,
+      sends: 20,
+    },
+    {
+      id: 11,
+      author: 'Charlie Brown',
+      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+      timestamp: new Date('2024-11-25T16:20:00'),
+      likes: 300,
+      comments: 100,
+      reposts: 25,
+      sends: 20,
+    },
+    {
+      id: 12,
+      author: 'Charlie Brown',
+      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+      timestamp: new Date('2024-11-25T16:20:00'),
+      likes: 300,
+      comments: 100,
+      reposts: 25,
+      sends: 20,
+    },
   ];
 
   isLoading = false; // Flag for showing spinner

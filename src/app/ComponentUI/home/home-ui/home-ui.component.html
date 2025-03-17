@@ -2,14 +2,25 @@
   <mat-sidenav-content>
     <div class="main-container">
 
-      <mat-card class="profile-card" *ngIf="!isMobile">
-        <div class="cover-photo">
-          <img *ngIf="profile_pic" [src]="profile_pic.photo_pic" alt="Profile Picture" />
-          <p *ngIf="!profile_pic && !error">Loading picture...</p>
+      <mat-card class="post-box-container" *ngIf="!isMobile">
+        <div class="profile-avatar">
+          <div class="avatar-container">
+            <img 
+              *ngIf="profile_pic; else defaultAvatar" 
+              [src]="profile_pic.photo_pic" 
+              alt="Profile Picture"
+              class="profile-pic"
+            />
+            <ng-template #defaultAvatar>
+              <img src="assets/default-avatar.png" alt="Default Avatar" class="profile-pic" />
+            </ng-template>
+        
+            <div class="edit-overlay" (click)="uploadPic()">
+              <mat-icon>photo_camera</mat-icon>
+            </div>
+          </div>
+        
           <p *ngIf="error" class="error-message">{{ error }}</p>
-          <button  mat-button class="edit-cover-btn"  (click)="uploadPic()">
-           <mat-icon>photo_camera</mat-icon> Upload Profile Picture</button>
-         
         </div>
         
         <br>
@@ -47,24 +58,6 @@
      
       <!-- Middle Column: Post Section -->
       <div class="middle-column">
-            <div class="fb-header-left" *ngIf="isMobile" >
-              <div class="input-group custom-search-bar">
-                <div class="input-group-prepend">
-                  <span class="input-group-text bg-white border-0"><i class="fas fa-search"></i></span>
-                </div>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Search"
-              
-                > 
-                <!-- <div *ngIf="filteredData.length > 0" class="dropdown-menu show" style="max-height: 200px; overflow-y: auto; position: absolute; width: 100%; z-index: 999; color: black;">
-                  <a style="color: black;" *ngFor="let item of filteredData" class="dropdown-item" href="/search">{{ item }}</a>
-                </div> -->
-
-            </div>
-          </div>
-        
           <div class="post-box-container">
             <div class="input-section">
               <img src="https://via.placeholder.com/40" alt="Avatar" class="avatar" />
@@ -88,7 +81,7 @@
           <br>
           <!-- Post Display: Loop over posts -->
           <div *ngFor="let post of posts">
-            <mat-card class="post-display-card">
+            <mat-card class="post-box-container">
               <mat-card-content>
                 <p>{{ post.content }}</p>
               </mat-card-content>

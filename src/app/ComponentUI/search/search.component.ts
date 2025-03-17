@@ -22,8 +22,12 @@ export class SearchComponent implements OnInit {
   users: User[] = [];
   searchQuery: string = '';
   dataSource = new MatTableDataSource<any>([]);
+  showOverlay: boolean = false;
+  code:any;
+  onlineUsers:any=[];
+  offlineUsers:any=[];
 
-  
+
   constructor(
     private userService: SearchService,
     private dialog: MatDialog,
@@ -42,8 +46,62 @@ export class SearchComponent implements OnInit {
     this.dataSource.filter = this.searchQuery.trim().toLocaleLowerCase();
   }
 
-
   fetchUsers(): void {
+    if (this.searchQuery.trim()) {
+      this.userService.searchUsers(this.searchQuery).subscribe({
+        next: (response) => {
+          console.log('✅ API Response:', response);
+          
+          if (response && ('online' in response) && ('offline' in response)) {
+            this.users = [...response.online, ...response.offline]; // Merge both lists
+          } else {
+            console.error('⚠️ Unexpected API response format:', response);
+            this.users = [];
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error fetching users:', error);
+          this.users = [];
+        }
+      });
+    } else {
+      this.users = []; // Clear when search is empty
+    }
+  }
+  
+  fetchUsersxc(): void {
+    const query = this.searchQuery?.trim();
+  
+    if (!query) {
+      console.warn('Search query is empty.');
+      return;
+    }
+  
+    this.userService.searchUsers(query).subscribe({
+      next: (response) => {
+        console.log('✅ API Response:', response); // More noticeable debugging output
+  
+        if (response && typeof response === 'object' && 'online' in response && 'offline' in response) {
+          this.onlineUsers = Array.isArray(response.online) ? response.online : [];
+          this.offlineUsers = Array.isArray(response.offline) ? response.offline : [];
+  
+          console.log(`🔹 Found ${this.onlineUsers.length} online users`);
+          console.log(`🔹 Found ${this.offlineUsers.length} offline users`);
+        } else {
+          console.error('⚠️ Unexpected API response format:', response);
+          this.onlineUsers = [];
+          this.offlineUsers = [];
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error fetching users:', error);
+        this.onlineUsers = [];
+        this.offlineUsers = [];
+      }
+    });
+  }
+  
+  fetchUsersxx(): void {
     if (!this.searchQuery.trim()) {
       this.users = [];
       return;
@@ -87,5 +145,15 @@ export class SearchComponent implements OnInit {
     this.searchQuery = ""; // Reset search query
     this.users = [];
     this.router.navigate(['/search'], { queryParams: { search: null }, queryParamsHandling: 'merge' });
+    this.showOverlay = false;
+  }
+
+
+  hideOverlay() {
+    setTimeout(() => {
+      if (!this.searchQuery) {
+        this.showOverlay = false;
+      }
+    }, 200);
   }
 }
