@@ -1,5 +1,116 @@
+.mat-tab-group {
+  width:70%;
+  background: #ffffff; /* White background */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-top: 5px;
+}
 
+/* Style the Tabs */
+.mat-tab-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #555;
+  min-width: 100px;
+  padding: 12px 16px;
+  text-transform: capitalize;
+}
+
+/* Active Tab */
+.mat-tab-label-active {
+  color: #007bff; /* Change to primary color */
+  border-bottom: 3px solid #007bff;
+}
+
+/* Tab Header Container */
+.mat-tab-header {
+  display: flex;
+  justify-content: center;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  padding: 20px 0;
+}
+
+/* Make Tabs Scrollable for Mobile */
+.mat-tab-header-pagination {
+  display: flex;
+}
+
+/* Tab Content */
+.mat-tab-body-wrapper {
+  height: auto;
+}
+
+/* Make the tab content scrollable */
+.mat-tab-body {
+  overflow-y: auto;
+  max-height: 90vh; /* Adjust height as needed */
+  padding: 15px;
+}
+
+/* Hide Scrollbar for Clean UI */
+.mat-tab-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mat-tab-body::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.mat-tab-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 768px) {
+  .mat-tab-label {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .mat-tab-group {
+    border-radius: 0;
+    width:100%;
+  }
   
+  .mat-tab-body {
+    max-height: 60vh;
+    padding: 5px;
+    width: 100%;
+  }
+}
+
+/* Desktop Specific */
+@media (min-width: 769px) {
+  .mat-tab-header {
+    justify-content: flex-start;
+  }
+  .mat-tab-group {
+    border-radius: 0;
+    width:100%;
+  }
+}
+
+
+
+/* Hide scrollbar for a cleaner look */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .online {
     color: #4CAF50; /* Green */
 }
@@ -32,9 +143,7 @@
   }
 
 
-.profile-info {
-  margin-left: 15px;
-}
+
 
 h2 {
   font-size: 18px;
@@ -95,17 +204,16 @@ h2 {
 .search-item {
     display: flex;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
     border: 1px solid #ddd; /* Added border */
     border-radius: 8px; /* Optional: Rounded corners */
     background-color: rgba(255, 251, 246, 0.779);
     cursor: pointer;
     transition: background 0.3s, box-shadow 0.3s;
-    height: auto;
     overflow: auto;
     width: 950px;
-    margin-top: 40px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 50px;
 }
 
 /* Optional: Hover effect for better UI */
@@ -118,7 +226,7 @@ h2 {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 /* User Info */
@@ -163,12 +271,15 @@ h2 {
     border-radius: 15px;
     cursor: pointer;
     font-size: 14px;
+    text-align: right;
 }
 
 .connect-btn:hover {
     background: #004182;
 }
-
+.mat-tab-group{
+  text-align: center;
+}
 
  
   /* Responsive Design */
@@ -176,11 +287,17 @@ h2 {
      .search-item{
       width: 100%;
      }
-     .search-results {
-      gap: 25px;
-      max-height: 82vh; 
+
+     .button-gap {
+      flex-direction: column;
+    }
+    .search-results {
+      flex: 1;
       overflow-y: auto;
-  }
+      margin: 20px;
+      height: 70vh;
+    }
+    
   
   }
   
@@ -188,7 +305,16 @@ h2 {
     .search-item{
       width: 100%;
     }
-
+    .search-results {
+      flex: 1;
+      overflow-y: auto;
+      margin: 20px;
+      height: 60vh;
+    }
+    
+  .button-gap {
+    flex-direction: column;
+  }
 
   }
 

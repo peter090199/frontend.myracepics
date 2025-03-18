@@ -11,6 +11,13 @@ interface User {
   skills: string;
   photo_pic: string;
 }
+interface Job {
+  title: string;
+  company: string;
+  location: string;
+}
+
+
 
 @Component({
   selector: 'app-user-list',
@@ -27,10 +34,19 @@ export class UserListComponent implements OnInit {
   code:any;
   onlineUsers:any=[];
   offlineUsers:any=[];
+  searchResults: string[] = []; // General search results
+  jobResults: Job[] = [];
 
+  
   constructor(private route: ActivatedRoute, private userService: SearchService,private profile:ProfileService
     
-  ) {}
+  ) {
+    this.searchResults = ['Result 1', 'Result 2', 'Result 3'];
+
+    this.jobResults = [
+      { title: 'Frontend Developer', company: 'TechCorp', location: 'Remote' },
+      { title: 'Backend Developer', company: 'Innovate Solutions', location: 'New York' }
+    ];}
 
   animalControl = new FormControl('', Validators.required);
   selectFormControl = new FormControl('', Validators.required);
@@ -53,6 +69,7 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  
   connectUser(item: any) {
     if (!item || item.code === this.loggedInUser.code) {
       console.log('Cannot connect to yourself!');
