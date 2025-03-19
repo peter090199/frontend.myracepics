@@ -1,115 +1,42 @@
-.mat-tab-group {
-  width:70%;
-  background: #ffffff; /* White background */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+.center-container {
   display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin: auto;
-  margin-top: 5px;
+  background: white;
+  padding: 10px;
+  border-bottom: 2px solid #ddd;
 }
 
-/* Style the Tabs */
-.mat-tab-label {
-  font-size: 16px;
-  font-weight: 600;
-  color: #555;
-  min-width: 100px;
-  padding: 12px 16px;
-  text-transform: capitalize;
+
+.search-select {
+  width: 250px; /* Adjust width as needed */
 }
 
-/* Active Tab */
-.mat-tab-label-active {
-  color: #007bff; /* Change to primary color */
-  border-bottom: 3px solid #007bff;
+.search-select .mat-mdc-text-field-wrapper {
+  background: transparent !important; /* No background */
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* Tab Header Container */
-.mat-tab-header {
-  display: flex;
-  justify-content: center;
-  background: #f8f9fa;
-  border-radius: 8px 8px 0 0;
-  padding: 20px 0;
+.search-select .mat-mdc-select {
+  font-size: 12px;
+  color: #0073b1; /* LinkedIn-style blue */
+  text-decoration: underline; /* Mimic link effect */
+  cursor: pointer;
 }
 
-/* Make Tabs Scrollable for Mobile */
-.mat-tab-header-pagination {
-  display: flex;
-}
-
-/* Tab Content */
-.mat-tab-body-wrapper {
-  height: auto;
-}
-
-/* Make the tab content scrollable */
-.mat-tab-body {
-  overflow-y: auto;
-  max-height: 90vh; /* Adjust height as needed */
-  padding: 15px;
-}
-
-/* Hide Scrollbar for Clean UI */
-.mat-tab-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.mat-tab-body::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
-}
-
-.mat-tab-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Mobile & Tablet Responsiveness */
-@media (max-width: 768px) {
-  .mat-tab-label {
-    font-size: 14px;
-    padding: 8px;
-  }
-
-  .mat-tab-group {
-    border-radius: 0;
-    width:100%;
-  }
-  
-  .mat-tab-body {
-    max-height: 60vh;
-    padding: 5px;
-    width: 100%;
-  }
-}
-
-/* Desktop Specific */
-@media (min-width: 769px) {
-  .mat-tab-header {
-    justify-content: flex-start;
-  }
-  .mat-tab-group {
-    border-radius: 0;
-    width:100%;
-  }
+.search-select .mat-mdc-select-arrow {
+  color: #0073b1 !important; /* Match text color */
 }
 
 
 
-/* Hide scrollbar for a cleaner look */
-.search-results::-webkit-scrollbar {
-  width: 6px;
-}
-
-.search-results::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
-}
-
-.search-results::-webkit-scrollbar-track {
-  background: transparent;
-}
 
 .online {
     color: #4CAF50; /* Green */
@@ -196,15 +123,18 @@ h2 {
     flex-wrap: wrap;
     justify-content: center; /* Center items horizontally */
     align-items: center; /* Align items properly */
-    gap: 25px;
-    height: auto; 
-    overflow: auto;
+    gap: 5px;
 }
+.example-spacer {
+  flex: 1 1 auto;
+  margin: 20px;
+}
+
 
 .search-item {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 20px;
     border: 1px solid #ddd; /* Added border */
     border-radius: 8px; /* Optional: Rounded corners */
     background-color: rgba(255, 251, 246, 0.779);
@@ -212,8 +142,7 @@ h2 {
     transition: background 0.3s, box-shadow 0.3s;
     overflow: auto;
     width: 950px;
-    margin-top: 5px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 }
 
 /* Optional: Hover effect for better UI */
@@ -295,7 +224,6 @@ h2 {
       flex: 1;
       overflow-y: auto;
       margin: 20px;
-      height: 70vh;
     }
     
   
@@ -308,7 +236,7 @@ h2 {
     .search-results {
       flex: 1;
       overflow-y: auto;
-      margin: 20px;
+      margin: 5px;
       height: 60vh;
     }
     
@@ -326,4 +254,19 @@ h2 {
       width: 100%;
     }
   
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 30px;
+    width: 100%;
+    padding-bottom: 40px;
+  }
+
+
 }

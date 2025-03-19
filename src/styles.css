@@ -43,10 +43,9 @@ app-footer {
   margin: 0 auto; /* Centers the content */
   overflow-y: auto; /* Allows scrolling */
   scrollbar-width: none; /* Hides scrollbar in Firefox */
-
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: auto;
   padding: 10px;
 }
 .content-body::-webkit-scrollbar {
@@ -103,8 +102,7 @@ app-footer {
 html, body {
   margin: 0;
   padding: 0; 
-  height: auto; 
-  overflow: hidden;
+  height: 100vh; 
 }
 
 section{

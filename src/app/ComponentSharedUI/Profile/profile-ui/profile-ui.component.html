@@ -1,4 +1,4 @@
-<div class="content-body">
+
   <div class="cover-photo">
     <img src="
         https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
@@ -12,11 +12,6 @@
         <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default2.png'" alt="Profile"/>
         <mat-icon class="status-icon online">circle</mat-icon>
      </div>
-    
-      <!-- Upload Button (Shown only when btnCurriculum is 1) -->
-   
-    
-
   </div>
   
   <div class="profile-details" *ngIf="profiles">
@@ -32,7 +27,7 @@
           </div>
     </div>
   </div>
-
+  <div class="content-body">
   <mat-tab-group class="tabs-container">
     <mat-tab label="Posts">
       <h2>Post</h2>

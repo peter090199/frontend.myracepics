@@ -1,14 +1,47 @@
 <!--  
- <div class="content-body">
     <div class="heading-container">
       <h2 *ngIf="searchQuery">Search Results for "{{ searchQuery }}"</h2>
-   </div>
+   </div> -->
+
+<mat-toolbar class="toolbar">
+  <button mat-button [matMenuTriggerFor]="jobsMenu" class="jobs-btn">
+    {{ selectedJob || 'Jobs' }} <mat-icon>arrow_drop_down</mat-icon>
+  </button>
+
+  <!-- Jobs Menu -->
+  <mat-menu #jobsMenu="matMenu">
+    <button mat-menu-item *ngFor="let job of jobCategories" (click)="selectJob(job)">
+      {{ job }}
+    </button>
+  </mat-menu>
+
+  <div class="filter-container">
+    <ng-container *ngFor="let filter of filters">
+      <!-- Mat Menu -->
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let item of filter.options" (click)="selectFilter(filter, item)">
+          {{ item }}
+        </button>
+      </mat-menu>
+  
+      <!-- Button with Dropdown -->
+      <button mat-button [matMenuTriggerFor]="menu" class="filter-chip">
+        {{ filter.selected || filter.label }} <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </ng-container>
+  </div>
+  
+</mat-toolbar>
+
+
+  
+  <div class="example-spacer"></div>
 
   <div class="search-results">
       <div *ngIf="onlineUsers.length === 0 && offlineUsers.length === 0" class="no-results">
-          No results found.
+            No results found.
       </div>
-
+    
       <div *ngIf="onlineUsers.length > 0">
           <div *ngFor="let user of onlineUsers" class="search-item">
               <div class="user-card">
@@ -67,103 +100,4 @@
           </div>
       </div>
   </div>
-</div> -->
 
-<div class="content-body">
-
-<mat-tab-group class="mat-tab-group">
-    <!-- People Tab -->
-    <mat-tab label="People">
-      <div class="search-results">
-        <div *ngIf="onlineUsers.length === 0 && offlineUsers.length === 0" class="no-results">
-          No results found.
-        </div>
-  
-        <!-- Online Users -->
-        <div *ngIf="onlineUsers.length > 0">
-          <div *ngFor="let user of onlineUsers" class="search-item">
-            <div class="user-card">
-                <div class="avatar-container">
-                  <img class="avatar" [src]="user.photo_pic || 'assets/images/default2.png'" alt="Profile" />
-                  <mat-icon class="status-icon online">circle</mat-icon>
-                </div>
-                <div class="profile-info">
-                  <a class="user-" [href]="'/profile/' + user.code">{{ user.fullname }}</a>
-                  <p class="role">{{ user.role || 'N/A' }}</p>
-                  <p class="location">{{ user.location || 'Unknown' }}</p>
-                  <div class="experience">
-                    <mat-icon>work</mat-icon>
-                    <span>Experience: {{ user.experience || 'N/A' }}</span>
-                  </div>
-              </div>
-              <div class="user-info">
-                <p class="user-skills">{{ user.skills || 'No skills listed' }}</p>
-              </div>
-              <div class="button-gap">
-                <button mat-raised-button color="primary" routerLink="/connect">Connect</button>
-                <button mat-stroked-button color="primary" [routerLink]="['/profile', user.code]">View Profile</button>
-              </div>
-            </div>
-          </div>
-        </div>
-  name
-        <!-- Offline Users -->
-        <div *ngIf="offlineUsers.length > 0">
-          <div *ngFor="let user of offlineUsers" class="search-item">
-            <div class="user-card">
-                <div class="avatar-container">
-                  <img class="avatar" [src]="user.photo_pic || 'assets/images/default2.png'" alt="Profile" />
-                  <mat-icon class="status-icon offline">circle</mat-icon>
-                </div>
-                <div class="profile-info">
-                  <a class="user-name" [href]="'/profile/' + user.code">{{ user.fullname }}</a>
-                  <p class="role">{{ user.role || 'N/A' }}</p>
-                  <p class="location">{{ user.location || 'Unknown' }}</p>
-                  <div class="experience">
-                    <mat-icon>work</mat-icon>
-                    <span>Experience: {{ user.experience || 'N/A' }}</span>
-                  </div>
-              </div>
-              <div class="user-info">
-                <p class="user-skills">{{ user.skills || 'No skills listed' }}</p>
-              </div>
-              <div class="button-gap">
-                <button mat-raised-button color="primary" routerLink="/connect">Connect</button>
-                <button mat-stroked-button color="primary" [routerLink]="['/profile', user.code]">View Profile</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-  
-    <!-- Search Tab -->
-    <mat-tab label="Search">
-      <div class="search-results">
-        <p>Search Results for "{{ searchQuery }}"</p>
-        <div *ngIf="searchResults.length === 0" class="no-results">
-          No results found.
-        </div>
-        <div *ngFor="let result of searchResults" class="search-item">
-          <p>{{ result }}</p>
-        </div>
-      </div>
-    </mat-tab>
-  
-    <!-- Jobs Tab -->
-    <mat-tab label="Jobs">
-      <div class="search-results">
-        <div *ngIf="jobResults.length === 0" class="no-results">
-          No job listings found.
-        </div>
-        <div *ngFor="let job of jobResults" class="search-item">
-          <h3>{{ job.title }}</h3>
-          <p>{{ job.company }}</p>
-          <p>{{ job.location }}</p>
-          <button mat-button color="primary">Apply</button>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-  
-  </div>

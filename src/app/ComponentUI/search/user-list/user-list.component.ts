@@ -16,6 +16,10 @@ interface Job {
   company: string;
   location: string;
 }
+interface Food {
+  value: string;
+  viewValue: string;
+}
 
 
 
@@ -36,8 +40,24 @@ export class UserListComponent implements OnInit {
   offlineUsers:any=[];
   searchResults: string[] = []; // General search results
   jobResults: Job[] = [];
+  selectedOption: string = '1';
+  selectedJob: string = ''; // Stores the selected job
 
-  
+  jobCategories = ['All', 'People', 'Jobs', 'Post','Companies'];
+  filters = [
+    { label: 'Date posted', options: ['Last 24 hours', 'Last week', 'Last month'], selected: '' },
+    { label: 'Experience level', options: ['Entry', 'Mid', 'Senior'], selected: '' },
+    { label: 'Remote', options: ['On-site', 'Hybrid', 'Fully Remote'], selected: '' }
+  ];
+
+  selectFilter(filter: any, value: string) {
+    filter.selected = value; // Update selected value
+  }
+
+  selectJob(job: string) {
+    this.selectedJob = job; // Update selected job
+  }
+
   constructor(private route: ActivatedRoute, private userService: SearchService,private profile:ProfileService
     
   ) {
@@ -48,13 +68,13 @@ export class UserListComponent implements OnInit {
       { title: 'Backend Developer', company: 'Innovate Solutions', location: 'New York' }
     ];}
 
-  animalControl = new FormControl('', Validators.required);
-  selectFormControl = new FormControl('', Validators.required);
-  animals: any[] = [
-    {name: 'People', sound: 'Woof!'},
-    {name: 'Jobs', sound: 'Meow!'},
-    {name: 'Client', sound: 'Moo!'},
-  ];
+    
+    foods: Food[] = [
+      {value: 'steak-0', viewValue: 'Steak'},
+      {value: 'pizza-1', viewValue: 'Pizza'},
+      {value: 'tacos-2', viewValue: 'Tacos'},
+    ];
+
   loggedInUser: any = null;
 
   ngOnInit(): void { 

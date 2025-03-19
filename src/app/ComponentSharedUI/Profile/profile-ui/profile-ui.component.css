@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
   justify-content: left;
-  margin-top: -90px;
+  margin-top: -95px;
   padding-left: 70px;
   margin-left: 60px;
   margin-bottom: 20px;
@@ -378,13 +378,15 @@ mat-tab[label="Work Experience"] .mat-tab-label {
   .profile-info {
     flex-direction: column; 
     text-align: center; 
+    margin-top: -30px;
+    margin-left: -10px;
   }
   .profile-details p {
     margin-top: 0px;
     margin-left: 0px;
   }
   .profile-details {
-    margin-top: 0px;
+    margin-top: 20px;
     margin-left: 0px;
   }
 }
