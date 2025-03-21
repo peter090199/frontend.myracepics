@@ -227,4 +227,15 @@ export class TopNavigationComponent implements OnInit {
         }
       );
   }
+
+  isSearchOpen = false;
+
+  toggleSearch() {
+    this.isSearchOpen = true;
+  }
+
+  closeSearch() {
+    this.isSearchOpen = false;
+    this.searchQuery = ''; // Clear input
+  }
 }

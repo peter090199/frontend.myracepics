@@ -1,21 +1,25 @@
-<!--  
+````<!--  
     <div class="heading-container">
       <h2 *ngIf="searchQuery">Search Results for "{{ searchQuery }}"</h2>
    </div> -->
 
+
+
 <mat-toolbar class="toolbar">
-  <button mat-button [matMenuTriggerFor]="jobsMenu" class="jobs-btn">
+  <!-- <app-search *ngIf="isMobile"></app-search> -->
+  <button mat-button [matMenuTriggerFor]="jobsMenu" class="jobs-btn" *ngIf="!isMobile">
     {{ selectedJob || 'Jobs' }} <mat-icon>arrow_drop_down</mat-icon>
   </button>
 
+  
   <!-- Jobs Menu -->
-  <mat-menu #jobsMenu="matMenu">
+  <mat-menu #jobsMenu="matMenu" >
     <button mat-menu-item *ngFor="let job of jobCategories" (click)="selectJob(job)">
       {{ job }}
     </button>
   </mat-menu>
 
-  <div class="filter-container">
+  <div class="filter-container"  *ngIf="!isMobile">
     <ng-container *ngFor="let filter of filters">
       <!-- Mat Menu -->
       <mat-menu #menu="matMenu">
@@ -29,8 +33,30 @@
         {{ filter.selected || filter.label }} <mat-icon>arrow_drop_down</mat-icon>
       </button>
     </ng-container>
+
+
   </div>
+
+  <div class="menu-container">
+    <button mat-icon-button [matMenuTriggerFor]="mobileMenu" aria-label="Mobile Menu" *ngIf="isMobile">
+      <mat-icon class="vertical-icon">more_vert</mat-icon>
+    </button>
+  </div>
+    
+    <mat-menu #mobileMenu="matMenu">
+      <button mat-menu-item class="horizontal-menu-item">
+        <mat-icon>dialpad</mat-icon> <span>Redial</span>
+      </button>
+      <button mat-menu-item class="horizontal-menu-item" disabled>
+        <mat-icon>voicemail</mat-icon> <span>Check Voice Mail</span>
+      </button>
+      <button mat-menu-item class="horizontal-menu-item">
+        <mat-icon>notifications_off</mat-icon> <span>Disable alerts</span>
+      </button>
+    </mat-menu>
+    
   
+
 </mat-toolbar>
 
 

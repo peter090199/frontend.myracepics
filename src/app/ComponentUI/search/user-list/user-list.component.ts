@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileService } from 'src/app/services/Profile/profile.service';
@@ -42,6 +42,8 @@ export class UserListComponent implements OnInit {
   jobResults: Job[] = [];
   selectedOption: string = '1';
   selectedJob: string = ''; // Stores the selected job
+  isMobile: boolean = false;
+
 
   jobCategories = ['All', 'People', 'Jobs', 'Post','Companies'];
   filters = [
@@ -87,7 +89,19 @@ export class UserListComponent implements OnInit {
       console.log('Search Query:', this.searchQuery); // Debugging
       this.fetchUsers();
     });
+
+    this.updateMobileState(); 
   }
+
+   // Update the mobile state based on window width
+    @HostListener('window:resize', ['$event'])
+    onResize(event: Event) {
+      this.updateMobileState();
+    }
+  
+    updateMobileState() {
+      this.isMobile = window.innerWidth <= 768; // Adjust this breakpoint as needed
+    }
 
   
   connectUser(item: any) {
@@ -118,7 +132,6 @@ export class UserListComponent implements OnInit {
   
     this.userService.searchUsers(query).subscribe({
       next: (response) => {
-        console.log('✅ API Response:', response); // More noticeable debugging output
   
         if (response && typeof response === 'object' && 'online' in response && 'offline' in response) {
           this.onlineUsers = Array.isArray(response.online) ? response.online : [];

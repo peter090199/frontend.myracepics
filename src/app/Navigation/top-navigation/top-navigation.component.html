@@ -1,19 +1,82 @@
 <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
+
 <div class="app-container">
+
+  <!-- DESKTOP -->
   <mat-toolbar class="header">
     <div class="logo">
       <img src="assets/images/logo.png" alt="logo" style="height:24px;">
-      exsuz
     </div>
-    <div class="button-mobile" *ngIf="isMobile">
-      <button mat-icon-button (click)="onLogout()">
-        <mat-icon>logout</mat-icon>
-      </button>
+
+  <!--MOBILE -->
+    <div *ngIf="isMobile">
+      <div class="space-gap">
+          <button mat-icon-button routerLink="/home">
+            <mat-icon>home</mat-icon>
+          </button>
+     
+            
+              <div class="search-container">
+                <input type="text" placeholder="Search..." class="search-input">
+              </div>
+              <span class="spacer"></span>
+              <span class="spacer"></span>
+
+              <button mat-icon-button matBadge="1" matBadgeColor="warn">
+                <mat-icon>notifications</mat-icon>
+              </button>
+              <button mat-icon-button matBadge="24" matBadgeColor="warn">
+                <mat-icon>mail</mat-icon>
+              </button>
+
+                <!-- Search Button (Mobile) -->
+              <button mat-icon-button (click)="toggleSearch()" class="search-icon-btn" *ngIf="!isSearchOpen">
+                <mat-icon>search</mat-icon>
+              </button>
+
+              <!-- Full-Width Expanding Search Bar -->
+              <div class="search-container" [ngClass]="{'active': isSearchOpen}">
+                <!-- <mat-form-field appearance="standard" class="search-field">
+                  <mat-label>Search</mat-label>
+                  <input matInput type="text" [(ngModel)]="searchQuery" placeholder="Search..." autofocus>
+                  <button mat-icon-button matSuffix (click)="closeSearch()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field> -->
+                <!-- <app-search></app-search> -->
+              </div>
+
+              
+
+              <!-- Profile Button with MatMenu -->
+                <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+                  <mat-icon>account_circle</mat-icon>
+                </button>
+
+                <!-- Profile Dropdown Menu -->
+                <mat-menu #profileMenu="matMenu" >
+                    <button mat-menu-item routerLink="/profile">
+                      <mat-icon>person</mat-icon> View Profile
+                    </button>
+                    
+                    <button mat-menu-item routerLink="/settings">
+                      <mat-icon>settings</mat-icon> Settings
+                    </button>
+                    <button mat-menu-item (click)="onLogout()">
+                      <mat-icon>logout</mat-icon> Logout
+                    </button>
+
+                  </mat-menu>
+            </div>
     </div>
+
+
+
+
     <nav *ngIf="!isMobile" class="nav" [ngClass]="{'d-none d-md-flex': isDesktop}">
       <div class="fb-header-left" *ngIf="!isMobile">
-        <app-search *ngIf="!isMobile"></app-search>
+        <app-search></app-search>
       </div>
 
 
@@ -37,10 +100,13 @@
         <mat-icon>logout</mat-icon>
       </button>
     </nav>
-    <button class="navbar-toggler" type="button" (click)="toggleSidebar()" aria-label="Toggle navigation" *ngIf="isMobile">
 
+
+    <button class="navbar-toggler" type="button" (click)="toggleSidebar()" aria-label="Toggle navigation" *ngIf="isMobile">
       <mat-icon>{{ isSidebarOpen ? 'close' : 'menu' }}</mat-icon>
     </button>
+
+    
   </mat-toolbar>
 
   <!-- Sidebar for mobile -->
@@ -51,6 +117,7 @@
         exsuz
       </div>
     </div>
+
     <ul class="list-unstyled" *ngFor="let link of nav_module" class="nav-item" [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">
       <div *ngIf="link.submenus && link.submenus.length > 0; else regularLink">
         <button mat-button [matMenuTriggerFor]="menu" class="nav-link">{{ link.description }}</button>
@@ -70,12 +137,13 @@
 
   <!-- Main Content -->
   <div class="content">
-    <app-search *ngIf="isMobile"></app-search>
+    <!-- <app-user-list *ngIf="!isMobile"></app-user-list> -->
     <router-outlet></router-outlet>
    
   </div>
 
-  <!-- Footer -->
+
+
     <!-- <app-footer></app-footer> -->
 
 </div>
