@@ -17,7 +17,7 @@ export class SignInUIComponent implements OnInit {
   passwordVisible: boolean = false;
   isLoggedIn: boolean = false; // Track login status
   showChatButton: boolean = true; // Default visibility
-
+  isLoginSuccessful = false;
 
   constructor(
     private fb: FormBuilder,
@@ -82,44 +82,62 @@ export class SignInUIComponent implements OnInit {
 
   // Handle form submission
   onSubmit(): void {
-    if(this.status == "I"){
-    }
-    
-    if (this.loginForm.valid ) {
-    const { email, password } = this.loginForm.value;
-    this.isLoading = true; // Start loading indicator
-    this.sigInService.signin(email, password).subscribe({
-      next: (res) => {
-        if (res.success && res.token) {
-          this.isLoading = true;
-            if(res.message == 0){
-             this.router.navigate(['/home']).then(() => this.reloadOnce());
-
-            }else{
-              this.router.navigate(['/user-cv']).then(() => this.reloadOnce());
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+  
+      const { email, password } = this.loginForm.value;
+  
+      // Simulate a login process delay (optional, can be removed or adjusted)
+      setTimeout(() => {
+        this.sigInService.signin(email, password).subscribe({
+          next: (res) => {
+            if (res.success && res.token) {
+              // Handle successful login response
+              this.isLoading = false;
+              this.isLoginSuccessful = true;
+  
+              // Navigate based on user role/message
+              if (res.message === 0) {
+                this.router.navigate(['/home']).then(() => this.reloadOnce());
+              } else {
+                this.router.navigate(['/user-cv']).then(() => this.reloadOnce());
+              }
+  
+              // Reset form and show chat button UI after successful login
+              this.loginForm.reset();
+              this.showChatButtonUI();
+  
+              // Hide the overlay after 3 seconds
+              setTimeout(() => {
+                this.isLoginSuccessful = false;
+              }, 1000);
+            } else {
+              // Handle unsuccessful login response
+              this.isLoading = false;
+              this.notificationService.toastPopUpError(res.message);
             }
-            this.loginForm.reset(); 
-            this.isLoading = false;
-            this.showChatButtonUI();
-        }
-        else
-        {
-          this.isLoading = false;
-          this.notificationService.toastPopUpError(res.message);
-        }
-      },
-      error: (err) => {
-        if (err.status === 401) {
-          this.notificationService.toastrError(err.error);
-        } else {
-          this.notificationService.toastPopUpError(err.message);
-        }
-        this.isLoading = false; // Stop loading on error
-      },
-      complete: () => {
-        this.isLoading = false; // Stop loading on completion
-      }
-    });
+          },
+          error: (err) => {
+            // Handle error response
+            if (err.status === 401) {
+              this.notificationService.toastrError(err.error);
+            } else {
+              this.notificationService.toastPopUpError(err.message);
+            }
+            this.isLoading = false; // Stop loading on error
+          },
+          complete: () => {
+            this.isLoading = false; // Stop loading on completion
+          }
+        });
+      }, 2000); // Simulated login delay
+    } else {
+      // If form is invalid, stop loading and possibly show validation messages
+      this.isLoading = false;
+    }
   }
-}
+
+  
+
+
 }

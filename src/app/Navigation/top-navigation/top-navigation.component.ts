@@ -136,24 +136,36 @@ export class TopNavigationComponent implements OnInit {
     });
   }
 
+  
   onLogout() {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/']).then(() => {
-          localStorage.setItem('showWebsiteChat', JSON.stringify(true));
-          // Clear all related local storage items
-          localStorage.removeItem('chatHistory');
-          localStorage.removeItem('showChatButton');
-          localStorage.removeItem('isLoggedIn');
-          localStorage.removeItem('token');
-        
-          location.reload(); 
-        
-        });
-      },
-      error: (err) => console.error('Logout failed:', err)
-    });
+    localStorage.clear(); // Clears ALL local storage items for better performance
+    localStorage.setItem('showWebsiteChat', JSON.stringify(true));
+    localStorage.setItem('cookiesAccepted', JSON.stringify(true));
+    window.location.href = '/homepage';
   }
+  
+
+
+
+  // onLogout() {
+  //   this.authService.logout().subscribe({
+  //     next: () => {
+  //       this.router.navigate(['/homepage']).then(() => {
+  //         localStorage.setItem('showWebsiteChat', JSON.stringify(true));
+  //         // Clear all related local storage items
+  //         localStorage.removeItem('chatHistory');
+  //         localStorage.removeItem('showChatButton');
+  //         localStorage.removeItem('isLoggedIn');
+  //         localStorage.removeItem('token');
+  //         localStorage.removeItem('cookiesAccepted');
+
+  //         location.reload(); 
+        
+  //       });
+  //     },
+  //     error: (err) => console.error('Logout failed:', err)
+  //   });
+  // }
   
   
   

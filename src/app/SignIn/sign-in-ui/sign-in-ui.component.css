@@ -51,3 +51,157 @@
 
 }
 
+
+
+.login-dialog {
+  text-align: center;
+  max-width: 320px;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .logo {
+    font-size: 60px;
+    color: #3f51b5;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .logo.loading {
+    animation: spin 1s infinite linear;
+  }
+
+  .login-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.968); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: background 1s ease-in-out; /* Background color transition */
+}
+
+/* Initial background color for spinner-container */
+.spinner-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  animation: fadeIn 0.1s ease-in-out;
+  transition: background-color 0.2s ease-in-out; /* Smooth background color transition */
+}
+
+/* Make the image circular with transparent background and solid border */
+.logo-centered {
+  width: 200px;  /* Set a fixed width (make sure it’s square) */
+  height: 200px; /* Set a fixed height (make sure it’s square) */
+  border-radius: 50%;  /* Makes the image circular */
+  object-fit: cover; /* Ensures the image covers the entire area without distortion */
+  background-color: transparent; /* Transparent background */
+  transition: border-color 0.1s ease, box-shadow 0.2s ease; /* Transition for border color and shadow */
+  animation: colorChange 0.1s infinite; 
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes colorChange {
+  0% {
+    border-color: #ffffff; /* Initial border color */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); /* Initial shadow color */
+  }
+  50% {
+    border-color: #4e8bfc; /* Midway border color */
+    box-hadow: 0 0 15px rgba(78, 139, 252, 0.8); /* Midway shadow color */
+  }
+  100% {
+    border-color: #ffffff; /* Final border color */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); /* Final shadow color */
+  }
+}
+
+.logo-centered:hover {
+  animation: colorChange 2s infinite; /* Infinite animation loop */
+}
+/* Position the logo image inside the spinner */
+.logo-centered {
+  max-width: 40%; /* Set max width for the logo */
+  height: auto; /* Maintain aspect ratio */
+  transition: filter 1s ease-in-out; /* Optional: apply color transition */
+  margin-bottom: 20px; /* Add some spacing if necessary */
+}
+
+/* Responsive adjustments for mat-spinner (optional) */
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Responsive size for logo */
+@media (max-width: 768px) {
+  .logo-centered {
+    max-width: 70px; /* Maximum width for large screens */
+    max-height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-centered {
+    max-width: 70px; /* Maximum width for large screens */
+    max-height: 70px;
+  }
+}
+
+/* Add background color transition for the overlay */
+.overlay {
+  transition: background-color 0.2s ease-in-out; /* Smooth background transition */
+}
+
+/* Example of changing background color on loading */
+.overlay.loading {
+  background-color: #4e8bfc; /* Change to blue background when loading */
+}
+mat-spinner {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);  /* Center the spinner inside the image */
+  width: 15vw;  /* Responsive width (15% of viewport width) */
+  height: 15vw; /* Responsive height (15% of viewport width) */
+  max-width: 100px; /* Maximum width for large screens */
+  max-height: 100px; /* Maximum height for large screens */
+}

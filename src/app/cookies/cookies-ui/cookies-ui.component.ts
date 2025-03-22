@@ -10,6 +10,7 @@ export class CookiesUIComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkCookieConsent();
+  //  this.showCookieConsent = localStorage.getItem('cookieAccepted') !== 'true';
   }
 
   // Check if the user has already accepted or rejected cookies
@@ -25,12 +26,16 @@ export class CookiesUIComponent implements OnInit {
     localStorage.removeItem("cookiesRejected"); // Clear rejection status
     this.setCookies(); // Function to set cookies after user acceptance
     this.showCookieConsent = false;
+
+    localStorage.setItem("showWebsiteChat", "true");
+    location.reload();
   }
 
   // Handle rejection of cookies
   rejectCookies(): void {
     localStorage.setItem("cookiesRejected", "true");
     localStorage.removeItem("cookiesAccepted"); // Clear acceptance status
+    localStorage.removeItem("showWebsiteChat"); 
     this.clearCookies(); // Function to clear cookies after user rejection
     this.showCookieConsent = false;
   }
