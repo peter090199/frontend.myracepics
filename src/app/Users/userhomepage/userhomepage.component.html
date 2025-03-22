@@ -5,6 +5,7 @@
        <img src="assets/images/logo.png" alt="logo">exsuz
     </div>
     <div class="container" *ngIf="!isMobile" style="margin-left: 100px;">
+      <!-- <app-search></app-search> -->
       <div class="input-group custom-search-bar">
         <div class="input-group-prepend">
           <span class="input-group-text bg-white border-0"><i class="fas fa-search"></i></span>
@@ -17,7 +18,6 @@
           (input)="filterData()"
         >
     
-        <!-- Dropdown with filtered results -->
         <div *ngIf="filteredData.length > 0" class="dropdown-menu show" style="max-height: 200px; overflow-y: auto; position: absolute; width: 100%; z-index: 999;">
           <a *ngFor="let item of filteredData" class="dropdown-item" href="#">{{ item }}</a>
         </div>

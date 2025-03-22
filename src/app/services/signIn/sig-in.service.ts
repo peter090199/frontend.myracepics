@@ -80,8 +80,8 @@ export class SigInService {
    logout(): Observable<any> {
     return this.http.post(`${_url}logout`, {}, { headers: this.createHeaders() }).pipe(
       tap(() => {
-        localStorage.removeItem(this.tokenKey); // Remove token
-        this._refreshrequired.next(); // Notify about refresh
+        localStorage.removeItem(this.tokenKey); 
+        this._refreshrequired.next();
       }),
       catchError(this.handleError('logout'))
     );
