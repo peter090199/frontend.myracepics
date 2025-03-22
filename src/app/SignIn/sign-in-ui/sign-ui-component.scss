@@ -1,38 +1,37 @@
 .login-dialog {
-    text-align: center;
-    max-width: 320px;
-    padding: 20px;
-    animation: fadeIn 0.3s ease-in-out;
-  
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 15px;
-    }
-  
-    .logo {
-      font-size: 60px;
-      color: #3f51b5;
-      transition: transform 0.5s ease-in-out;
-    }
-  
-    .logo.loading {
-      animation: spin 1s infinite linear;
-    }
-  
-    .login-btn {
-      width: 100%;
-      margin-top: 10px;
-    }
+  text-align: center;
+  max-width: 320px;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+
+  .logo {
+    font-size: 60px;
+    color: #3f51b5;
+    transition: transform 0.5s ease-in-out;
   }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+  .logo.loading {
+    animation: spin 1s infinite linear;
   }
-  
+
+  .login-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

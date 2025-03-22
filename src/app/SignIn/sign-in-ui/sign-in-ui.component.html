@@ -7,8 +7,6 @@
         <h2>exsuz</h2>
       </div>
     </div>
-   
-    
     <mat-card-content>
       <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
       <h2  style="text-align: left;">
@@ -69,18 +67,12 @@
           <a routerLink="/">Back to home</a>
 
      </div>
-    <!-- <button mat-button color="primary" routerLink="/" class="width2" style="float: left;">
-      <span class="material-symbols-outlined" >keyboard_return</span>
-      Back to home
-    </button> -->
-
   </mat-card>
 </div>
 
 <div *ngIf="isLoading" class="overlay">
   <div class="spinner-container">
     <div class="spinner-wrapper">
-      <!-- Spinner inside the image -->
       <mat-spinner diameter="90"></mat-spinner>
       <img src="assets/images/logo2.png" alt="logo" class="logo-centered" />
     </div>

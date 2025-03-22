@@ -115,6 +115,8 @@
   transition: background-color 0.2s ease-in-out; /* Smooth background color transition */
 }
 
+
+
 /* Make the image circular with transparent background and solid border */
 .logo-centered {
   width: 200px;  /* Set a fixed width (make sure it’s square) */

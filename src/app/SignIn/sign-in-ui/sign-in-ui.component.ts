@@ -29,6 +29,7 @@ export class SignInUIComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
   }
+
   refreshHomePage() {
     this.router.navigate(['/homepage']).then(() => {
       window.location.reload();
