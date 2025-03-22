@@ -15,6 +15,9 @@ export class SignInUIComponent implements OnInit {
   hide = true; // For password visibility toggle
   checked = false; // Remember me checkbox
   passwordVisible: boolean = false;
+  isLoggedIn: boolean = false; // Track login status
+  showChatButton: boolean = true; // Default visibility
+
 
   constructor(
     private fb: FormBuilder,
@@ -25,7 +28,6 @@ export class SignInUIComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    
   }
   refreshHomePage() {
     this.router.navigate(['/homepage']).then(() => {
@@ -59,14 +61,29 @@ export class SignInUIComponent implements OnInit {
     this.passwordVisible = !this.passwordVisible;
   }
   status: string = "";
+
+
+  showChatButtonUI() {
+    this.isLoggedIn = true;
+    localStorage.setItem('isLoggedIn', 'true'); // Save login state
+    this.showChatButton = true; // Show chat button
+    localStorage.setItem('showChatButton', JSON.stringify(true));
+    localStorage.removeItem('showWebsiteChat');
+    // localStorage.setItem('showWebsiteChat', JSON.stringify(false));
+
+
+  }
+
+  reloadOnce() {
+    location.reload(); 
+  }
   
+
+
   // Handle form submission
   onSubmit(): void {
     if(this.status == "I"){
-      
-
     }
-    
     
     if (this.loginForm.valid ) {
     const { email, password } = this.loginForm.value;
@@ -76,12 +93,14 @@ export class SignInUIComponent implements OnInit {
         if (res.success && res.token) {
           this.isLoading = true;
             if(res.message == 0){
-              this.router.navigate(['/home']);
+             this.router.navigate(['/home']).then(() => this.reloadOnce());
+
             }else{
-              this.router.navigate(['/user-cv']);
+              this.router.navigate(['/user-cv']).then(() => this.reloadOnce());
             }
             this.loginForm.reset(); 
             this.isLoading = false;
+            this.showChatButtonUI();
         }
         else
         {

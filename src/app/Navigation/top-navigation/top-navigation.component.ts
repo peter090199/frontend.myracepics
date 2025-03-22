@@ -1,13 +1,14 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatMenuPanel } from '@angular/material/menu';
+import { Router } from '@angular/router';
+import { Observable, firstValueFrom } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { SigInService } from 'src/app/services/signIn/sig-in.service';
 import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.service';
 import { slideUp, slideFade } from 'src/app/animations';
-import { MatMenuPanel } from '@angular/material/menu';
-import { firstValueFrom, Observable } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
-import {map, startWith} from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
-import { SigInService } from 'src/app/services/signIn/sig-in.service';
-import { Router } from '@angular/router';
+import { ChatPopupComponent } from 'src/app/ComponentUI/messages/chat-popup/chat-popup.component';
+import { MatDialog } from '@angular/material/dialog';
 
 export interface User {
   name: string;
@@ -20,222 +21,140 @@ export interface User {
   animations: [slideUp, slideFade]
 })
 export class TopNavigationComponent implements OnInit {
-  fadeIn: boolean = false;
-  isSidebarOpen = false; // Sidebar state
-  isDesktop: true;
-  isMobile: boolean = false; // Mobile detection state
-  nav_module: any=[]; // Store user data fetched from API
-  submenuMenu: MatMenuPanel<any>;
+  isSidebarOpen = false;
+  isMobile = window.innerWidth <= 740;
   searchValue = '';
-  isLoading:boolean = false;
-  success:boolean = false;
+  isLoading = false;
+  success = false;
+  isChatOpen = false;
+  isSearchOpen = false;
   
+  nav_module: any[] = [];
+  submenuMenu!: MatMenuPanel<any>;
+  
+  notificationCount = 1;
+  messageCount = 3;
+  
+  myControl = new FormControl();
+  options: User[] = [{ name: 'Mary' }, { name: 'Shelley' }, { name: 'Igor' }];
+  filteredOptions!: Observable<User[]>;
+
+  searchQuery = '';
+  filteredData: string[] = [];
+  
+  data: string[] = [
+    'Software Engineer', 'Frontend Developer', 'Backend Developer',
+    'Full Stack Developer', 'Data Scientist', 'Machine Learning Engineer',
+    'DevOps Engineer', 'UI/UX Designer', 'Product Manager', 'Project Manager'
+  ];
+
   constructor(
     private authService: SigInService,
-    private navigationService: TNavigationService,private router: Router// Inject the TNavigationService
-  ) {
-    this.updateMobileState(); // Set initial state
+    private navigationService: TNavigationService,private dialog:MatDialog,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchModules();
+    
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => (typeof value === 'string' ? value : value?.name)),
+      map(name => (name ? this._filter(name) : this.options.slice()))
+    );
+
+    setTimeout(() => {
+      this.notificationCount = 5;
+      this.messageCount = 100;
+    }, 3000);
   }
 
-  myControl = new FormControl();
-  options: User[] = [{name: 'Mary'}, {name: 'Shelley'}, {name: 'Igor'}];
-  filteredOptions: Observable<User[]>;
-
-  displayFn(user: User): string {
-    return user && user.name ? user.name : '';
+   openChat() {
+      this.dialog.open(ChatPopupComponent, {
+        width: '450px',
+        position: { bottom: '80px', right: '20px' },
+        panelClass: 'custom-chat-popup'
+      });
+    }
+    
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile = window.innerWidth <= 740;
   }
 
   private _filter(name: string): User[] {
-    const filterValue = name.toLowerCase();
+    return this.options.filter(option =>
+      option.name.toLowerCase().includes(name.toLowerCase())
+    );
+  }
 
-    return this.options.filter(option => option.name.toLowerCase().includes(filterValue));
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
-  clearSearch(): void {
-    this.searchValue = ''; // Clear the input field
-  }
-  ngOnInit(): void {
-    this.getModule(); 
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => (typeof value === 'string' ? value : value.name)),
-      map(name => (name ? this._filter(name) : this.options.slice())),
-    );// Fetch user data when component loads
-  }
-  isChatOpen = false;
+
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
   }
 
-  onCloseChat() {
-    this.isChatOpen = false;
-  }
-  // Update the mobile state based on window width
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    this.updateMobileState();
+  toggleSearch() {
+    this.isSearchOpen = !this.isSearchOpen;
   }
 
-  updateMobileState() {
-    this.isMobile = window.innerWidth <= 768; // Adjust this breakpoint as needed
+  closeSearch() {
+    this.isSearchOpen = false;
+    this.searchQuery = '';
   }
 
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen; // Toggle sidebar visibility
+  clearSearch() {
+    this.searchValue = '';
   }
 
-  onLogout(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/homepage']); // Redirect after logout
-      },
-      error: (err) => {
-        console.error('Logout failed:', err);
-      }
-    });
-  }
-
-
-  
-  // getModule() {
-
-  //   try{
-  //     this.isLoading = true;
-  //     this.navigationService.getData() // Use a relevant endpoint
-  //     .subscribe(
-  //       (data) => {
-  //         this.nav_module = data;
-  //       },
-  //       (error) => {
-  //         this.isLoading = false;
-  //         console.error('Error fetching user data:', error);
-  //       }
-  //     );
-  //   }catch(error){
-  //     console.error('Error fetching data:', error);
-  //   }finally {
-  //         this.isLoading = false;
-  //       }
-   
-  // }
-  searchQuery: string = ''; // The input model for the search query
-  filteredData: string[] = []; // The array of filtered results
-
-  // Sample data to be filtered
-  data: string[] = [
-    'Software Engineer',
-    'Frontend Developer',
-    'Backend Developer',
-    'Full Stack Developer',
-    'Data Scientist',
-    'Machine Learning Engineer',
-    'DevOps Engineer',
-    'UI/UX Designer',
-    'Product Manager',
-    'Project Manager',
-    'System Administrator',
-    'Cloud Engineer',
-    'Database Administrator',
-    'Quality Assurance Engineer',
-    'Technical Support Specialist',
-    'Business Analyst',
-    'Network Engineer',
-    'Security Engineer',
-    'Web Developer',
-    'Mobile Developer',
-    'SEO Specialist',
-    'Digital Marketing Manager',
-    'Content Writer',
-    'Graphic Designer',
-    'Game Developer'
-  ];
-  
-
-  // Method to filter data based on the search query
-  filterData(): void {
+  filterData() {
     this.filteredData = this.data.filter(item =>
       item.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
 
-  async getModule(): Promise<void> {
+  async fetchModules() {
     this.isLoading = true;
     try {
-      const response = await firstValueFrom(this.navigationService.getData());
-  
-      if (response) {
-        this.success = true;
-        this.nav_module = response;
-      } else {
-        this.success = false;
-      }
+      this.nav_module = await firstValueFrom(this.navigationService.getData());
+      this.success = true;
     } catch (error) {
       console.error('Error fetching data:', error);
+      this.success = false;
     } finally {
       this.isLoading = false;
     }
   }
 
-//   // Fetch user data from the API
-// getUserData(): void {
-//   // Start loading before making the API call
-//   this.isLoading = true;
-  
-//   this.navigationService.getData() // Use a relevant endpoint
-//     .subscribe(
-//       (response) => {
-//         if (response.success) {
-//           this.nav_module = response.data; // Assuming 'data' contains your relevant data
-//         } else {
-//           console.error('Failed to fetch user data:', response.message);
-//         }
-//         // Stop loading after successful response
-//         this.isLoading = false;
-//       },
-//       (error) => {
-//         console.error('Error fetching user data:', error);
-//         // Stop loading after error response
-//         this.isLoading = false;
-//       }
-//     );
-// }
-
-  // Fetch user data from the API
-  // getUserData() {
-  //   this.isLoading = true;
-  //   this.navigationService.getData() // Use a relevant endpoint
-  //     .subscribe(
-  //       (data) => {
-  //         this.nav_module = data;
-  //       },
-  //       (error) => {
-  //         this.isLoading = false;
-  //         console.error('Error fetching user data:', error);
-  //       }
-  //     );
-  // }
-
-  // Example of sending data to the API (POST request)
   sendData() {
     const requestBody = { name: 'John Doe', email: 'john@example.com' };
-    this.navigationService.postData('submit-form', requestBody)
-      .subscribe(
-        (response: any) => {
-          console.log('Form submitted successfully', response);
-        },
-        (error: any) => {
-          console.error('Error submitting form:', error);
-        }
-      );
+    this.navigationService.postData('submit-form', requestBody).subscribe({
+      next: response => console.log('Form submitted successfully', response),
+      error: error => console.error('Error submitting form:', error)
+    });
   }
 
-  isSearchOpen = false;
-
-  toggleSearch() {
-    this.isSearchOpen = true;
+  onLogout() {
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/']).then(() => {
+          localStorage.setItem('showWebsiteChat', JSON.stringify(true));
+          // Clear all related local storage items
+          localStorage.removeItem('chatHistory');
+          localStorage.removeItem('showChatButton');
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('token');
+        
+          location.reload(); 
+        
+        });
+      },
+      error: (err) => console.error('Logout failed:', err)
+    });
   }
-
-  closeSearch() {
-    this.isSearchOpen = false;
-    this.searchQuery = ''; // Clear input
-  }
+  
+  
+  
 }

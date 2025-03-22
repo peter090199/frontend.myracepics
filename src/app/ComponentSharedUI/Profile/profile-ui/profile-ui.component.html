@@ -1,3 +1,4 @@
+<div class="tabs-container" >
 
   <div class="cover-photo">
     <img src="
@@ -12,7 +13,7 @@
         <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default2.png'" alt="Profile"/>
         <mat-icon class="status-icon online">circle</mat-icon>
      </div>
-  </div>
+    </div>
   
   <div class="profile-details" *ngIf="profiles">
      <h1>{{ profiles.fname }} {{ profiles.lname }} <small style="color: rgb(24, 24, 24);">({{ profiles.profession }})</small></h1>
@@ -27,8 +28,9 @@
           </div>
     </div>
   </div>
-  <div class="content-body">
-  <mat-tab-group class="tabs-container">
+
+<div class="tabs-container">
+  <mat-tab-group >
     <mat-tab label="Posts">
       <h2>Post</h2>
       <mat-divider></mat-divider>
@@ -236,7 +238,7 @@
   
   
 </div>
-
+</div>
 <!-- 
   <div class="tab-footer">
     

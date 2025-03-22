@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { slideUp,slideFade} from 'src/app/animations';
 import {map, startWith} from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ChatPopupComponent } from 'src/app/ComponentUI/messages/chat-popup/chat-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ChatWebsitePopUPComponent } from 'src/app/ComponentUI/messages/chat-website-pop-up/chat-website-pop-up.component';
 
 export interface User {
   name: string;
@@ -23,7 +26,13 @@ export class UserhomepageComponent implements OnInit {
   value = '';
   isMobile: boolean = false; // Mobile detection state
 
-  
+
+
+  constructor(private router:Router,private dialog:MatDialog
+  ) {
+    this.updateMobileState(); // Set initial state
+  }
+ 
   myControl = new FormControl();
   options: User[] = [{name: 'UX Designer'}, {name: 'Software Engineer'}, {name: 'Data Scientist'}];
   filteredOptions: Observable<User[]>;
@@ -35,7 +44,14 @@ export class UserhomepageComponent implements OnInit {
       map(value => (typeof value === 'string' ? value : value.name)),
       map(name => (name ? this._filter(name) : this.options.slice())),
     );
+
+
+    const storedState = localStorage.getItem('showWebsiteChat');
+    this.chatOpened = storedState ? JSON.parse(storedState) : false;
   }
+
+
+
   displayFn(user: User): string {
     return user && user.name ? user.name : '';
   }
@@ -88,9 +104,7 @@ export class UserhomepageComponent implements OnInit {
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen; // Toggle sidebar visibility
   }
-  constructor(private router:Router) {
-    this.updateMobileState(); // Set initial state
-  }
+
   refreshHomePage() {
     // Navigate to the homepage (root of the app)
     this.router.navigate(['/homepage']).then(() => {
@@ -109,6 +123,30 @@ export class UserhomepageComponent implements OnInit {
     this.isMobile = window.innerWidth <= 768; // Adjust this breakpoint as needed
   }
 
+
+  chatOpened:boolean = false; // Initially hidden
+
+  openChat() {
+    const dialogRef = this.dialog.open(ChatWebsitePopUPComponent, {
+      width: '450px',
+      position: { bottom: '20px', right: '20px' },
+      panelClass: 'custom-chat-popup',
+    });
+  
+    // Set chat state to open
+    this.chatOpened = true;
+    localStorage.setItem('chatOpened', JSON.stringify(false));
+  
+    // Listen for close event to reset state
+    dialogRef.afterClosed().subscribe(() => {
+      this.chatOpened = false;
+      localStorage.setItem('chatOpened', JSON.stringify(false));
+    });
+  }
+
+  closeChat() {
+    this.chatOpened = false;
+  }
 
 }
 

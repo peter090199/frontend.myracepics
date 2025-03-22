@@ -27,6 +27,10 @@ import { PrintReceiptComponent } from './print-layout/print-receipt/print-receip
 import { PrintReceiptsComponent } from './print-layout/print-receipts/print-receipts.component';
 import { PrintComponent } from './print-layout/print/print.component';
 import { UserListComponent } from './ComponentUI/search/user-list/user-list.component';
+import { MessagesUIComponent } from './ComponentSharedUI/messages-ui/messages-ui.component';
+import { NetworkingComponent } from './ComponentUI/networking/networking.component';
+import { NotificationComponent } from './ComponentUI/notification/notification.component';
+import { MessengerChatComponent } from './messenger-chat/messenger-chat.component';
 
 
 const routes: Routes = [
@@ -54,8 +58,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'profile/:code', component:ProfileUIComponent },
+      { path: 'profile', component:ProfileUIComponent },
       { path: 'home', component: HomeUIComponent },
+      { path: 'message', component: MessagesComponent },
+      { path: 'network', component: NetworkingComponent },
+      { path: 'notifications', component: NotificationComponent },
       { path: 'search', component: UserListComponent },
+
     ]
   },
   { 

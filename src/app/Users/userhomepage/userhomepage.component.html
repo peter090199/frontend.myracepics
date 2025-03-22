@@ -86,7 +86,6 @@
     
   
       <div class="container">
-         
 
        <div class="row">
           <div class="col-md-6">
@@ -101,6 +100,14 @@
       </div>
     </div>
   </section>
+
+<!-- Floating Chat Button -->
+
+<div class="floating-btn" *ngIf="!chatOpened">
+  <button mat-fab color="primary" matTooltip="Messages" >
+    <mat-icon>chat</mat-icon>
+  </button>
+</div>
 
 <!--   
   <section class="slider_section" [@slideUp]>

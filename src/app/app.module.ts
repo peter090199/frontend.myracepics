@@ -76,7 +76,11 @@ import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { SearchComponent } from './ComponentUI/search/search.component';
 import { UserListComponent } from './ComponentUI/search/user-list/user-list.component';
 import { SearchModalComponent } from './ComponentUI/search/search-modal/search-modal.component';
-
+import { NetworkingComponent } from './ComponentUI/networking/networking.component';
+import { NotificationComponent } from './ComponentUI/notification/notification.component';
+import { MessengerChatComponent } from './messenger-chat/messenger-chat.component';
+import { ChatPopupComponent } from './ComponentUI/messages/chat-popup/chat-popup.component';
+import { ChatWebsitePopUPComponent } from './ComponentUI/messages/chat-website-pop-up/chat-website-pop-up.component';
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -144,7 +148,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     SearchComponent,
     UserListComponent,
     SearchModalComponent,
-    
+    NetworkingComponent,
+    NotificationComponent,
+    MessengerChatComponent,
+    ChatPopupComponent,
+    ChatWebsitePopUPComponent
   
  
   

@@ -68,27 +68,7 @@
   cursor: pointer;
 }
 
-/* Profile Info Section */
-.profile-info {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  margin-top: -95px;
-  padding-left: 70px;
-  margin-left: 60px;
-  margin-bottom: 20px;
-}
 
-.profile-picture {
-  position: relative;
-}
-
-.profile-img {
-  border-radius: 50%;
-  width: 150px;
-  height: 150px;
-  border: 5px solid white;
-}
 
 .edit-profile-btn {
   position: absolute;
@@ -105,12 +85,51 @@
 .edit-profile-btn:hover {
   background-color: #f0f0f0;
 }
+.profile-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  margin-top: -60px; /* Adjust to overlap cover photo */
+}
 
+.profile-picture {
+  position: relative;
+  width: 180px; /* Adjust for Facebook-like size */
+  height: 180px;
+}
+
+.avatar-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid #fff; /* White border like Facebook */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.status-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 20px; /* Slightly larger icon */
+  color: #4caf50; /* Green for online */
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
 .profile-details {
   margin-left: 90px;
   margin-top: 90px;
 }
 
+.profile-info {
+  text-align: center; 
+  margin-top: -30px;
+  margin-left: -10px;
+}
 .profile-details h1 {
   font-size: 24px;
   margin: 30px;
@@ -133,7 +152,6 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-
   
 }
 
@@ -144,9 +162,9 @@
 
 /* General styling for the container */
 .tabs-container {
-  height: 75vh;
+  height: 100vh;
   overflow-y: auto; /* Use 'auto' instead of 'hidden' for usability */
-  margin: 85px auto; /* Centering the container if needed */
+  margin:  auto; /* Centering the container if needed */
   width: 100%; /* Ensures responsiveness */
   scrollbar-width: thin; /* Makes scrollbar less intrusive */
   scrollbar-color: transparent transparent; /* Hides scrollbar for Firefox */
@@ -374,9 +392,55 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     margin: 0px;
   }
   
-
+  .profile-picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+  }
+  
+  .avatar-container {
+    position: relative;
+    width: 150px; /* Adjust as needed */
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ddd; /* Adds a subtle border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image covers the whole container */
+    border-radius: 50%;
+  }
+  
+  .status-icon {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 18px; /* Adjust icon size */
+    color: #4caf50; /* Green color for online status */
+    border-radius: 50%;
+    padding: 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .avatar-container {
+      width: 100px;
+      height: 100px;
+    }
+    .status-icon {
+      font-size: 14px;
+      bottom:5px;
+      right: 5px;
+    }
+  }
+  
   .profile-info {
-    flex-direction: column; 
     text-align: center; 
     margin-top: -30px;
     margin-left: -10px;

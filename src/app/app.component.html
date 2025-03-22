@@ -1,3 +1,17 @@
 <app-cookies-ui></app-cookies-ui>
 <router-outlet></router-outlet>
 
+<div class="floating-btn" *ngIf="isLoggedIn && showChatButton" @fadeInUp>
+    <button mat-fab color="primary" matTooltip="Messages" (click)="openChat()">
+      <mat-icon>chat</mat-icon>
+    </button>
+  </div>
+  
+
+  <!-- WEBSITE CHAT -->
+  <div class="floating-btn" *ngIf="showWebsiteChat"   @fadeInUp>
+    <button mat-fab color="primary" matTooltip="Messages" (click)="openChat1()">
+      <mat-icon>chat</mat-icon>
+    </button>
+  </div>
+  
