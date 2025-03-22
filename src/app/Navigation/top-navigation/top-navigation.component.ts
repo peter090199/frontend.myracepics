@@ -22,7 +22,7 @@ export interface User {
 })
 export class TopNavigationComponent implements OnInit {
   isSidebarOpen = false;
-  isMobile = window.innerWidth <= 740;
+  isMobile = window.innerWidth <= 768;
   searchValue = '';
   isLoading = false;
   success = false;
@@ -79,7 +79,7 @@ export class TopNavigationComponent implements OnInit {
     
   @HostListener('window:resize')
   onResize() {
-    this.isMobile = window.innerWidth <= 740;
+    this.isMobile = window.innerWidth <= 768;
   }
 
   private _filter(name: string): User[] {
@@ -98,7 +98,23 @@ export class TopNavigationComponent implements OnInit {
 
   toggleSearch() {
     this.isSearchOpen = !this.isSearchOpen;
+    if (this.isSearchOpen) {
+      this.autoCloseSearch(); // Auto-hide search after a delay
+    }
   }
+
+  closeSearchOnOverlayClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('search-overlay')) {
+      this.toggleSearch(); // Close if clicking outside the search container
+    }
+  }
+
+  autoCloseSearch() {
+    setTimeout(() => {
+      this.isSearchOpen = false;
+    }, 5000); // Auto-hide after 5 seconds (adjust as needed)
+  }
+
 
   closeSearch() {
     this.isSearchOpen = false;

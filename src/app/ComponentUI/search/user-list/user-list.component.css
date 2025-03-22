@@ -70,8 +70,6 @@
   }
 
 
-
-
 h2 {
   font-size: 18px;
   margin: 0;
@@ -122,12 +120,12 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center; /* Centers content */
-  min-height: 200px;
-  max-height: 600px;
+  min-height: 50px;
+  max-height: 560px;
   overflow-y: auto;
-  width: 80%; /* Default width */
+  width: 100%; /* Default width */
   max-width: 900px;
-  padding: 15px;
+  padding: 5px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #fff;
@@ -143,7 +141,6 @@ h2 {
 .user-card {
   display: flex;
   flex-direction: column;
-  padding: 15px;
   border-radius: 8px;
   background-color: #f9f9f9;
 }
@@ -157,7 +154,7 @@ h2 {
 
 .example-spacer {
   flex: 1 1 auto;
-  margin: 20px;
+  margin-top: 10px;
 }
 
 

@@ -596,6 +596,78 @@ mat-icon.logout-icon {
   color: black;
 }
 
+/* Style for the search icon button */
+.search-icon-btn {
+  position: relative;
+  padding: 0;
+}
+
+/* Overlay styles */
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensures overlay is above other content */
+  transition: opacity 0.3s ease-in-out;
+}
+.search-container input {
+  width: 100%; /* Full width */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box; /* Prevents padding from affecting width */
+}
+.search-overlay .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  color: white;
+  font-size: 30px;
+}
+
+/* Style for mobile search input container */
+.search-overlay .search-container {
+  width: 80%;
+  max-width: 600px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .search-overlay .search-container {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .search-overlay .close-btn {
+    font-size: 24px;
+    color: #333;
+  }
+}
+
+/* Optionally, add a smooth transition for the overlay appearance */
+.search-overlay.ng-enter, .search-overlay.ng-leave {
+  opacity: 0;
+}
+
+.search-overlay.ng-enter-active, .search-overlay.ng-leave-active {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .search-container {

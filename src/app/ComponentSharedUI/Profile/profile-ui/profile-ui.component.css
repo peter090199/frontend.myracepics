@@ -1,9 +1,3 @@
-.cover-photo-container {
-  position: relative;
-  width: 100%;
-  margin: 0px;
-  background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748));
-}
 .avatar-container {
   position: relative;
   display: inline-block;
@@ -21,11 +15,11 @@
 
 .status-icon {
   position: absolute;
- 
   font-size: 20px; /* Adjust size as needed */
   border-radius: 50%;
   background-color: white;
   padding: 2px;
+  right: 12px;
 }
 
 .online {
@@ -87,12 +81,14 @@
 }
 .profile-info {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start; /* Align to the left */
+  justify-content: flex-start; /* Justify to the left */
   flex-direction: column;
   position: relative;
   margin-top: -60px; /* Adjust to overlap cover photo */
+  margin-left: 20px;
 }
+
 
 .profile-picture {
   position: relative;
@@ -120,23 +116,31 @@
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
+
+
 .profile-details {
-  margin-left: 90px;
-  margin-top: 90px;
+  margin-top: -80px;
+  margin-bottom: 60px;
 }
 
 .profile-info {
-  text-align: center; 
-  margin-top: -30px;
-  margin-left: -10px;
+  text-align: center;
+  margin-top: -90px;
+  margin-left: 30px;
+  min-height: 150px; /* Minimum height */
+  max-height: 500px; /* Maximum height */
+  min-width: 200px; /* Minimum width */
+  max-width: 400px; /* Maximum width */
+  width: 100%; /* Ensure it takes up full width within its container */
+  box-sizing: border-box; /* Ensures padding and borders don't affect the width/height calculation */
 }
+
 .profile-details h1 {
   font-size: 24px;
-  margin: 30px;
+
 }
 .profile-details p {
   font-size: 16px;
-  margin: 30px;
 }
 
 .profile-details small {
@@ -161,7 +165,7 @@
 
 
 /* General styling for the container */
-.tabs-container {
+.container {
   height: 100vh;
   overflow-y: auto; /* Use 'auto' instead of 'hidden' for usability */
   margin:  auto; /* Centering the container if needed */
@@ -171,11 +175,11 @@
 }
 
 /* Hides scrollbar for Webkit browsers (Chrome, Safari) */
-.tabs-container::-webkit-scrollbar {
+.container::-webkit-scrollbar {
   width: 0px;
 }
 
-.tabs-container::-webkit-scrollbar-thumb {
+.container::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
 
@@ -188,10 +192,40 @@
   padding: 10px;
 }
 
-h2 {
-  font-size: 1.5rem;
-  text-align: left;
-  margin-left: 20px;
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  width: 100%;
+  margin: 60px;
+  text-align: center;
+  font-family: arial;
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+/* button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+} */
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
 }
 
 mat-divider {
@@ -215,7 +249,7 @@ mat-list-item {
 mat-tab-label {
   font-size: 1.2rem; /* Default font size for tab labels */
   font-weight: bold; /* Make the text bold */
-  margin: 0 15px; /* Horizontal margin to space out the tabs */
+  margin-top: 45px; /* Horizontal margin to space out the tabs */
   padding: 10px 0; /* Vertical padding for better spacing */
   color: #333; /* Default text color */
 }
@@ -229,60 +263,48 @@ mat-tab-label:hover {
 /* Specific adjustments for individual tabs */
 mat-tab[label="Posts"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Basic Information"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Education"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Skills"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Seminar"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Trainings"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Certificate"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 mat-tab[label="Work Experience"] .mat-tab-label {
   font-size: 1.3rem;
-  margin: 0 20px;
 }
 
 /* Responsive design for tablets and mobile */
 @media (max-width: 1024px) {
   mat-tab-label {
     font-size: 1rem; /* Slightly smaller font size for tablets */
-    margin: 0 10px; /* Reduced margin for smaller screens */
   }
 }
 
 @media (max-width: 767px) {
   mat-tab-label {
     font-size: 0.9rem; /* Even smaller font size for mobile */
-    margin: 0 5px; /* Reduced margin for mobile screens */
   }
 }
-
-
 
 /* Tablet view (768px to 1024px) */
 @media (max-width: 1024px) and (min-width: 768px) {
@@ -342,18 +364,8 @@ mat-tab[label="Work Experience"] .mat-tab-label {
    
   }
 
-
-  .cover-photo-img{
-    margin-bottom: 0px;
-    height: 200px;
-    max-height: 200px;
-    width: 100%;
-    border-radius: 0px;
-  }
-/* .cover-photo .edit-cover-btn{
-  margin-right: 96px;
  
-} */
+
   mat-list-item {
     font-size: 0.9rem;
     flex-direction: column;
@@ -367,7 +379,6 @@ mat-tab[label="Work Experience"] .mat-tab-label {
 
 
 
-
 @media (max-width: 768px) { /* Adjust breakpoint as needed */
   .tabs-container {
     width: 100%;
@@ -376,6 +387,17 @@ mat-tab[label="Work Experience"] .mat-tab-label {
   
 }
 
+.tabs-container{
+  min-height: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.mat-tab{
+  display: block !important;  /* Override default flex behavior */
+  width: 100%;
+  background-color: #f5f5f5;
+}
 
 @media (max-width: 600px) {
   mat-card {
@@ -383,8 +405,7 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     flex-direction: column;
   }
   .tab-content {
-    padding: 0px;
-    display: flex;
+    padding: 40px;
     flex-direction: column;
 
   }
@@ -392,96 +413,8 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     margin: 0px;
   }
   
-  .profile-picture {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: auto;
-  }
-  
-  .avatar-container {
-    position: relative;
-    width: 150px; /* Adjust as needed */
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #ddd; /* Adds a subtle border */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .profile-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures image covers the whole container */
-    border-radius: 50%;
-  }
-  
-  .status-icon {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    font-size: 18px; /* Adjust icon size */
-    color: #4caf50; /* Green color for online status */
-    border-radius: 50%;
-    padding: 3px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .avatar-container {
-      width: 100px;
-      height: 100px;
-    }
-    .status-icon {
-      font-size: 14px;
-      bottom:5px;
-      right: 5px;
-    }
-  }
-  
-  .profile-info {
-    text-align: center; 
-    margin-top: -30px;
-    margin-left: -10px;
-  }
-  .profile-details p {
-    margin-top: 0px;
-    margin-left: 0px;
-  }
-  .profile-details {
-    margin-top: 20px;
-    margin-left: 0px;
-  }
-}
-
-/* Tablet to desktop styles (screen sizes 601px and above) */
-@media (min-width: 601px) and (max-width: 1024px) {
-  mat-card {
-    margin: 20px;
-    padding: 16px;
-  }
-
-  mat-list-item {
-    font-size: 16px;
-    flex-direction: row;
-    align-items: center;
-    padding: 8px 0;
-  }
-}
-
-/* Desktop styles (screen sizes 1024px and above) */
-@media (min-width: 1025px) {
-  mat-list-item {
-    font-size: 18px;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 0;
-  }
-  .tabs-container {
-    overflow: auto;
-    margin: 0px;
-  }
+ 
   
 }
+  
 

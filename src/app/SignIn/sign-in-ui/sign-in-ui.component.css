@@ -51,14 +51,12 @@
 
 }
 
-
-
 .login-dialog {
   text-align: center;
   max-width: 320px;
   padding: 20px;
   animation: fadeIn 0.3s ease-in-out;
-
+}
   .logo-container {
     display: flex;
     justify-content: center;
@@ -79,7 +77,7 @@
     width: 100%;
     margin-top: 10px;
   }
-}
+
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -124,7 +122,7 @@
   border-radius: 50%;  /* Makes the image circular */
   object-fit: cover; /* Ensures the image covers the entire area without distortion */
   background-color: transparent; /* Transparent background */
-  transition: border-color 0.1s ease, box-shadow 0.2s ease; /* Transition for border color and shadow */
+  transition: border-color 0.1s ease; /* Transition for border color and shadow */
   animation: colorChange 0.1s infinite; 
 }
 
@@ -135,21 +133,6 @@
   }
   100% {
     opacity: 1;
-  }
-}
-
-@keyframes colorChange {
-  0% {
-    border-color: #ffffff; /* Initial border color */
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); /* Initial shadow color */
-  }
-  50% {
-    border-color: #4e8bfc; /* Midway border color */
-    box-hadow: 0 0 15px rgba(78, 139, 252, 0.8); /* Midway shadow color */
-  }
-  100% {
-    border-color: #ffffff; /* Final border color */
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); /* Final shadow color */
   }
 }
 

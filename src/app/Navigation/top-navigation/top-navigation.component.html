@@ -50,10 +50,20 @@
                   </button>
               </ng-template>
             </div>
+                      
+            <button mat-icon-button class="search-icon-btn" (click)="toggleSearch()" *ngIf="!isSearchOpen">
+              <mat-icon>search</mat-icon>
+            </button>
             
-              <button mat-icon-button  class="search-icon-btn" *ngIf="!isSearchOpen">
-                <mat-icon>search</mat-icon>
+            <div *ngIf="isSearchOpen" class="search-overlay">
+              <div *ngIf="isMobile">
+                <app-search></app-search>
+              </div>
+              <button mat-icon-button class="close-btn" (click)="toggleSearch()">
+                <mat-icon>close</mat-icon>
               </button>
+            </div>
+            
                
              <button mat-icon-button (click)="onLogout()">
                 <mat-icon>logout</mat-icon>
