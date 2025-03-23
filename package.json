@@ -31,7 +31,8 @@
     "ngx-cookie-service": "^13.2.0",
     "ngx-toastr": "^14.3.0",
     "pdfjs-dist": "^4.8.69",
-    "rxjs": "~7.5.0",
+    "pusher-js": "^8.4.0",
+    "rxjs": "^7.8.2",
     "sweetalert2": "^11.14.5",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

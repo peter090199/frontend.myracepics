@@ -7,7 +7,6 @@ import { firstValueFrom } from 'rxjs';
 import { RoleUIComponent } from 'src/app/ComponentSharedUI/system/role-ui/role-ui.component';
 import { RolesService } from 'src/app/services/Role/roles.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import { error } from 'console';
 
 @Component({
   selector: 'app-role',
