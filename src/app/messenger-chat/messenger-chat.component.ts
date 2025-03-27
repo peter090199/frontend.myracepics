@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import Pusher from 'pusher-js';
 
 interface User {
   name: string;

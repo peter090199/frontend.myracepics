@@ -1,12 +1,39 @@
-<div class="chat-container">
+<mat-card class="chat-container">
+  <mat-toolbar color="primary" class="chat-header">
+    <span>Chat</span>
+  </mat-toolbar>
+
   <div class="chat-messages">
-    <div *ngFor="let msg of messages" [ngClass]="{'message-self': msg.sender === 'self', 'message-other': msg.sender === 'other'}">
+    <div *ngFor="let msg of messages" 
+         [ngClass]="{'message-self': msg.sender === 'self', 'message-other': msg.sender === 'other'}"
+         class="chat-message mat-elevation-z2">
       <span>{{ msg.text }}</span>
     </div>
   </div>
 
-  <div class="chat-input">
-    <input [(ngModel)]="message" placeholder="Type a message..." (keyup.enter)="sendMessage()"/>
-    <button (click)="sendMessage()">Send</button>
-  </div>
-</div>
+  <mat-card-actions class="chat-input">
+    <mat-form-field class="input-box" appearance="outline">
+      <mat-label>Type a message...</mat-label>
+      <input matInput [(ngModel)]="message" (keyup.enter)="sendMessage()">
+    </mat-form-field>
+    
+    <button mat-raised-button color="primary" (click)="sendMessage()" [disabled]="!message.trim()" class="send-btn">
+      Send
+    </button>
+  </mat-card-actions>
+
+</mat-card>
+
+
+<!-- 
+<div style="text-align: center;">
+  <h1>Real-time Messaging with Pusher</h1>
+
+  <input type="text" [(ngModel)]="message" placeholder="Type your message" />
+  <button (click)="sendMessage()">Send</button>
+
+  <h2>Received Messages</h2>
+  <ul>
+    <li *ngFor="let msg of receivedMessages">{{ msg }}</li>
+  </ul>
+</div> -->

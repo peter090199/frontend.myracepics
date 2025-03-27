@@ -14,7 +14,9 @@ export class SigInService {
   get RequiredRefresh(){
     return this._refreshrequired;
   }
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    
+   }
   // Get token from local storage
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
@@ -22,8 +24,7 @@ export class SigInService {
 
   // Save token to local storage
   private saveToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
-   // localStorage.setItem(this.role_code, token);
+      localStorage.setItem(this.tokenKey, token);
   }
 
   // Login method
@@ -80,6 +81,7 @@ export class SigInService {
    logout(): Observable<any> {
     return this.http.post(`${_url}logout`, {}, { headers: this.createHeaders() }).pipe(
       tap(() => {
+        localStorage.clear();
         localStorage.removeItem(this.tokenKey); 
         this._refreshrequired.next();
       }),

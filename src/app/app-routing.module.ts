@@ -31,6 +31,7 @@ import { MessagesUIComponent } from './ComponentSharedUI/messages-ui/messages-ui
 import { NetworkingComponent } from './ComponentUI/networking/networking.component';
 import { NotificationComponent } from './ComponentUI/notification/notification.component';
 import { MessengerChatComponent } from './messenger-chat/messenger-chat.component';
+import { ChatUIComponent } from './chat-ui/chat-ui.component';
 
 
 const routes: Routes = [
@@ -51,6 +52,8 @@ const routes: Routes = [
   { path: 'user-cv', component:UserCVComponent},
   { path: 'upload-cv', component:UploadProfileComponent,canActivate:[AuthGuard] },
   { path: 'print-cv', component:PrintCVComponent,canActivate:[AuthGuard] },
+  { path: 'socket', component:ChatUIComponent},
+
   // Top navigation with sub-routes
   { 
     path: '', 

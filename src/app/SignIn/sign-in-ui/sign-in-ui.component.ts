@@ -99,8 +99,10 @@ export class SignInUIComponent implements OnInit {
   
               // Navigate based on user role/message
               if (res.message === 0) {
+             //   this.router.navigate(['/home']);
                 this.router.navigate(['/home']).then(() => this.reloadOnce());
               } else {
+               // this.router.navigate(['/user-cv']);
                 this.router.navigate(['/user-cv']).then(() => this.reloadOnce());
               }
   

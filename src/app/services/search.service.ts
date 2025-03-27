@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { _url } from 'src/global-variables';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
+  private socket$: WebSocketSubject<any>;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.socket$ = webSocket('wss://ws-ap1.pusher.com/app/e0cd7653f3ae9bbbd459?protocol=7&client=js&version=8.4.0&flash=false');
+   }
   private storageKey = 'loggedInUser';
   private user = { code: 702, fullname: "Pedro Yorpo" }; // Example
 
@@ -90,7 +94,10 @@ export class SearchService {
       { headers } // Pass headers here
     );
   }
-  
+
+  receiveMessages(): Observable<any> {
+    return this.socket$;
+  }
 
 }
 

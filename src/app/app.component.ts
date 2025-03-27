@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ChatPopupComponent } from './ComponentUI/messages/chat-popup/chat-popup.component';
 import { ChatWebsitePopUPComponent } from './ComponentUI/messages/chat-website-pop-up/chat-website-pop-up.component';
+import { PusherService } from './services/pusher.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -25,8 +27,9 @@ export class AppComponent implements OnInit {
   isLoggedIn: boolean = false; // Track login status
   showChatButton: boolean = true; // Default visibility
   showWebsiteChat: boolean = true; // Default visibility
-
-  constructor(private translate: TranslateService,public dialog: MatDialog,
+  message: string = 'Waiting for event...';
+  
+  constructor(private translate: TranslateService,public dialog: MatDialog,private pusherService: PusherService,
     private cookieService: CookieService
   ) {
     translate.addLangs(['en', 'fr']); // Add other languages as needed
@@ -34,6 +37,11 @@ export class AppComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    this.pusherService.bindEvent('my-event', (data: any) => {
+      this.message = data.message;
+    });
+
+
     this.cookieService.set('myCookie', 'cookieValue', { expires: 7, path: '/' });
     // Get a cookie
     const myCookieValue = this.cookieService.get('myCookie');
