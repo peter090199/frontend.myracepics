@@ -3,7 +3,7 @@
   <div class="chat-sidebar">
     <h3>Messages</h3>
     <div *ngFor="let user of users" class="user" (click)="selectUser(user)">
-      <img [src]="user.photo || 'assets/images/default-user.png'" class="avatar" />
+      <img [src]="user.photo || 'assets/images/default.png'" class="avatar" />
       <div class="user-info">
         <h4>{{ user.name }}</h4>
         <p>{{ user.lastMessage }}</p>
@@ -14,7 +14,7 @@
   <!-- Chat Window -->
   <div class="chat-window" *ngIf="selectedUser">
     <div class="chat-header">
-      <img [src]="selectedUser.photo || 'assets/images/default-user.png'" class="avatar" />
+      <img [src]="selectedUser.photo || 'assets/images/default.png'" class="avatar" />
       <h3>{{ selectedUser.name }}</h3>
     </div>
     

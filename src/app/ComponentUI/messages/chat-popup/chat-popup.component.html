@@ -2,19 +2,29 @@
    <div class="chat-popup">
     <!-- Chat Header -->
     <div class="chat-header">
-      <span *ngIf="!selectedUser">New Messages</span>
-      <span *ngIf="selectedUser">{{ selectedUser.fullname }}</span>
+      <div class="user-info">
+        <img *ngIf="selectedUser" [src]="selectedUser?.photo_pic || 'assets/images/default.png'" class="avatar" />
+        <div class="user-details">
+          <span class="fullname">{{ selectedUser?.fullname || 'New Messages' }}</span>
+          <span *ngIf="selectedUser" class="active-status">
+            {{ selectedUser.is_online === 1 ? 'Active Now' : 'Offline' }}
+          </span>
+          
+        </div>  
+      </div>
       <mat-icon class="close-icon" (click)="closeChat()">close</mat-icon>
     </div>
+    
   
     <!-- User List -->
     <mat-list *ngIf="!selectedUser" class="chat-list">
       <mat-list-item *ngFor="let user of users" (click)="openChatWith(user)">
-        <img matListAvatar [src]="user.photo_pic" alt="{{user.fullname}}">
-        <div matLine>{{ user.fullname }}</div>
-        <div class="user-status" [ngClass]="{'online': user.status === 'A', 'offline': user.status !== 'A'}"></div>
+        <img matListAvatar [src]="user.photo_pic || 'assets/images/default.png'" alt="{{ user.fullname }}" />
+        <div mat-line>{{ user.fullname }}</div>
+        <span class="user-status" [ngClass]="{'online': user.is_online === 1, 'offline': user.is_online === 0}"></span>
       </mat-list-item>
     </mat-list>
+    
     
   
     <!-- Chat Messages -->

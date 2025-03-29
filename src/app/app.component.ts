@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   isLoggedIn: boolean = false; // Track login status
   showChatButton: boolean = true; // Default visibility
   showWebsiteChat: boolean = true; // Default visibility
-  message: string = 'Waiting for event...';
+  message: string = '';
   userId: number | null = null;
   
   constructor(private translate: TranslateService,public dialog: MatDialog,private pusherService: PusherService,
