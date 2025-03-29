@@ -58,4 +58,9 @@ export class AuthGuard implements CanActivate {
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  getUserId(): number {
+    return Number(localStorage.getItem('userId')) || 0; // Get user ID from storage or API
+  }
+
 }

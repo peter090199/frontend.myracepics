@@ -7,6 +7,8 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { ChatPopupComponent } from './ComponentUI/messages/chat-popup/chat-popup.component';
 import { ChatWebsitePopUPComponent } from './ComponentUI/messages/chat-website-pop-up/chat-website-pop-up.component';
 import { PusherService } from './services/pusher.service';
+import { AuthService } from './services/auth.service';
+
 
 @Component({
   selector: 'app-root',
@@ -28,15 +30,27 @@ export class AppComponent implements OnInit {
   showChatButton: boolean = true; // Default visibility
   showWebsiteChat: boolean = true; // Default visibility
   message: string = 'Waiting for event...';
+  userId: number | null = null;
   
   constructor(private translate: TranslateService,public dialog: MatDialog,private pusherService: PusherService,
-    private cookieService: CookieService
+    private cookieService: CookieService,private authService: AuthService
   ) {
     translate.addLangs(['en', 'fr']); // Add other languages as needed
     translate.setDefaultLang('en');   // Set the default language
   }
   
   ngOnInit(): void {
+
+    this.authService.getData().subscribe(
+      (user) => {
+        this.userId = user.id;
+        localStorage.setItem('userId', JSON.stringify(this.userId));
+      },
+      (error) => {
+        console.error('Error fetching user:', error);
+      }
+    );
+
     this.pusherService.bindEvent('my-event', (data: any) => {
       this.message = data.message;
     });
