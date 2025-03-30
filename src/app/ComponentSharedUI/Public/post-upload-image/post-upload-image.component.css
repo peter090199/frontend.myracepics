@@ -1,0 +1,117 @@
+.slideshow-container {
+    position: relative;
+    margin: auto;
+    padding: 10px;
+    height: auto;
+    max-height: 90vh;
+    overflow: auto;
+  }
+  
+  .mySlides {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .slide-image {
+    width: 200px;
+    max-height: 300px;
+    object-fit: cover;
+  }
+  
+  .prev,
+  .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-50%);
+  }
+  
+  .prev {
+    left: 0;
+  }
+  
+  .next {
+    right: 0;
+  }
+  
+  .caption-container {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 10px;
+    color: white;
+  }
+  
+  .row {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .column {
+    flex: 0 0 auto;
+    width: 16.66%;
+    padding: 5px;
+  }
+  
+  .demo {
+    width: 100%;
+    opacity: 0.6;
+    cursor: pointer;
+  }
+  
+  .active,
+  .demo:hover {
+    opacity: 1;
+  }
+  
+
+  .upload-section {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .upload-section input {
+    margin-right: 10px;
+  }
+  
+  .upload-section button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  
+  .open-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+  }
+  
+  .open-btn:hover {
+    background-color: #218838;
+  }
+  
+  .close-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .close-btn:hover {
+    background-color: #c82333;
+  }
+  

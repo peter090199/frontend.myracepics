@@ -1,1 +1,22 @@
-<p>notification works!</p>
+<div class="notification-container">
+  <h3>Notifications <span class="badge" *ngIf="totalUnreadMessages > 0">{{ totalUnreadMessages }}</span></h3>
+
+  <div *ngIf="notifications.length === 0" class="no-notifications">
+    No new notifications
+  </div>
+
+  <mat-list *ngIf="notifications.length > 0">
+    <mat-list-item 
+      *ngFor="let notif of notifications" 
+      (click)="openChat(notif)" 
+      [ngClass]="{'unread': !notif.is_read, 'read': notif.is_read}">
+      
+      <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
+      <div mat-line>{{ notif.sender.fullname }}</div>
+      <div mat-line class="message-preview">
+        {{ notif.message }}
+      </div>
+      <span class="time">{{ notif.time }}</span>
+    </mat-list-item>
+  </mat-list>
+</div>

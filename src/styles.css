@@ -327,6 +327,33 @@ snack-bar-container.notification simple-snack-bar {
   margin-left: 22px;
 }
 
+.profile-info {
+  display: flex;
+  align-items: flex-start; /* Align to the left */
+  justify-content: flex-start; /* Justify to the left */
+  flex-direction: column;
+  position: relative;
+  margin-top: -60px; /* Adjust to overlap cover photo */
+  margin-left: 20px;
+}
+
+
+.profile-picture {
+  position: relative;
+  width: 180px; /* Adjust for Facebook-like size */
+  height: 180px;
+}
+
+.avatar-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid #fff; /* White border like Facebook */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
 .quot-content{
   margin-top: 2%;
   margin-left: 150px;

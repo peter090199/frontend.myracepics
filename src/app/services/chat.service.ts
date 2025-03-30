@@ -17,6 +17,20 @@ export class ChatService {
     return this.http.get(`${_url}getActiveUsers`, { headers });
   }
 
+  getNotifications(): Observable<any[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+    });
+    return this.http.get<any[]>(`${_url}notifications`,{headers});
+  }
+
+   // ✅ Mark messages as read
+   markMessagesAsRead(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+    });
+    return this.http.post<any>(`${_url}messages/read`, { id: id }, {headers});
+  }
 
   
   // Fetch Messages

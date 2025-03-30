@@ -48,7 +48,7 @@
 
 .active-status {
   font-size: 12px;
-  color: #44c662; /* Messenger green */
+  color: #3ca455; /* Messenger green */
 }
 
 
@@ -89,11 +89,11 @@
 }
 
 .user-status.online {
-  background-color: green;
+  background-color: rgb(5, 206, 5);
 }
 
 .user-status.offline {
-  background-color: rgb(136, 134, 134);
+  background-color: rgb(234, 13, 13);
 }
 
 .hidden {
@@ -137,9 +137,11 @@
 /* Chat Input */
 .chat-input {
   display: flex;
-  padding: 10px;
+  padding: 0px;
   background: #f9f9f9;
   border-top: 1px solid #ddd;
+  height: auto;
+  max-height: 40vh;
 }
 
 .chat-input mat-form-field {
@@ -206,4 +208,37 @@ button[mat-icon-button] {
 button[mat-icon-button]:disabled {
   background: #b0b3b8;
   color: #ffffff;
+}
+
+.notification-icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.notification-icon mat-icon {
+  font-size: 24px;
+  color: #fff;
+}
+.chat-search {
+  width: 100%;
+}
+
+textarea.mat-input-element {
+  resize: none; /* Prevents manual resizing */
+  height: auto; /* Adjust height as needed */
+  max-height: 550px; /* Prevents excessive growth */
+  overflow: auto; /* Enables scrolling */
+  padding: auto;
+}
+
+.notification-icon .badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: red;
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 10px;
 }

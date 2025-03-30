@@ -1,49 +1,46 @@
+<div class="chat-popup">
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <div class="user-info">
+      <img *ngIf="selectedUser" [src]="selectedUser?.photo_pic || 'assets/images/default.png'" class="avatar" />
+      <div class="user-details">
+        <span class="fullname">{{ selectedUser?.fullname || 'New Messages' }}</span>
+        <span *ngIf="selectedUser" class="active-status">
+          {{ selectedUser.is_online === 1 ? 'Active Now' : 'Offline' }}
+        </span>
+      </div>  
+    </div>
+    <mat-icon class="close-icon" (click)="closeChat()">close</mat-icon>
+  </div>
 
-   <div class="chat-popup">
-    <!-- Chat Header -->
-    <div class="chat-header">
-      <div class="user-info">
-        <img *ngIf="selectedUser" [src]="selectedUser?.photo_pic || 'assets/images/default.png'" class="avatar" />
-        <div class="user-details">
-          <span class="fullname">{{ selectedUser?.fullname || 'New Messages' }}</span>
-          <span *ngIf="selectedUser" class="active-status">
-            {{ selectedUser.is_online === 1 ? 'Active Now' : 'Offline' }}
-          </span>
-          
-        </div>  
-      </div>
-      <mat-icon class="close-icon" (click)="closeChat()">close</mat-icon>
-    </div>
-    
-  
-    <!-- User List -->
-    <mat-list *ngIf="!selectedUser" class="chat-list">
-      <mat-list-item *ngFor="let user of users" (click)="openChatWith(user)">
-        <img matListAvatar [src]="user.photo_pic || 'assets/images/default.png'" alt="{{ user.fullname }}" />
-        <div mat-line>{{ user.fullname }}</div>
-        <span class="user-status" [ngClass]="{'online': user.is_online === 1, 'offline': user.is_online === 0}"></span>
-      </mat-list-item>
-    </mat-list>
-    
-    
-  
-    <!-- Chat Messages -->
-    <div *ngIf="selectedUser" class="chat-messages">
-      <div *ngFor="let message of chatHistory[selectedUser.id]" 
-           [ngClass]="{'sent': message.sender_id === myUserId, 'received': message.sender_id !== myUserId}">
-        <span>{{ message.message }}</span>
-      </div>
-    </div>
-  
-    <!-- Message Input -->
-    <div *ngIf="selectedUser" class="chat-input">
-      <mat-form-field appearance="outline" class="chat-search">
-        <input matInput placeholder="Type a message..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage()">
-      </mat-form-field>
-      
-      <button mat-icon-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
-        <mat-icon>send</mat-icon>
-      </button>
+  <!-- User List -->
+  <mat-list *ngIf="!selectedUser" class="chat-list">
+    <mat-list-item *ngFor="let user of users" (click)="openChatWith(user)">
+      <img matListAvatar [src]="user.photo_pic || 'assets/images/default.png'" alt="{{ user.fullname }}" />
+      <div mat-line>{{ user.fullname }}</div>
+      <span class="user-status" [ngClass]="{'online': user.is_online === 1, 'offline': user.is_online === 0}"></span>
+    </mat-list-item>
+  </mat-list>
+
+  <!-- Chat Messages -->
+  <div *ngIf="selectedUser" class="chat-messages" #chatContainer>
+    <div *ngFor="let message of chatHistory[selectedUser.id]" 
+         [ngClass]="{'sent': message.sender_id === myUserId, 'received': message.sender_id !== myUserId}">
+      <span>{{ message.message }}</span>
     </div>
   </div>
   
+  
+  <!-- Message Input -->
+  <div *ngIf="selectedUser" class="chat-input">
+    <mat-form-field appearance="standard" class="chat-search">
+      <textarea matInput placeholder="Type a message..." [(ngModel)]="newMessage" 
+                (keyup.enter)="sendMessage()" rows="2"></textarea>
+    </mat-form-field>
+    
+
+    <button mat-raised-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        Send
+    </button>
+  </div>
+</div>

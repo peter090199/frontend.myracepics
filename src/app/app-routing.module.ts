@@ -65,7 +65,7 @@ const routes: Routes = [
       { path: 'home', component: HomeUIComponent },
       { path: 'message', component: MessagesComponent },
       { path: 'network', component: NetworkingComponent },
-      { path: 'notifications', component: NotificationComponent },
+      // { path: 'notifications', component: NotificationComponent },
       { path: 'search', component: UserListComponent },
 
     ]

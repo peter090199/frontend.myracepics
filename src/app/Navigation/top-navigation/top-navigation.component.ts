@@ -9,6 +9,8 @@ import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.ser
 import { slideUp, slideFade } from 'src/app/animations';
 import { ChatPopupComponent } from 'src/app/ComponentUI/messages/chat-popup/chat-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ChatService } from 'src/app/services/chat.service';
+import { NotificationComponent } from 'src/app/ComponentUI/notification/notification.component';
 
 export interface User {
   name: string;
@@ -32,9 +34,12 @@ export class TopNavigationComponent implements OnInit {
   nav_module: any[] = [];
   submenuMenu!: MatMenuPanel<any>;
   
-  notificationCount = 1;
+
   messageCount = 3;
   
+  notificationCount: number = 0;
+  notifications: any[] = []; 
+
   myControl = new FormControl();
   options: User[] = [{ name: 'Mary' }, { name: 'Shelley' }, { name: 'Igor' }];
   filteredOptions!: Observable<User[]>;
@@ -51,24 +56,32 @@ export class TopNavigationComponent implements OnInit {
   constructor(
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
-    private router: Router
+    private router: Router, private chatService:ChatService
   ) {}
 
   ngOnInit(): void {
     this.fetchModules();
-    
+    this.loadNotifications();
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map(value => (typeof value === 'string' ? value : value?.name)),
       map(name => (name ? this._filter(name) : this.options.slice()))
     );
 
-    setTimeout(() => {
-      this.notificationCount = 5;
-      this.messageCount = 100;
-    }, 3000);
   }
 
+
+  totalUnreadMessages = 0;
+  loadNotifications(): void {
+    this.chatService.getNotifications().subscribe({
+      next: (res) => {
+        this.notifications = res; 
+        this.totalUnreadMessages = this.notifications.length; 
+      },
+      error: (err) => console.error('❌ Error fetching notifications:', err),
+    });
+  }
+  
    openChat() {
       this.dialog.open(ChatPopupComponent, {
         width: '450px',
@@ -175,7 +188,16 @@ export class TopNavigationComponent implements OnInit {
     window.location.href = '/homepage';
   }
   
+  chatHistory: { [key: number]: any[] } = {};
 
+  openNotifications() {
+    this.dialog.open(NotificationComponent, {
+      width: '400px', // Set a proper width
+      position: { top: '60px', right: '90px' }, // Position near the bell icon
+      panelClass: 'custom-notification-popup', // Optional custom styling
+    });
+  }
+  
 
 
   

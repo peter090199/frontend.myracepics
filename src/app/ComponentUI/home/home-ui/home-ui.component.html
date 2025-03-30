@@ -60,7 +60,9 @@
       <div class="middle-column">
           <div class="post-box-container">
             <div class="input-section">
-              <img src="https://via.placeholder.com/40" alt="Avatar" class="avatar" />
+              <ng-template #defaultAvatar>
+                <img src="assets/default.png" alt="Default Avatar" class="profile-pic" />
+              </ng-template>
               <input  type="text"  placeholder="Create your post?" class="post-input" readonly  (click)="createPost()" />
               
             </div>

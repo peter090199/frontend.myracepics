@@ -109,16 +109,20 @@
                 <button mat-button [routerLink]="[link.route]" *ngIf="link.description !== 'Notifications' && link.description !== 'Messaging'">
                   <i class="{{ link.icon }}"></i> {{ link.description }}
                 </button>
-                <button mat-icon-button *ngIf="link.description === 'Messaging' && notificationCount > 0" 
-                  [routerLink]="[link.route]" matBadge="{{ messageCount }}" matBadgeColor="warn">
-                  <i class="{{ link.icon }}"></i> 
+
+                <button mat-icon-button *ngIf="link.description === 'Messaging'" 
+                  [routerLink]="[link.route]" matBadge="{{ totalUnreadMessages }}" matBadgeColor="warn">
+                  <i class="{{ link.icon }}"></i>
                 </button>
             
                 <!-- Notification Badge -->
                 <button mat-icon-button *ngIf="link.description === 'Notifications'" 
-                  [routerLink]="[link.route]" matBadge="{{ notificationCount }}" matBadgeColor="warn">
-                  <i class="{{ link.icon }}"></i> 
-                </button>
+                      (click)="openNotifications()"
+                      matBadge="{{ totalUnreadMessages }}" 
+                      matBadgeColor="warn">
+                <mat-icon>notifications</mat-icon> 
+              </button>
+              
 
               </ng-template>
 
