@@ -45,7 +45,7 @@ export class PostUploadImagesService {
 
   uploadImages(formData:FormData): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post<any>(`${_url}postData`, formData, { headers });
+    return this.http.post<any>(`${_url}posts`, formData, { headers });
   }
 
   
