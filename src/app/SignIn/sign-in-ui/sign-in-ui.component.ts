@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { SigInService } from 'src/app/services/signIn/sig-in.service';
+import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
 
 @Component({
   selector: 'app-sign-in-ui',
@@ -18,17 +19,40 @@ export class SignInUIComponent implements OnInit {
   isLoggedIn: boolean = false; // Track login status
   showChatButton: boolean = true; // Default visibility
   isLoginSuccessful = false;
-
+  user:any;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private sigInService: SigInService,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    private userServices:CurriculumVitaeService
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.fetchProfilePicture();
   }
+  
+  fetchProfilePicture(): void {
+    this.userServices.getDataCV().subscribe(
+      (res) => {
+        if (res && res.message) {
+          this.user = res.message;
+  
+          // Store the 'code' in local storage
+          if (this.user.code) {
+            localStorage.setItem('code', this.user.code);
+          }
+        } else {
+          console.error('Invalid response format:', res);
+        }
+      },
+      (error) => {
+        console.error('Error fetching CV data:', error);
+      }
+    );
+  }
+  
 
   refreshHomePage() {
     this.router.navigate(['/homepage']).then(() => {
@@ -71,7 +95,6 @@ export class SignInUIComponent implements OnInit {
     localStorage.setItem('showChatButton', JSON.stringify(true));
     localStorage.removeItem('showWebsiteChat');
     // localStorage.setItem('showWebsiteChat', JSON.stringify(false));
-
 
   }
 

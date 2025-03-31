@@ -6,6 +6,7 @@ import { UserCVComponent } from '../../Individual/user-cv/user-cv.component';
 import { UserProfileUiComponent } from '../../Individual/user-profile-ui/user-profile-ui.component';
 import { ActivatedRoute } from '@angular/router';
 import { AuthGuard } from 'src/app/AuthGuard/auth.guard';
+import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
 
 
 @Component({
@@ -21,7 +22,16 @@ export class ProfileUIComponent implements OnInit {
   btnCurriculum: boolean = false;
   isUserOnline: boolean = false;
   code:any;
-  constructor(private profile:ProfileService,public dialog:MatDialog,private route: ActivatedRoute,private authService: AuthGuard,
+  posts:any[] = [];
+  followers:any;
+  activeHours:any;
+
+
+
+  constructor(
+            private profile:ProfileService,public dialog:MatDialog,
+            private route: ActivatedRoute,private authService: AuthGuard,
+            private postDataservices:PostUploadImagesService
 
   ) { }
  
@@ -32,10 +42,41 @@ export class ProfileUIComponent implements OnInit {
     const codesplit = url.split('/').pop();
     this.code = codesplit;
 
+    this.loadUserPost();
     this.loadUserData();
     this.loadProfileCV();
   }
   
+    // Function to calculate active hours
+    getActiveHours(lastActive: string): string {
+      if (!lastActive) return 'unknown';
+
+      const lastActiveDate = new Date(lastActive);
+      const now = new Date();
+      const diffInHours = Math.floor((now.getTime() - lastActiveDate.getTime()) / (1000 * 60 * 60));
+
+      if (diffInHours < 1) return 'Just now';
+      if (diffInHours === 1) return '1 hour ago';
+      return `${diffInHours} hours ago`;
+    }
+
+    
+  loadUserPost(): void {
+    this.postDataservices.getDataPost(this.code).subscribe(
+      (data) => {
+        if (data && Array.isArray(data)) {
+          this.posts = data.map(post => ({
+            ...post,
+            activeHours: this.getActiveHours(post.lastActive),
+            followers: post.followers || 0
+          }));
+        }
+      },
+      (error) => console.error('Error fetching posts:', error)
+    );
+  }
+    
+
 
   loadProfileCV(){
     this.profile.getProfileByUser(this.code).subscribe({

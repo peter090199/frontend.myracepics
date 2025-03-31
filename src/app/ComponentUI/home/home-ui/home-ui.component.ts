@@ -9,6 +9,7 @@ import { THREE } from '@angular/cdk/keycodes';
 import { UploadProfileComponent } from 'src/app/ComponentSharedUI/Individual/upload-profile/upload-profile.component';
 import { ActivatedRoute } from '@angular/router';
 import { PostUIComponent } from 'src/app/ComponentSharedUI/Public/post-ui/post-ui.component';
+import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
 
 @Component({
   selector: 'app-home-ui',
@@ -17,13 +18,22 @@ import { PostUIComponent } from 'src/app/ComponentSharedUI/Public/post-ui/post-u
 })
 export class HomeUIComponent implements OnInit {
 
+  error: any;
+  profiles: any=[];
+  profile_pic: any;
+  code:any;
+  followers:any;
+  activeHours:any;
+  isLoading = false; 
+  page = 1; 
+  isMobile: boolean = false; 
+  
 
 createPost() {
   const dialogConfig = new MatDialogConfig();
   dialogConfig.disableClose = true;
   dialogConfig.autoFocus = true;
   dialogConfig.width = '600px';
-//  dialogConfig.data = element || null; // Pass user data
   const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
 
   dialogRef.afterClosed().subscribe(() => {
@@ -33,136 +43,10 @@ createPost() {
 
   private scrollInterval: any;
   @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef; // Reference to the scroll container
+  posts:any[] = [];
 
-  posts = [
-    {
-      id: 1,
-      author: 'John Doe',
-      content: 'This is a sample post content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      timestamp: new Date('2024-11-28T12:00:00'),
-      likes: 120,
-      comments: 45,
-      reposts: 10,
-      sends: 8,
-    },
-    {
-      id: 2,
-      author: 'Jane Smith',
-      content: 'Another example post! Just testing out some content here.',
-      timestamp: new Date('2024-11-29T10:30:00'),
-      likes: 350,
-      comments: 200,
-      reposts: 30,
-      sends: 15,
-    },
-    {
-      id: 3,
-      author: 'Alice Cooper',
-      content: 'This post is about the latest trends in tech and innovation.',
-      timestamp: new Date('2024-11-27T14:45:00'),
-      likes: 75,
-      comments: 25,
-      reposts: 5,
-      sends: 2,
-    },
-    {
-      id: 4,
-      author: 'Bob Marley',
-      content: 'A beautiful day to share some inspiration with the world!',
-      timestamp: new Date('2024-11-29T09:00:00'),
-      likes: 500,
-      comments: 150,
-      reposts: 50,
-      sends: 40,
-    },
-    {
-      id: 5,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 6,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 7,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 8,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 9,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 10,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 11,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-    {
-      id: 12,
-      author: 'Charlie Brown',
-      content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-      timestamp: new Date('2024-11-25T16:20:00'),
-      likes: 300,
-      comments: 100,
-      reposts: 25,
-      sends: 20,
-    },
-  ];
-
-  isLoading = false; // Flag for showing spinner
-  page = 1; // Pagination or load more page tracking
-  isMobile: boolean = false; 
-  
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
-    private dialog:MatDialog,private route:ActivatedRoute
+    private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService
   ) {}
   
   ismobile: boolean = false;
@@ -172,14 +56,9 @@ createPost() {
     this.isMobile = window.innerWidth <= 768; // or your breakpoint for mobile
   }
 
+  ngOnDestroy(): void {
+  }
 
-
-  error: any;
-  profiles: any=[];
-
-  profile_pic: any;
-  code:any;
-  
   ngOnInit(): void {
     const url = window.location.href;
     const codesplit = url.split('/').pop();
@@ -187,10 +66,15 @@ createPost() {
 
     this.onResize();
     this.fetchProfilePicture();
+    this.loadUserPost();
+    this.getProfileByUser();
+  }
+
+  getProfileByUser(): void{
     this.profile.getProfileByUser(this.code).subscribe({
       next: (response) => {
         if (response.success == true) {
-          this.profiles = response.message; // Access the first item in the message array
+          this.profiles = response.message; 
         } else {
           this.error = 'Failed to load profile data';
         }
@@ -200,12 +84,15 @@ createPost() {
       },
     });
   }
-
   fetchProfilePicture(): void {
     this.photo.getDataCV().subscribe(
-      (response) => {
-        if (response && response.message) {
-          this.profile_pic = response.message; // Assign the response data to `cvData`
+      (response: any) => {
+        if (response?.message) {
+          this.profile_pic = response.message;
+  
+          if (this.profile_pic?.code) {
+            localStorage.setItem('code', this.profile_pic.code);
+          }
         } else {
           console.error('Invalid response format:', response);
         }
@@ -215,25 +102,38 @@ createPost() {
       }
     );
   }
-
-  fetchProfilePicturess(): void {
-    this.photo.getDataCV().subscribe({
-      next: (res) => {
-        console.log(res.photo_pic); // Log for debugging
-        this.profile_pic = res.photo_pic; // Assign the image URL
-      },
-      error: (err) => {
-        console.error('Error fetching profile picture:', err); // Log error for debugging
-        this.error = err.message || 'An error occurred while fetching profile data';
-      },
-    });
-  }
-
-
-  ngOnDestroy(): void {
-    // Clear the interval when the component is destroyed
   
+    // Function to calculate active hours
+    getActiveHours(lastActive: string): string {
+      if (!lastActive) return 'unknown';
+
+      const lastActiveDate = new Date(lastActive);
+      const now = new Date();
+      const diffInHours = Math.floor((now.getTime() - lastActiveDate.getTime()) / (1000 * 60 * 60));
+
+      if (diffInHours < 1) return 'Just now';
+      if (diffInHours === 1) return '1 hour ago';
+      return `${diffInHours} hours ago`;
+    }
+
+
+  loadUserPost(): void {
+    this.postDataservices.getDataPostAddFollow().subscribe(
+      (data) => {
+        if (data && Array.isArray(data)) {
+          this.posts = data.map(post => ({
+            ...post,
+            activeHours: this.getActiveHours(post.lastActive),
+            followers: post.followers || 0
+          }));
+        }
+      },
+      (error) => console.error('Error fetching posts:', error)
+    );
   }
+
+
+
   // onScroll() {
   //   const scrollElement = this.scrollContainer.nativeElement;
   //   if (scrollElement.scrollHeight - scrollElement.scrollTop === scrollElement.clientHeight) {
@@ -242,6 +142,8 @@ createPost() {
   //     }
   //   }
   // }
+
+
   startAutoScroll(): void {
     const middleColumn = document.querySelector('.middle-column') as HTMLElement;
 
@@ -319,3 +221,129 @@ createPost() {
     });
   }
 }
+
+
+
+  // postsx = [
+  //   {
+  //     id: 1,
+  //     author: 'John Doe',
+  //     content: 'This is a sample post content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     timestamp: new Date('2024-11-28T12:00:00'),
+  //     likes: 120,
+  //     comments: 45,
+  //     reposts: 10,
+  //     sends: 8,
+  //   },
+  //   {
+  //     id: 2,
+  //     author: 'Jane Smith',
+  //     content: 'Another example post! Just testing out some content here.',
+  //     timestamp: new Date('2024-11-29T10:30:00'),
+  //     likes: 350,
+  //     comments: 200,
+  //     reposts: 30,
+  //     sends: 15,
+  //   },
+  //   {
+  //     id: 3,
+  //     author: 'Alice Cooper',
+  //     content: 'This post is about the latest trends in tech and innovation.',
+  //     timestamp: new Date('2024-11-27T14:45:00'),
+  //     likes: 75,
+  //     comments: 25,
+  //     reposts: 5,
+  //     sends: 2,
+  //   },
+  //   {
+  //     id: 4,
+  //     author: 'Bob Marley',
+  //     content: 'A beautiful day to share some inspiration with the world!',
+  //     timestamp: new Date('2024-11-29T09:00:00'),
+  //     likes: 500,
+  //     comments: 150,
+  //     reposts: 50,
+  //     sends: 40,
+  //   },
+  //   {
+  //     id: 5,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 6,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 7,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 8,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 9,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 10,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 11,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  //   {
+  //     id: 12,
+  //     author: 'Charlie Brown',
+  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
+  //     timestamp: new Date('2024-11-25T16:20:00'),
+  //     likes: 300,
+  //     comments: 100,
+  //     reposts: 25,
+  //     sends: 20,
+  //   },
+  // ];
+

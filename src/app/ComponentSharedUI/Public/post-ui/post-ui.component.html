@@ -1,4 +1,4 @@
-<form [formGroup]="postForm"> <!-- Ensure formGroup is bound to postForm -->
+<!-- <form [formGroup]="postForm">
   <div *ngIf="profiles">
     <h2>Create Post</h2>
   </div>
@@ -9,28 +9,30 @@
       <textarea
         matInput
         placeholder="What do you want to talk about?"
-        formControlName="caption"
+        formControlName="caption" required
       ></textarea>
     </mat-form-field>
 
-    <mat-form-field appearance="standard" class="status-field">
-      <mat-icon matPrefix>lock</mat-icon>
-      <mat-label>Privacy</mat-label>
-      <mat-select formControlName="status">
-        <mat-option *ngFor="let option of statusOptions" [value]="option.value">
-          {{ option.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="form-field">
+        <mat-icon matPrefix>lock</mat-icon>
+        <mat-label>Privacy</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <div class="post-actions">
-      <button mat-icon-button (click)="uploadImage()">
+      
+      <button mat-icon-button (click)="uploadImage()" class="form-field">
         <mat-icon>image</mat-icon>
       </button>
-      <button mat-icon-button>
+      <button mat-icon-button  class="form-field">
         <mat-icon>videocam</mat-icon>
       </button>
-      <button mat-icon-button>
+      <button mat-icon-button  class="form-field">
         <mat-icon>settings</mat-icon>
       </button>
     </div>
@@ -38,6 +40,83 @@
 
   <mat-dialog-actions align="end">
     <button mat-button (click)="closeDialog()">Cancel</button>
-    <button mat-flat-button color="primary" [disabled]="!postForm.valid" (click)="postData()">Post</button>
+    <button mat-flat-button color="primary" [disabled]="!postForm.invalid" (click)="postData()">Post</button>
+  </mat-dialog-actions>
+</form> -->
+
+
+<form [formGroup]="postForm">
+  <!-- <div class="profile-container">
+    <img
+      [src]="profiles.photo_pic || 'assets/default-profile.png'"
+      alt="Profile Picture"
+      class="profile-img"
+    />
+  
+
+  </div> -->
+  <div class="profile-info">
+    <div class="profile-name">
+    {{ profiles.fname }}
+    <mat-form-field appearance="standard" class="status-dropdown">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status" required>
+        <mat-option value="" disabled selected>Select Status</mat-option>
+        <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    </div>
+    <p class="post-status">
+     Create Post to {{ getSelectedStatus() }}
+    </p>
+  </div>
+  
+  <mat-dialog-content class="post-content">
+    <mat-form-field appearance="outline" class="full-width">
+      <textarea
+        matInput
+        placeholder="What do you want to talk about?"
+        formControlName="caption"
+        required
+      ></textarea>
+      <mat-error *ngIf="postForm.get('caption')?.hasError('required')">
+        Post is required.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <!-- <mat-form-field appearance="standard" class="form-field">
+        <mat-icon matPrefix>lock</mat-icon>
+        <mat-label>Privacy</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="postForm.get('status')?.hasError('required')">
+          Privacy status is required.
+        </mat-error>
+      </mat-form-field> -->
+
+      <button mat-icon-button (click)="uploadImage()" class="form-field">
+        <mat-icon>image</mat-icon>
+      </button>
+      <button mat-icon-button class="form-field">
+        <mat-icon>videocam</mat-icon>
+      </button>
+      <button mat-icon-button class="form-field">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">Cancel</button>
+    <button mat-flat-button color="primary" [disabled]="postForm.invalid" (click)="postData()">
+      Post
+    </button>
   </mat-dialog-actions>
 </form>

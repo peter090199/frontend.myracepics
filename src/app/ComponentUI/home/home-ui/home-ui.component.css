@@ -14,6 +14,35 @@
   align-items: center;
   position: relative;
 }
+.post-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.post-images {
+  display: flex;
+  gap: 10px;
+}
+
+.see-more {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.see-more:hover {
+  color: darkblue;
+}
+.followers, .active-hours {
+  font-size: 13px;
+  color: gray;
+}
+
+.post-item img {
+  width: 150px;
+  height: auto;
+  border-radius: 5px;
+}
 
 .avatar-container {
   position: relative;
@@ -302,6 +331,8 @@ button {
   scrollbar-width: thin; /* Firefox - Thin scrollbar */
   -webkit-overflow-scrolling: touch;
 }
+
+
 @media (max-width: 768px) {
   .main-container {
     padding: 8px;

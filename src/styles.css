@@ -353,6 +353,58 @@ snack-bar-container.notification simple-snack-bar {
   border: 5px solid #fff; /* White border like Facebook */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+.main-container {
+  display: grid;
+  gap: 12px;
+  padding-top: 10px;
+  margin-top: 5px;
+  width: 100%;
+  height: auto; /* Allows content to expand */
+  max-height: 90vh; /* Prevents exceeding the viewport */
+  overflow-y: auto; /* Enables scrolling if content overflows */
+  scrollbar-width: thin; /* Firefox - Thin scrollbar */
+  -webkit-overflow-scrolling: touch;
+}
+
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 8px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container {
+    padding: 5px;
+    gap: 5px;
+  }
+}
+/* Hide scrollbar for Chrome, Edge, Safari */
+.main-container::-webkit-scrollbar {
+  width: 6px; /* Makes scrollbar thin */
+}
+
+.main-container::-webkit-scrollbar-thumb {
+  background: transparent; /* Hide scrollbar thumb */
+}
+
+
+.main-container:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* Show scrollbar on hover */
+}
+
+mat-icon{
+  margin-right: 12px;
+  vertical-align: middle;
+}
+mat-option{
+  margin-bottom: 5px;
+}
+
+mat-label {
+  font-size: 12px;
+}
 
 .quot-content{
   margin-top: 2%;

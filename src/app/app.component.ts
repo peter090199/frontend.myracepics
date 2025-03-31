@@ -44,17 +44,6 @@ export class AppComponent implements OnInit {
       console.log('📩 New Message Received:', message);
     });
 
-    
-    // this.authService.getData().subscribe(
-    //   (user) => {
-    //     this.userId = user.id;
-    //     localStorage.setItem('userId', JSON.stringify(this.userId));
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching user:', error);
-    //   }
-    // );
-
     this.pusherService.bindEvent('my-event', (data: any) => {
       this.message = data.message;
     });

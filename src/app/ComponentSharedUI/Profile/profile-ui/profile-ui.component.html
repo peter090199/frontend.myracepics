@@ -1,5 +1,5 @@
 
-<div class="container">
+<div class="tabs-container">
 
   <div class="cover-photo">
     <img src="
@@ -33,10 +33,51 @@
  
   <mat-tab-group class="tabs-container">
     <mat-tab label="Posts">
-      <h2>Post</h2>
-      <mat-divider></mat-divider>
-      <div class="tab-content">
-        <!-- Posts content goes here -->
+         <div class="tab-content">
+             <!-- Post Display: Loop over posts -->
+             <div *ngFor="let post of posts">
+              <mat-card class="post-box-container"  *ngIf="profiles">
+                <!-- User Profile Section -->
+                <mat-card-header>
+                  <div mat-card-avatar class="avatar">
+                    <img [src]="profiles?.photo_pic || 'assets/default.png'" alt="Profile Picture">
+                  </div>
+                  <mat-card-title>{{ post.Fullname }}</mat-card-title>
+                  <p>Status: {{ post.status === 1 ? 'Public' : 'Private' }}</p>
+                  <mat-card-subtitle>
+                    <span class="followers">{{ followers }} followers</span> • 
+                    <span class="active-hours">Active {{ activeHours }} ago</span>
+                  </mat-card-subtitle>
+                </mat-card-header>
+            
+                <!-- Post Content -->
+                <mat-card-content>
+                  <div *ngIf="post">
+                    <p>
+                      {{ post.expanded ? post.caption : (post.caption | slice:0:100) + '...' }}
+                      <a *ngIf="post.caption.length > 100" (click)="post.expanded = !post.expanded" class="see-more">
+                        {{ post.expanded ? 'See Less' : 'See More' }}
+                      </a>
+                    </p>
+                  </div>
+                  
+  
+                  <div class="post-images">
+                    <div *ngFor="let image of post.posts" class="post-item">
+                      <img [src]="image.post" alt="Post Image">
+                    </div>
+                  </div>
+                </mat-card-content>
+            
+                <!-- Interaction Buttons -->
+                <mat-card-actions class="interaction-buttons">
+                  <button mat-button><mat-icon>thumb_up</mat-icon> Like</button>
+                  <button mat-button><mat-icon>chat</mat-icon> Comment</button>
+                  <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
+                  <button mat-button><mat-icon>send</mat-icon> Send</button>
+                </mat-card-actions>
+              </mat-card>
+              </div>
       </div>
     </mat-tab>
 

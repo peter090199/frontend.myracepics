@@ -2,9 +2,10 @@
     position: relative;
     margin: auto;
     padding: 10px;
-    height: auto;
-    max-height: 90vh;
+    min-height: 100px;
+    max-height: 450px;
     overflow: auto;
+    max-width: 600px;
   }
   
   .mySlides {
@@ -14,6 +15,7 @@
   
   .slide-image {
     width: 200px;
+    max-width: 600px;
     max-height: 300px;
     object-fit: cover;
   }
@@ -115,3 +117,58 @@
     background-color: #c82333;
   }
   
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  
+  .remove-btn {
+    position: absolute;
+    color: rgb(255, 19, 19);
+    top:0px;
+    right: 40px;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50%; /* Circular button */
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3); /* Soft shadow */
+  }
+  
+  
+  /* Responsive for mobile */
+@media screen and (max-width: 768px) {
+  .slide-image {
+    max-height: 300px; /* Reduce size for smaller screens */
+  }
+  
+  .prev, .next {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .column img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .slide-image {
+    max-height: 250px;
+  }
+
+  .prev, .next {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .column img {
+    width: 40px;
+    height: 40px;
+  }
+}

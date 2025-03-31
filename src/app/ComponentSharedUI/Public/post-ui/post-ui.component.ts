@@ -219,9 +219,10 @@ import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dial
 import { ProfileService } from 'src/app/services/Profile/profile.service';
 import { PostUploadImageComponent } from '../post-upload-image/post-upload-image.component';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';  // Import HttpClient
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 
@@ -250,15 +251,18 @@ export class PostUIComponent implements OnInit {
     private imageUploadService: PostUploadImagesService,
     private fb: FormBuilder,
     private http: HttpClient,
-    private alert:NotificationsService
+    private alert:NotificationsService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // Initialize form group with caption and status
+    this.loadUser();
+
     this.postForm = this.fb.group({
-      caption: new FormControl(''),
-      status: new FormControl(1),  // Default status as 'Public'
+      caption: ['', Validators.required],
+      status: ['', Validators.required] // Corrected here
     });
+    
 
     // Subscribe to the image upload service to update uploaded images
     this.imageUploadService.images$.subscribe((formData: FormData | null) => {
@@ -274,23 +278,34 @@ export class PostUIComponent implements OnInit {
     });
   }
 
+  
+getSelectedStatus() {
+  return this.statusOptions.find(option => option.value === this.postForm.get('status')?.value)?.label;
+}
+
+  loadUser(){
+    this.authService.getData().subscribe({
+      next: (data) => {
+        this.profiles = data;
+      },
+      error: (err) => {
+        console.error('❌ Error fetching user data:', err);
+      },
+    });
+  }
+
+  
   // Post data function
   postData() {
-    if (this.postForm.valid) {
-      const formData = new FormData();
+    if (this.postForm.valid ) {
  
-
-      // Append uploaded files to FormData
-      // this.uploadedImages.forEach((file: File) => {
-      //   formData.append('files[]', file, file.name); // Append file with its name
-      // });
-
+      const formData = new FormData();
       formData.append('caption', this.postForm.value.caption);
-      formData.append('status', this.postForm.value.status.toString()); // Ensure it's a string
-      this.uploadedImages.forEach((file) => {
-        formData.append('posts', file);
-      });
-      
+      formData.append('status', this.postForm.value.status.toString());
+  
+      for (let file of this.uploadedImages) {
+        formData.append('posts[]', file);
+      }
       this.imageUploadService.uploadImages(formData).subscribe({
         next: (res) => {
           if(res.success == true) 
@@ -313,6 +328,7 @@ export class PostUIComponent implements OnInit {
   resetForm() {
     this.uploadedImages = [];
     this.postForm.reset();
+    this.imageUploadService.clearImages();
   }
 
   // Upload image function
@@ -325,6 +341,8 @@ export class PostUIComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
      // this.closeDialog()
     });
+
+
     // After image upload dialog closes, update the uploaded images
     // dialogRef.afterClosed().subscribe((images: File[] | undefined) => {
     //   if (images) {

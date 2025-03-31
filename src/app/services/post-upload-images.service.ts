@@ -10,11 +10,18 @@ export class PostUploadImagesService {
   RequiredRefresh: any;
   constructor(private http: HttpClient) { }
   private getAuthToken(): string {
-    return localStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
+    return localStorage.getItem('token') || ''; 
   }
-  private createParams(): HttpParams {
-    return new HttpParams().set('desc_code', 'top_navigation');
+  // private createParams(): HttpParams {
+  //   return new HttpParams().set('code', );
+  // }
+  
+
+  private getParamsCode(): string {
+    return localStorage.getItem('code') || ''; 
   }
+
+  
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error); // Log the error for debugging
@@ -30,7 +37,7 @@ export class PostUploadImagesService {
   }
 
 
-
+  slides: { posts: string; thumbnail: string; caption: string }[] = [];
 
   private imagesSource = new BehaviorSubject<FormData | null>(null);
     images$ = this.imagesSource.asObservable();
@@ -43,11 +50,36 @@ export class PostUploadImagesService {
       this.imagesSource.next(null);
     }
 
-  uploadImages(formData:FormData): Observable<any> {
-    const headers = this.createHeaders();
-    return this.http.post<any>(`${_url}posts`, formData, { headers });
-  }
+    addImages(images: { posts: string; thumbnail: string; caption: string }[]) {
+      this.slides.push(...images);
+    }
+    
+    getPreviewImages() {
+      return this.slides;
+    }
+    
 
+    uploadImages(formData:FormData): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}post`, formData, { headers });
+    }
+    getDataPostAddFollow(): Observable<any> {
+      const headers = this.createHeaders();
+      const code = this.getParamsCode(); // Retrieve the code
+      const params = new HttpParams().set('code', code); // Set code as query param
+    
+      return this.http.get(`${_url}post`, { headers, params });
+    }
+    
+    
+    getDataPost(code:any): Observable<any> {
+      const headers = this.createHeaders();
+    //  const code = this.getParamsCode(); // Retrieve the code
+      const params = new HttpParams().set('code', code); // Set code as query param
+    
+      return this.http.get(`${_url}post`, { headers, params });
+    }
+    
   
   saveAndUpdate(formData:FormData): Observable<any> {
     const headers = this.createHeaders();
@@ -64,7 +96,7 @@ export class PostUploadImagesService {
   //get
   getImages(): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.get(`${_url}get_images`, { headers});
+    return this.http.get(`${_url}post`, { headers});
   }
   
   //public

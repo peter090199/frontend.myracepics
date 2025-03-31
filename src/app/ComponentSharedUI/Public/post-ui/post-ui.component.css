@@ -17,15 +17,6 @@ mat-form-field {
   margin-top: 10px;
 }
 
-.post-actions button {
-  background: #f1f1f1;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-.post-actions button:hover {
-  background: #ddd;
-}
 
 mat-dialog-actions {
   padding-top: 10px;
@@ -48,6 +39,98 @@ textarea {
 .button-end button {
   margin: -10px;
 }
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-row h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.form-row span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+}
+
+.form-row img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.post-content {
+  padding: 15px;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-dialog-actions {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+}
+
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #f3f2ef;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2px;
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  width: 200px;
+  gap: 5px;
+}
+
+.status-dropdown {
+  margin-left: 5px;
+  font-size: 13px;
+}
+
+.post-status {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
 
 /* Mobile (Phones) */
 @media screen and (max-width: 600px) {

@@ -41,6 +41,13 @@ export class ProfileService {
     );
   }
 
+  getDataPost(code:any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}post/${code}`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+
 
   getProfileByUserOnly(): Observable<any> {
     const headers = this.createHeaders();
