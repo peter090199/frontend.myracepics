@@ -27,19 +27,9 @@ export class HomeUIComponent implements OnInit {
   isLoading:boolean = false; 
   page = 1; 
   isMobile: boolean = false; 
-  
+ 
+  currentIndex = 0;
 
-createPost() {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '600px';
-  const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
-
-  dialogRef.afterClosed().subscribe(() => {
-    this.loadUserPost();
-  });
-}
 
   private scrollInterval: any;
   @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef; // Reference to the scroll container
@@ -69,6 +59,20 @@ createPost() {
     this.loadUserPost();
     this.getProfileByUser();
   }
+
+createPost() {
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.disableClose = true;
+  dialogConfig.autoFocus = true;
+  dialogConfig.width = '600px';
+  const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
+
+
+  dialogRef.afterClosed().subscribe(() => {
+    this.loadUserPost();
+  });
+}
+
 
   toggleComments(post: any): void {
     post.showComments = !post.showComments;

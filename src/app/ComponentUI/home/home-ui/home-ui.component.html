@@ -114,12 +114,16 @@
                   </p>
                 </div>
                 
-
-                <div class="post-images">
-                  <div *ngFor="let image of post.posts" class="post-item">
-                    <img [src]="image.post" alt="Post Image">
+                <div class="slideshow-container">
+                  <div class="post-images">
+                    <div *ngFor="let image of post.posts" class="post-item">
+                      <img [src]="image.post" alt="Post Image">
+                    </div>
                   </div>
                 </div>
+
+
+                
               </mat-card-content>
           
               <!-- Interaction Buttons -->
