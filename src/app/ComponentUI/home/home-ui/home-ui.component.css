@@ -3,10 +3,28 @@
   width: 100%;
   max-width: 600px; /* Limit the width for large screens */
   margin: 30px auto; /* Center align */
-  padding: 26px;
+  padding: 22px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-height: auto;
+  max-height: 900px;
+  overflow: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+.post-box-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.post-box-container {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Internet Explorer */
+.post-box-container {
+  -ms-overflow-style: none;
 }
 .profile-avatar {
   display: flex;
@@ -25,14 +43,6 @@
   gap: 10px;
 }
 
-.see-more {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.see-more:hover {
-  color: darkblue;
-}
 .followers, .active-hours {
   font-size: 13px;
   color: gray;
@@ -185,6 +195,8 @@
   /* Mobile Styles */
   .post-box-container {
     padding: 12px;
+    padding: 0px;
+    margin: 0px;
   }
 
   .input-section {
@@ -211,6 +223,8 @@
   /* Tablet Styles */
   .post-box-container {
     max-width: 80%;
+    margin: 2px;
+    padding: 2px;
   }
 
   .action-btn {
@@ -448,3 +462,8 @@ button {
     display: none;
   }
 }
+
+
+
+/* comment post */
+

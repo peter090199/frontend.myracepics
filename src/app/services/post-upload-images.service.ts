@@ -71,6 +71,9 @@ export class PostUploadImagesService {
       return this.http.get(`${_url}post`, { headers, params });
     }
     
+    likePost(postId: number, liked: boolean) {
+      return this.http.post(`${_url}post/${postId}/like`, { liked });
+    }
     
     getDataPost(code:any): Observable<any> {
       const headers = this.createHeaders();

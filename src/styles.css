@@ -389,6 +389,17 @@ snack-bar-container.notification simple-snack-bar {
   background: transparent; /* Hide scrollbar thumb */
 }
 
+.see-more {
+  font-size: 14px;  /* Adjust the font size */
+  color: blue;       /* Set color */
+  cursor: pointer;   /* Show pointer on hover */
+  text-decoration: none;
+}
+
+.see-more:hover {
+  color: darkblue;   /* Change color on hover */
+  text-decoration: underline;
+}
 
 .main-container:hover::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2); /* Show scrollbar on hover */
@@ -706,4 +717,150 @@ body {
   padding: 0;
   border-radius: 8px;
   overflow: hidden;
+}
+
+
+
+/* loading spinner */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.7); /* Light overlay */
+  z-index: 999; /* Ensure it's above other content */
+}
+
+.custom-spinner {
+  width: 60px; /* Adjust width */
+  height: 60px; /* Adjust height */
+  border: 6px solid #ccc;
+  border-top: 6px solid #007bff; /* Spinner color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-spinner {
+    width: 45px; /* Smaller spinner for mobile */
+    height: 45px;
+    border-width: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-spinner {
+    width: 35px; /* Even smaller for very small screens */
+    height: 35px;
+    border-width: 4px;
+  }
+}
+
+
+/* comment  */
+.comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.comment-content {
+  background: #bebebe;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.comment-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 8px;
+}
+
+.comment-input input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* post */
+/* General Styles */
+.post-box-container {
+  width: 100%;
+  max-width: 600px; /* Limit the width for large screens */
+  margin: 30px auto; /* Center align */
+  padding: 22px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-height: auto;
+  max-height: 900px;
+  overflow: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+.post-box-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.post-box-container {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for Internet Explorer */
+.post-box-container {
+  -ms-overflow-style: none;
+}
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.post-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.post-images {
+  display: flex;
+  gap: 10px;
+}
+
+
+.followers, .active-hours {
+  font-size: 13px;
+  color: gray;
+}
+
+.post-item img {
+  width: 150px;
+  height: auto;
+  border-radius: 5px;
 }

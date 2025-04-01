@@ -24,7 +24,7 @@ export class HomeUIComponent implements OnInit {
   code:any;
   followers:any;
   activeHours:any;
-  isLoading = false; 
+  isLoading:boolean = false; 
   page = 1; 
   isMobile: boolean = false; 
   
@@ -37,7 +37,7 @@ createPost() {
   const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
 
   dialogRef.afterClosed().subscribe(() => {
-    
+    this.loadUserPost();
   });
 }
 
@@ -70,6 +70,60 @@ createPost() {
     this.getProfileByUser();
   }
 
+  toggleComments(post: any): void {
+    post.showComments = !post.showComments;
+  }
+  
+  addCommentxx(post: any): void {
+    if (!post.newComment.trim()) return;
+  
+    post.comments.push({
+      user: 'Current User',
+      text: post.newComment,
+      profile_pic: 'assets/images/default.png'
+    });
+  
+    post.newComment = '';
+  }
+
+  
+  addComment(post: any) {
+    if (!post.newComment || !post.newComment.trim()) {
+      return; // Prevent adding empty or undefined comments
+    }
+  
+    // Ensure 'comments' array exists before pushing a new comment
+    if (!post.comments) {
+      post.comments = []; // Initialize if undefined
+    }
+  
+    post.comments.push({
+      text: post.newComment,
+      timestamp: new Date()
+    });
+  
+    post.newComment = ""; // Clear input after submitting
+  }
+  
+  likePost(post: any): void {
+    if (!post.liked) {
+      post.likes = (post.likes || 0) + 1; // Increment likes
+    } else {
+      post.likes = Math.max((post.likes || 1) - 1, 0); // Decrement likes, but not below zero
+    }
+    post.liked = !post.liked; // Toggle liked state
+  
+    // Call API to update like status in the backend
+    this.postDataservices.likePost(post.id, post.liked).subscribe(
+      (response) => {
+        console.log('✅ Like status updated successfully:', response);
+      },
+      (error) => {
+        console.error('❌ Error updating like status:', error);
+      }
+    );
+  }
+  
   getProfileByUser(): void{
     this.profile.getProfileByUser(this.code).subscribe({
       next: (response) => {
@@ -118,6 +172,7 @@ createPost() {
 
 
   loadUserPost(): void {
+    this.isLoading = true;
     this.postDataservices.getDataPostAddFollow().subscribe(
       (data) => {
         if (data && Array.isArray(data)) {
@@ -127,8 +182,14 @@ createPost() {
             followers: post.followers || 0
           }));
         }
+        this.isLoading = false;
       },
-      (error) => console.error('Error fetching posts:', error)
+      (error) =>
+        { 
+          console.error('Error fetching posts:', error);
+          this.isLoading = false;
+        }
+      
     );
   }
 

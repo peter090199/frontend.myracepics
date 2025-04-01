@@ -82,11 +82,17 @@
           
           <br>
           <!-- Post Display: Loop over posts -->
-          <div *ngFor="let post of posts">
-            <mat-card class="post-box-container"  *ngIf="profile_pic">
-              <!-- User Profile Section -->
-              <mat-card-header>
-                <div mat-card-avatar class="avatar">
+          <div *ngIf="isLoading" class="loading-spinner">
+            <div class="custom-spinner">
+            </div>
+          </div>
+          
+           <div *ngIf="!isLoading">
+            <div *ngFor="let post of posts">
+              <mat-card class="post-box-container"  *ngIf="profile_pic">
+                <!-- User Profile Section -->
+                <mat-card-header>
+                  <div mat-card-avatar class="avatar">
                   <img [src]="profile_pic?.photo_pic || 'assets/default.png'" alt="Profile Picture">
                 </div>
                 <mat-card-title>{{ post.Fullname }}</mat-card-title>
@@ -118,16 +124,42 @@
           
               <!-- Interaction Buttons -->
               <mat-card-actions class="interaction-buttons">
-                <button mat-button><mat-icon>thumb_up</mat-icon> Like</button>
-                <button mat-button><mat-icon>chat</mat-icon> Comment</button>
+                <button mat-button (click)="likePost(post)"><mat-icon>thumb_up</mat-icon> Like</button>
+                <button mat-button (click)="toggleComments(post)"><mat-icon>chat</mat-icon> Comment</button>
                 <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
                 <button mat-button><mat-icon>send</mat-icon> Send</button>
               </mat-card-actions>
+
+             <!-- Comment Section using Expansion Panel -->
+              <mat-expansion-panel *ngIf="post.showComments" expanded>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Comments ({{ post.caption.length }}) </mat-panel-title>
+                </mat-expansion-panel-header>
+      
+                <div class="comments-container">
+                  <div *ngFor="let comment of post.comments" class="comment">
+                    <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                    <div class="comment-content">
+                      <strong>{{ comment.user }}</strong>
+                      <p>{{ comment.text }}</p>
+                    </div>
+                  </div>
+                </div>
+      
+                
+                <div class="comment-input">
+                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
+                  <button mat-button (click)="addComment(post)" [disabled]="!post.newComment?.trim()">
+                    <mat-icon>comment</mat-icon>
+                  </button>
+                  
+                </div>
+
+
+              </mat-expansion-panel>
             </mat-card>
           </div>
-          
-          <!-- Loading Spinner for New Posts -->
-          <mat-spinner *ngIf="isLoading" diameter="50"></mat-spinner>
+       </div>
       </div>
       
       <!-- Right Column: Lists -->

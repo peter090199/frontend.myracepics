@@ -418,41 +418,8 @@ mat-tab[label="Work Experience"] .mat-tab-label {
 }
   
 
-
-
-
-/* post */
-.post-box-container {
-  width: 100%;
-  max-width: 600px; /* Limit the width for large screens */
-  margin: 30px auto; /* Center align */
-  padding: 26px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.profile-avatar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-.post-container {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.post-images {
-  display: flex;
-  gap: 10px;
-}
-
-
 .see-more {
   font-size: 14px;  /* Adjust the font size */
-  font-weight: bold; /* Make it bold */
   color: blue;       /* Set color */
   cursor: pointer;   /* Show pointer on hover */
   text-decoration: none;
@@ -462,18 +429,3 @@ mat-tab[label="Work Experience"] .mat-tab-label {
   color: darkblue;   /* Change color on hover */
   text-decoration: underline;
 }
-
-.followers, .active-hours {
-  font-size: 13px;
-  color: gray;
-}
-
-.post-item img {
-  width: 150px;
-  height: auto;
-  border-radius: 5px;
-}
-
-
-
-

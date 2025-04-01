@@ -154,4 +154,47 @@ export class ProfileUIComponent implements OnInit {
   });
 }
 
+toggleComments(post: any): void {
+  post.showComments = !post.showComments;
+}
+
+
+  
+addComment(post: any) {
+  if (!post.newComment || !post.newComment.trim()) {
+    return; // Prevent adding empty or undefined comments
+  }
+
+  // Ensure 'comments' array exists before pushing a new comment
+  if (!post.comments) {
+    post.comments = []; // Initialize if undefined
+  }
+
+  post.comments.push({
+    text: post.newComment,
+    timestamp: new Date()
+  });
+
+  post.newComment = ""; // Clear input after submitting
+}
+
+likePost(post: any): void {
+  if (!post.liked) {
+    post.likes = (post.likes || 0) + 1; // Increment likes
+  } else {
+    post.likes = Math.max((post.likes || 1) - 1, 0); // Decrement likes, but not below zero
+  }
+  post.liked = !post.liked; // Toggle liked state
+
+  // Call API to update like status in the backend
+  this.postDataservices.likePost(post.id, post.liked).subscribe(
+    (response) => {
+      console.log('✅ Like status updated successfully:', response);
+    },
+    (error) => {
+      console.error('❌ Error updating like status:', error);
+    }
+  );
+}
+
 }

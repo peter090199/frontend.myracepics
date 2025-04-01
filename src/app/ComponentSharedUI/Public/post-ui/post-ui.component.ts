@@ -336,8 +336,8 @@ getSelectedStatus() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
+    dialogConfig.width = '700px';
     const dialogRef = this.dialog.open(PostUploadImageComponent, dialogConfig);
-   
     dialogRef.afterClosed().subscribe(() => {
      // this.closeDialog()
     });
@@ -354,5 +354,6 @@ getSelectedStatus() {
 
   closeDialog() {
     this.dialogRef.close();  // Close the dialog
+    
   }
 }
