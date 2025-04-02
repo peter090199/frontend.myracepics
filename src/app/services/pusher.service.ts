@@ -28,5 +28,12 @@ export class PusherService {
     });
   }
 
+  listenForNotifications(callback: (data: any) => void) {
+    this.channel.bind('my-event', (data: any) => {
+      console.log('📩 Event Received:', data);
+      callback(data);
+    });
+  }
+
 
 }

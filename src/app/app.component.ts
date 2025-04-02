@@ -40,13 +40,13 @@ export class AppComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.echoService.listenToMessages((message) => {
-      console.log('📩 New Message Received:', message);
-    });
+    // this.echoService.listenToMessages((message) => {
+    //   console.log('📩 New Message Received:', message);
+    // });
 
-    this.pusherService.bindEvent('my-event', (data: any) => {
-      this.message = data.message;
-    });
+    // this.pusherService.bindEvent('my-event', (data: any) => {
+    //   this.message = data.message;
+    // });
 
 
     this.cookieService.set('myCookie', 'cookieValue', { expires: 7, path: '/' });

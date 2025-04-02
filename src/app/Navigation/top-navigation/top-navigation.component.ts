@@ -11,6 +11,9 @@ import { ChatPopupComponent } from 'src/app/ComponentUI/messages/chat-popup/chat
 import { MatDialog } from '@angular/material/dialog';
 import { ChatService } from 'src/app/services/chat.service';
 import { NotificationComponent } from 'src/app/ComponentUI/notification/notification.component';
+import { NotificationService } from 'src/app/services/notification.service';
+import { EchoService } from 'src/app/services/echo.service';
+
 
 export interface User {
   name: string;
@@ -46,7 +49,8 @@ export class TopNavigationComponent implements OnInit {
 
   searchQuery = '';
   filteredData: string[] = [];
-  
+  unreadMessages = 0;
+  totalUnreadMessages = 0;
   data: string[] = [
     'Software Engineer', 'Frontend Developer', 'Backend Developer',
     'Full Stack Developer', 'Data Scientist', 'Machine Learning Engineer',
@@ -56,12 +60,20 @@ export class TopNavigationComponent implements OnInit {
   constructor(
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
-    private router: Router, private chatService:ChatService
+    private router: Router, private chatService:ChatService,private echoService:EchoService
   ) {}
 
+
   ngOnInit(): void {
+    this.echoService.totalUnread$.subscribe((count) => {
+      this.totalUnreadMessages = count;
+    });
+
+    // ✅ Load Initial Notifications
+    this.echoService.loadNotifications();
+
     this.fetchModules();
-    this.loadNotifications();
+    // this.loadNotifications();
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map(value => (typeof value === 'string' ? value : value?.name)),
@@ -71,16 +83,19 @@ export class TopNavigationComponent implements OnInit {
   }
 
 
-  totalUnreadMessages = 0;
-  loadNotifications(): void {
-    this.chatService.getNotifications().subscribe({
-      next: (res) => {
-        this.notifications = res; 
-        this.totalUnreadMessages = this.notifications.length; 
-      },
-      error: (err) => console.error('❌ Error fetching notifications:', err),
-    });
-  }
+
+  
+  
+  // loadNotifications(): void {
+  //   this.chatService.getNotifications().subscribe({
+  //     next: (res) => {
+  //       this.notifications = res;
+  //       this.totalUnreadMessages = this.notifications.length;
+  //     },
+  //     error: (err) => console.error('❌ Error fetching notifications:', err),
+  //   });
+  // }
+  
   
    openChat() {
       this.dialog.open(ChatPopupComponent, {
@@ -192,13 +207,13 @@ export class TopNavigationComponent implements OnInit {
 
   openNotifications() {
     this.dialog.open(NotificationComponent, {
-      width: '400px', // Set a proper width
-      position: { top: '60px', right: '90px' }, // Position near the bell icon
-      panelClass: 'custom-notification-popup', // Optional custom styling
+      width: '400px',
+      height:'90vh',
+      position: { top: '60px', right: '90px' }, 
+      panelClass: 'custom-notification-popup',
     });
   }
   
-
 
   
 }

@@ -20,50 +20,21 @@ export class NotificationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadNotifications();
-
-    // this.echoService.listenToMessages((message: any) => {
-    //   console.log('📩 New Message Received:', message);
-    
-    //   if (message && message.receiver_id === this.authservice.getData()) {
-    //     // ✅ Increment unread messages count
-    //     this.totalUnreadMessages++;
-    
-    //     // ✅ Add message to notifications list (only if unique)
-    //     this.notifications.unshift(message);
-    
-    //     // ✅ Update the badge count dynamically
-    //     this.notificationCount = this.notifications.length;
-    //   }
-    // });
-    
-    
+     this.loadNotifications();
   }
-
+  
   loadNotifications(): void {
     this.chatService.getNotifications().subscribe({
       next: (res) => {
         this.notifications = res;
-        this.totalUnreadMessages = this.notifications.length;
-
-        this.echoService.listenToMessages((notifications: any) => {
-          console.log('📩 New Message Received:', notifications);
-        
-          if (notifications && notifications.receiver_id === this.authservice.getData()) {
-            // ✅ Increment unread messages count
-            this.totalUnreadMessages++;
-        
-            // ✅ Add message to notifications list (only if unique)
-            this.notifications.unshift(notifications);
-        
-            // ✅ Update the badge count dynamically
-            this.notificationCount = this.notifications.length;
-          }
-        });
+       // this.totalUnreadMessages = this.notifications.length;
       },
-      error: (err) => console.error('❌ Error fetching notifications:', err),
+      error: (err) => {
+        console.error('Error loading notifications:', err);
+      }
     });
   }
+  
 
   chatHistory: { [key: number]: any[] } = {};
   openChat(notif: any): void {
