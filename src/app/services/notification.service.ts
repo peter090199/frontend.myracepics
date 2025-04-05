@@ -1,35 +1,98 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
+import { _url } from 'src/global-variables';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  private pusher: Pusher;
-  private channel: any;
-  private unreadCount = new BehaviorSubject<number>(0);
 
-  unreadCount$ = this.unreadCount.asObservable();
+  private echo: Echo<any>;
+  private unreadCountSubject = new BehaviorSubject<number>(0); // Controls count stream
+  public unreadCount$ = this.unreadCountSubject.asObservable(); // Public observable
 
-  constructor() {
-    this.pusher = new Pusher('e0cd7653f3ae9bbbd459', {
+  private notificationSub!: Subscription;
+   userId: number = 0;
+
+  constructor(private http: HttpClient) {
+    // Setup Pusher
+     (window as any).Pusher = Pusher;
+    this.echo = new Echo({
+      broadcaster: 'pusher',
+      key: 'e0cd7653f3ae9bbbd459', // Replace with actual key
       cluster: 'ap1',
+      forceTLS: true,
     });
 
-    this.channel = this.pusher.subscribe('chat');
-
-    this.channel.bind('.message.sent', (data: any) => {
-      this.incrementUnreadCount();
-    });
+    // this.initRealtimeConnection();
+    this.startNotificationPolling(); 
   }
 
-  private incrementUnreadCount() {
-    this.unreadCount.next(this.unreadCount.value + 1);
+  private(channel: string) {
+    return this.echo.private(channel); // Returning an Echo private channel
   }
-
   
-  resetUnreadCount() {
-    this.unreadCount.next(0);
+  private initRealtimeConnection(): void {
+    const storedId = localStorage.getItem('userId');
+    if (storedId) {
+      const userId = parseInt(storedId, 10);
+      this.listenForNotifications(userId);
+    } else {
+      console.warn('User ID not found in localStorage');
+    }
   }
+
+  // Get current unread count
+  getUnreadCount(): Observable<number> {
+    return this.unreadCountSubject.asObservable();
+  }
+
+  private unreadCountSubject2 = new BehaviorSubject<{ unreadCount: number }>({ unreadCount: 0 });
+  public unreadCount2$ = this.unreadCountSubject.asObservable();
+  
+  // Real-time listener using Echo + Pusher
+    listenForNotifications(userId: number) {
+      this.echo.private(`user.${userId}`) // Listen on the private channel for the user
+        .listen('notifications.count', (event: { unreadCount: number }) => {
+          console.log('New unread count:', event.unreadCount);
+          this.unreadCountSubject.next(event.unreadCount); // Update the unread count in the service
+        });
+    }
+
+
+  // Optional: Stop listening
+  unsubscribeFromNotifications() {
+    this.echo.leave(`user.${this.userId}`);
+  }
+
+  startNotificationPolling() {
+    if (this.notificationSub) return; 
+  
+    this.notificationSub = interval(2000).subscribe(() => {
+      this.getNotifications().subscribe(count => {
+        this.unreadCountSubject.next(count);
+      });
+    });
+  }
+
+
+
+  ngOnDestroy() {
+    if (this.notificationSub) {
+      this.notificationSub.unsubscribe(); // Clean up
+    }
+  }
+  
+  // HTTP call to get unread count
+  getNotifications(): Observable<number> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get<number>(`${_url}update_count`, { headers });
+  }
+
+
 }

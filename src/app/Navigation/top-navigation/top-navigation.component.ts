@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatMenuPanel } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { SigInService } from 'src/app/services/signIn/sig-in.service';
 import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.service';
@@ -39,8 +39,8 @@ export class TopNavigationComponent implements OnInit {
   
 
   messageCount = 3;
-  
-  notificationCount: number = 0;
+  notificationCounts = 0;
+  notificationCount: any = [];
   notifications: any[] = []; 
 
   myControl = new FormControl();
@@ -50,47 +50,92 @@ export class TopNavigationComponent implements OnInit {
   searchQuery = '';
   filteredData: string[] = [];
   unreadMessages = 0;
-  totalUnreadMessages = 0;
+  totalUnreadMessages:number = 0;
   data: string[] = [
     'Software Engineer', 'Frontend Developer', 'Backend Developer',
     'Full Stack Developer', 'Data Scientist', 'Machine Learning Engineer',
     'DevOps Engineer', 'UI/UX Designer', 'Product Manager', 'Project Manager'
   ];
 
+  notificationCountSubject = new BehaviorSubject<number>(0); // Initial count of 0
+  unreadCount$ = this.notificationCountSubject.asObservable();
+  
   constructor(
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
-    private router: Router, private chatService:ChatService,private echoService:EchoService
+    private router: Router, private chatService:ChatService,private echoService:EchoService,
+    private notificationService:NotificationService
   ) {}
 
 
   ngOnInit(): void {
-    this.echoService.totalUnread$.subscribe((count) => {
-      this.totalUnreadMessages = count;
-    });
-
-    // ✅ Load Initial Notifications
-    this.echoService.loadNotifications();
-
+  this.loadNoficationsCount();
+  // const userId = this.getUserIdFromLocalStorage(); // Get the userId from local storage
+  //   if (userId) {
+  //     this.listenToNotifications(userId); // Listen for notifications for this specific user
+  //   } else {
+  //     console.warn('No user ID found in local storage');
+  //   }
+  
     this.fetchModules();
-    // this.loadNotifications();
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => (typeof value === 'string' ? value : value?.name)),
-      map(name => (name ? this._filter(name) : this.options.slice()))
-    );
+      this.filteredOptions = this.myControl.valueChanges.pipe(
+        startWith(''),
+        map(value => (typeof value === 'string' ? value : value?.name)),
+        map(name => (name ? this._filter(name) : this.options.slice()))
+      );
 
+  }
+  getUserIdFromLocalStorage(): number | null {
+    const userId = localStorage.getItem('userId');
+    return userId ? parseInt(userId, 10) : null; // Convert it to a number if it's found
+  }
+
+  listenToNotifications(userId: number) {
+    this.notificationService
+      .private(`user.${userId}`).listen('notifications.count', (event: { unreadCount: number }) => {
+        console.log('New unread count:', event.unreadCount);
+        this.notificationCountSubject.next(event.unreadCount); // Update the unread count
+      })
+      .error((err: any) => {
+        console.error('❌ Error receiving the event:', err);
+      });
   }
 
 
+  loadNoficationsCount(){
+    this.notificationService.unreadCount$.subscribe(count => {
+      this.notificationCount = count;
+      this.totalUnreadMessages = this.notificationCount.unreadCount
+    //  console.log(this.totalUnreadMessages)
+    });
+    
 
-  
-  
+    // this.notificationService.unreadCount$.subscribe((data) => {
+    //   this.notificationCount = data;
+    //   this.totalUnreadMessages = this.notificationCount.unreadCount
+    // });
+
+  }
+  // updateNotificationCount(): void {
+  //   this.notificationService.getNotifications().subscribe({
+  //     next: (count: any) => {
+  //       this.notificationCount = count.unreadCount;
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching notification count:', err);
+  //     }
+  //   });
+  // }
+
+
   // loadNotifications(): void {
   //   this.chatService.getNotifications().subscribe({
   //     next: (res) => {
-  //       this.notifications = res;
-  //       this.totalUnreadMessages = this.notifications.length;
+  //       this.notifications = res.unreadCount;
+  //       this.echoService.totalUnread$.subscribe((cnt) => {
+  //         this.totalUnreadMessages = cnt;
+  //       });
+    
   //     },
   //     error: (err) => console.error('❌ Error fetching notifications:', err),
   //   });
@@ -206,11 +251,15 @@ export class TopNavigationComponent implements OnInit {
   chatHistory: { [key: number]: any[] } = {};
 
   openNotifications() {
-    this.dialog.open(NotificationComponent, {
+    const dialogRef = this.dialog.open(NotificationComponent, {
       width: '400px',
-      height:'90vh',
+      height: '90vh',
       position: { top: '60px', right: '90px' }, 
       panelClass: 'custom-notification-popup',
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadNoficationsCount();
     });
   }
   

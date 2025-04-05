@@ -40,26 +40,51 @@ export class EchoService {
       console.error('❌ Pusher Connection Error:', err);
     });
 
+    // const storedId = localStorage.getItem('userId');
+    // if (storedId) {
+    //   const userId = parseInt(storedId, 10);
+    //   this.listenToNotifications(userId);
+    // } else {
+    //   console.warn('User ID not found in localStorage');
+    // }
+
     // ✅ Listen to real-time updates
-    this.listenToMessages();
-    this.listenToNotifications();
+   // this.listenToMessages();
   }
 
   // ✅ Listen for Real-Time Messages
-  listenToMessages() {
+  // listenToMessages() {
+  //   this.echo.channel('chat').listen('.message.sent', (data: any) => {
+  //     console.log(data);
+  //     this.incrementMessageCount();
+  //   });
+  // }
+
+  // ✅ Listen for Real-Time Notifications
+  listenToNotificationsxx() {
     this.echo.channel('chat').listen('.message.sent', (data: any) => {
-      console.log('📩 Received message:', data);
-      this.incrementMessageCount();
+      console.log('🔔 New Notification:', data);
+      // Assuming 'data.unreadCount' contains the updated count
+      this.notificationCountSubject.next(data.unreadCount);  // Update the unread count
     });
   }
 
-  // ✅ Listen for Real-Time Notifications
-  listenToNotifications() {
-    this.echo.channel('notifications').listen('.notification.sent', (data: any) => {
-      console.log('🔔 New Notification:', data);
-      this.incrementNotificationCount();
-    });
+  listenToNotifications(userId: number) {
+    this.echo.private(`user.${userId}`)
+      .listen('notifications.count', (event: { unreadCount: number }) => {
+        console.log('New unread count:', event.unreadCount);
+        this.notificationCountSubject.next(event.unreadCount); // Update the unread count
+      })
+      .error((err: any) => {
+        console.error('❌ Error receiving the event:', err);
+      });
   }
+
+  
+  unsubscribeFromNotifications(userId: number) {
+    this.echo.leave(`user.${userId}`); // Leave the private channel
+  }
+
 
   // ✅ Increment Message Count
   private incrementMessageCount() {
@@ -118,4 +143,35 @@ export class EchoService {
   private getStoredCount(key: string): number {
     return Number(localStorage.getItem(key)) || 0;
   }
+
+  private chatMessages: { [receiverId: number]: BehaviorSubject<any[]> } = {};
+    // ✅ Subscribe to chat messages for a specific receiver
+    listenToChat(receiverId: number) {
+      if (!this.chatMessages[receiverId]) {
+        this.chatMessages[receiverId] = new BehaviorSubject<any[]>([]);
+      }
+  
+      this.echo.private(`chat.${receiverId}`).listen('.message.sent', (data: any) => {
+        console.log(`📩 New message for receiver ${receiverId}:`, data);
+        this.addMessage(receiverId, data.message);
+      });
+  
+      return this.chatMessages[receiverId].asObservable();
+    }
+    
+  // ✅ Add new message to the chat history
+  private addMessage(receiverId: number, message: any) {
+    const currentMessages = this.chatMessages[receiverId]?.value || [];
+    this.chatMessages[receiverId]?.next([...currentMessages, message]);
+  }
+
+  // ✅ Get the latest messages for a receiver
+  getChatMessages(receiverId: number) {
+    if (!this.chatMessages[receiverId]) {
+      this.chatMessages[receiverId] = new BehaviorSubject<any[]>([]);
+    }
+    return this.chatMessages[receiverId].asObservable();
+  }
+
+
 }

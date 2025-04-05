@@ -26,7 +26,7 @@ export class ChatService {
   }
 
   loadNotifications(): void {
-    this.getNotifications().subscribe({
+    this.getMessageCount().subscribe({
       next: (res) => {
         this.notifications = res;
         const count = this.notifications.length;
@@ -37,11 +37,20 @@ export class ChatService {
     });
   }
 
-  getNotifications(): Observable<any[]> {
+
+  
+  getNotifications(): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
     });
-    return this.http.get<any[]>(`${_url}notifications`,{headers});
+    return this.http.get<any>(`${_url}notifications`,{headers});
+  }
+
+  getMessageCount(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+    });
+    return this.http.get<any>(`${_url}update_count`,{headers});
   }
 
 

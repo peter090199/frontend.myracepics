@@ -14,6 +14,8 @@ export class NotificationComponent implements OnInit {
   notifications: any[] = [];
   totalUnreadMessages = 0;
   notificationCount = 0;
+  isLoading:boolean = true;
+
 
   constructor(private notifyService: NotificationsService, private chatService: ChatService,
     private dialog: MatDialog,private echoService:EchoService,private authservice:AuthService
@@ -22,12 +24,13 @@ export class NotificationComponent implements OnInit {
   ngOnInit(): void {
      this.loadNotifications();
   }
-  
+
   loadNotifications(): void {
+    this.isLoading = true;
     this.chatService.getNotifications().subscribe({
       next: (res) => {
-        this.notifications = res;
-       // this.totalUnreadMessages = this.notifications.length;
+        this.notifications = res.notifications;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading notifications:', err);
@@ -40,18 +43,17 @@ export class NotificationComponent implements OnInit {
   openChat(notif: any): void {
       this.updateReadStatus(notif.id); // ✅ Update backend
   
-    // this.dialog.open(ChatPopupComponent, {
-    //   width: '400px',
-    //   data: { user: notif.sender, messages: this.chatHistory[notif.sender.id] || [] }
-    // });
   }
 
   updateReadStatus(id: number): void {
+    this.isLoading = true;
     this.chatService.markMessagesAsRead(id).subscribe({
       next: (res) => {
         this.totalUnreadMessages = this.notifications.length;
-        // this.notifyService.toastrInfo(res.message);
+       // this.notifyService.toastrInfo(res.message);
         this.totalUnreadMessages--; 
+        this.loadNotifications();
+        this.isLoading = false;
       },
       error: (err) => console.error("❌ Error marking messages as read:", err),
     });

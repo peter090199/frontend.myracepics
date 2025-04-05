@@ -101,8 +101,6 @@ export class SignInUIComponent implements OnInit {
   reloadOnce() {
     location.reload(); 
   }
-  
-
 
   // Handle form submission
   onSubmit(): void {
@@ -111,16 +109,12 @@ export class SignInUIComponent implements OnInit {
   
       const { email, password } = this.loginForm.value;
   
-      // Simulate a login process delay (optional, can be removed or adjusted)
       setTimeout(() => {
         this.sigInService.signin(email, password).subscribe({
           next: (res) => {
             if (res.success && res.token) {
-              // Handle successful login response
               this.isLoading = false;
               this.isLoginSuccessful = true;
-  
-              // Navigate based on user role/message
               if (res.message === 0) {
              //   this.router.navigate(['/home']);
                 this.router.navigate(['/home']).then(() => this.reloadOnce());
@@ -128,37 +122,30 @@ export class SignInUIComponent implements OnInit {
                // this.router.navigate(['/user-cv']);
                 this.router.navigate(['/user-cv']).then(() => this.reloadOnce());
               }
-  
-              // Reset form and show chat button UI after successful login
               this.loginForm.reset();
               this.showChatButtonUI();
-  
-              // Hide the overlay after 3 seconds
               setTimeout(() => {
                 this.isLoginSuccessful = false;
               }, 1000);
             } else {
-              // Handle unsuccessful login response
               this.isLoading = false;
               this.notificationService.toastPopUpError(res.message);
             }
           },
           error: (err) => {
-            // Handle error response
             if (err.status === 401) {
               this.notificationService.toastrError(err.error);
             } else {
               this.notificationService.toastPopUpError(err.message);
             }
-            this.isLoading = false; // Stop loading on error
+            this.isLoading = false; 
           },
           complete: () => {
-            this.isLoading = false; // Stop loading on completion
+            this.isLoading = false;
           }
         });
-      }, 2000); // Simulated login delay
+      }, 2000); 
     } else {
-      // If form is invalid, stop loading and possibly show validation messages
       this.isLoading = false;
     }
   }

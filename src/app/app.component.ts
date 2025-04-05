@@ -61,8 +61,18 @@ export class AppComponent implements OnInit {
 
     this.showWebsiteChat = localStorage.getItem('showWebsiteChat') === 'true';
     this.reloadOnce();
+    this.loadUserID()
   }
 
+
+  loadUserID() {
+    this.authService.getData().subscribe(res => {
+      this.userId = res.id; 
+      if (this.userId !== null) {
+        localStorage.setItem('userId', this.userId.toString());
+      }
+    });
+  }
   
 
   reloadOnce() {

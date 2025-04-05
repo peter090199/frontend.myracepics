@@ -2,8 +2,8 @@
 <router-outlet></router-outlet>
 
 <div class="floating-btn" *ngIf="isLoggedIn && showChatButton" @fadeInUp>
-    <button mat-fab color="primary" matTooltip="Messages" (click)="openChat()">
-      <mat-icon>chat</mat-icon>
+    <button class="btn btn-info" matTooltip="Messages" (click)="openChat()">
+      <i class="fa-solid fa-comment custom-icon"></i>
     </button>
   </div>
 
@@ -23,6 +23,8 @@
 
   </button>
 </div>
+
+
 <!-- 
 <h1>Pusher Test</h1>
 <p>

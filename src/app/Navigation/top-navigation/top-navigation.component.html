@@ -111,18 +111,24 @@
                 </button>
 
                 <button mat-icon-button *ngIf="link.description === 'Messaging'" 
-                  [routerLink]="[link.route]" matBadge="{{ totalUnreadMessages }}" matBadgeColor="warn">
+                  [routerLink]="[link.route]" matBadge="{{ totalUnreadMessages }}" matBadgeColor="warn" [matBadgeHidden]="totalUnreadMessages === 0">
+                  
                   <i class="{{ link.icon }}"></i>
                 </button>
 
-                <button  *ngIf="link.description === 'Notifications'" (click)="openNotifications()"
-                        mat-icon-button
-                        matBadge="{{ totalUnreadMessages }}"
-                         matBadgeColor="warn">
-                      <mat-icon>notifications</mat-icon>
-                </button>
-
-                              
+                <button mat-icon-button 
+                    *ngIf="link.description === 'Notifications'" 
+                    matTooltip="View Notification" 
+                    (click)="openNotifications()" 
+                    [matBadge]="totalUnreadMessages" 
+                    matBadgeColor="warn" 
+                    [matBadgeHidden]="totalUnreadMessages === 0">
+                
+                <mat-icon>notifications</mat-icon>
+              </button>
+              
+        
+                                    
 
               </ng-template>
 

@@ -15,6 +15,9 @@
 .router-outlet + * {
   margin-top: 60px; /* Adjust based on .content height */
 }
+button[mat-icon-button] {
+  position: relative;
+}
 
 
 .dropdown-item {

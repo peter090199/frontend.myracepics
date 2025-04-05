@@ -1,11 +1,13 @@
 <div class="notification-container">
-  <h3>Notifications </h3>
+  <h3>Notifications</h3>
 
-  <div *ngIf="notifications.length === 0" class="no-notifications">
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="accent"></mat-progress-bar>
+
+  <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
     No new notifications
   </div>
 
-  <mat-list *ngIf="notifications.length > 0">
+  <mat-list *ngIf="!isLoading && notifications.length > 0">
     <mat-list-item 
       *ngFor="let notif of notifications" 
       (click)="openChat(notif)" 

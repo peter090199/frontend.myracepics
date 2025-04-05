@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ChatService } from 'src/app/services/chat.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -20,6 +20,7 @@ export class ChatPopupComponent implements OnInit {
   users: any[] = [];
   messages: any[] = [];
   newMessageCounts: { [userId: number]: number } = {}; // Track unread messages per user
+  @Input() receiverId!: number;
 
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
@@ -32,52 +33,77 @@ export class ChatPopupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+   // this.loadMessages2();
+
+
+    // this.pusherService.listenToEvents((data) => {
+    //   console.log('📩 Pusher Received:', data);
+    //   this.notify.toastrSuccess(`New Message: ${data}`);
+    // });
     
-    this.authService.getData().subscribe({
-      next: (data) => {
-        this.myUserId = data.id;
-
-        if (this.myUserId) {
-          console.log(`✅ User authenticated with ID: ${this.myUserId}`);
-         // this.listenForIncomingMessages(this.myUserId);
-        } else {
-          console.warn('⚠️ User ID is null. Real-time messaging will not start.');
-        }
-      },
-      error: (err) => {
-        console.error('❌ Error fetching user data:', err);
-      },
-    });
-
-    this.pusherService.listenToEvents((data) => {
-      console.log('📩 Pusher Received:', data);
-      this.notify.toastrSuccess(`New Message: ${data}`);
-    });
-
     this.loadUsers();
   }
 
-  // listenForMessagesxx(): void {
-  //   this.echoService.listenToMessages((message: any) => {
-  //     if (!message || !message.receiver_id || !message.sender_id) return;
 
-  //     if (message.receiver_id === this.myUserId) {
-  //       if (!this.selectedUser || this.selectedUser.id !== message.sender_id) {
-  //         this.newMessageCounts[message.sender_id] = (this.newMessageCounts[message.sender_id] || 0) + 1;
-  //       } else {
-  //         if (!this.chatHistory[message.sender_id]) {
-  //           this.chatHistory[message.sender_id] = [];
-  //         }
-  //         this.chatHistory[message.sender_id].push(message);
-  //         this.scrollToBottom();
-  //       }
-  //       this.notify.toastrSuccess(`New message from ${message.sender_id}`);
+  loadData(){
+    
+   this.authService.getData().subscribe({
+    next: (data) => {
+      this.myUserId = data.id;
+  
+      if (this.myUserId) {
+        console.log(`✅ User authenticated with ID: ${this.myUserId}`);
+        
+        // Start listening for notifications with the authenticated user's ID
+        this.echoService.listenToNotifications(this.myUserId);
+        
+        // this.listenForIncomingMessages();
+      } else {
+        console.warn('⚠️ User ID is null. Real-time messaging will not start.');
+      }
+    },
+    error: (err) => {
+      console.error('❌ Error fetching user data:', err);
+    }
+  });
+  
+  }
+   // ✅ Load old + real-time messages
+   loadMessages2() {
+    this.chatService.getMessages(this.receiverId).subscribe((res) => {
+      this.messages = res || [];
+    });
+
+    this.echoService.listenToChat(this.receiverId).subscribe((newMessages) => {
+      this.messages = newMessages;
+    });
+  }
+
+
+
+  // ✅ Listen for real-time messages
+  // listenForIncomingMessages(): void {
+  //   this.echoService.listenToMessages();
+
+  //   // Subscribe to updates when new messages arrive
+  //   this.echoService.unreadMessages$.subscribe((count) => {
+  //     if (count > 0) {
+  //       this.loadMessagesRealTime();
   //     }
   //   });
   // }
 
+
+  loadMessagesRealTime() {
+    this.messages.push({
+      text: '📩 New message received!',
+     // timestamp: new Date(),
+    });
+    this.scrollToBottom();
+  }
+
   onNotificationClick(id: number): void {
-    const user = this.users.find(u => u.id === id);
+    const user = this.users.find((u) => u.id === id);
     if (user) {
       this.openChatWith(user);
     }
@@ -88,27 +114,13 @@ export class ChatPopupComponent implements OnInit {
     this.selectedUser = user;
     this.newMessageCounts[user.id] = 0;
     this.loadMessages(user.id);
-   // this.listenForIncomingMessages(user.id);
   }
 
-  // listenForIncomingMessages(receiverId: number): void {
-  //   this.echoService.listenToMessages((message: any) => {
-  //     if (!message || !message.receiver_id || !message.sender_id) return;
-  //     if (message.receiver_id === this.myUserId && message.sender_id === receiverId) {
-  //       if (!this.chatHistory[receiverId]) {
-  //         this.chatHistory[receiverId] = [];
-  //       }
-  //       this.chatHistory[receiverId].push(message);
-  //       this.scrollToBottom();
-  //     }
-  //   });
-  // }
-
-     closeChat(): void {
-        this.selectedUser = null;
-        this.chatOpened = false;
-        this.showChatButton = true;
-      }
+  closeChat(): void {
+    this.selectedUser = null;
+    this.chatOpened = false;
+    this.showChatButton = true;
+  }
 
   loadUsers(): void {
     this.chatService.getActiveMessages().subscribe({
@@ -122,6 +134,8 @@ export class ChatPopupComponent implements OnInit {
       next: (res) => {
         this.chatHistory[receiverId] = res || [];
         this.scrollToBottom();
+        this.loadData();
+       // this.echoService.listenToMessages();
       },
       error: (err) => console.error('❌ Error fetching messages:', err),
     });
@@ -150,6 +164,7 @@ export class ChatPopupComponent implements OnInit {
 
     this.chatService.sendMessage(receiverId, messageContent).subscribe({
       next: () => console.log('✅ Message sent successfully'),
+ 
       error: (err) => {
         console.error('❌ Error sending message:', err);
         this.notify.toastrError('Failed to send message');
@@ -160,11 +175,12 @@ export class ChatPopupComponent implements OnInit {
   get totalUnreadMessages(): number {
     return Object.values(this.newMessageCounts || {}).reduce((sum, count) => sum + count, 0);
   }
-  
+
   scrollToBottom(): void {
     setTimeout(() => {
-      if (this.chatContainer) {
-        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      if (this.chatContainer?.nativeElement) {
+        this.chatContainer.nativeElement.scrollTop =
+          this.chatContainer.nativeElement.scrollHeight;
       }
     }, 100);
   }
