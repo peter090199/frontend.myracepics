@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, NgZone, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatMenuPanel } from '@angular/material/menu';
 import { Router } from '@angular/router';
@@ -39,7 +39,7 @@ export class TopNavigationComponent implements OnInit {
   
 
   messageCount = 3;
-  notificationCounts = 0;
+  notificationCounts:number = 0;
   notificationCount: any = [];
   notifications: any[] = []; 
 
@@ -59,24 +59,24 @@ export class TopNavigationComponent implements OnInit {
 
   notificationCountSubject = new BehaviorSubject<number>(0); // Initial count of 0
   unreadCount$ = this.notificationCountSubject.asObservable();
-  
+
+  count = 0;
+  isOpen = false;
+
   constructor(
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
     private router: Router, private chatService:ChatService,private echoService:EchoService,
-    private notificationService:NotificationService
+    private notificationService:NotificationService, private ngZone: NgZone
   ) {}
 
 
   ngOnInit(): void {
-  this.loadNoficationsCount();
-  // const userId = this.getUserIdFromLocalStorage(); // Get the userId from local storage
-  //   if (userId) {
-  //     this.listenToNotifications(userId); // Listen for notifications for this specific user
-  //   } else {
-  //     console.warn('No user ID found in local storage');
-  //   }
-  
+    // this.notificationService.notificationCounts$.subscribe(counts => {
+    //   this.notificationCounts = counts;
+    // });
+    console.log(this.count)
+
     this.fetchModules();
       this.filteredOptions = this.myControl.valueChanges.pipe(
         startWith(''),
@@ -90,24 +90,24 @@ export class TopNavigationComponent implements OnInit {
     return userId ? parseInt(userId, 10) : null; // Convert it to a number if it's found
   }
 
-  listenToNotifications(userId: number) {
-    this.notificationService
-      .private(`user.${userId}`).listen('notifications.count', (event: { unreadCount: number }) => {
-        console.log('New unread count:', event.unreadCount);
-        this.notificationCountSubject.next(event.unreadCount); // Update the unread count
-      })
-      .error((err: any) => {
-        console.error('❌ Error receiving the event:', err);
-      });
-  }
+  // listenToNotifications(userId: number) {
+  //   this.notificationService
+  //     .private(`user.${userId}`).listen('notifications.count', (event: { unreadCount: number }) => {
+  //       console.log('New unread count:', event.unreadCount);
+  //       this.notificationCountSubject.next(event.unreadCount); // Update the unread count
+  //     })
+  //     .error((err: any) => {
+  //       console.error('❌ Error receiving the event:', err);
+  //     });
+  // }
 
 
   loadNoficationsCount(){
-    this.notificationService.unreadCount$.subscribe(count => {
-      this.notificationCount = count;
-      this.totalUnreadMessages = this.notificationCount.unreadCount
-    //  console.log(this.totalUnreadMessages)
-    });
+    // this.notificationService.unreadCount$.subscribe(count => {
+    //   this.notificationCount = count;
+    //   this.totalUnreadMessages = this.notificationCount.unreadCount
+    // //  console.log(this.totalUnreadMessages)
+    // });
     
 
     // this.notificationService.unreadCount$.subscribe((data) => {

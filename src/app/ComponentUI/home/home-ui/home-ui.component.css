@@ -43,6 +43,7 @@
   flex-direction: column;
 }
 
+
 .followers, .active-hours {
   font-size: 13px;
   color: gray;
@@ -346,6 +347,51 @@ button {
   overflow-y: auto; /* Enables scrolling if content overflows */
   scrollbar-width: thin; /* Firefox - Thin scrollbar */
   -webkit-overflow-scrolling: touch;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.carousel-wrapper {
+  display: flex;
+  transition: transform 0.4s ease-in-out;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 24px;
+  z-index: 1;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
 }
 
 

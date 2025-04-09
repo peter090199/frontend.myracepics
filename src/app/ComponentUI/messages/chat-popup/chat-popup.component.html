@@ -18,6 +18,11 @@
     <mat-list-item *ngFor="let user of users" (click)="openChatWith(user)">
       <img matListAvatar [src]="user.photo_pic || 'assets/images/default.png'" alt="{{ user.fullname }}" />
       <div mat-line>{{ user.fullname }}</div>
+
+      <span class="notification-count" *ngIf="notificationCounts[user.id]">
+        {{ notificationCounts[user.id] }}
+      </span>
+      
       <span class="user-status" [ngClass]="{'online': user.is_online === 1, 'offline': user.is_online === 0}"></span>
     </mat-list-item>
   </mat-list>

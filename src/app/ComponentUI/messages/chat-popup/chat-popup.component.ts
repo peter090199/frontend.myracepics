@@ -4,7 +4,7 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { AuthService } from 'src/app/services/auth.service';
 import { EchoService } from 'src/app/services/echo.service';
 import { PusherService } from 'src/app/services/pusher.service';
-
+import { NotificationService } from 'src/app/services/notification.service';
 @Component({
   selector: 'app-chat-popup',
   templateUrl: './chat-popup.component.html',
@@ -24,38 +24,52 @@ export class ChatPopupComponent implements OnInit {
 
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
+  count = 0;
+  notifications:any[]=[];
+  notificationCounts: { [key: string]: number } = {}; 
+  
   constructor(
     private chatService: ChatService,
     private notify: NotificationsService,
     private authService: AuthService,
     private echoService: EchoService,
-    private pusherService: PusherService
+    private pusherService: PusherService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
-   // this.loadMessages2();
+  //  this.loadMessages2();
 
-
+    // this.echoService.listenName("chat","message.sent","test");
+   // this.echoService.listen();
     // this.pusherService.listenToEvents((data) => {
     //   console.log('📩 Pusher Received:', data);
     //   this.notify.toastrSuccess(`New Message: ${data}`);
     // });
-    
+   // console.log(this.receiverId)
+    //  const receiverId = parseInt(localStorage.getItem('userId') || '0', 10);
+    //  console.log(receiverId)
+    // this.echoService.listen();
+
+    this.loadData();
     this.loadUsers();
   }
 
 
   loadData(){
-    
+
    this.authService.getData().subscribe({
     next: (data) => {
       this.myUserId = data.id;
-  
+      
       if (this.myUserId) {
-        console.log(`✅ User authenticated with ID: ${this.myUserId}`);
+
+
+    
+      //  console.log(`✅ User authenticated with ID: ${this.myUserId}`);
         
         // Start listening for notifications with the authenticated user's ID
-        this.echoService.listenToNotifications(this.myUserId);
+       // this.echoService.listenToNotifications(this.myUserId);
         
         // this.listenForIncomingMessages();
       } else {
@@ -69,15 +83,15 @@ export class ChatPopupComponent implements OnInit {
   
   }
    // ✅ Load old + real-time messages
-   loadMessages2() {
-    this.chatService.getMessages(this.receiverId).subscribe((res) => {
-      this.messages = res || [];
-    });
+  //  loadMessages2() {
+  //   this.chatService.getMessages(this.receiverId).subscribe((res) => {
+  //     this.messages = res || [];
+  //   });
 
-    this.echoService.listenToChat(this.receiverId).subscribe((newMessages) => {
-      this.messages = newMessages;
-    });
-  }
+  //   this.echoService.listenToChat(this.receiverId).subscribe((newMessages) => {
+  //     this.messages = newMessages;
+  //   });
+  // }
 
 
 
@@ -134,7 +148,6 @@ export class ChatPopupComponent implements OnInit {
       next: (res) => {
         this.chatHistory[receiverId] = res || [];
         this.scrollToBottom();
-        this.loadData();
        // this.echoService.listenToMessages();
       },
       error: (err) => console.error('❌ Error fetching messages:', err),
@@ -164,13 +177,24 @@ export class ChatPopupComponent implements OnInit {
 
     this.chatService.sendMessage(receiverId, messageContent).subscribe({
       next: () => console.log('✅ Message sent successfully'),
- 
       error: (err) => {
         console.error('❌ Error sending message:', err);
         this.notify.toastrError('Failed to send message');
       },
     });
+
+    // this.echoService.listen();
   }
+
+  // load(){
+  //   this.notificationService.notificationCounts$.subscribe(counts => {
+  //     this.notificationCounts = counts;
+  //     console.log(this.notificationCounts)
+  //   });
+
+
+ // }
+
 
   get totalUnreadMessages(): number {
     return Object.values(this.newMessageCounts || {}).reduce((sum, count) => sum + count, 0);

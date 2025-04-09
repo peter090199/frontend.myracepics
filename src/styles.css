@@ -49,6 +49,8 @@ app-footer {
   max-height: 80vh;
   padding: 10px;
 }
+
+
 .content-body::-webkit-scrollbar {
   display: none; /* Hides scrollbar in Chrome, Edge, and Safari */
 }

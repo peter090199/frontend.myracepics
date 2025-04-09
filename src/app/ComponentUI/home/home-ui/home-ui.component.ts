@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit,OnDestroy, ElementRef, ViewChild, HostListener, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { PostUploadImagesService } from 'src/app/services/post-upload-images.ser
   templateUrl: './home-ui.component.html',
   styleUrls: ['./home-ui.component.css']
 })
-export class HomeUIComponent implements OnInit {
+export class HomeUIComponent implements OnInit,OnDestroy {
 
   error: any;
   profiles: any=[];
@@ -27,26 +27,26 @@ export class HomeUIComponent implements OnInit {
   isLoading:boolean = false; 
   page = 1; 
   isMobile: boolean = false; 
- 
   currentIndex = 0;
-
-
-  private scrollInterval: any;
-  @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef; // Reference to the scroll container
+  @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef;
   posts:any[] = [];
+  ismobile: boolean = false;
+  autoSlideInterval: any;
+  @Input() post: any = { posts: [] };
+  @HostListener('window:resize', ['$event'])
+  private scrollInterval: any;
 
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
     private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService
   ) {}
   
-  ismobile: boolean = false;
 
-  @HostListener('window:resize', ['$event'])
   onResize() {
     this.isMobile = window.innerWidth <= 768; // or your breakpoint for mobile
   }
 
   ngOnDestroy(): void {
+    clearInterval(this.autoSlideInterval);
   }
 
   ngOnInit(): void {
@@ -58,7 +58,30 @@ export class HomeUIComponent implements OnInit {
     this.fetchProfilePicture();
     this.loadUserPost();
     this.getProfileByUser();
+    this.startAutoSlide();
+
   }
+
+  startAutoSlide(): void {
+    this.autoSlideInterval = setInterval(() => {
+      this.nextSlide(this.posts);
+    }, 5000); // Change to your preferred interval (ms)
+  }
+
+  nextSlide(post: any): void {
+    if (post.images && post.images.length > 0) {
+      post.currentIndex = (post.currentIndex + 1) % post.images.length;
+    }
+  }
+
+  prevSlide(posts: any): void {
+    console.log(posts)
+    if (posts.posts.path_url.length > 0) {
+      posts.currentIndex = (posts.currentIndex - 1 + posts.posts.path_url.length) % posts.posts.path_url.length;
+    }
+  }
+
+
 
 createPost() {
   const dialogConfig = new MatDialogConfig();
@@ -174,8 +197,29 @@ createPost() {
       return `${diffInHours} hours ago`;
     }
 
-
-  loadUserPost(): void {
+    loadUserPost(): void {
+      this.isLoading = true;
+      this.postDataservices.getDataPostAddFollow().subscribe(
+        (data) => {
+          if (data && Array.isArray(data)) {
+            this.posts = data.map(post => ({
+              ...post,
+              activeHours: this.getActiveHours(post.lastActive),
+              followers: post.followers || 0,
+              currentIndex: 0, // for image carousel
+              images: post.images || [] // ensure it has images
+            }));
+          }
+          this.isLoading = false;
+        },
+        (error) => {
+          console.error('Error fetching posts:', error);
+          this.isLoading = false;
+        }
+      );
+    }
+  
+  loadUserPostxx(): void {
     this.isLoading = true;
     this.postDataservices.getDataPostAddFollow().subscribe(
       (data) => {

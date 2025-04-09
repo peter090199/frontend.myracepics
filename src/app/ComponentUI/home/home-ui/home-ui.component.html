@@ -113,14 +113,29 @@
                     </a>
                   </p>
                 </div>
+                <div *ngFor="let post of posts" class="post-container">
+                  <h3>{{ post.title }}</h3>
                 
-                <div class="slideshow-container">
-                  <div class="post-images">
-                    <div *ngFor="let image of post.posts" class="post-item">
-                      <img [src]="image.post" alt="Post Image">
+                  <div class="slideshow-container">
+                    <div class="post-images">
+                      <div class="carousel-slide" *ngFor="let image of post.posts">
+                        <img [src]="image.path_url" alt="Post Image" />
+                      </div>
                     </div>
+                
+                    <button class="nav prev" (click)="prevSlide(posts)">&#10094;</button>
+                    <button class="nav next" (click)="nextSlide(posts)">&#10095;</button>
                   </div>
                 </div>
+                
+                
+                <!-- <div class="slideshow-container">
+                  <div class="post-images">
+                    <div *ngFor="let image of post.posts" class="post-item">
+                      <img [src]="image.path_url" alt="Post Image">
+                    </div>
+                  </div>
+                </div> -->
 
 
                 
