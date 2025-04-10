@@ -9,7 +9,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-height: auto;
   max-height: 900px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 /* Hide scrollbar for Chrome, Safari, and Edge */
@@ -26,12 +26,14 @@
 .post-box-container {
   -ms-overflow-style: none;
 }
+
 .profile-avatar {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
 }
+
 .post-container {
   border: 1px solid #ddd;
   padding: 10px;
@@ -42,7 +44,6 @@
   display: flex;
   flex-direction: column;
 }
-
 
 .followers, .active-hours {
   font-size: 13px;
@@ -105,6 +106,7 @@
   gap: 12px;
   margin-bottom: 16px;
 }
+
 .profile-container {
   width: 100%;
   margin: 0 auto;
@@ -112,15 +114,11 @@
   flex-direction: column;
   height: auto;
 }
+
 .cover-photo {
   position: relative;
 }
-.button-gap{
-  display: flex;
-  justify-content: flex-start; /* Aligns buttons to the start */
-  flex: 1; /* Adds a fixed amount of space between buttons */
 
-}
 .cover-photo-img {
   width: 100%;
   height: 100px;
@@ -131,10 +129,12 @@
   color: red;
   font-weight: bold;
 }
+
 .add-btn {
   display: flex;
-  align-items: center;      /* Vertically aligns the icon with the text */
+  align-items: center; /* Vertically aligns the icon with the text */
 }
+
 .avatar {
   width: 40px;
   height: 40px;
@@ -151,7 +151,6 @@
   background-color: #f0f0f0;
   color: #999;
 }
-
 
 .actions-section {
   display: flex;
@@ -198,8 +197,7 @@
   /* Mobile Styles */
   .post-box-container {
     padding: 12px;
-    padding: 0px;
-    margin: 0px;
+    margin: 0;
   }
 
   .input-section {
@@ -219,6 +217,17 @@
   .action-btn {
     width: 100%; /* Full width for mobile */
     justify-content: center;
+  }
+
+  /* Adjusting profile avatar size */
+  .avatar-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Hide profile image text for mobile */
+  .profile-avatar .edit-overlay {
+    font-size: 16px;
   }
 }
 
@@ -246,47 +255,44 @@
   }
 }
 
-
 /* General Styles */
 .example-container {
   display: flex;
   flex-direction: column;
   height: auto;
   background-color: rgb(246, 244, 244);
-  margin:0px;
-
+  margin: 0px;
 }
+
 .mat-sidenav-content {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
+
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: left;
-  padding: 5px; /* Padding for header */
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color:none;
+  padding: 5px;
+  background-color: none;
   margin: 8px;
 }
+
 .right-column {
-  top: 0;         /* Aligns it with the top of the viewport */
-  right: 0;       /* Aligns it to the right */
-  width: 95%;     /* Adjust width as needed */
-  max-height: 88vh;  /* Full viewport height */
-  overflow-y: auto; /* Enables vertical scrolling if content overflows */
+  top: 0;
+  right: 0;
+  width: 95%;
+  max-height: 88vh;
+  overflow-y: auto;
   padding: 10px;
-  background-color: #f9f9f9; /* Optional: Background color */
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: Subtle shadow */
+  background-color: #f9f9f9;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   margin-top: 40px;
   border-radius: 10px;
 }
 
-/* Scrollbar Styling (Optional) */
 .right-column::-webkit-scrollbar {
   width: 8px;
 }
@@ -305,8 +311,6 @@
   background: #aaa;
 }
 
-
-
 .post-display-card {
   margin-bottom: 26px;
 }
@@ -323,7 +327,6 @@
   align-items: center;
   justify-content: space-between;
   margin: 18px;
-  margin-top: 22px;
 }
 
 .clients-list img,
@@ -342,10 +345,10 @@ button {
   padding-top: 10px;
   margin-top: 5px;
   width: 100%;
-  height: auto; /* Allows content to expand */
-  max-height: 90vh; /* Prevents exceeding the viewport */
-  overflow-y: auto; /* Enables scrolling if content overflows */
-  scrollbar-width: thin; /* Firefox - Thin scrollbar */
+  height: auto;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -377,7 +380,7 @@ button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
   padding: 8px;
@@ -394,11 +397,11 @@ button {
   right: 0;
 }
 
-
 @media (max-width: 768px) {
   .main-container {
-    padding: 8px;
-    gap: 8px;
+    padding: 0px;
+    gap: 0px;
+    margin: 0px;
   }
 }
 
@@ -408,21 +411,19 @@ button {
     gap: 5px;
   }
 }
-/* Hide scrollbar for Chrome, Edge, Safari */
+
 .main-container::-webkit-scrollbar {
-  width: 6px; /* Makes scrollbar thin */
+  width: 6px;
 }
 
 .main-container::-webkit-scrollbar-thumb {
-  background: transparent; /* Hide scrollbar thumb */
+  background: transparent;
 }
 
 .main-container:hover::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2); /* Show scrollbar on hover */
+  background: rgba(0, 0, 0, 0.2);
 }
 
-
-/* Desktop Layout */
 @media (min-width: 768px) {
   .main-container {
     grid-template-columns: 1fr 2fr 1fr;
@@ -434,56 +435,48 @@ button {
   .right-column {
     padding: 8px;
   }
-
-  
 }
 
-/* Mobile Layout */
 @media (max-width: 767px) {
   .main-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     margin-bottom: 60px;
-    height: auto;
-    
   }
+
   .left-column,
   .middle-column,
   .right-column {
     margin-bottom: 16px;
-    margin-left: 0px;
-    margin-top: 0px;
+    margin-left: 0;
+    margin-top: 0;
   }
 
   .interaction-buttons button {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 1px;
   }
- 
-.example-container {
-  display: flex;
-  flex-direction: column;
-  height: 90vh;
-  margin:5px;
-}
+
+  .example-container {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    margin: 5px;
+  }
 
   .fb-header-left {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
-    padding: 2px; /* Adds padding for inner spacing */
-    padding-top: 0px;
-    border-bottom: 1px solid #ddd; /* Optional: Adds a border for separation */
-    margin-top: 0px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2px;
+    margin-top: 0;
     margin-bottom: 22px;
   }
+
   .post-display-card {
     margin-bottom: 36px;
     padding: 10px;
   }
-  
 }
-
-
 
 /* Profile Card */
 .profile-card {
@@ -498,7 +491,6 @@ button {
   max-width: 100px;
   border-radius: 50%;
   margin: 10px 0;
-
 }
 
 .main-container .left-column {
@@ -510,6 +502,106 @@ button {
     display: none;
   }
 }
+@media (max-width: 768px) {
+  .example-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .middle-column {
+    padding: 0;
+  }
+
+  .right-column {
+    display: none; /* Hide right column on tablet */
+  }
+
+  .post-box-container {
+    margin-bottom: 20px;
+  }
+
+  .profile-avatar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-pic {
+    width: 70px;
+    height: 70px;
+  }
+
+  .profile-name {
+    font-size: 1.2rem;
+  }
+
+  .post-input {
+    font-size: 14px;
+  }
+
+  .actions-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fb-gallery {
+    justify-content: center;
+  }
+
+  .thumbnail-row {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    max-width: 90%;
+  }
+
+
+}
+
+/* For Mobile (screen width less than or equal to 480px) */
+@media (max-width: 480px) {
+  .example-container {
+    padding: 5px;
+  }
+
+  .post-box-container {
+    margin-bottom: 15px;
+  }
+  .interaction-buttons {
+    flex-direction: column;
+    gap: 1px;
+  }
+  .interaction-buttons button {
+    display: flex;
+    gap: 1px;
+  }
+
+
+  .profile-pic {
+    width: 60px;
+    height: 60px;
+  }
+
+  .profile-name {
+    font-size: 1.1rem;
+  }
+
+  .post-input {
+    font-size: 12px;
+  }
+
+
+  .modal-content {
+    max-width: 95%;
+  }
+
+
+  .modal {
+    top: 10px;
+    bottom: 10px;
+  }
+}
+
 
 .slideshow-container {
   position: relative;
@@ -522,4 +614,3 @@ button {
   flex-direction: column;
   margin-bottom: 20px;
 }
-

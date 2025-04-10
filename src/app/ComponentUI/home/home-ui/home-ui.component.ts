@@ -34,12 +34,72 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   autoSlideInterval: any;
   @Input() post: any = { posts: [] };
   @HostListener('window:resize', ['$event'])
+  maxImages:number = 3;
+  
   private scrollInterval: any;
 
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
     private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService
   ) {}
   
+  modalOpen = false;
+  currentPage = 0;
+  pageSize = 6;
+  newComment = '';
+
+  get pagedImages() {
+    const start = this.currentPage * this.pageSize;
+    return this.post.posts.slice(start, start + this.pageSize);
+  }
+  
+  get totalPages() {
+    return Math.ceil(this.post.posts.length / this.pageSize);
+  }
+  
+  openModal(index: number): void {
+    this.modalOpen = true;
+    this.currentIndex = this.currentPage * this.pageSize + index;
+  }
+  
+  closeModal(): void {
+    this.modalOpen = false;
+  }
+  
+  changeSlide(direction: number): void {
+    const total = this.post.posts.length;
+    this.currentIndex = (this.currentIndex + direction + total) % total;
+  }
+  
+  goToSlide(index: number): void {
+    this.currentIndex = index;
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) this.currentPage++;
+  }
+  
+  prevPage(): void {
+    if (this.currentPage > 0) this.currentPage--;
+  }
+  
+  getCaption(index: number): string {
+    return this.post.posts[index]?.path_url.split('/').pop() || '';
+  }
+
+  addCommentPreview(): void {
+    const trimmed = this.newComment.trim();
+    if (trimmed) {
+      this.post.posts[this.currentIndex].comments.push({
+        user: 'You', // You can replace with actual user name
+        text: trimmed
+      });
+      this.newComment = '';
+    }
+  }
+
+
+
+
 
   onResize() {
     this.isMobile = window.innerWidth <= 768; // or your breakpoint for mobile

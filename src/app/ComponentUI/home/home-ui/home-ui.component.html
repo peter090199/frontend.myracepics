@@ -113,31 +113,54 @@
                     </a>
                   </p>
                 </div>
-                <div *ngFor="let post of posts" class="post-container">
-                  <h3>{{ post.title }}</h3>
-                
-                  <div class="slideshow-container">
-                    <div class="post-images">
-                      <div class="carousel-slide" *ngFor="let image of post.posts">
-                        <img [src]="image.path_url" alt="Post Image" />
-                      </div>
+
+                <div class="fb-gallery">
+                  <div
+                    class="gallery-item"
+                    *ngFor="let image of post.posts.slice(0, maxImages); let i = index"
+                    [ngClass]="{ 'large': i === 0 }"
+                    (click)="openModal(i)"
+                  >
+                    <img [src]="image.path_url" alt="Gallery image" />
+                    <div class="overlay" *ngIf="i === (maxImages - 1) && post.posts.length > maxImages">
+                      +{{ post.posts.length - maxImages }}
                     </div>
-                
-                    <button class="nav prev" (click)="prevSlide(posts)">&#10094;</button>
-                    <button class="nav next" (click)="nextSlide(posts)">&#10095;</button>
+                    
                   </div>
                 </div>
                 
+                <!-- Modal / Lightbox -->
+                <div class="modal" *ngIf="modalOpen">
+                  <span class="close cursor" (click)="closeModal()">&times;</span>
+                  <div class="modal-content">
+                    <!-- Large Preview -->
+                    <div class="mySlides" *ngFor="let image of post.posts; let i = index" [hidden]="i !== currentIndex">
+                      <div class="numbertext">{{ i + 1 }} / {{ post.posts.length }}</div>
+                      <img [src]="image.path_url" class="modal-image" />
+                    </div>
                 
-                <!-- <div class="slideshow-container">
-                  <div class="post-images">
-                    <div *ngFor="let image of post.posts" class="post-item">
-                      <img [src]="image.path_url" alt="Post Image">
+                    <!-- Navigation -->
+                    <a class="prev" style="color: rgb(2, 101, 239);" (click)="changeSlide(-1)">&#10094;</a>
+                    <a class="next" style="color: rgb(2, 101, 239);" (click)="changeSlide(1)">&#10095;</a>
+                
+                    <!-- Caption (optional) -->
+                    <div class="caption-container">
+                      <p id="caption">{{ getCaption(currentIndex) }}</p>
+                    </div>
+                
+                    <!-- Thumbnail controls -->
+                    <div class="thumbnail-row">
+                      <div class="column" *ngFor="let image of post.posts; let i = index" (click)="goToSlide(i)">
+                        <img
+                          class="demo"
+                          [src]="image.path_url"
+                          [class.active]="i === currentIndex"
+                          [alt]="getCaption(i)"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div> -->
-
-
+                </div>
                 
               </mat-card-content>
           

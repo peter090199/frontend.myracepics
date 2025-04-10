@@ -25,6 +25,13 @@ export class ProfileUIComponent implements OnInit {
   posts:any[] = [];
   followers:any;
   activeHours:any;
+  
+  modalOpen = false;
+  currentPage = 0;
+  pageSize = 6;
+  newComment = '';
+  currentIndex = 0;
+  maxImages:number = 3;
 
 
 
@@ -35,6 +42,48 @@ export class ProfileUIComponent implements OnInit {
 
   ) { }
  
+
+  get pagedImages() {
+    const start = this.currentPage * this.pageSize;
+    return this.posts.slice(start, start + this.pageSize);
+  }
+  
+  get totalPages() {
+    return Math.ceil(this.posts.length / this.pageSize);
+  }
+  
+  openModal(index: number): void {
+    this.modalOpen = true;
+    this.currentIndex = this.currentPage * this.pageSize + index;
+  }
+  
+  closeModal(): void {
+    this.modalOpen = false;
+  }
+  
+  changeSlide(direction: number): void {
+    const total = this.posts.length;
+    this.currentIndex = (this.currentIndex + direction + total) % total;
+  }
+  
+  goToSlide(index: number): void {
+    this.currentIndex = index;
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) this.currentPage++;
+  }
+  
+  prevPage(): void {
+    if (this.currentPage > 0) this.currentPage--;
+  }
+  
+  getCaption(index: number): string {
+    const caption = this.posts[index]?.caption || ''; // Use an empty string if undefined or null
+    return caption.split(' ').slice(0, 10).join(' ') + (caption.split(' ').length > 10 ? '...' : '');
+  }
+  
+  
   ngOnInit(): void {
 
 
