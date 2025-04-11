@@ -117,15 +117,14 @@
                 </button>
 
                 <button mat-icon-button 
-                    *ngIf="link.description === 'Notifications'" 
-                    matTooltip="View Notification" 
-                    (click)="openNotifications()" 
-                    [matBadge]="totalUnreadMessages" 
-                    matBadgeColor="warn" 
-                    [matBadgeHidden]="totalUnreadMessages === 0">
-                
+                      *ngIf="link.description === 'Notifications'" 
+                      matTooltip="View Notification" 
+                      (click)="openNotifications()" 
+                      [matBadge]="unreadCount" 
+                      matBadgeColor="warn">
                 <mat-icon>notifications</mat-icon>
               </button>
+              
               
         
                                     

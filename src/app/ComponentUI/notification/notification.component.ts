@@ -25,6 +25,15 @@ export class NotificationComponent implements OnInit {
      this.loadNotifications();
   }
 
+  unreadNotifications() {
+    return this.notifications.filter(n => !n.is_read);
+  }
+  
+  readNotifications() {
+    return this.notifications.filter(n => n.is_read);
+  }
+
+  
   loadNotifications(): void {
     this.isLoading = true;
     this.chatService.getNotifications().subscribe({
@@ -42,7 +51,7 @@ export class NotificationComponent implements OnInit {
   chatHistory: { [key: number]: any[] } = {};
   openChat(notif: any): void {
       this.updateReadStatus(notif.id); // ✅ Update backend
-  
+      
   }
 
   updateReadStatus(id: number): void {

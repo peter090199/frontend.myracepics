@@ -27,7 +27,8 @@ export class ChatPopupComponent implements OnInit {
   count = 0;
   notifications:any[]=[];
   notificationCounts: { [key: string]: number } = {}; 
-  
+  unreadCount = 0;
+
   constructor(
     private chatService: ChatService,
     private notify: NotificationsService,
@@ -37,7 +38,15 @@ export class ChatPopupComponent implements OnInit {
     private notificationService: NotificationService
   ) {}
 
+  userId:number = 0;
+
   ngOnInit(): void {
+    this.echoService.listenToNotificationCount();
+    this.echoService.notificationCount$.subscribe(count => {
+      this.unreadCount = count;
+    });
+
+    
   //  this.loadMessages2();
 
     // this.echoService.listenName("chat","message.sent","test");

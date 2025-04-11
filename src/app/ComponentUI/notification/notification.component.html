@@ -1,4 +1,4 @@
-<div class="notification-container">
+<!-- <div class="notification-container">
   <h3>Notifications</h3>
 
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="accent"></mat-progress-bar>
@@ -18,7 +18,54 @@
       <div mat-line class="message-preview">
         {{ notif.message }}
       </div>
-      <span class="time">{{ notif.time }}</span>
+      <span class="time">{{ notif.created_at | date: 'short' }}</span>
+
     </mat-list-item>
   </mat-list>
-</div>
+</div> -->
+
+
+<!-- 
+<div class="notification-container"> -->
+  <h3>Notifications</h3>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="accent"></mat-progress-bar>
+
+  <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
+    No new notifications
+  </div>
+
+  <mat-tab-group *ngIf="!isLoading && notifications.length > 0">
+    <!-- Unread Tab -->
+    <mat-tab label="Unread ({{ unreadNotifications().length }})">
+      <mat-list>
+        <mat-list-item
+          *ngFor="let notif of unreadNotifications()"
+          (click)="openChat(notif)"
+          class="unread"
+        >
+          <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
+          <div mat-line>{{ notif.sender.fullname }}</div>
+          <div mat-line class="message-preview">{{ notif.message }}</div>
+          <span class="time">{{ notif.created_at | date: 'short' }}</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-tab>
+
+    <!-- Read Tab -->
+    <mat-tab label="Read ({{ readNotifications().length }})">
+      <mat-list>
+        <mat-list-item
+          *ngFor="let notif of readNotifications()"
+          (click)="openChat(notif)"
+          class="read"
+        >
+          <mat-icon matListAvatar>message</mat-icon>
+          <div mat-line>{{ notif.sender.fullname }}</div>
+          <div mat-line class="message-preview">{{ notif.message }}</div>
+          <span class="time">{{ notif.created_at | date: 'short' }}</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-tab>
+  </mat-tab-group>
+<!-- </div> -->

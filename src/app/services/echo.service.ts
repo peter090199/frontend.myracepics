@@ -1,3 +1,109 @@
+
+import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+import { HttpClient } from '@angular/common/http';
+import { _url } from 'src/global-variables';
+import { BehaviorSubject, interval, Observable, takeUntil } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class EchoService {
+  private echo: Echo<any>;
+  userId:number = 0;
+  notificationCount: number = 0;
+  private notificationCountSubject = new BehaviorSubject<number>(0);
+  notificationCount$ = this.notificationCountSubject.asObservable();
+  
+  private readonly countsSubject = new BehaviorSubject<any>({ unread: 0, read: 0 });
+  private stopPolling$ = new BehaviorSubject<boolean>(false);
+
+  constructor(private http:HttpClient,) {
+    this.userId = parseInt(localStorage.getItem('userId') || '0', 10);
+    console.log(this.userId)
+
+    this.echo = new Echo({
+      broadcaster: 'pusher',
+      key: 'e0cd7653f3ae9bbbd459',
+      cluster: 'ap1', 
+      forceTLS: true,
+    });
+
+  //   this.echo.channel('notification.count')
+  //     .listen('notifications', (data: any) => {
+  //       this.notificationCount = data.unreadCount;
+  //       console.log( data.unreadCount)
+  //     });
+
+
+   }
+
+
+  listenToNotificationCount() {
+    this.echo.channel(`notification.count.${this.userId}`)
+      .listen('.NotificationCountUpdated', (data: any) => {
+        console.log('🔄 Realtime Count Update:', data);
+        this.notificationCountSubject.next(data.unreadCount);
+      });
+
+      this.getMessageCount().subscribe({
+        next: (res) => {
+          this.notificationCountSubject.next(res.unreadCount);
+        },
+        error: (err) => {
+          console.error('❌ Error fetching count:', err);
+        }
+      });
+      
+  }
+
+  getMessageCount(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+    });
+    return this.http.get<any>(`${_url}update_count`,{headers});
+  }
+
+  getCounts$() {
+    return this.countsSubject.asObservable();
+  }
+
+  loadRealtimeCounts() {
+    this.http.get<any>(`${_url}update_count`).subscribe((counts) => {
+      this.countsSubject.next(counts);
+    });
+  }
+
+  startPolling() {
+    interval(2000)
+      .pipe(takeUntil(this.stopPolling$)) // Stop when we unsubscribe or when dialog closes
+      .subscribe(() => {
+        this.loadRealtimeCounts();
+      });
+  }
+
+  stopPolling() {
+    this.stopPolling$.next(true);
+  }
+  
+  
+  // listen() {
+  //   this.echo.channel(`chat.${this.receiverId}`)
+  //     .listen('.message.sent', (data: any) => {
+  //       this.notificationCount++;  
+  //       console.log('Public message received for receiver ID:', this.receiverId, data.message);
+  //       console.log('Notification Count:', data.unreadCount);
+  //     });
+  // }
+  
+  
+
+}
+
+
+
 // import { Injectable } from '@angular/core';
 // import Echo from 'laravel-echo';
 // import Pusher from 'pusher-js';
@@ -175,55 +281,4 @@
 
 
 // }
-
-
-import { HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-import { HttpClient } from '@angular/common/http';
-import { _url } from 'src/global-variables';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class EchoService {
-  private echo: Echo<any>;
-  receiverId:number = 0;
-  notificationCount: number = 0;
-
-  constructor(private http:HttpClient,) {
-    this.receiverId = parseInt(localStorage.getItem('userId') || '0', 10);
-    console.log(this.receiverId)
-
-    this.echo = new Echo({
-      broadcaster: 'pusher',
-      key: 'e0cd7653f3ae9bbbd459',
-      cluster: 'ap1',
-      forceTLS: true,
-    });
-    this.listen()
-
-    this.echo.channel('notification.count')
-      .listen('.notification.updated', (data: any) => {
-        console.log('Unread notifications:', data);
-        this.notificationCount = data.unreadCount;
-        console.log(this.notificationCount)
-      });
-
-  }
-
-
-  listen() {
-    this.echo.channel(`chat.${this.receiverId}`)
-      .listen('.message.sent', (data: any) => {
-        this.notificationCount++;  
-        console.log('Public message received for receiver ID:', this.receiverId, data.message);
-        console.log('Notification Count:', data.unreadCount);
-      });
-  }
-  
-  
-
-}
 

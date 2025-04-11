@@ -2,7 +2,7 @@ import { Component, HostListener, NgZone, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatMenuPanel } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, firstValueFrom, interval } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { SigInService } from 'src/app/services/signIn/sig-in.service';
 import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.service';
@@ -59,10 +59,10 @@ export class TopNavigationComponent implements OnInit {
 
   notificationCountSubject = new BehaviorSubject<number>(0); // Initial count of 0
   unreadCount$ = this.notificationCountSubject.asObservable();
-
+  userId:number = 0;
+  unreadCount:number = 0;
   count = 0;
   isOpen = false;
-
   constructor(
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
@@ -72,11 +72,9 @@ export class TopNavigationComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // this.notificationService.notificationCounts$.subscribe(counts => {
-    //   this.notificationCounts = counts;
-    // });
-    console.log(this.count)
-
+    this.loadRealtimeCounts();
+   
+   
     this.fetchModules();
       this.filteredOptions = this.myControl.valueChanges.pipe(
         startWith(''),
@@ -85,9 +83,52 @@ export class TopNavigationComponent implements OnInit {
       );
 
   }
-  getUserIdFromLocalStorage(): number | null {
-    const userId = localStorage.getItem('userId');
-    return userId ? parseInt(userId, 10) : null; // Convert it to a number if it's found
+
+  loadRealtimeCounts(){
+    this.echoService.listenToNotificationCount();
+    this.echoService.notificationCount$.subscribe(count => {
+      this.unreadCount = count;
+     // console.log("counts " + this.unreadCount)
+    });
+  
+  }
+
+  chatDialogRef: any;
+  chatUpdateSub: Subscription | undefined;
+  countsSubscription: Subscription | undefined;
+
+
+  openChat(notif?: any) {
+    this.chatDialogRef = this.dialog.open(ChatPopupComponent, {
+      width: '500px',
+      position: { bottom: '80px', right: '20px' },
+      panelClass: 'custom-chat-popup',
+      data: notif
+    });
+
+    this.echoService.startPolling();
+    
+    this.countsSubscription = this.echoService.getCounts$().subscribe((counts) => {
+      console.log(counts);
+    });
+
+    // Stop polling and cleanup when dialog is closed
+    this.chatDialogRef.afterClosed().subscribe(() => {
+      this.echoService.stopPolling();
+      if (this.countsSubscription) {
+        this.countsSubscription.unsubscribe();
+      }
+    });
+  }
+
+  openChatxx() {
+    this.dialog.open(ChatPopupComponent, {
+      width: '500px',
+      position: { bottom: '80px', right: '20px' },
+      panelClass: 'custom-chat-popup'
+    });
+    this.loadRealtimeCounts();
+
   }
 
   // listenToNotifications(userId: number) {
@@ -142,13 +183,7 @@ export class TopNavigationComponent implements OnInit {
   // }
   
   
-   openChat() {
-      this.dialog.open(ChatPopupComponent, {
-        width: '450px',
-        position: { bottom: '80px', right: '20px' },
-        panelClass: 'custom-chat-popup'
-      });
-    }
+
     
   @HostListener('window:resize')
   onResize() {
