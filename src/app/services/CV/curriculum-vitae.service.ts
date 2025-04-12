@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { _url } from 'src/global-variables';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +12,7 @@ export class CurriculumVitaeService {
   constructor(private http: HttpClient) { }
 
   private getAuthToken(): string {
-    return localStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
+    return sessionStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
   }
 
   

@@ -1,7 +1,12 @@
 <app-cookies-ui></app-cookies-ui>
 <router-outlet></router-outlet>
 
-<div class="floating-btn" *ngIf="isLoggedIn && showChatButton" @fadeInUp>
+<!-- <div class="floating-btn" *ngIf="isLoggedIn && showChatButton" @fadeInUp>
+    <button class="btn btn-info" matTooltip="Messages" (click)="openChat()">
+      <i class="fa-solid fa-comment custom-icon"></i>
+    </button>
+  </div> -->
+  <div class="floating-btn"  @fadeInUp>
     <button class="btn btn-info" matTooltip="Messages" (click)="openChat()">
       <i class="fa-solid fa-comment custom-icon"></i>
     </button>
@@ -17,20 +22,10 @@
 
 
   <!-- WEBSITE CHAT -->
-<div class="floating-btn" *ngIf="showWebsiteChat" @fadeInUp>
+<!-- <div class="floating-btn" *ngIf="showWebsiteChat" @fadeInUp>
   <button class="btn btn-info" matTooltip="Messages" (click)="openChat1()">
     <i class="fa-solid fa-comment custom-icon"></i>
 
   </button>
-</div>
+</div> -->
 
-
-<!-- 
-<h1>Pusher Test</h1>
-<p>
-  Try publishing an event to channel <code>my-channel</code>
-  with event name <code>my-event</code>.
-</p>
-<h2>Received Message:</h2>
-<p>{{ message }}</p>
- -->

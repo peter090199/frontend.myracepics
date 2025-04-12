@@ -10,17 +10,11 @@ export class PostUploadImagesService {
   RequiredRefresh: any;
   constructor(private http: HttpClient) { }
   private getAuthToken(): string {
-    return localStorage.getItem('token') || ''; 
+    return sessionStorage.getItem('token') || ''; 
   }
-  // private createParams(): HttpParams {
-  //   return new HttpParams().set('code', );
-  // }
-  
-
   private getParamsCode(): string {
-    return localStorage.getItem('code') || ''; 
+    return sessionStorage.getItem('code') || ''; 
   }
-
   
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

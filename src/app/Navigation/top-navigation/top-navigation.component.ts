@@ -260,8 +260,29 @@ export class TopNavigationComponent implements OnInit {
       error: error => console.error('Error submitting form:', error)
     });
   }
-
-    onLogout() {
+  
+  onLogout(): void {
+    this.authService.logout().subscribe({
+      next: () => {
+        // Retain necessary flags before clearing
+        const showChat = JSON.stringify(true);
+        const cookiesAccepted = JSON.stringify(true);
+  
+        sessionStorage.clear(); // Or use localStorage.clear() if needed
+        localStorage.clear();
+  
+        // Restore required flags
+        localStorage.setItem('showWebsiteChat', showChat);
+        localStorage.setItem('cookiesAccepted', cookiesAccepted);
+  
+        // Redirect to homepage
+        window.location.href = '/homepage';
+      },
+      error: (err) => console.error('Logout failed:', err)
+    });
+  }
+  
+    onLogoutx() {
     this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['/']).then(() => {

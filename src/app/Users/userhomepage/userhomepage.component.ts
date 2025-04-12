@@ -106,9 +106,7 @@ export class UserhomepageComponent implements OnInit {
   }
 
   refreshHomePage() {
-    // Navigate to the homepage (root of the app)
     this.router.navigate(['/homepage']).then(() => {
-      // Reload the page
       window.location.reload();
     });
   }

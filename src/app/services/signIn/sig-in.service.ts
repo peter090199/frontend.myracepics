@@ -24,7 +24,7 @@ export class SigInService {
 
   // Save token to local storage
   private saveToken(token: string): void {
-      localStorage.setItem(this.tokenKey, token);
+      sessionStorage.setItem(this.tokenKey,token);
   }
 
   // Login method
@@ -34,7 +34,7 @@ export class SigInService {
         if (res && res.token) {
           this.saveToken(res.token);
           this._refreshrequired.next();
-          //this.startTokenExpirationCheck(); // Restart token expiration check on login
+         // this.startTokenExpirationCheck(); // Restart token expiration check on login
         }
       }),
       catchError(this.handleError())

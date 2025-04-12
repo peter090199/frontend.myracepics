@@ -18,7 +18,7 @@ export class SearchService {
 
   
   private getAuthToken(): string {
-    return localStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
+    return sessionStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
   }
 
   private createHeaders(): HttpHeaders {

@@ -61,7 +61,7 @@ export class EchoService {
 
   getMessageCount(): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.get<any>(`${_url}update_count`,{headers});
   }

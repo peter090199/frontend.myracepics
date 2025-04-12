@@ -12,7 +12,7 @@ export class TNavigationService {
 
   // Method to get the authentication token from localStorage or another method
   private getAuthToken(): string {
-    return localStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
+    return sessionStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
   }
 
   // Method to create HTTP headers with the Bearer token

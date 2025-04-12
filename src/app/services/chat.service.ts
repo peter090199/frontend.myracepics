@@ -20,7 +20,7 @@ export class ChatService {
 
   getActiveMessages(): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.get(`${_url}getActiveUsers`, { headers });
   }
@@ -41,14 +41,14 @@ export class ChatService {
   
   getNotifications(): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.get<any>(`${_url}notifications`,{headers});
   }
 
   getMessageCount(): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.get<any>(`${_url}update_count`,{headers});
   }
@@ -58,7 +58,7 @@ export class ChatService {
    // ✅ Mark messages as read
    markMessagesAsRead(id: number): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.post<any>(`${_url}messages/read`, { id: id }, {headers});
   }
@@ -68,7 +68,7 @@ export class ChatService {
   getMessages(receiverId: number): Observable<any> {
     const url = `${_url}receivemessages/${receiverId}`;
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}` // Include auth token
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.get(url, { headers });
   }
@@ -78,7 +78,7 @@ export class ChatService {
     const url = `${_url}send-message`;
     const body = { receiver_id: receiverId, message: message };
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`, 
       'Content-Type': 'application/json'
     });
     return this.http.post(url, body, { headers });

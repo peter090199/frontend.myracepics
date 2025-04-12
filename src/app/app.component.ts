@@ -40,20 +40,8 @@ export class AppComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    // this.echoService.listenToMessages((message) => {
-    //   console.log('📩 New Message Received:', message);
-    // });
-
-    // this.pusherService.bindEvent('my-event', (data: any) => {
-    //   this.message = data.message;
-    // });
-
-
     this.cookieService.set('myCookie', 'cookieValue', { expires: 7, path: '/' });
-    // Get a cookie
     const myCookieValue = this.cookieService.get('myCookie');
-
-    // Delete a cookie
     this.cookieService.delete('myCookie');
 
     this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -69,7 +57,7 @@ export class AppComponent implements OnInit {
     this.authService.getData().subscribe(res => {
       this.userId = res.id; 
       if (this.userId !== null) {
-        localStorage.setItem('userId', this.userId.toString());
+        sessionStorage.setItem('userId', this.userId.toString());
       }
     });
   }

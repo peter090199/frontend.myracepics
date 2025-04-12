@@ -225,6 +225,7 @@ createPost() {
       },
     });
   }
+
   fetchProfilePicture(): void {
     this.photo.getDataCV().subscribe(
       (response: any) => {
@@ -232,7 +233,7 @@ createPost() {
           this.profile_pic = response.message;
   
           if (this.profile_pic?.code) {
-            localStorage.setItem('code', this.profile_pic.code);
+            sessionStorage.setItem('code', this.profile_pic.code);
           }
         } else {
           console.error('Invalid response format:', response);
@@ -279,28 +280,6 @@ createPost() {
       );
     }
   
-  loadUserPostxx(): void {
-    this.isLoading = true;
-    this.postDataservices.getDataPostAddFollow().subscribe(
-      (data) => {
-        if (data && Array.isArray(data)) {
-          this.posts = data.map(post => ({
-            ...post,
-            activeHours: this.getActiveHours(post.lastActive),
-            followers: post.followers || 0
-          }));
-        }
-        this.isLoading = false;
-      },
-      (error) =>
-        { 
-          console.error('Error fetching posts:', error);
-          this.isLoading = false;
-        }
-      
-    );
-  }
-
 
 
   // onScroll() {
@@ -390,129 +369,4 @@ createPost() {
     });
   }
 }
-
-
-
-  // postsx = [
-  //   {
-  //     id: 1,
-  //     author: 'John Doe',
-  //     content: 'This is a sample post content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  //     timestamp: new Date('2024-11-28T12:00:00'),
-  //     likes: 120,
-  //     comments: 45,
-  //     reposts: 10,
-  //     sends: 8,
-  //   },
-  //   {
-  //     id: 2,
-  //     author: 'Jane Smith',
-  //     content: 'Another example post! Just testing out some content here.',
-  //     timestamp: new Date('2024-11-29T10:30:00'),
-  //     likes: 350,
-  //     comments: 200,
-  //     reposts: 30,
-  //     sends: 15,
-  //   },
-  //   {
-  //     id: 3,
-  //     author: 'Alice Cooper',
-  //     content: 'This post is about the latest trends in tech and innovation.',
-  //     timestamp: new Date('2024-11-27T14:45:00'),
-  //     likes: 75,
-  //     comments: 25,
-  //     reposts: 5,
-  //     sends: 2,
-  //   },
-  //   {
-  //     id: 4,
-  //     author: 'Bob Marley',
-  //     content: 'A beautiful day to share some inspiration with the world!',
-  //     timestamp: new Date('2024-11-29T09:00:00'),
-  //     likes: 500,
-  //     comments: 150,
-  //     reposts: 50,
-  //     sends: 40,
-  //   },
-  //   {
-  //     id: 5,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 6,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 7,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 8,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 9,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 10,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 11,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  //   {
-  //     id: 12,
-  //     author: 'Charlie Brown',
-  //     content: 'Just a simple post to share some thoughts with everyone. Keep it real!',
-  //     timestamp: new Date('2024-11-25T16:20:00'),
-  //     likes: 300,
-  //     comments: 100,
-  //     reposts: 25,
-  //     sends: 20,
-  //   },
-  // ];
 
