@@ -1,71 +1,103 @@
-<!-- <div class="notification-container">
-  <h3>Notifications</h3>
+  <!-- <div class="notifications-header">
+    
+    <h3>Notifications</h3>
+    <button (click)="markAllAsRead()" class="read-all-btn">Read All</button>
+    <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
+      No new notifications
+    </div>
 
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="accent"></mat-progress-bar>
-
-  <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
-    No new notifications
   </div>
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
-  <mat-list *ngIf="!isLoading && notifications.length > 0">
-    <mat-list-item 
-      *ngFor="let notif of notifications" 
-      (click)="openChat(notif)" 
-      [ngClass]="{'unread': !notif.is_read, 'read': notif.is_read}">
-      
-      <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
-      <div mat-line>{{ notif.sender.fullname }}</div>
-      <div mat-line class="message-preview">
-        {{ notif.message }}
-      </div>
-      <span class="time">{{ notif.created_at | date: 'short' }}</span>
+ 
+    <mat-tab-group *ngIf="!isLoading">
+      <mat-tab label="Unread ({{ unreadNotifications().length }})">
+        <mat-list>
+          <mat-list-item
+            *ngFor="let notif of unreadNotifications()"
+            (click)="openChat(notif)"
+            class="unread"
+          >
+            <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
+            <div mat-line>{{ notif.sender.fullname }}</div>
+            <div mat-line class="message-preview">{{ notif.message }}</div>
+            <span class="time">{{ notif.created_at | date: 'short' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
 
-    </mat-list-item>
-  </mat-list>
-</div> -->
+      <mat-tab label="Read ({{ readNotifications().length }})">
+        <mat-list>
+          <mat-list-item
+            *ngFor="let notif of readNotifications()"
+            class="read"
+          >
+            <mat-icon matListAvatar>message</mat-icon>
+            <div mat-line>{{ notif.sender.fullname }}</div>
+            <div mat-line class="message-preview">{{ notif.message }}</div>
+            <span class="time">{{ notif.created_at | date: 'short' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
+    </mat-tab-group>
+ -->
+
+  <mat-card-header class="notifications-header">
+    <mat-card-title>Notifications</mat-card-title>
+    <button mat-button color="primary" class="read-all-btn" (click)="markAllAsRead()">
+      Read All
+    </button>
+  </mat-card-header>
+
+  <!-- Loading Spinner -->
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+
+  <!-- Card Content -->
+  <mat-card-content>
+    <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
+      No new notifications
+    </div>
+
+    <mat-tab-group *ngIf="!isLoading">
+      <!-- Unread Notifications -->
+      <mat-tab label="Unread ({{ unreadNotifications().length }})">
+        <mat-list>
+          <mat-list-item
+            *ngFor="let notif of unreadNotifications()"
+            (click)="openChat(notif)"
+            class="unread"
+          >
+            <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
+            <div mat-line>{{ notif.sender.fullname }}</div>
+            <div mat-line class="message-preview">{{ notif.message }}</div>
+            <span class="time">{{ notif.created_at | date: 'short' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
+
+      <!-- Read Notifications -->
+      <mat-tab label="Read ({{ readNotifications().length }})">
+        <mat-list>
+          <mat-list-item
+            *ngFor="let notif of readNotifications()"
+            class="read"
+          >
+            <mat-icon matListAvatar>message</mat-icon>
+            <div mat-line>{{ notif.sender.fullname }}</div>
+            <div mat-line class="message-preview">{{ notif.message }}</div>
+            <span class="time">{{ notif.created_at | date: 'short' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+
+  <!-- Card Footer (Optional) -->
+  <mat-card-actions align="end">
+    <!-- <button mat-stroked-button color="primary" (click)="refreshNotifications()">
+      Refresh
+    </button> -->
+  </mat-card-actions>
 
 
-<!-- 
-<div class="notification-container"> -->
-  <h3>Notifications</h3>
 
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="accent"></mat-progress-bar>
-
-  <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
-    No new notifications
-  </div>
-
-  <mat-tab-group *ngIf="!isLoading && notifications.length > 0">
-    <!-- Unread Tab -->
-    <mat-tab label="Unread ({{ unreadNotifications().length }})">
-      <mat-list>
-        <mat-list-item
-          *ngFor="let notif of unreadNotifications()"
-          (click)="openChat(notif)"
-          class="unread"
-        >
-          <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
-          <div mat-line>{{ notif.sender.fullname }}</div>
-          <div mat-line class="message-preview">{{ notif.message }}</div>
-          <span class="time">{{ notif.created_at | date: 'short' }}</span>
-        </mat-list-item>
-      </mat-list>
-    </mat-tab>
-
-    <!-- Read Tab -->
-    <mat-tab label="Read ({{ readNotifications().length }})">
-      <mat-list>
-        <mat-list-item
-          *ngFor="let notif of readNotifications()"
-          (click)="openChat(notif)"
-          class="read"
-        >
-          <mat-icon matListAvatar>message</mat-icon>
-          <div mat-line>{{ notif.sender.fullname }}</div>
-          <div mat-line class="message-preview">{{ notif.message }}</div>
-          <span class="time">{{ notif.created_at | date: 'short' }}</span>
-        </mat-list-item>
-      </mat-list>
-    </mat-tab>
-  </mat-tab-group>
-<!-- </div> -->

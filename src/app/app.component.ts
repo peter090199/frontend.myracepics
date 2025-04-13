@@ -49,7 +49,8 @@ export class AppComponent implements OnInit {
 
     this.showWebsiteChat = localStorage.getItem('showWebsiteChat') === 'true';
     this.reloadOnce();
-    this.loadUserID()
+    this.loadUserID();
+    
   }
 
 
@@ -60,8 +61,20 @@ export class AppComponent implements OnInit {
         sessionStorage.setItem('userId', this.userId.toString());
       }
     });
+    this.load();
   }
   
+  notificationCounts: number = 0;
+  
+  load(){
+    this.echoService.notificationCount$.subscribe(counts => {
+      this.notificationCounts = counts;
+      console.log(this.notificationCounts)
+    });
+
+
+ }
+
 
   reloadOnce() {
     if (!sessionStorage.getItem('hasReloaded')) {

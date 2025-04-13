@@ -191,18 +191,18 @@ export class ChatPopupComponent implements OnInit {
         this.notify.toastrError('Failed to send message');
       },
     });
-
-    // this.echoService.listen();
+    
+    this.load();
   }
 
-  // load(){
-  //   this.notificationService.notificationCounts$.subscribe(counts => {
-  //     this.notificationCounts = counts;
-  //     console.log(this.notificationCounts)
-  //   });
+  load(){
+    this.notificationService.notificationCounts$.subscribe(counts => {
+      this.notificationCounts = counts;
+      console.log(this.notificationCounts)
+    });
 
 
- // }
+ }
 
 
   get totalUnreadMessages(): number {

@@ -21,7 +21,7 @@ export class EchoService {
   private stopPolling$ = new BehaviorSubject<boolean>(false);
 
   constructor(private http:HttpClient,) {
-    this.userId = parseInt(localStorage.getItem('userId') || '0', 10);
+    this.userId = parseInt(sessionStorage.getItem('userId') || '0', 10);
     console.log(this.userId)
 
     this.echo = new Echo({
@@ -31,13 +31,13 @@ export class EchoService {
       forceTLS: true,
     });
 
-  //   this.echo.channel('notification.count')
-  //     .listen('notifications', (data: any) => {
-  //       this.notificationCount = data.unreadCount;
-  //       console.log( data.unreadCount)
-  //     });
+    this.echo.channel('notification.count')
+      .listen('notifications', (data: any) => {
+        this.notificationCount = data.unreadCount;
+        console.log( data.unreadCount)
+      });
 
-
+      this.listenToNotificationCount();
    }
 
 

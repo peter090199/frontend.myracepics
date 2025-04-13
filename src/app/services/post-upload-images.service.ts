@@ -57,9 +57,9 @@ export class PostUploadImagesService {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}post`, formData, { headers });
     }
-    getDataPostAddFollow(): Observable<any> {
+    getDataPostAddFollow(code: any): Observable<any> {
       const headers = this.createHeaders();
-      const code = this.getParamsCode(); // Retrieve the code
+    //  const code = this.getParamsCode(); // Retrieve the code
       const params = new HttpParams().set('code', code); // Set code as query param
     
       return this.http.get(`${_url}post`, { headers, params });
@@ -71,7 +71,6 @@ export class PostUploadImagesService {
     
     getDataPost(code:any): Observable<any> {
       const headers = this.createHeaders();
-    //  const code = this.getParamsCode(); // Retrieve the code
       const params = new HttpParams().set('code', code); // Set code as query param
     
       return this.http.get(`${_url}post`, { headers, params });

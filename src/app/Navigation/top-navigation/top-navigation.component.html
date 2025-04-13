@@ -111,7 +111,7 @@
                 </button>
 
                 <button mat-icon-button *ngIf="link.description === 'Messaging'" 
-                  [routerLink]="[link.route]" matBadge="{{ notificationCounts }}" matBadgeColor="warn" [matBadgeHidden]="notificationCounts === 0">
+                  [routerLink]="[link.route]" matBadge="{{ unreadCount }}" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">
                   
                   <i class="{{ link.icon }}"></i>
                 </button>
@@ -120,7 +120,7 @@
                       *ngIf="link.description === 'Notifications'" 
                       matTooltip="View Notification" 
                       (click)="openNotifications()" 
-                      [matBadge]="unreadCount" 
+                      [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" 
                       matBadgeColor="warn">
                 <mat-icon>notifications</mat-icon>
               </button>

@@ -38,8 +38,8 @@
            
           </mat-list>
 
-          <div class="button-gap" *ngIf="profile_pic">
-            <button mat-button class="list-label" [routerLink]="['/profile/', profile_pic.code ]">
+          <div class="button-gap">
+            <button mat-button class="list-label" [routerLink]="['/profile/',usercode ]">
               <mat-icon>person</mat-icon>View Profile
             </button>
           </div>
@@ -88,25 +88,146 @@
           </div>
           
            <div *ngIf="!isLoading">
-            <div *ngFor="let post of posts">
-              <mat-card class="post-box-container"  *ngIf="profile_pic">
+            <div *ngIf="posts && posts.length > 0">
+             <div *ngFor="let post of posts">
+              <mat-card-content class="post-box-container"  *ngIf="profile_pic">
                 <!-- User Profile Section -->
                 <mat-card-header>
                   <div mat-card-avatar class="avatar">
                   <img [src]="profile_pic?.photo_pic || 'assets/default.png'" alt="Profile Picture">
                 </div>
                 <mat-card-title>{{ post.Fullname }}</mat-card-title>
-                <p>Status: {{ post.status === 1 ? 'Public' : 'Private' }}</p>
+             
+                <!-- <p>Status: {{ post.status === 1 ? 'Public' : 'Private' }}</p> -->
                 <mat-card-subtitle>
                   <span class="followers">{{ followers }} followers</span> • 
                   <span class="active-hours">Active {{ activeHours }} ago</span>
+                  <button mat-button class="follow-btn">+ Follow</button>
                 </mat-card-subtitle>
+
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                
+                <mat-menu #menu="matMenu" class="horizontal-menu">
+                  <button mat-menu-item class="custom-menu-item">Edit</button>
+                  <button mat-menu-item class="custom-menu-item">Delete</button>
+                </mat-menu>
+                
+                
               </mat-card-header>
           
+
               <!-- Post Content -->
-              <mat-card-content>
+              <mat-card-content class="linkedin-post">
+                <!-- Header Section -->
+                <div class="post-header">
+                  <!-- <img class="avatar" [src]="post.user.avatarUrl" alt="User Avatar" /> -->
+                  <!-- <div class="user-info">
+                    <div class="name-line">
+                      <span class="name">{{ post.user.fullname }}</span>
+                      <span class="connection">• {{ post.user.connectionLevel }}</span>
+                    </div>
+                    <div class="title">{{ post.user.title }}</div>
+                    <div class="timestamp">{{ post.timestamp }}</div>
+                  </div> -->
+                </div>
+              
+                <!-- Content Section -->
                 <div *ngIf="post">
-                  <p>
+                  <p class="content-display">
+                    {{ post.expanded ? post.caption : (post.caption | slice:0:180) + '...' }}
+                    <a *ngIf="post.caption.length > 180" (click)="post.expanded = !post.expanded" class="see-more">
+                      {{ post.expanded ? 'See Less' : 'See More' }}
+                    </a>
+                  </p>
+                </div>
+              
+                <!-- Image Gallery -->
+                <div class="fb-gallery" [ngClass]="{ 'single': post.posts.length === 1, 'multi': post.posts.length > 1 }">
+                  <div
+                    class="gallery-item"
+                    *ngFor="let image of post.posts.slice(0, maxImages); let i = index"
+                    [ngClass]="{ 'large': i === 0 }"
+
+                    [ngClass]="{ 'large': post.posts.length === 1 || i === 0 }"
+                    (click)="openModal(i)"
+                  >
+                    <img [src]="image.path_url" alt="Gallery image" />
+                    <div class="overlay" *ngIf="i === (maxImages - 1) && post.posts.length > maxImages">
+                      +{{ post.posts.length - maxImages }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal" *ngIf="modalOpen">
+                  <span class="close cursor" (click)="closeModal()">&times;</span>
+                  <div class="modal-content">
+
+                    <!-- Single Preview -->
+                    <div class="mySlides">
+                      <div class="numbertext">{{ selectedIndex + 1 }} / {{ post.posts.length }}</div>
+                      <img [src]="post.posts[selectedIndex]?.path_url" class="modal-image" />
+                    </div>
+
+                    <!-- Navigation Arrows -->
+                    <a class="prev" style="color: rgb(2, 101, 239);" (click)="changeSlide(-1)">&#10094;</a>
+                    <a class="next" style="color: rgb(2, 101, 239);" (click)="changeSlide(1)">&#10095;</a>
+
+                    <!-- Caption -->
+                    <!-- <div class="caption-container">
+                      <p id="caption">{{ getCaption(selectedIndex) }}</p>
+                    </div> -->
+
+                  </div>
+                </div>
+
+                <!-- Thumbnails (outside modal) -->
+                <div class="thumbnail-row">
+                  <div class="column" *ngFor="let image of post.posts; let i = index" (click)="openModal(i)">
+                    <img
+                      class="demo"
+                      [src]="image.path_url"
+                    />
+                  </div>
+                </div>
+
+
+                <!-- <div class="modal" *ngIf="modalOpen">
+                  <span class="close cursor" (click)="closeModal()">&times;</span>
+                  <div class="modal-content">
+                    <div class="mySlides" *ngFor="let image of post.posts; let i = index" [hidden]="i !== currentIndex">
+                      <div class="numbertext">{{ i + 1 }} / {{ post.posts.length }}</div>
+                      <img [src]="image.path_url" class="modal-image" />
+                    </div>
+                
+                    <a class="prev" style="color: rgb(2, 101, 239);" (click)="changeSlide(-1)">&#10094;</a>
+                    <a class="next" style="color: rgb(2, 101, 239);" (click)="changeSlide(1)">&#10095;</a>
+                
+                    <div class="caption-container">
+                      <p id="caption">{{ getCaption(currentIndex) }}</p>
+                    </div>
+                
+                    <div class="thumbnail-row">
+                      <div class="column" *ngFor="let image of post.posts; let i = index" (click)="goToSlide(i)">
+                        <img
+                          class="demo"
+                          [src]="image.path_url"
+                          [class.active]="i === currentIndex"
+                          [alt]="getCaption(i)"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                 -->
+                
+              </mat-card-content>
+              
+              <!-- <mat-card-content>
+                <div *ngIf="post">
+                  <p class="content-display">
                     {{ post.expanded ? post.caption : (post.caption | slice:0:100) + '...' }}
                     <a *ngIf="post.caption.length > 100" (click)="post.expanded = !post.expanded" class="see-more">
                       {{ post.expanded ? 'See Less' : 'See More' }}
@@ -129,26 +250,21 @@
                   </div>
                 </div>
                 
-                <!-- Modal / Lightbox -->
                 <div class="modal" *ngIf="modalOpen">
                   <span class="close cursor" (click)="closeModal()">&times;</span>
                   <div class="modal-content">
-                    <!-- Large Preview -->
                     <div class="mySlides" *ngFor="let image of post.posts; let i = index" [hidden]="i !== currentIndex">
                       <div class="numbertext">{{ i + 1 }} / {{ post.posts.length }}</div>
                       <img [src]="image.path_url" class="modal-image" />
                     </div>
                 
-                    <!-- Navigation -->
                     <a class="prev" style="color: rgb(2, 101, 239);" (click)="changeSlide(-1)">&#10094;</a>
                     <a class="next" style="color: rgb(2, 101, 239);" (click)="changeSlide(1)">&#10095;</a>
                 
-                    <!-- Caption (optional) -->
                     <div class="caption-container">
                       <p id="caption">{{ getCaption(currentIndex) }}</p>
                     </div>
                 
-                    <!-- Thumbnail controls -->
                     <div class="thumbnail-row">
                       <div class="column" *ngFor="let image of post.posts; let i = index" (click)="goToSlide(i)">
                         <img
@@ -162,7 +278,7 @@
                   </div>
                 </div>
                 
-              </mat-card-content>
+              </mat-card-content>  -->
           
               <!-- Interaction Buttons -->
               <mat-card-actions class="interaction-buttons">
@@ -199,8 +315,10 @@
 
 
               </mat-expansion-panel>
-            </mat-card>
+            </mat-card-content>
           </div>
+          </div>
+
        </div>
       </div>
       

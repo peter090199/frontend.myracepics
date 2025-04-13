@@ -533,6 +533,12 @@ button {
   .profile-name {
     font-size: 1.2rem;
   }
+  .content-display {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-family: monospace;
+  }
+  
 
   .post-input {
     font-size: 14px;
@@ -614,3 +620,5 @@ button {
   flex-direction: column;
   margin-bottom: 20px;
 }
+
+

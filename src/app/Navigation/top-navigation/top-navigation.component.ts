@@ -83,13 +83,24 @@ export class TopNavigationComponent implements OnInit {
       );
 
   }
-
+  loadRealtimeCountsd() {
+    if (!this.countsSubscription || this.countsSubscription.closed) {
+      this.echoService.listenToNotificationCount();
+      this.countsSubscription = this.echoService.getCounts$().subscribe((counts) => {
+        this.unreadCount = counts;
+        console.log('Counts updated:', this.unreadCount);
+      });
+    }
+  }
+  
   loadRealtimeCounts(){
-    this.echoService.listenToNotificationCount();
-    this.echoService.notificationCount$.subscribe(count => {
-      this.unreadCount = count;
-     // console.log("counts " + this.unreadCount)
-    });
+    if (!this.countsSubscription || this.countsSubscription.closed) {
+      this.echoService.listenToNotificationCount();
+      this.echoService.notificationCount$.subscribe(count => {
+        this.unreadCount = count;
+      console.log("counts " + this.unreadCount)
+      });
+    }
   
   }
 
@@ -97,8 +108,20 @@ export class TopNavigationComponent implements OnInit {
   chatUpdateSub: Subscription | undefined;
   countsSubscription: Subscription | undefined;
 
-
   openChat(notif?: any) {
+    this.chatDialogRef = this.dialog.open(ChatPopupComponent, {
+      width: '500px',
+      position: { bottom: '80px', right: '80px' },
+      panelClass: 'custom-chat-popup',
+
+      data: notif
+    });
+  
+    this.chatDialogRef.afterClosed().subscribe(() => {
+    });
+  }
+  
+  openChatxxx(notif?: any) {
     this.chatDialogRef = this.dialog.open(ChatPopupComponent, {
       width: '500px',
       position: { bottom: '80px', right: '20px' },
@@ -114,10 +137,6 @@ export class TopNavigationComponent implements OnInit {
 
     // Stop polling and cleanup when dialog is closed
     this.chatDialogRef.afterClosed().subscribe(() => {
-      this.echoService.stopPolling();
-      if (this.countsSubscription) {
-        this.countsSubscription.unsubscribe();
-      }
     });
   }
 
@@ -309,13 +328,13 @@ export class TopNavigationComponent implements OnInit {
   openNotifications() {
     const dialogRef = this.dialog.open(NotificationComponent, {
       width: '400px',
-      height: '90vh',
-      position: { top: '60px', right: '90px' }, 
+      minHeight: 'auto',
+      maxHeight: '90vh',
+      position: { top: '40px', right: '90px' }, 
       panelClass: 'custom-notification-popup',
     });
-
     dialogRef.afterClosed().subscribe(() => {
-      this.loadNoficationsCount();
+      this.loadRealtimeCounts();
     });
   }
   

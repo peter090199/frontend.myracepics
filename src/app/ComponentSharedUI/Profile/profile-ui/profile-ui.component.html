@@ -51,9 +51,9 @@
                 </mat-card-header>
             
                 <!-- Post Content -->
-                <mat-card-content>
+                <mat-card-content  class="linkedin-post">
                   <div *ngIf="post">
-                    <p>
+                    <p  class="content-display">
                       {{ post.expanded ? post.caption : (post.caption | slice:0:100) + '...' }}
                       <a *ngIf="post.caption.length > 100" (click)="post.expanded = !post.expanded" class="see-more">
                         {{ post.expanded ? 'See Less' : 'See More' }}
@@ -61,18 +61,19 @@
                     </p>
                   </div>
                   
-                  <div class="fb-gallery">
+                  <div class="fb-gallery" [ngClass]="{ 'single': post.posts.length === 1, 'multi': post.posts.length > 1 }">
                     <div
                       class="gallery-item"
                       *ngFor="let image of post.posts.slice(0, maxImages); let i = index"
                       [ngClass]="{ 'large': i === 0 }"
+  
+                      [ngClass]="{ 'large': post.posts.length === 1 || i === 0 }"
                       (click)="openModal(i)"
                     >
                       <img [src]="image.path_url" alt="Gallery image" />
                       <div class="overlay" *ngIf="i === (maxImages - 1) && post.posts.length > maxImages">
                         +{{ post.posts.length - maxImages }}
                       </div>
-                      
                     </div>
                   </div>
                   

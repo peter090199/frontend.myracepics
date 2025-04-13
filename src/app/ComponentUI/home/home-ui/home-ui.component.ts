@@ -5,12 +5,12 @@ import { Router } from '@angular/router';
 import { PrintCVComponent } from 'src/app/ComponentSharedUI/Individual/print-cv/print-cv.component';
 import { ProfileService } from 'src/app/services/Profile/profile.service';
 import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
-import { THREE } from '@angular/cdk/keycodes';
 import { UploadProfileComponent } from 'src/app/ComponentSharedUI/Individual/upload-profile/upload-profile.component';
 import { ActivatedRoute } from '@angular/router';
 import { PostUIComponent } from 'src/app/ComponentSharedUI/Public/post-ui/post-ui.component';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
-
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
 @Component({
   selector: 'app-home-ui',
   templateUrl: './home-ui.component.html',
@@ -35,12 +35,15 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   @Input() post: any = { posts: [] };
   @HostListener('window:resize', ['$event'])
   maxImages:number = 3;
-  
+  usercode:any;
   private scrollInterval: any;
-
+  selectedIndex = 0;
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
-    private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService
-  ) {}
+    private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService,
+    private authService: AuthService,private alert:NotificationsService
+  ) {
+   
+  }
   
   modalOpen = false;
   currentPage = 0;
@@ -57,6 +60,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   }
   
   openModal(index: number): void {
+     this.selectedIndex = index;
     this.modalOpen = true;
     this.currentIndex = this.currentPage * this.pageSize + index;
   }
@@ -110,18 +114,35 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
+    
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;
 
     this.onResize();
     this.fetchProfilePicture();
-    this.loadUserPost();
+
     this.getProfileByUser();
     this.startAutoSlide();
-
+    this.getCode();
+  
   }
 
+
+  getCode(): void {
+    this.authService.getProfilecode().subscribe({
+      next: (res) => {
+        if (res.success && res.message.length > 0) {
+          this.usercode = res.message[0].code;
+          this.loadUserPost();
+        }
+      },
+      error: (err) => {
+        console.error("Error fetching profile:", err);
+      }
+    });
+  }
+  
   startAutoSlide(): void {
     this.autoSlideInterval = setInterval(() => {
       this.nextSlide(this.posts);
@@ -258,9 +279,17 @@ createPost() {
       return `${diffInHours} hours ago`;
     }
 
+
     loadUserPost(): void {
+      if (!this.usercode) {
+        this.alert.popupWarning("Usercode is ", "undefined, cannot load posts.")
+        return;
+      }
+
+      
       this.isLoading = true;
-      this.postDataservices.getDataPostAddFollow().subscribe(
+
+      this.postDataservices.getDataPostAddFollow(this.usercode).subscribe(
         (data) => {
           if (data && Array.isArray(data)) {
             this.posts = data.map(post => ({
@@ -269,6 +298,7 @@ createPost() {
               followers: post.followers || 0,
               currentIndex: 0, // for image carousel
               images: post.images || [] // ensure it has images
+            
             }));
           }
           this.isLoading = false;

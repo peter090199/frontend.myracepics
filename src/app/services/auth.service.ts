@@ -33,7 +33,10 @@ export class AuthService {
     return this.http.get(`${_url}user`, { headers });
   }
 
-
+  getProfilecode(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}user/profile`, { headers });
+  }
   
   private handleAuthError(error: any): Observable<any> {
     if (error.status === 401) {
