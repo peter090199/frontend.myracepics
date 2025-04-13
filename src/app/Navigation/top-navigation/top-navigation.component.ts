@@ -13,7 +13,7 @@ import { ChatService } from 'src/app/services/chat.service';
 import { NotificationComponent } from 'src/app/ComponentUI/notification/notification.component';
 import { NotificationService } from 'src/app/services/notification.service';
 import { EchoService } from 'src/app/services/echo.service';
-
+import { Title } from '@angular/platform-browser';
 
 export interface User {
   name: string;
@@ -67,7 +67,7 @@ export class TopNavigationComponent implements OnInit {
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
     private router: Router, private chatService:ChatService,private echoService:EchoService,
-    private notificationService:NotificationService, private ngZone: NgZone
+    private notificationService:NotificationService, private ngZone: NgZone,private titleService: Title
   ) {}
 
 
@@ -99,9 +99,18 @@ export class TopNavigationComponent implements OnInit {
       this.echoService.notificationCount$.subscribe(count => {
         this.unreadCount = count;
       console.log("counts " + this.unreadCount)
+      this.updateTitle(this.unreadCount);
       });
     }
   
+  }
+
+  updateTitle(count: number) {
+    if (count > 0) {
+      this.titleService.setTitle(`🔔 (${count}) Nexsuz`);
+    } else {
+      this.titleService.setTitle('Nexsuz');
+    }
   }
 
   chatDialogRef: any;
