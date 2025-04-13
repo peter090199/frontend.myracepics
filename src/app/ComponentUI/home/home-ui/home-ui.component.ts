@@ -222,14 +222,14 @@ createPost() {
     post.liked = !post.liked; // Toggle liked state
   
     // Call API to update like status in the backend
-    this.postDataservices.likePost(post.id, post.liked).subscribe(
-      (response) => {
-        console.log('✅ Like status updated successfully:', response);
-      },
-      (error) => {
-        console.error('❌ Error updating like status:', error);
-      }
-    );
+    // this.postDataservices.likePost(post.id, post.liked).subscribe(
+    //   (response) => {
+    //     console.log('✅ Like status updated successfully:', response);
+    //   },
+    //   (error) => {
+    //     console.error('❌ Error updating like status:', error);
+    //   }
+    // );
   }
   
   getProfileByUser(): void{
@@ -397,6 +397,47 @@ createPost() {
         
       }
     });
+  }
+
+
+
+  //react emoji
+  showReactions = false;
+  selectedReaction: any = null;
+  hoveredReaction: any = null;
+
+
+  reactions = [
+    { name: 'Like', emoji: '👍' },
+    { name: 'Love', emoji: '❤️' },
+    { name: 'Haha', emoji: '😂' },
+    { name: 'Wow', emoji: '😮' },
+    { name: 'Sad', emoji: '😢' },
+    { name: 'Angry', emoji: '😡' }
+  ];
+  
+
+  selectedReactions: { [postId: string]: any } = {};
+
+
+  onReactionHover(post: any, reaction: any) {
+    this.hoveredReaction = reaction;
+  this.selectedReactions[post.id] = reaction;
+  this.sendReactionToServer(post.id, reaction);
+
+  // optional: hide popup automatically
+  setTimeout(() => this.showReactions = false, 300);
+  }
+  
+  hideReactions() {
+    this.showReactions = false;
+  //  this.hoveredReaction = null;
+  }
+  
+  sendReactionToServer(postId: string, reaction: any) {
+    console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
+    // TODO: Use HttpClient or service here
+    // this.api.sendReaction(postId, reaction).subscribe(...)
   }
 }
 

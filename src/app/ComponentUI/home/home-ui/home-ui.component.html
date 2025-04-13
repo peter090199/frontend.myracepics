@@ -282,11 +282,50 @@
           
               <!-- Interaction Buttons -->
               <mat-card-actions class="interaction-buttons">
+                <div class="like-button-wrapper"
+                     (mouseenter)="showReactions = true"
+                  >
+              
+                  <!-- Main Reaction Button -->
+                  <button mat-button>
+                    <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post.id]?.emoji || 'thumb_up' }}</mat-icon>
+                  </button>
+                  
+                  <!-- Hover Reaction Menu -->
+                  <div class="reactions-popup" *ngIf="showReactions">
+                    <div
+                      class="reaction"
+                      *ngFor="let r of reactions"
+                      (mouseenter)="onReactionHover(post, r)">
+                      <span>{{ r.emoji }}</span>
+                      <!-- <div class="reaction-label">{{ r.name }}</div> -->
+                    </div>
+                  </div>
+                </div>
+              
+                <!-- Other Buttons -->
+                <button mat-button (click)="toggleComments(post)">
+                  <mat-icon>chat</mat-icon> Comment
+                </button>
+                <button mat-button>
+                  <mat-icon>repeat</mat-icon> Repost
+                </button>
+                <button mat-button>
+                  <mat-icon>send</mat-icon> Send
+                </button>
+              </mat-card-actions>
+              
+              
+              
+              
+              
+              
+              <!-- <mat-card-actions class="interaction-buttons">
                 <button mat-button (click)="likePost(post)"><mat-icon>thumb_up</mat-icon> Like</button>
                 <button mat-button (click)="toggleComments(post)"><mat-icon>chat</mat-icon> Comment</button>
                 <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
                 <button mat-button><mat-icon>send</mat-icon> Send</button>
-              </mat-card-actions>
+              </mat-card-actions> -->
 
              <!-- Comment Section using Expansion Panel -->
               <mat-expansion-panel *ngIf="post.showComments" expanded>
