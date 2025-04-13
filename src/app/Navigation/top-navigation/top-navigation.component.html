@@ -35,19 +35,27 @@
                  <button 
                     mat-icon-button 
                     [routerLink]="[link.route]" 
-                    *ngIf="link.description !== 'Notifications' && link.description !== 'Messaging'">
+                    *ngIf="link.description !== 'Notifications' && link.description !== 'Messaging' && link.description !== 'Profile'">
                     <i class="{{ link.icon }}"></i> 
                  </button>
               
-                  <button  [routerLink]="[link.route]" mat-icon-button matBadge={{notificationCount}} matBadgeColor="warn"
-                  *ngIf="link.description == 'Notifications'" >
-                    <i class="{{ link.icon }}"></i> 
-                  </button>
 
-                  <button  [routerLink]="[link.route]" mat-icon-button matBadge={{messageCount}} matBadgeColor="warn"
-                  *ngIf="link.description == 'Messaging'" >
-                    <i class="{{ link.icon }}"></i> 
-                  </button>
+                  <button mat-icon-button *ngIf="link.description === 'Messaging'" 
+                  [routerLink]="[link.route]" matBadge="{{ unreadCount }}" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">
+                  
+                  <i class="{{ link.icon }}"></i>
+                </button>
+
+                <button mat-icon-button 
+                      *ngIf="link.description === 'Notifications'" 
+                      matTooltip="View Notification" 
+                      (click)="openNotifications()" 
+                      [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" 
+                      matBadgeColor="warn">
+                <mat-icon>notifications</mat-icon>
+              </button>
+
+
               </ng-template>
             </div>
                       
@@ -65,9 +73,9 @@
             </div>
             
                
-             <button mat-icon-button (click)="onLogout()">
+             <!-- <button mat-icon-button (click)="onLogout()">
                 <mat-icon>logout</mat-icon>
-             </button>
+             </button> -->
 
               <button class="navbar-toggler" type="button" (click)="toggleSidebar()" aria-label="Toggle navigation" *ngIf="isMobile">
                 <mat-icon>{{ isSidebarOpen ? 'close' : 'menu' }}</mat-icon>
