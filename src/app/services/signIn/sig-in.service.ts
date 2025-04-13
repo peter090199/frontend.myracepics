@@ -19,7 +19,7 @@ export class SigInService {
    }
   // Get token from local storage
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return sessionStorage.getItem(this.tokenKey);
   }
 
   // Save token to local storage
@@ -81,8 +81,7 @@ export class SigInService {
    logout(): Observable<any> {
     return this.http.post(`${_url}logout`, {}, { headers: this.createHeaders() }).pipe(
       tap(() => {
-        localStorage.clear();
-        localStorage.removeItem(this.tokenKey); 
+        sessionStorage.clear();
         this._refreshrequired.next();
       }),
       catchError(this.handleError('logout'))
