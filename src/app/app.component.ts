@@ -9,6 +9,8 @@ import { ChatWebsitePopUPComponent } from './ComponentUI/messages/chat-website-p
 import { PusherService } from './services/pusher.service';
 import { AuthService } from './services/auth.service';
 import { EchoService } from './services/echo.service';
+import { SigInService } from './services/signIn/sig-in.service';
+import { InactivityService } from './services/inactivity.service';
 
 @Component({
   selector: 'app-root',
@@ -33,13 +35,20 @@ export class AppComponent implements OnInit {
   userId: number | null = null;
   
   constructor(private translate: TranslateService,public dialog: MatDialog,private pusherService: PusherService,
-    private cookieService: CookieService,private authService: AuthService,private echoService:EchoService
+    private cookieService: CookieService,private authService: AuthService,private echoService:EchoService,
+    private logoutServices: SigInService,private inactivityService:InactivityService
+
   ) {
     translate.addLangs(['en', 'fr']); // Add other languages as needed
     translate.setDefaultLang('en');   // Set the default language
   }
   
   ngOnInit(): void {
+    const user = sessionStorage.getItem('token');
+    if (!user) {
+      this.logoutServices.logout();
+    }
+    
     this.cookieService.set('myCookie', 'cookieValue', { expires: 7, path: '/' });
     const myCookieValue = this.cookieService.get('myCookie');
     this.cookieService.delete('myCookie');
@@ -47,12 +56,31 @@ export class AppComponent implements OnInit {
     this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     this.showChatButton = this.isLoggedIn;
 
-    this.showWebsiteChat = localStorage.getItem('showWebsiteChat') === 'true';
+    this.showWebsiteChat = localStorage.getItem('chatmessages') === 'true';
     this.reloadOnce();
     this.loadUserID();
+    this.inactivityService.startWatching();
+
+
+
     
   }
 
+  onLogout(): void {
+    this.logoutServices.logout().subscribe({
+      next: () => {
+        const showChat = JSON.stringify(false);
+        const cookiesAccepted = JSON.stringify(true);
+        sessionStorage.clear();
+        localStorage.clear();
+        localStorage.setItem('showWebsiteChat', showChat);
+        localStorage.setItem('cookiesAccepted', cookiesAccepted);
+        window.location.href = '/homepage';
+      },
+      error: (err) => console.error('Logout failed:', err)
+    });
+  }
+  
 
   loadUserID() {
     this.authService.getData().subscribe(res => {

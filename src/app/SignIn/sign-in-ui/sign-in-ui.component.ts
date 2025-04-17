@@ -203,6 +203,7 @@ export class SignInUIComponent implements OnInit {
         this.isLoading = false;
         if (res.success && res.token) {
           sessionStorage.setItem('token', res.token);
+          localStorage.setItem("chatmessages", "true");
 
           const targetRoute = res.message === 0 ? '/home' : '/user-cv';
           this.router.navigate([targetRoute]).then(() => location.reload());

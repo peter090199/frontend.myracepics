@@ -106,12 +106,12 @@
                 </mat-card-subtitle>
 
                 <button mat-icon-button [matMenuTriggerFor]="menu">
-                  <mat-icon>more_vert</mat-icon>
+                  <mat-icon>more_horiz</mat-icon>
                 </button>
-                
-                <mat-menu #menu="matMenu" class="horizontal-menu">
-                  <button mat-menu-item class="custom-menu-item">Edit</button>
-                  <button mat-menu-item class="custom-menu-item">Delete</button>
+  
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item>Edit</button>
+                  <button mat-menu-item (click)="onDelete(post)">Delete</button>
                 </mat-menu>
                 
                 
@@ -151,7 +151,7 @@
                     [ngClass]="{ 'large': i === 0 }"
 
                     [ngClass]="{ 'large': post.posts.length === 1 || i === 0 }"
-                    (click)="openModal(i)"
+                    (click)="openModal(image)"
                   >
                     <img [src]="image.path_url" alt="Gallery image" />
                     <div class="overlay" *ngIf="i === (maxImages - 1) && post.posts.length > maxImages">
@@ -184,15 +184,12 @@
                 </div>
 
                 <!-- Thumbnails (outside modal) -->
-                <div class="thumbnail-row">
-                  <div class="column" *ngFor="let image of post.posts; let i = index" (click)="openModal(i)">
-                    <img
-                      class="demo"
-                      [src]="image.path_url"
-                    />
+                <div class="thumbnail-row" *ngIf="posts">
+                  <div class="column" *ngFor="let image of post.posts" (click)="openModal(posts)">
+                    <img class="demo" [src]="image.path_url" alt="Thumbnail" />
                   </div>
                 </div>
-
+                
 
                 <!-- <div class="modal" *ngIf="modalOpen">
                   <span class="close cursor" (click)="closeModal()">&times;</span>
@@ -314,19 +311,7 @@
                   <mat-icon>send</mat-icon> Send
                 </button>
               </mat-card-actions>
-              
-              
-              
-              
-              
-              
-              <!-- <mat-card-actions class="interaction-buttons">
-                <button mat-button (click)="likePost(post)"><mat-icon>thumb_up</mat-icon> Like</button>
-                <button mat-button (click)="toggleComments(post)"><mat-icon>chat</mat-icon> Comment</button>
-                <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
-                <button mat-button><mat-icon>send</mat-icon> Send</button>
-              </mat-card-actions> -->
-
+         
              <!-- Comment Section using Expansion Panel -->
               <mat-expansion-panel *ngIf="post.showComments" expanded>
                 <mat-expansion-panel-header>

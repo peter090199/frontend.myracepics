@@ -10,7 +10,6 @@ export class CookiesUIComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkCookieConsent();
-  //  this.showCookieConsent = localStorage.getItem('cookieAccepted') !== 'true';
   }
 
   // Check if the user has already accepted or rejected cookies
@@ -27,7 +26,7 @@ export class CookiesUIComponent implements OnInit {
     this.setCookies(); // Function to set cookies after user acceptance
     this.showCookieConsent = false;
 
-    localStorage.setItem("showWebsiteChat", "true");
+    localStorage.setItem("showWebsiteChat", "false");
     location.reload();
   }
 

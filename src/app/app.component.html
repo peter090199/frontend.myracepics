@@ -9,7 +9,7 @@
   </div> -->
 
 
-  <div class="floating-btn"  @fadeInUp>
+  <div class="floating-btn"  *ngIf="showWebsiteChat" @fadeInUp>
     <button class="btn btn-info" matTooltip="Messages" (click)="openChat()">
       <i class="fa-solid fa-comment custom-icon"></i>
     </button>

@@ -1,0 +1,36 @@
+<div class="modal-container">
+
+  <mat-card>
+    <!-- Center Image -->
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="warn"></mat-progress-bar>
+
+  
+    <div class="modal-content">
+      <div class="image-box">
+        <img [src]="image.path_url" alt="Preview Image" />
+      </div>
+  
+      <!-- Left Arrow -->
+      <!-- <button mat-icon-button class="nav-btn left">
+        <mat-icon>chevron_left</mat-icon>
+      </button> -->
+
+
+      <!-- Right Arrow -->
+      <!-- <button mat-icon-button class="nav-btn right">
+        <mat-icon>chevron_right</mat-icon>
+      </button> -->
+    </div>
+  </mat-card>
+  <button mat-icon-button [matMenuTriggerFor]="menu"  [disabled]="isLoading">
+    <mat-icon>more_horiz</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item [disabled]="isLoading"><mat-icon color="primary">edit</mat-icon><span>Edit</span></button>
+    <button mat-menu-item (click)="deleteImage(image.posts_uuind)" [disabled]="isLoading">
+      <mat-icon color="warn">delete</mat-icon><span>Delete</span>
+    </button>
+  </mat-menu>
+
+
+</div>

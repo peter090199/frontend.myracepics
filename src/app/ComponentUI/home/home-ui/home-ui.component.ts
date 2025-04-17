@@ -11,6 +11,8 @@ import { PostUIComponent } from 'src/app/ComponentSharedUI/Public/post-ui/post-u
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { ImageModalComponent } from '../../Modal/image-modal/image-modal.component';
+
 @Component({
   selector: 'app-home-ui',
   templateUrl: './home-ui.component.html',
@@ -58,8 +60,37 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   get totalPages() {
     return Math.ceil(this.post.posts.length / this.pageSize);
   }
+
+
+  openModal(image: any): void {
+    const dialogRef = this.dialog.open(ImageModalComponent, {
+      data: image,
+      panelClass: 'custom-modal',
+      width: '95%',
+      maxWidth: '990px'
+    });
   
-  openModal(index: number): void {
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'refresh') {
+        this.loadUserPost(); 
+      }
+    });
+  }
+  
+  openModalx(image: any): void {
+   // const selectedImage = this.post.posts[index];
+    console.log(image.path_url)
+
+    // this.dialog.open(ImageModalComponent, {
+    //   data: { imageUrl: selectedImage.path_url },
+    //   panelClass: 'custom-modal',
+    //   width: '90%',
+    //   maxWidth: '900px'
+    // });
+  }
+
+
+  openModalxx(index: number): void {
      this.selectedIndex = index;
     this.modalOpen = true;
     this.currentIndex = this.currentPage * this.pageSize + index;
@@ -433,11 +464,41 @@ createPost() {
     this.showReactions = false;
   //  this.hoveredReaction = null;
   }
+  menuRef(index: number): string {
+    return `menu-${index}`;
+  }
   
   sendReactionToServer(postId: string, reaction: any) {
     console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
     // TODO: Use HttpClient or service here
     // this.api.sendReaction(postId, reaction).subscribe(...)
   }
+
+  onDelete(post: any): void {
+    this.alert.popupWarning("","Are you sure you want to delete this post?").then((result: any) => {
+      if (result?.value) {
+        this.isLoading = true;
+  
+        this.postDataservices.deletePost(post.posts_uuid).subscribe({
+          next: (res: any) => {
+            if (res.success === true) {
+              this.alert.toastrSuccess(res.message);
+            } else {
+              this.alert.toastrError(res.message);
+            }
+            this.loadUserPost();
+            this.isLoading = false;
+          },
+          error: (error: any) => {
+            this.alert.toastrError(error.error?.message || "An error occurred while deleting the post.");
+            this.isLoading = false;
+          }
+        });
+      }
+    });
+  }
+
+
+
 }
 

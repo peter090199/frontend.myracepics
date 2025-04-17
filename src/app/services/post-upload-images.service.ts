@@ -57,11 +57,11 @@ export class PostUploadImagesService {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}post`, formData, { headers });
     }
+
+
     getDataPostAddFollow(code: any): Observable<any> {
       const headers = this.createHeaders();
-    //  const code = this.getParamsCode(); // Retrieve the code
       const params = new HttpParams().set('code', code); // Set code as query param
-    
       return this.http.get(`${_url}post`, { headers, params });
     }
     
@@ -72,7 +72,6 @@ export class PostUploadImagesService {
     getDataPost(code:any): Observable<any> {
       const headers = this.createHeaders();
       const params = new HttpParams().set('code', code); // Set code as query param
-    
       return this.http.get(`${_url}post`, { headers, params });
     }
     
@@ -109,7 +108,17 @@ export class PostUploadImagesService {
     return this.http.delete<{message(message: any): unknown; success: boolean }>(`${_url}deleteByTransCode/${transCode}`, {headers});
   }
 
+  deletePost(posts_uuId: any) {
+    const headers = this.createHeaders();
+    return this.http.delete(`${_url}post/${posts_uuId}`, { headers });
+  }
 
+  deletePosts_uuind(posts_uuInd: any) {
+    const headers = this.createHeaders();
+    return this.http.post(`${_url}deleteindidualpost/${posts_uuInd}`, {}, { headers });
+  }
+  
+  
 }
 
 

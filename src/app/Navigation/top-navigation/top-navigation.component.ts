@@ -289,16 +289,14 @@ export class TopNavigationComponent implements OnInit {
     });
   }
   
+  
   onLogout(): void {
     this.authService.logout().subscribe({
       next: () => {
-        // Retain necessary flags before clearing
-        const showChat = JSON.stringify(true);
+        const showChat = JSON.stringify(false);
         const cookiesAccepted = JSON.stringify(true);
-  
         sessionStorage.clear(); // Or use localStorage.clear() if needed
         localStorage.clear();
-  
         // Restore required flags
         localStorage.setItem('showWebsiteChat', showChat);
         localStorage.setItem('cookiesAccepted', cookiesAccepted);

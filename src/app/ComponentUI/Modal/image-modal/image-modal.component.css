@@ -1,0 +1,26 @@
+.modal-container {
+display: flex;
+flex-direction: row;
+max-width: 90vw;
+max-height: 90vh;
+overflow: auto;
+}
+
+.content-wrapper {
+flex: 1;
+padding: 1rem;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+.image-box {
+    position: relative; /* Required for absolute positioning of the delete button */
+  }
+  
+.delete-button {
+position: absolute;
+top: 10px; /* Adjust the value as needed */
+right: 10px; /* Adjust the value as needed */
+background-color: none;
+border-radius: 50%; /* Optional: for rounded button */
+}
