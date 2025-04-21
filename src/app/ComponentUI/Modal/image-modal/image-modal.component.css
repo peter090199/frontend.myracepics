@@ -1,26 +1,106 @@
 .modal-container {
-display: flex;
-flex-direction: row;
-max-width: 90vw;
-max-height: 90vh;
-overflow: auto;
-}
-
-.content-wrapper {
-flex: 1;
-padding: 1rem;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-}
-.image-box {
-    position: relative; /* Required for absolute positioning of the delete button */
+  display: flex;
+  flex-direction: row;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
   }
   
-.delete-button {
-position: absolute;
-top: 10px; /* Adjust the value as needed */
-right: 10px; /* Adjust the value as needed */
-background-color: none;
-border-radius: 50%; /* Optional: for rounded button */
+.carousel-item button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+}
+
+  
+  .content-wrapper {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  }
+  .image-box {
+      position: relative; /* Required for absolute positioning of the delete button */
+    }
+    
+  .delete-button {
+  position: absolute;
+  top: 10px; /* Adjust the value as needed */
+  right: 20px; /* Adjust the value as needed */
+  background-color: none;
+  border-radius: 50%; /* Optional: for rounded button */
+  }
+
+  /* Custom style for Prev/Next buttons */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5); /* dark semi-transparent background */
+  border-radius: 50%;
+  border: none;
+  opacity: 1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-size: 60% 60%;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: invert(1); /* Makes icon white */
+}
+
+/* Optional: hover effect */
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(255, 0, 0, 0.7); /* Example: red on hover */
+}
+
+/* Adjust position for mobile */
+@media (max-width: 768px) {
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 30px;
+    height: 30px;
+  }
+
+  .modal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+
+
+.comment-section {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background-color: #f9f9f9;
+  margin-left: auto;
+}
+
+.comment-list {
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+.comment-item {
+  font-size: 14px;
+}
+
+.comment-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comment-field {
+  flex: 1;
 }

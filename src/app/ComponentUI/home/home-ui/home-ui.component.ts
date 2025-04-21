@@ -65,16 +65,15 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   openModal(image: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: image,
-      panelClass: 'custom-modal',
-      width: '95%',
-      maxWidth: '990px'
+      minWidth: '50%',
+      maxWidth: '90%',
+      maxHeight: '90vh'
     });
   
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'refresh') {
-        this.loadUserPost(); 
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) this.loadUserPost();
+      });
+  
   }
   
   openModalx(image: any): void {
@@ -472,6 +471,10 @@ createPost() {
     console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
     // TODO: Use HttpClient or service here
     // this.api.sendReaction(postId, reaction).subscribe(...)
+  }
+
+  onEditPost(){
+
   }
 
   onDelete(post: any): void {
