@@ -14,37 +14,47 @@ interface User {
   styleUrls: ['./messenger-chat.component.css']
 })
 export class MessengerChatComponent {
-  users: User[] = [
+  users = [
     {
-      name: 'Alice',
-      photo: 'assets/images/user1.png',
-      lastMessage: 'Hey there!',
+      name: 'John Doe',
+      photo: '',
+      lastMessage: 'See you tomorrow!',
       messages: [
-        { text: 'Hey, how are you?', sent: false },
-        { text: 'I am good, thanks!', sent: true }
+        { text: 'Hi there!', sent: false },
+        { text: 'Hello!', sent: true }
       ]
     },
     {
-      name: 'Bob',
-      photo: 'assets/images/user2.png',
-      lastMessage: 'Meeting at 3PM?',
+      name: 'Jane Smith',
+      photo: '',
+      lastMessage: 'Great work!',
       messages: [
-        { text: 'Meeting at 3PM?', sent: false },
-        { text: 'Yes, confirmed.', sent: true }
+        { text: 'Nice job on the project.', sent: false },
+        { text: 'Thanks a lot!', sent: true }
       ]
     }
   ];
 
-  selectedUser: User | null = null;
+  selectedUser: any = null;
   newMessage: string = '';
 
-  selectUser(user: User) {
+  selectUser(user: any) {
     this.selectedUser = user;
   }
 
+  // sendMessage() {
+  //   if (this.newMessage.trim() && this.selectedUser) {
+  //     this.selectedUser.messages.push({ text: this.newMessage, sent: true });
+  //     this.newMessage = '';
+  //   }
+  // }
+
   sendMessage() {
-    if (this.newMessage.trim() && this.selectedUser) {
-      this.selectedUser.messages.push({ text: this.newMessage, sent: true });
+    if (this.newMessage.trim()) {
+      this.selectedUser.messages.push({
+        text: this.newMessage,
+        sent: true
+      });
       this.newMessage = '';
     }
   }
