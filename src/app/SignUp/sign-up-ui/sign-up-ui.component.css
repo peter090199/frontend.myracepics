@@ -4,6 +4,12 @@
   text-align: center;
   font-size: 12px;
 }
+.main-background{
+  background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748));
+  font-family: Verdana, sans-serif;
+  margin: 0px !important;
+  height: auto;
+}
 
 .register-card mat-icon {
   color: #185291; /* Replace #007bff with any color you prefer */

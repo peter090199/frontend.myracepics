@@ -11,6 +11,7 @@ import { AuthService } from './services/auth.service';
 import { EchoService } from './services/echo.service';
 import { SigInService } from './services/signIn/sig-in.service';
 import { InactivityService } from './services/inactivity.service';
+import { AuthGuard } from './AuthGuard/auth.guard';
 
 @Component({
   selector: 'app-root',
@@ -36,7 +37,7 @@ export class AppComponent implements OnInit {
   
   constructor(private translate: TranslateService,public dialog: MatDialog,private pusherService: PusherService,
     private cookieService: CookieService,private authService: AuthService,private echoService:EchoService,
-    private logoutServices: SigInService,private inactivityService:InactivityService
+    private logoutServices: SigInService,private inactivityService:InactivityService,private authguard:AuthGuard
 
   ) {
     translate.addLangs(['en', 'fr']); // Add other languages as needed
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const user = sessionStorage.getItem('token');
     if (!user) {
-      this.logoutServices.logout();
+      this.authguard.logout();
     }
     
     this.cookieService.set('myCookie', 'cookieValue', { expires: 7, path: '/' });
@@ -60,7 +61,6 @@ export class AppComponent implements OnInit {
     this.reloadOnce();
     this.loadUserID();
     this.inactivityService.startWatching();
-
 
 
     
