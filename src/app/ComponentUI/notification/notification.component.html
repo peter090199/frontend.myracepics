@@ -61,34 +61,60 @@
     <mat-tab-group *ngIf="!isLoading">
       <!-- Unread Notifications -->
       <mat-tab label="Unread ({{ unreadNotifications().length }})">
-        <mat-list>
-          <mat-list-item
-            *ngFor="let notif of unreadNotifications()"
-            (click)="openChat(notif)"
-            class="unread"
-          >
-            <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
-            <div mat-line>{{ notif.sender.fullname }}</div>
-            <div mat-line class="message-preview">{{ notif.message }}</div>
-            <span class="time">{{ notif.created_at | date: 'short' }}</span>
-          </mat-list-item>
-        </mat-list>
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let notif of unreadNotifications()" class="read">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <img
+                  [src]="notif.photo_pic || 'assets/images/default.png'"
+                  width="50"
+                  height="50"
+                  style="border-radius: 50%; margin-right: 10px;"
+                  alt="Avatar"
+                />
+                {{ notif.fullname }}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ notif.created_at | date: 'short' }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+      
+            <div class="message-preview" (click)="openChat(notif)" >{{ notif.message }}</div>
+      
+          </mat-expansion-panel>
+        </mat-accordion>
       </mat-tab>
+      
+
 
       <!-- Read Notifications -->
       <mat-tab label="Read ({{ readNotifications().length }})">
-        <mat-list>
-          <mat-list-item
-            *ngFor="let notif of readNotifications()"
-            class="read"
-          >
-            <mat-icon matListAvatar>message</mat-icon>
-            <div mat-line>{{ notif.sender.fullname }}</div>
-            <div mat-line class="message-preview">{{ notif.message }}</div>
-            <span class="time">{{ notif.created_at | date: 'short' }}</span>
-          </mat-list-item>
-        </mat-list>
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let notif of readNotifications()">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <img
+                  [src]="notif.photo_pic || 'assets/images/default.png'"
+                  width="40"
+                  height="40"
+                  style="border-radius: 50%; margin-right: 10px;"
+                  alt="Avatar"
+                />
+                {{ notif.fullname }}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ notif.created_at | date: 'short' }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+      
+            <div class="message-preview">{{ notif.message }}</div>
+      
+          </mat-expansion-panel>
+        </mat-accordion>
       </mat-tab>
+      
+
+
     </mat-tab-group>
   </mat-card-content>
 

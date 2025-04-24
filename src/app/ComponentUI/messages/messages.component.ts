@@ -20,4 +20,16 @@ export class MessagesComponent {
       this.newMessage = '';
     }
   }
+
+  contacts = [
+    { name: 'Natalia Svintsova', message: 'Hi Pedro As a professional at your...', avatar: '' },
+    { name: 'Jamie Elgie', message: 'Work with affordable developers that...', avatar: '' },
+    { name: 'Daphne Baricuatro', message: 'Career Opportunity at...', avatar: '' },
+    // Add more as needed
+  ];
+
+  selectedMessage = {
+    name: 'Natalia Svintsova',
+    title: 'eCommerce Marketing Manager at The Stepstone Group',
+  };
 }

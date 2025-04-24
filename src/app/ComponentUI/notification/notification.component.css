@@ -46,12 +46,13 @@ mat-list-item.unread {
 }
 
 .message-preview {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #555;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;     
+  overflow: visible;        
+  text-overflow: unset;   
 }
+
 
 .time {
   margin-left: auto;
@@ -66,6 +67,9 @@ mat-list-item.unread {
   color: #e30000;
 }
 
+.mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
 
 
 

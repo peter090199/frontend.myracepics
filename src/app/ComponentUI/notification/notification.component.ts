@@ -26,7 +26,7 @@ export class NotificationComponent implements OnInit {
      this.loadNotifications();
      this.loadIsRead();
   }
-
+  panelOpenState = false;
   unreadNotifications() {
     return this.notifications.filter(n => !n.is_read);
   }
