@@ -39,7 +39,8 @@
   .messaging-container {
     display: flex;
     height: 90vh;
-  
+  }
+
     .sidebar {
       width: 300px;
       border-right: 1px solid #ddd;
@@ -49,29 +50,30 @@
     .message-content {
       flex: 1;
       padding: 50px;
-  
-      .message-checklist {
-        list-style: none;
-        padding: 0;
-  
-        li {
-          display: flex;
-          align-items: center;
-          margin-bottom: 8px;
-  
-          mat-icon {
-            margin-right: 8px;
-          }
-        }
-      }
-  
+    }
+    .message-checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+
+    }
+      
+    mat-icon {
+      margin-right: 8px;
+    }
+
       .message-actions {
         margin-top: 20px;
-  
-        button {
-          margin-right: 10px;
-        }
       }
-    }
-  }
+
+      button {
+        margin-right: 10px;
+      }
+    
+  
   
