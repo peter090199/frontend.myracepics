@@ -25,21 +25,42 @@ export class MessengerChatComponent  implements OnInit{
   totalUnreadMessages = 0;
   notificationCount = 0;
   isLoading:boolean = true;
+  myUserId: number | null = null;
 
     constructor(private notifyService: NotificationsService, private chatService: ChatService,
-      private dialog: MatDialog,private echoService:EchoService,private authservice:AuthService
+      private dialog: MatDialog,private echoService:EchoService,private authservice:AuthService,
+      private authService: AuthService,
     ) {}
   
     
   ngOnInit(): void {
     this.loadNotifications();
     this.loadIsRead();
+    this.loadData();
  }
+
+ loadData(){
+      this.authService.getData().subscribe({
+      next: (data) => {
+        this.myUserId = data.id;
+        
+        if (this.myUserId) {
+
+        } else {
+          console.warn('⚠️ User ID is null. Real-time messaging will not start.');
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error fetching user data:', err);
+      }
+    });
+  }
 
 
 
  openChatWith(notif: any): void {
   this.updateReadStatus(notif.id); 
+
   this.chatService.getMessages(notif.sender_id).subscribe({
     next: (res) => {
       this.selectedUser = {
@@ -180,17 +201,16 @@ scrollToBottom() {
       error: (err) => console.error("❌ Error marking messages as read:", err),
     });
   }
-
   updateReadStatus(id: number): void {
-   // this.isLoading = true;
+    this.isLoading = true;
     this.chatService.markMessagesAsRead(id).subscribe({
       next: (res) => {
         this.totalUnreadMessages = this.notifications.length;
-       // this.notifyService.toastrInfo(res.message);
+        //this.notifyService.toastrInfo(res.message);
         this.totalUnreadMessages--; 
         this.loadNotifications();
         this.loadIsRead();
-      //  this.isLoading = false;
+        this.isLoading = false;
       },
       error: (err) => console.error("❌ Error marking messages as read:", err),
     });

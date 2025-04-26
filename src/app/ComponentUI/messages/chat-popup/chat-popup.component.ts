@@ -45,7 +45,6 @@ export class ChatPopupComponent implements OnInit {
     this.echoService.notificationCount$.subscribe(count => {
       this.unreadCount = count;
     });
-
     this.loadData();
     this.loadUsers();
   }

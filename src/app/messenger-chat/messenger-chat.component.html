@@ -73,11 +73,13 @@
 
   <!-- Chat Window -->
   <mat-card class="chat-window" *ngIf="selectedUser">
+
     <mat-card-title>Chat with {{ selectedUser.fullname }}</mat-card-title>
 
     <div class="chat-messages">
-      <div *ngFor="let msg of selectedUser.messages" class="chat-bubble">
-        <p>{{ msg.message }}</p>
+      <div *ngFor="let msg of selectedUser.messages" class="chat-bubble" 
+       [ngClass]="{'sent': msg.sender_id === myUserId, 'received': msg.sender_id !== myUserId}">
+        <span>{{ msg.message }}</span>
         <small class="message-time">{{ msg.created_at | date:'short' }}</small>
       </div>
     </div>

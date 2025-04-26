@@ -51,7 +51,7 @@ export class ChatService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
-    return this.http.get<any>(`${_url}messages_receive`,{headers});
+    return this.http.get<any>(`${_url}getMessagesAll`,{headers});
   }
 
 
@@ -67,7 +67,7 @@ export class ChatService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
-    return this.http.get<any>(`${_url}messages_unReadReceive`,{headers});
+    return this.http.get<any>(`${_url}getNotificationsIsUnRead`,{headers});
   }
 
 
