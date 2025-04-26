@@ -1,7 +1,7 @@
 .modal-container {
   display: flex;
   flex-direction: row;
-  max-width: 90vw;
+  max-width: 95vw;
   max-height: 90vh;
   overflow: auto;
   }
@@ -10,7 +10,7 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(251, 246, 246, 0.7);
   border-radius: 50%;
 }
 
@@ -22,17 +22,38 @@
   flex-direction: column;
   justify-content: space-between;
   }
-  .image-box {
-      position: relative; /* Required for absolute positioning of the delete button */
-    }
-    
-  .delete-button {
-  position: absolute;
-  top: 10px; /* Adjust the value as needed */
-  right: 20px; /* Adjust the value as needed */
-  background-color: none;
-  border-radius: 50%; /* Optional: for rounded button */
+.image-box {
+    position: relative; /* Required for absolute positioning of the delete button */
   }
+  
+.comment-list {
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+.comment-item {
+  font-size: 14px;
+}
+
+.comment-input {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.comment-field {
+  flex: 1;
+  width: 80%;
+}
+
+
+@media (min-width: 1024px) {
+  .comment-field {
+    width: 400px; /* or any width you prefer for desktop */
+  }
+}
+
 
   /* Custom style for Prev/Next buttons */
 .carousel-control-prev,
@@ -68,39 +89,12 @@
     width: 30px;
     height: 30px;
   }
-
+ 
   .modal-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
   }
-}
 
-
-.comment-section {
-  padding: 10px;
-  border-top: 1px solid #ddd;
-  background-color: #f9f9f9;
-  margin-left: auto;
-}
-
-.comment-list {
-  max-height: 100px;
-  overflow-y: auto;
-  margin-bottom: 8px;
-}
-
-.comment-item {
-  font-size: 14px;
-}
-
-.comment-input {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.comment-field {
-  flex: 1;
 }

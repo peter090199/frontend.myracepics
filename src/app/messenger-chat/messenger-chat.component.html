@@ -1,49 +1,101 @@
+<!-- chat.component.html -->
 <div class="chat-container mat-elevation-z2">
+  <!-- Sidebar -->
   <mat-card class="chat-sidebar">
-    <mat-card-title>Messages</mat-card-title>
-    <mat-divider></mat-divider>
-    <!-- <app-notification></app-notification> -->
-    <!-- <div *ngFor="let user of users" class="user" (click)="selectUser(user)">
-      <img [src]="user.photo || 'assets/images/default.png'" class="avatar" />
-      <div class="user-info">
-        <h4>{{ user.name }}</h4>
-        <p>{{ user.lastMessage }}</p>
-      </div>
-    </div> -->
+      <mat-card-title>Messages</mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+    
+    <mat-card-header>
+      <button mat-button color="primary" (click)="markAllAsRead()">Read All</button>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-tab-group class="card-content">
+        <!-- Unread Tab -->
+        <mat-tab label="Unread ({{ unreadNotifications().length }})">
+          <div *ngIf="!notifications.length" class="no-notifications">No new messages</div>
+
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let notif of unreadNotifications()">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <img [src]="notif.photo_pic || 'assets/images/default.png'" width="40" height="40" style="border-radius: 50%; margin-right: 10px;" />
+                  {{ notif.fullname }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ notif.created_at | date:'short' }}
+                  <mat-icon *ngIf="!notif.is_read" color="primary">mark_email_unread</mat-icon>
+                </mat-panel-description>
+              
+              </mat-expansion-panel-header>
+
+              <div class="message-preview" 
+                  [class.unread]="!notif.read" 
+                  (click)="openChatWith(notif)">
+              <span>{{ notif.message }}</span>
+            </div>
+         
+              
+            </mat-expansion-panel>
+          </mat-accordion>
+
+    
+          
+        </mat-tab>
+
+        <!-- Read Tab -->
+        <mat-tab label="Read ({{ readNotifications().length }})">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let notif of readNotifications()">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <img [src]="notif.photo_pic || 'assets/images/default.png'" width="40" height="40" style="border-radius: 50%; margin-right: 10px;" />
+                  {{ notif.fullname }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ notif.created_at | date:'short' }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              
+              <div class="message-preview" 
+                  (click)="openChatWith(notif)">
+              <span>{{ notif.message }}</span>
+            </div>
+
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
   </mat-card>
 
   <!-- Chat Window -->
- <mat-card class="chat-window" *ngIf="selectedUser">
-  <!-- <div class="chat-header">
+  <mat-card class="chat-window" *ngIf="selectedUser">
+    <mat-card-title>Chat with {{ selectedUser.fullname }}</mat-card-title>
 
-    
-      <img [src]="selectedUser.photo || 'assets/images/default.png'" class="avatar" />
-      <h3>{{ selectedUser.name }}</h3>
-    </div> -->
-
-    <!-- <div class="chat-messages">
-      <div *ngFor="let message of selectedUser.messages"
-           [ngClass]="{'sent': message.sent, 'received': !message.sent}"
-           class="chat-bubble">
-        {{ message.text }}
+    <div class="chat-messages">
+      <div *ngFor="let msg of selectedUser.messages" class="chat-bubble">
+        <p>{{ msg.message }}</p>
+        <small class="message-time">{{ msg.created_at | date:'short' }}</small>
       </div>
-    </div> -->
+    </div>
 
-    <!-- <div class="chat-input">
-      <mat-form-field class="chat-input-field" appearance="standard">
+    <div class="chat-input">
+      <mat-form-field appearance="standard" class="chat-input-field">
         <input matInput [(ngModel)]="newMessage" placeholder="Type a message..." />
       </mat-form-field>
       <button mat-icon-button color="primary" (click)="sendMessage()">
         <mat-icon>send</mat-icon>
       </button>
-    </div> -->
-
-
+    </div>
   </mat-card>
 
+  <!-- Placeholder when no chat selected -->
   <mat-card class="chat-placeholder" *ngIf="!selectedUser">
     <p>Select a chat to start messaging</p>
-  </mat-card> 
+  </mat-card>
 
   <mat-card class="chat-sidebar">
     <mat-card-title>Followers</mat-card-title>
@@ -55,5 +107,11 @@
         <p>{{ user.lastMessage }}</p>
       </div>
     </div>
+
+
   </mat-card>
+
+
 </div>
+
+

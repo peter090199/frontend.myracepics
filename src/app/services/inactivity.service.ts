@@ -21,7 +21,7 @@ export class InactivityService {
       )
       .subscribe(() => {
         sessionStorage.clear();
-        localStorage.removeItem('chatMessages');
+        localStorage.removeItem('chatmessages');
         this.router.navigate(['/homepage']);
       });
   }

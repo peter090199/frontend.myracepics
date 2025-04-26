@@ -65,7 +65,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   openModal(image: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: image,
-      minWidth: '50%',
+      minWidth: '60%',
       maxWidth: '90%',
       maxHeight: '90vh'
     });

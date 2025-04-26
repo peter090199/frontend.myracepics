@@ -2,7 +2,7 @@
   <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
 <div class="modal-container">
-  <mat-card>
+  <mat-card class="card">
     <!-- Center Image -->
     <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
     <div class="modal-content">
@@ -13,12 +13,12 @@
             *ngFor="let post of posts; let i = index"
             [class.active]="i === 0">
             <img [src]="post.path_url" class="d-block w-100" alt="Preview Image">
-
+            
             <button  mat-icon-button  color="primary" (click)="deleteImage(post.posts_uuind)">
               <mat-icon>delete</mat-icon>
            </button>
-
           </div>
+          
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -38,16 +38,20 @@
       </div>
 
       <div class="comment-input">
-        <mat-form-field appearance="outline" class="comment-field">
-          <input matInput placeholder="Write a comment..." 
-          >
+        <mat-form-field appearance="standard" class="comment-field">
+          <textarea
+            matInput
+            placeholder="Write a comment..."
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="5"
+          ></textarea>
         </mat-form-field>
-        <button mat-icon-button color="primary"
-      
-         >
+        <button mat-icon-button color="primary">
           <mat-icon>send</mat-icon>
         </button>
       </div>
+      
     </div>
 
 

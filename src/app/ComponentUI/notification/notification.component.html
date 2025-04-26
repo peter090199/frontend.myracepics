@@ -1,46 +1,3 @@
-  <!-- <div class="notifications-header">
-    
-    <h3>Notifications</h3>
-    <button (click)="markAllAsRead()" class="read-all-btn">Read All</button>
-    <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
-      No new notifications
-    </div>
-
-  </div>
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
-
- 
-    <mat-tab-group *ngIf="!isLoading">
-      <mat-tab label="Unread ({{ unreadNotifications().length }})">
-        <mat-list>
-          <mat-list-item
-            *ngFor="let notif of unreadNotifications()"
-            (click)="openChat(notif)"
-            class="unread"
-          >
-            <img matListAvatar [src]="notif.sender.photo || 'assets/images/default.png'" />
-            <div mat-line>{{ notif.sender.fullname }}</div>
-            <div mat-line class="message-preview">{{ notif.message }}</div>
-            <span class="time">{{ notif.created_at | date: 'short' }}</span>
-          </mat-list-item>
-        </mat-list>
-      </mat-tab>
-
-      <mat-tab label="Read ({{ readNotifications().length }})">
-        <mat-list>
-          <mat-list-item
-            *ngFor="let notif of readNotifications()"
-            class="read"
-          >
-            <mat-icon matListAvatar>message</mat-icon>
-            <div mat-line>{{ notif.sender.fullname }}</div>
-            <div mat-line class="message-preview">{{ notif.message }}</div>
-            <span class="time">{{ notif.created_at | date: 'short' }}</span>
-          </mat-list-item>
-        </mat-list>
-      </mat-tab>
-    </mat-tab-group>
- -->
 
   <mat-card-header class="notifications-header">
     <!-- <mat-card-title>Notifications</mat-card-title> -->
@@ -48,23 +5,19 @@
       Read All
     </button>
   </mat-card-header>
-
-  <!-- Loading Spinner -->
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
-  <!-- Card Content -->
   <mat-card-content>
-    <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
-      No new notifications
-    </div>
-
     <mat-tab-group *ngIf="!isLoading">
       <!-- Unread Notifications -->
       <mat-tab label="Unread ({{ unreadNotifications().length }})">
+        <div *ngIf="!isLoading && notifications.length === 0" class="no-notifications">
+          No new notifications
+        </div>
         <mat-accordion>
           <mat-expansion-panel *ngFor="let notif of unreadNotifications()" class="read">
             <mat-expansion-panel-header>
-              <mat-panel-title>
+              <mat-panel-title (click)="openChat(notif)">
                 <img
                   [src]="notif.photo_pic || 'assets/images/default.png'"
                   width="50"
@@ -79,7 +32,7 @@
               </mat-panel-description>
             </mat-expansion-panel-header>
       
-            <div class="message-preview" (click)="openChat(notif)" >{{ notif.message }}</div>
+            <div class="message-preview" >{{ notif.message }}</div>
       
           </mat-expansion-panel>
         </mat-accordion>

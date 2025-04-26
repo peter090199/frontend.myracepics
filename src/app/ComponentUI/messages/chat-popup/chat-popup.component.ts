@@ -46,20 +46,6 @@ export class ChatPopupComponent implements OnInit {
       this.unreadCount = count;
     });
 
-    
-  //  this.loadMessages2();
-
-    // this.echoService.listenName("chat","message.sent","test");
-   // this.echoService.listen();
-    // this.pusherService.listenToEvents((data) => {
-    //   console.log('📩 Pusher Received:', data);
-    //   this.notify.toastrSuccess(`New Message: ${data}`);
-    // });
-   // console.log(this.receiverId)
-    //  const receiverId = parseInt(localStorage.getItem('userId') || '0', 10);
-    //  console.log(receiverId)
-    // this.echoService.listen();
-
     this.loadData();
     this.loadUsers();
   }
@@ -73,14 +59,6 @@ export class ChatPopupComponent implements OnInit {
       
       if (this.myUserId) {
 
-
-    
-      //  console.log(`✅ User authenticated with ID: ${this.myUserId}`);
-        
-        // Start listening for notifications with the authenticated user's ID
-       // this.echoService.listenToNotifications(this.myUserId);
-        
-        // this.listenForIncomingMessages();
       } else {
         console.warn('⚠️ User ID is null. Real-time messaging will not start.');
       }
@@ -91,31 +69,6 @@ export class ChatPopupComponent implements OnInit {
   });
   
   }
-   // ✅ Load old + real-time messages
-  //  loadMessages2() {
-  //   this.chatService.getMessages(this.receiverId).subscribe((res) => {
-  //     this.messages = res || [];
-  //   });
-
-  //   this.echoService.listenToChat(this.receiverId).subscribe((newMessages) => {
-  //     this.messages = newMessages;
-  //   });
-  // }
-
-
-
-  // ✅ Listen for real-time messages
-  // listenForIncomingMessages(): void {
-  //   this.echoService.listenToMessages();
-
-  //   // Subscribe to updates when new messages arrive
-  //   this.echoService.unreadMessages$.subscribe((count) => {
-  //     if (count > 0) {
-  //       this.loadMessagesRealTime();
-  //     }
-  //   });
-  // }
-
 
   loadMessagesRealTime() {
     this.messages.push({

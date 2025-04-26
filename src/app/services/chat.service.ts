@@ -47,11 +47,27 @@ export class ChatService {
   }
 
     
+  getMessagesReceive(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
+    });
+    return this.http.get<any>(`${_url}messages_receive`,{headers});
+  }
+
+
+    
   getIsRead(): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
     return this.http.get<any>(`${_url}getNotificationsIsUnRead`,{headers});
+  }
+
+  getIsReadMessages(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
+    });
+    return this.http.get<any>(`${_url}messages_unReadReceive`,{headers});
   }
 
 
