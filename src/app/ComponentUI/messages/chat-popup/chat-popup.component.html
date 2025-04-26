@@ -43,9 +43,8 @@
                 (keyup.enter)="sendMessage()" rows="2"></textarea>
     </mat-form-field>
     
-
-    <button mat-raised-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
-        Send
+    <button mat-button color="primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+      <mat-icon>send</mat-icon>
     </button>
   </div>
 </div>

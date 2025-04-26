@@ -1183,6 +1183,9 @@ react emoji */
   transition: transform 0.2s;
 }
 
+mat-expansion-panel {
+  margin-bottom: 8px;
+}
 
 .reaction span {
   font-size: 24px;

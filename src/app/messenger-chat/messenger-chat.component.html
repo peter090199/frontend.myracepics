@@ -6,7 +6,7 @@
       <mat-divider></mat-divider>
       <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
     
-    <mat-card-header>
+    <mat-card-header class="notifications-header">
       <button mat-button color="primary" (click)="markAllAsRead()">Read All</button>
     </mat-card-header>
 
@@ -83,15 +83,23 @@
         <small class="message-time">{{ msg.created_at | date:'short' }}</small>
       </div>
     </div>
-
+    
     <div class="chat-input">
-      <mat-form-field appearance="standard" class="chat-input-field">
-        <input matInput [(ngModel)]="newMessage" placeholder="Type a message..." />
+      <mat-form-field appearance="standard" class="chat-search">
+        <mat-label>Type a message...</mat-label>
+        <textarea matInput [(ngModel)]="newMessage"
+                  (ngModelChange)="onMessageChange()"
+                  (keydown.enter)="sendMessage()" rows="2">
+        </textarea>
       </mat-form-field>
-      <button mat-icon-button color="primary" (click)="sendMessage()">
+    
+      <button mat-icon-button color="primary" (click)="sendMessage()" [disabled]="isSendDisabled">
         <mat-icon>send</mat-icon>
       </button>
     </div>
+    
+    
+    
   </mat-card>
 
   <!-- Placeholder when no chat selected -->

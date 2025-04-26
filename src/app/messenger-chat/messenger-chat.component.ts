@@ -5,6 +5,12 @@ import { EchoService } from '../services/echo.service';
 import { ChatService } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
+import { NotificationService } from '../services/notification.service';
+interface Message {
+  text: string;
+  sent: boolean;
+  created_at?: string;
+}
 
 interface User {
   name: string;
@@ -26,10 +32,11 @@ export class MessengerChatComponent  implements OnInit{
   notificationCount = 0;
   isLoading:boolean = true;
   myUserId: number | null = null;
+  notificationCounts: { [key: string]: number } = {}; 
 
     constructor(private notifyService: NotificationsService, private chatService: ChatService,
       private dialog: MatDialog,private echoService:EchoService,private authservice:AuthService,
-      private authService: AuthService,
+      private authService: AuthService,private notificationService: NotificationService
     ) {}
   
     
@@ -37,7 +44,29 @@ export class MessengerChatComponent  implements OnInit{
     this.loadNotifications();
     this.loadIsRead();
     this.loadData();
+   // this.listenForIncomingMessages();
+
  }
+
+//  listenForIncomingMessages(): void {
+//   this.echoService.private(`chat.${this.myUserId}`)
+//     .listen('MessageSent', (event: any) => {
+//       console.log('📩 Incoming real-time message:', event);
+
+//       if (!this.selectedUser) return;
+
+//       if (event.sender_id === this.selectedUser.user_id) {
+//         const incomingMessage: Message = {
+//           text: event.message,
+//           sent: false,
+//           created_at: event.created_at || new Date().toISOString()
+//         };
+//         this.selectedUser.messages.push(incomingMessage);
+//         this.scrollToBottom();
+//       }
+//     });
+// }
+
 
  loadData(){
       this.authService.getData().subscribe({
@@ -59,14 +88,15 @@ export class MessengerChatComponent  implements OnInit{
 
 
  openChatWith(notif: any): void {
-  this.updateReadStatus(notif.id); 
+  this.updateReadStatus(); 
 
   this.chatService.getMessages(notif.sender_id).subscribe({
     next: (res) => {
       this.selectedUser = {
+        user_id: notif.sender_id,
         fullname: notif.fullname,
         photo_pic: notif.photo_pic,
-        messages: res // [{message, created_at}]
+        messages: res
       };
      // this.isLoading = false;
       setTimeout(() => this.scrollToBottom(), 100); // Auto scroll
@@ -108,26 +138,67 @@ scrollToBottom() {
 
   selectedUser: any = null;
   newMessage: string = '';
-
+  isSendDisabled: boolean = true;
+  
   selectUser(user: any) {
     this.selectedUser = user;
   }
+  onMessageChange() {
+    this.isSendDisabled = !this.newMessage || !this.newMessage.trim();
+  }
 
-  // sendMessage() {
-  //   if (this.newMessage.trim() && this.selectedUser) {
-  //     this.selectedUser.messages.push({ text: this.newMessage, sent: true });
-  //     this.newMessage = '';
-  //   }
-  // }
-
-  sendMessage() {
-    if (this.newMessage.trim()) {
-      this.selectedUser.messages.push({
-        text: this.newMessage,
-        sent: true
-      });
-      this.newMessage = '';
+  sendMessage(): void {
+    if (this.isSendDisabled || !this.newMessage.trim() || !this.selectedUser) return;
+  
+    const messageContent = this.newMessage.trim();
+    const receiverId = this.selectedUser.user_id || this.selectedUser.sender_id;
+  
+    // Locally push the message for immediate UI feedback
+    const newMessageObj = {
+      sender_id: this.myUserId,
+      message: messageContent,
+      created_at: new Date().toISOString()
+    };
+  
+    if (!this.selectedUser.messages) {
+      this.selectedUser.messages = [];
     }
+    this.selectedUser.messages.push(newMessageObj);
+  
+    this.scrollToBottom(); // Scroll down to the latest message
+    
+    // Clear the input field
+    this.newMessage = '';
+    this.isSendDisabled = true;
+  
+    // Actually send the message to the server
+    this.chatService.sendMessage(receiverId, messageContent).subscribe({
+      next: (response) => {
+        console.log('✅ Message sent successfully:', response);
+        
+        // Optional: you can update the message with any extra server data if needed
+        // For example: this.selectedUser.messages[this.selectedUser.messages.length - 1].id = response.messageId;
+  
+        // Refresh notification counts
+        this.load();
+  
+      },
+      error: (err) => {
+        console.error('❌ Error sending message:', err);
+        this.notifyService.toastrError('Failed to send message');
+      }
+    });
+  
+    // Optional: if you want, you could broadcast locally too for real-time feeling
+  }
+  
+
+  
+  load(){
+    this.notificationService.notificationCounts$.subscribe(counts => {
+      this.notificationCounts = counts;
+      console.log(this.notificationCounts)
+    });
   }
 
   panelOpenState = false;
@@ -142,7 +213,7 @@ scrollToBottom() {
 
   loadIsRead(): void {
    // this.isLoading = true;
-    this.chatService.getIsReadMessages().subscribe({
+    this.chatService.getIsRead().subscribe({
       next: (res) => {
         this.isRead = res.notifications;
       //  this.isLoading = false;
@@ -168,8 +239,8 @@ scrollToBottom() {
   
 
   chatHistory: { [key: number]: any[] } = {};
-  openChat(notif: any): void {
-      this.updateReadStatus(notif.id); // ✅ Update backend
+  openChat(): void {
+      this.updateReadStatus(); // ✅ Update backend
       
   }
   markAllAsRead(): void {
@@ -188,22 +259,9 @@ scrollToBottom() {
   }
 
 
-  markAllAsReadxx() {
-   // this.notifications = this.notifications.map(n => ({ ...n, read: true }));
+  updateReadStatus(): void {
     this.isLoading = true;
-    this.chatService.markMessagesAllRead().subscribe({
-      next: (res) => {
-        this.notifyService.toastrInfo(res.message);
-        this.loadNotifications();
-        this.loadIsRead();
-        this.isLoading = false;
-      },
-      error: (err) => console.error("❌ Error marking messages as read:", err),
-    });
-  }
-  updateReadStatus(id: number): void {
-    this.isLoading = true;
-    this.chatService.markMessagesAsRead(id).subscribe({
+    this.chatService.messagesIsread().subscribe({
       next: (res) => {
         this.totalUnreadMessages = this.notifications.length;
         //this.notifyService.toastrInfo(res.message);

@@ -141,14 +141,19 @@
 }
 
 
-/* Input Box */
+/* Chat Input */
 .chat-input {
   display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background: #fff;
+  padding: 0px;
+  background: #f9f9f9;
   border-top: 1px solid #ddd;
-  gap: 8px;
+  height: auto;
+  max-height: 40vh;
+}
+
+.chat-input mat-form-field {
+  flex-grow: 1;
+  margin-right: 10px;
 }
 
 .chat-input input {
@@ -330,27 +335,7 @@ mat-expansion-panel{
   margin-left: 8px;
 }
 
-/* Tablet styles */
-@media (max-width: 768px) {
-  .chat-container {
-    flex-direction: column;
-  }
 
-  .chat-sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .chat-window {
-    flex: 1;
-  }
-
-  .chat-input {
-    width: 100%;
-  }
-}
 
 /* Desktop styles */
 @media (min-width: 960px) {
@@ -359,7 +344,18 @@ mat-expansion-panel{
     margin: 0 auto;
     padding: 2rem;
   }
-
+  .card-content {
+    overflow-y: auto;
+    width: 100%;
+    max-width: 400px;
+    min-width: 250px;
+    
+    height: 100%;
+    max-height: 70vh;
+    min-height: 200px;
+    box-sizing: border-box; /* ensures padding does not overflow */
+  }
+  
   .notification-container h3 {
     font-size: 2rem;
   }
@@ -372,6 +368,90 @@ mat-expansion-panel{
     font-size: 0.85rem;
   }
 }
+
+
+@media (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .chat-window {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .chat-placeholder {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .chat-messages {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .chat-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .chat-input mat-form-field {
+    width: 100%;
+  }
+
+  .chat-input button {
+    align-self: flex-end;
+  }
+
+  .notifications-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 0;
+  }
+
+  .user {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+
+  .user img.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+
+  .user-info h4 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .user-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+  }
+
+  mat-tab-group {
+    width: 100%;
+  }
+
+
+}
+
 
 /* Hide mat-tab arrows */
 ::ng-deep .mat-tab-header-pagination {

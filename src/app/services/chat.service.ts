@@ -43,7 +43,7 @@ export class ChatService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
-    return this.http.get<any>(`${_url}notifications`,{headers});
+    return this.http.get<any>(`${_url}getNotificationsIsUnRead`,{headers});
   }
 
     
@@ -60,7 +60,7 @@ export class ChatService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}` // Include auth token
     });
-    return this.http.get<any>(`${_url}getNotificationsIsUnRead`,{headers});
+    return this.http.get<any>(`${_url}getNotificationsIsRead`,{headers});
   }
 
   getIsReadMessages(): Observable<any> {
@@ -77,7 +77,14 @@ export class ChatService {
     });
     return this.http.get<any>(`${_url}update_count`,{headers});
   }
-
+  
+  messagesIsread(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+    });
+    return this.http.put<any>(`${_url}messagesIsread`, {}, { headers });
+  }
+  
 
 
    // ✅ Mark messages as read
