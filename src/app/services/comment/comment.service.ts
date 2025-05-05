@@ -31,28 +31,19 @@ export class CommentService {
     const params = new HttpParams().set('post_uuidOrUind', post_uuidOrUind); 
     return this.http.get(`${_url}comment`, { headers, params });
   }
-
-  postComment(post_uuid: any): Observable<any> {
+  postComment(comment_uuid: any, comment: any): Observable<any> {
     const headers = this.createHeaders();
-    const params = new HttpParams().set('post_uuid', post_uuid); 
-    return this.http.post(`${_url}comment`, { headers, params });
+    const params = new HttpParams().set('post_uuid', comment_uuid);
+  
+    return this.http.post(`${_url}comment`, comment, { headers, params });
   }
-
-  postCommentByReply(comment_uuid: any, comment:any): Observable<any> {
+  postCommentByReply(comment_uuid: any, comment: any): Observable<any> {
     const headers = this.createHeaders();
-    const params = new HttpParams().set('comment_uuid', comment_uuid); 
-    return this.http.post(`${_url}commentreply`,comment, { headers, params });
+    const params = new HttpParams().set('comment_uuid', comment_uuid);
+  
+    return this.http.post(`${_url}commentreply`, comment, { headers, params });
   }
-
-  postCommentByReplyx(code:any): Observable<any> {
-    const headers = this.createHeaders();
-    return this.http.post(`${_url}commentreply`, { headers }).pipe(
-      catchError(error => this.handleAuthError(error))
-    );
-  }
-
-
-
+  
   
   private handleAuthError(error: any): Observable<any> {
     if (error.status === 401) {

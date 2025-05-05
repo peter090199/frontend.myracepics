@@ -513,7 +513,7 @@ createPost() {
       comment: commentText
     };
   
-    this.comment.postComment(post).subscribe({
+    this.comment.postComment(post,"data").subscribe({
       next: (res) => {
         post.comments.push({
           user: 'Current User',
