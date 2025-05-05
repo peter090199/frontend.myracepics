@@ -289,7 +289,9 @@ mat-expansion-panel{
   margin-right: auto;
   text-align: left;
 }
-
+mat-expansion-panel {
+  margin-bottom: 1px;
+}
 /* Message Styles */
 .sent, .received {
   max-width: 80%;

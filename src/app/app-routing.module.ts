@@ -32,6 +32,7 @@ import { NetworkingComponent } from './ComponentUI/networking/networking.compone
 import { NotificationComponent } from './ComponentUI/notification/notification.component';
 import { MessengerChatComponent } from './messenger-chat/messenger-chat.component';
 import { ChatUIComponent } from './chat-ui/chat-ui.component';
+import { SettingsComponent } from './ComponentUI/profile/settings/settings.component';
 
 
 const routes: Routes = [
@@ -65,6 +66,7 @@ const routes: Routes = [
       { path: 'home', component: HomeUIComponent },
       { path: 'message', component: MessagesComponent },
       { path: 'network', component: NetworkingComponent },
+      { path: 'settings', component: SettingsComponent },
       // { path: 'notifications', component: NotificationComponent },
       { path: 'search', component: UserListComponent },
 

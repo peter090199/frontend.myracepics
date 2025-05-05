@@ -22,7 +22,9 @@ export class InactivityService {
       .subscribe(() => {
         sessionStorage.clear();
         localStorage.removeItem('chatmessages');
+        window.location.reload();
         this.router.navigate(['/homepage']);
+
       });
   }
 }

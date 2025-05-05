@@ -68,7 +68,7 @@ mat-list-item.unread {
 }
 
 mat-expansion-panel {
-  margin-bottom: 8px;
+  margin-bottom: 1px;
 }
 
 .mat-form-field + .mat-form-field {

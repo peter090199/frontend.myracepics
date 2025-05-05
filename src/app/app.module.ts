@@ -83,6 +83,7 @@ import { ChatPopupComponent } from './ComponentUI/messages/chat-popup/chat-popup
 import { ChatWebsitePopUPComponent } from './ComponentUI/messages/chat-website-pop-up/chat-website-pop-up.component';
 import { PostUploadImageComponent } from './ComponentSharedUI/Public/post-upload-image/post-upload-image.component';
 import { ImageModalComponent } from './ComponentUI/Modal/image-modal/image-modal.component';
+import { SettingsComponent } from './ComponentUI/profile/settings/settings.component';
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -156,7 +157,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ChatPopupComponent,
     ChatWebsitePopUPComponent,
     PostUploadImageComponent,
-    ImageModalComponent
+    ImageModalComponent,
+    SettingsComponent
   
  
   

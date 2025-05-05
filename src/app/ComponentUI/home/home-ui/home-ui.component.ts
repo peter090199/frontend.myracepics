@@ -12,6 +12,7 @@ import { PostUploadImagesService } from 'src/app/services/post-upload-images.ser
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { ImageModalComponent } from '../../Modal/image-modal/image-modal.component';
+import { CommentService } from 'src/app/services/comment/comment.service';
 
 @Component({
   selector: 'app-home-ui',
@@ -42,7 +43,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   selectedIndex = 0;
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
     private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService,
-    private authService: AuthService,private alert:NotificationsService
+    private authService: AuthService,private alert:NotificationsService,private comment:CommentService
   ) {
    
   }
@@ -155,6 +156,8 @@ export class HomeUIComponent implements OnInit,OnDestroy {
     this.getProfileByUser();
     this.startAutoSlide();
     this.getCode();
+
+    this.getComment();
   
   }
 
@@ -225,7 +228,7 @@ createPost() {
   }
 
   
-  addComment(post: any) {
+  addCommentx(post: any) {
     if (!post.newComment || !post.newComment.trim()) {
       return; // Prevent adding empty or undefined comments
     }
@@ -501,6 +504,62 @@ createPost() {
     });
   }
 
+  //postcomment
+  addComment(post: any): void {
+    const commentText = post.newComment?.trim();
+    if (!commentText) return;
+  
+    const payload = {
+      comment: commentText
+    };
+  
+    this.comment.postComment(post).subscribe({
+      next: (res) => {
+        post.comments.push({
+          user: 'Current User',
+          comment: commentText,
+          profile_pic: '',
+          likes: 0,
+          replies: []
+        });
+        post.newComment = '';
+      },
+      error: (err) => {
+        console.error('Comment failed:', err);
+      }
+    });
+  }
+  
+//getcomment
+comments:any[]=[];
+getComment(): void{
+
+  this.comment.getComment("4a752eaa-16b3-4716-9db3-878d70a826d2").subscribe({
+    next: (res) => {
+      this.comments = res;
+      console.log(this.comments)
+    },
+    error: (err) => {
+      this.error = err.message || 'An error occurred while fetching profile data';
+    },
+  });
+}
+
+addReply(comment: any) {
+  const reply = {
+    user: 'Current User',
+    comment: comment.newReply,
+    profile_pic: ''
+  };
+  comment.replies = comment.replies || [];
+  comment.replies.push(reply);
+  comment.newReply = '';
+  comment.showReply = false;
+}
+
+likeComment(comment: any) {
+  comment.likes = (comment.likes || 0) + 1;
+}
 
 
 }

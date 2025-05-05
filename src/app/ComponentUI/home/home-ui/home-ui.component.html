@@ -196,32 +196,61 @@
               </mat-card-actions>
          
              <!-- Comment Section using Expansion Panel -->
-              <mat-expansion-panel *ngIf="post.showComments" expanded>
-                <mat-expansion-panel-header>
-                  <mat-panel-title> Comments ({{ post.caption.length }}) </mat-panel-title>
-                </mat-expansion-panel-header>
-      
-                <div class="comments-container">
-                  <div *ngFor="let comment of post.comments" class="comment">
-                    <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
-                    <div class="comment-content">
-                      <strong>{{ comment.user }}</strong>
-                      <p>{{ comment.text }}</p>
+             <mat-expansion-panel *ngIf="comments" expanded>
+              <mat-expansion-panel-header>
+                <mat-panel-title> Comments ({{ comments.length }}) </mat-panel-title>
+              </mat-expansion-panel-header>
+            
+              <div class="comments-container">
+                <div *ngFor="let comment of comments" class="comment">
+                  <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                  <div class="comment-content">
+                    <strong>{{ comment.user }}</strong>
+                    <p>{{ comment.comment }}</p>
+            
+                    <div class="comment-actions">
+                      <button mat-button (click)="likeComment(comment)">Like</button>
+                      <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
+                      <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
+                    </div>
+            
+                    <!-- Reply Input -->
+                    <div *ngIf="comment.showReply" class="reply-input">
+                      <mat-form-field class="reply-field" appearance="outline">
+                        <input matInput placeholder="Write a reply..." [(ngModel)]="comment.newReply" (keyup.enter)="addReply(comment)">
+                      </mat-form-field>
+                    
+                      <button mat-icon-button color="primary" (click)="addReply(comment)" [disabled]="!comment.newReply?.trim()">
+                        <mat-icon>send</mat-icon>
+                      </button>
+                    </div>
+                    
+            
+                    <!-- Replies -->
+                    <div class="replies" *ngIf="comment.replies?.length">
+                      <div *ngFor="let reply of comment.replies" class="comment reply">
+                        <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                        <div class="comment-content">
+                          <strong>{{ reply.user }}</strong>
+                          <p>{{ reply.comment }}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-      
-                
-                <div class="comment-input">
+              </div>
+            
+              <div class="form-row">
+                <mat-form-field class="form-field" appearance="standard">
                   <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
-                  <button mat-button (click)="addComment(post)" [disabled]="!post.newComment?.trim()">
-                    <mat-icon>comment</mat-icon>
-                  </button>
-                  
-                </div>
-
-
-              </mat-expansion-panel>
+                </mat-form-field>
+              
+                <button mat-icon-button color="primary" (click)="addComment(post)" [disabled]="!post.newComment?.trim()">
+                  <mat-icon>comment</mat-icon>
+                </button>
+              </div>
+              
+            </mat-expansion-panel>
             </mat-card-content>
           </div>
           </div>
