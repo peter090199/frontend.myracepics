@@ -41,9 +41,12 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   usercode:any;
   private scrollInterval: any;
   selectedIndex = 0;
+  post_uuidOrUind: any[] = [];
+  uuidOrUind: any = [];
+
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
     private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService,
-    private authService: AuthService,private alert:NotificationsService,private comment:CommentService
+    private authService: AuthService,private alert:NotificationsService,private comment:CommentService,
   ) {
    
   }
@@ -145,20 +148,15 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;
 
     this.onResize();
     this.fetchProfilePicture();
-
     this.getProfileByUser();
     this.startAutoSlide();
     this.getCode();
-
-    this.getComment();
-  
   }
 
 
@@ -329,11 +327,18 @@ createPost() {
               ...post,
               activeHours: this.getActiveHours(post.lastActive),
               followers: post.followers || 0,
-              currentIndex: 0, // for image carousel
-              images: post.images || [] // ensure it has images
-            
+              currentIndex: 0, 
+              images: post.images || [],
+              visibleComments: 5, 
             }));
           }
+          
+          this.post_uuidOrUind = data.map((item: any) => item.posts_uuid);
+          this.comments = []; // Clear before loading
+          this.post_uuidOrUind.forEach(uuid => {
+            this.getComment(uuid,this.posts );
+          });
+
           this.isLoading = false;
         },
         (error) => {
@@ -342,7 +347,8 @@ createPost() {
         }
       );
     }
-  
+
+ 
 
 
   // onScroll() {
@@ -505,16 +511,36 @@ createPost() {
   }
 
   //postcomment
+  addCommentxxx(post: any): void {
+    if (!post.newComment?.trim()) return;
+  
+    post.isSubmitting = true;
+  
+    this.comment.postComment(post.post_uuidOrUind, post.newComment).subscribe({
+      next: (response) => {
+        post.comments = post.comments || [];
+        post.comments.push(response); // or however your backend returns it
+        post.newComment = '';
+        post.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error submitting comment:', error);
+        post.isSubmitting = false;
+      }
+    });
+  }
+  
   addComment(post: any): void {
     const commentText = post.newComment?.trim();
     if (!commentText) return;
-  
+    post.isSubmitting = true;
+
     const payload = {
       comment: commentText
     };
-  
-    this.comment.postComment(post,"data").subscribe({
-      next: (res) => {
+
+    this.comment.postComment(post.posts_uuid, payload).subscribe({
+      next: () => {
         post.comments.push({
           user: 'Current User',
           comment: commentText,
@@ -523,18 +549,43 @@ createPost() {
           replies: []
         });
         post.newComment = '';
+        post.isSubmitting = false;
       },
       error: (err) => {
-        console.error('Comment failed:', err);
+        this.alert.toastPopUpError("Comment failed:")
       }
     });
   }
   
 //getcomment
-comments:any[]=[];
-getComment(): void{
+comments:any = [];
+getComment(post_uuid: string, post: any): void {
+  this.comment.getComment(post_uuid).subscribe({
+    next: (res) => {
+      post.comments = res;
+      console.log(post.comments)
+    },
+    error: (err) => {
+      this.error = err.message || 'An error occurred while fetching comments';
+    }
+  });
+}
 
-  this.comment.getComment("4a752eaa-16b3-4716-9db3-878d70a826d2").subscribe({
+getCommentx2(post_uuidOrUind: string): void {
+  this.comment.getComment(post_uuidOrUind).subscribe({
+    next: (res) => {
+      this.comments = res;
+    },
+    error: (err) => {
+      this.error = err.message || 'An error occurred while fetching comments';
+    }
+  });
+}
+
+getCommentxx(post_uuidOrUind:any[]): void{
+
+console.log(post_uuidOrUind)
+  this.comment.getComment(post_uuidOrUind).subscribe({
     next: (res) => {
       this.comments = res;
       console.log(this.comments)
@@ -545,7 +596,45 @@ getComment(): void{
   });
 }
 
-addReply(comment: any) {
+
+//reply comment
+
+addReply(comment: any): void {
+  const replyText = comment.newReply?.trim();
+  if (!replyText) return;
+
+  comment.isSubmitting = true;
+
+  const payload = {
+    comment: replyText
+  };
+
+  console.log(payload);
+
+  this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
+    next: () => {
+      comment.replies = comment.replies || []; // ensure it exists
+      comment.replies.push({
+        user: 'Current User', // Replace with actual user data
+        comment: replyText,
+        profile_pic: '',
+        likes: 0,
+        replies: []
+      });
+      comment.newReply = '';
+      comment.isSubmitting = false;
+    },
+    error: (err) => {
+      comment.isSubmitting = false;
+      this.alert.toastPopUpError("Comment failed");
+    }
+  });
+}
+loadMoreComments(post: any): void {
+  post.visibleComments += 5; 
+}
+
+addReplyx(comment: any) {
   const reply = {
     user: 'Current User',
     comment: comment.newReply,

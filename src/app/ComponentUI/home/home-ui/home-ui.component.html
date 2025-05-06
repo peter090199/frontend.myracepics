@@ -178,7 +178,6 @@
                       *ngFor="let r of reactions"
                       (mouseenter)="onReactionHover(post, r)">
                       <span>{{ r.emoji }}</span>
-                      <!-- <div class="reaction-label">{{ r.name }}</div> -->
                     </div>
                   </div>
                 </div>
@@ -194,15 +193,27 @@
                   <mat-icon>send</mat-icon> Send
                 </button>
               </mat-card-actions>
-         
-             <!-- Comment Section using Expansion Panel -->
-             <mat-expansion-panel *ngIf="comments" expanded>
+             
+              <div class="form-row" *ngIf="post.showComments" >
+                <mat-form-field class="form-field" appearance="standard">
+                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
+                </mat-form-field>
+              
+                <button mat-icon-button color="primary" (click)="addComment(post)" [disabled]="!post.newComment?.trim() || post.isSubmitting">
+                  <mat-icon>comment</mat-icon>
+                </button>
+
+                <mat-progress-bar *ngIf="post.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+              </div>
+            
+              <!-- Comments section per post -->
+             <mat-expansion-panel *ngIf="post.comments">
               <mat-expansion-panel-header>
-                <mat-panel-title> Comments ({{ comments.length }}) </mat-panel-title>
+                <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
               </mat-expansion-panel-header>
             
               <div class="comments-container">
-                <div *ngFor="let comment of comments" class="comment">
+                <div *ngFor="let comment of post.comments" class="comment">
                   <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
                   <div class="comment-content">
                     <strong>{{ comment.user }}</strong>
@@ -214,19 +225,23 @@
                       <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
                     </div>
             
-                    <!-- Reply Input -->
                     <div *ngIf="comment.showReply" class="reply-input">
-                      <mat-form-field class="reply-field" appearance="outline">
-                        <input matInput placeholder="Write a reply..." [(ngModel)]="comment.newReply" (keyup.enter)="addReply(comment)">
+                      <mat-form-field class="form-field" appearance="standard">
+                        <input matInput placeholder="Write a reply..."
+                              [(ngModel)]="comment.newReply"
+                              [disabled]="comment.isSubmitting"
+                              (keyup.enter)="addReply(comment)">
                       </mat-form-field>
                     
-                      <button mat-icon-button color="primary" (click)="addReply(comment)" [disabled]="!comment.newReply?.trim()">
-                        <mat-icon>send</mat-icon>
+                      <button mat-icon-button color="primary"
+                          (click)="addReply(comment)"
+                          [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
+                          <mat-icon>send</mat-icon>
                       </button>
+                     
                     </div>
-                    
+                    <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
             
-                    <!-- Replies -->
                     <div class="replies" *ngIf="comment.replies?.length">
                       <div *ngFor="let reply of comment.replies" class="comment reply">
                         <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
@@ -239,16 +254,13 @@
                   </div>
                 </div>
               </div>
-            
-              <div class="form-row">
-                <mat-form-field class="form-field" appearance="standard">
-                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
-                </mat-form-field>
-              
-                <button mat-icon-button color="primary" (click)="addComment(post)" [disabled]="!post.newComment?.trim()">
-                  <mat-icon>comment</mat-icon>
+              <!-- Load More Button -->
+              <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
+                <button mat-button color="accent" (click)="loadMoreComments(post)">
+                  Load More Comments
                 </button>
               </div>
+                      
               
             </mat-expansion-panel>
             </mat-card-content>
