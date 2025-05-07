@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from 'src/app/services/auth.service';
+import { CommentService } from 'src/app/services/comment/comment.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
 
@@ -19,7 +20,7 @@ export class ImageModalComponent implements OnInit {
     private dialogRef: MatDialogRef<ImageModalComponent>,
     private alert: NotificationsService,
     private postDataservices: PostUploadImagesService,
-    private authService: AuthService
+    private authService: AuthService,private comment:CommentService,
   ) {
     this.posts = Array.isArray(data) ? data : [data];
     console.log("Incoming posts:", this.posts);
@@ -106,8 +107,42 @@ export class ImageModalComponent implements OnInit {
       post.newComment = '';
     }
   }
-
+  likeComment(comment: any) {
+    comment.likes = (comment.likes || 0) + 1;
+  }
   
+//reply comment
+addReply(comment: any): void {
+  const replyText = comment.newReply?.trim();
+  if (!replyText) return;
+
+  comment.isSubmitting = true;
+
+  const payload = {
+    comment: replyText
+  };
+
+  console.log(payload);
+
+  this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
+    next: () => {
+      comment.replies = comment.replies || []; // ensure it exists
+      comment.replies.push({
+        user: 'Current User', // Replace with actual user data
+        comment: replyText,
+        profile_pic: '',
+        likes: 0,
+        replies: []
+      });
+      comment.newReply = '';
+      comment.isSubmitting = false;
+    },
+    error: () => {
+      comment.isSubmitting = false;
+      this.alert.toastPopUpError("Comment failed");
+    }
+  });
+}
 
 }
 

@@ -162,16 +162,10 @@
               </mat-card-content>
               <!-- Interaction Buttons -->
               <mat-card-actions class="interaction-buttons">
-                <div class="like-button-wrapper"
-                     (mouseenter)="showReactions = true"
-                  >
-              
-                  <!-- Main Reaction Button -->
-                  <button mat-button>
+                <div class="like-button-wrapper" (mouseenter)="showReactions = true">
+                  <button mat-button color="primary">
                     <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post.id]?.emoji || 'thumb_up' }}</mat-icon>
                   </button>
-                  
-                  <!-- Hover Reaction Menu -->
                   <div class="reactions-popup" *ngIf="showReactions">
                     <div
                       class="reaction"
@@ -182,14 +176,13 @@
                   </div>
                 </div>
               
-                <!-- Other Buttons -->
-                <button mat-button (click)="toggleComments(post)">
+                <button mat-button color="primary" (click)="toggleComments(post)" >
                   <mat-icon>chat</mat-icon> Comment
                 </button>
-                <button mat-button>
+                <button mat-button color="primary">
                   <mat-icon>repeat</mat-icon> Repost
                 </button>
-                <button mat-button>
+                <button mat-button color="primary">
                   <mat-icon>send</mat-icon> Send
                 </button>
               </mat-card-actions>

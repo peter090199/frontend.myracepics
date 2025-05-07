@@ -7,6 +7,9 @@ import { UserProfileUiComponent } from '../../Individual/user-profile-ui/user-pr
 import { ActivatedRoute } from '@angular/router';
 import { AuthGuard } from 'src/app/AuthGuard/auth.guard';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
+import { CommentService } from 'src/app/services/comment/comment.service';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { ImageModalComponent } from 'src/app/ComponentUI/Modal/image-modal/image-modal.component';
 
 
 @Component({
@@ -38,7 +41,8 @@ export class ProfileUIComponent implements OnInit {
   constructor(
             private profile:ProfileService,public dialog:MatDialog,
             private route: ActivatedRoute,private authService: AuthGuard,
-            private postDataservices:PostUploadImagesService
+            private postDataservices:PostUploadImagesService,private comment:CommentService,
+            private alert:NotificationsService,
 
   ) { }
  
@@ -52,10 +56,20 @@ export class ProfileUIComponent implements OnInit {
     return Math.ceil(this.posts.length / this.pageSize);
   }
   
-  openModal(index: number): void {
-    this.modalOpen = true;
-    this.currentIndex = this.currentPage * this.pageSize + index;
+openModal(image: any): void {
+    const dialogRef = this.dialog.open(ImageModalComponent, {
+      data: image,
+      minWidth: '60%',
+      maxWidth: '90%',
+      maxHeight: '90vh'
+    });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) this.loadUserPost();
+      });
+  
   }
+  
   
   closeModal(): void {
     this.modalOpen = false;
@@ -96,6 +110,41 @@ export class ProfileUIComponent implements OnInit {
     this.loadProfileCV();
   }
   
+    //react emoji
+    showReactions = false;
+    selectedReaction: any = null;
+    hoveredReaction: any = null;
+  
+  
+    reactions = [
+      { name: 'Like', emoji: '👍' },
+      { name: 'Love', emoji: '❤️' },
+      { name: 'Haha', emoji: '😂' },
+      { name: 'Wow', emoji: '😮' },
+      { name: 'Sad', emoji: '😢' },
+      { name: 'Angry', emoji: '😡' }
+    ];
+    
+  
+    selectedReactions: { [postId: string]: any } = {};
+
+    
+  onReactionHover(post: any, reaction: any) {
+    this.hoveredReaction = reaction;
+  this.selectedReactions[post.id] = reaction;
+  this.sendReactionToServer(post.id, reaction);
+
+  // optional: hide popup automatically
+  setTimeout(() => this.showReactions = false, 300);
+  }
+  sendReactionToServer(postId: string, reaction: any) {
+    console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
+    // TODO: Use HttpClient or service here
+    // this.api.sendReaction(postId, reaction).subscribe(...)
+  }
+
+  
+
     // Function to calculate active hours
     getActiveHours(lastActive: string): string {
       if (!lastActive) return 'unknown';
@@ -117,15 +166,55 @@ export class ProfileUIComponent implements OnInit {
           this.posts = data.map(post => ({
             ...post,
             activeHours: this.getActiveHours(post.lastActive),
-            followers: post.followers || 0
+            followers: post.followers || 0,
+            visibleComments: 3, 
           }));
         }
+     
       },
       (error) => console.error('Error fetching posts:', error)
     );
   }
     
+  likeComment(comment: any) {
+    comment.likes = (comment.likes || 0) + 1;
+  }
+  
+//reply comment
+addReply(comment: any): void {
+  const replyText = comment.newReply?.trim();
+  if (!replyText) return;
 
+  comment.isSubmitting = true;
+
+  const payload = {
+    comment: replyText
+  };
+
+  console.log(payload);
+
+  this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
+    next: () => {
+      comment.replies = comment.replies || []; // ensure it exists
+      comment.replies.push({
+        user: 'Current User', // Replace with actual user data
+        comment: replyText,
+        profile_pic: '',
+        likes: 0,
+        replies: []
+      });
+      comment.newReply = '';
+      comment.isSubmitting = false;
+    },
+    error: (err) => {
+      comment.isSubmitting = false;
+      this.alert.toastPopUpError("Comment failed");
+    }
+  });
+}
+loadMoreComments(post: any): void {
+  post.visibleComments += 3; 
+}
 
   loadProfileCV(){
     this.profile.getProfileByUser(this.code).subscribe({
@@ -209,23 +298,33 @@ toggleComments(post: any): void {
 
 
   
-addComment(post: any) {
-  if (!post.newComment || !post.newComment.trim()) {
-    return; // Prevent adding empty or undefined comments
-  }
+addComment(post: any): void {
+  const commentText = post.newComment?.trim();
+  if (!commentText) return;
+  post.isSubmitting = true;
 
-  // Ensure 'comments' array exists before pushing a new comment
-  if (!post.comments) {
-    post.comments = []; // Initialize if undefined
-  }
+  const payload = {
+    comment: commentText
+  };
 
-  post.comments.push({
-    text: post.newComment,
-    timestamp: new Date()
+  this.comment.postComment(post.posts_uuid, payload).subscribe({
+    next: () => {
+      post.comments.push({
+        user: 'Current User',
+        comment: commentText,
+        profile_pic: '',
+        likes: 0,
+        replies: []
+      });
+      post.newComment = '';
+      post.isSubmitting = false;
+    },
+    error: (err) => {
+      this.alert.toastPopUpError("Comment failed:")
+    }
   });
-
-  post.newComment = ""; // Clear input after submitting
 }
+
 
 likePost(post: any): void {
   if (!post.liked) {

@@ -55,20 +55,21 @@
                   <div *ngIf="post">
                     <p  class="content-display">
                       {{ post.expanded ? post.caption : (post.caption | slice:0:100) + '...' }}
-                      <a *ngIf="post.caption.length > 100" (click)="post.expanded = !post.expanded" class="see-more">
+                      <a *ngIf="post.caption.length > 180" (click)="post.expanded = !post.expanded" class="see-more">
                         {{ post.expanded ? 'See Less' : 'See More' }}
                       </a>
                     </p>
                   </div>
                   
-                  <div class="fb-gallery" [ngClass]="{ 'single': post.posts.length === 1, 'multi': post.posts.length > 1 }">
+                   <!-- Image Gallery -->
+                   <div class="fb-gallery" [ngClass]="{ 'single': post.posts.length === 1, 'multi': post.posts.length > 1 }">
                     <div
                       class="gallery-item"
                       *ngFor="let image of post.posts.slice(0, maxImages); let i = index"
                       [ngClass]="{ 'large': i === 0 }"
   
                       [ngClass]="{ 'large': post.posts.length === 1 || i === 0 }"
-                      (click)="openModal(i)"
+                      (click)="openModal(post.posts)"
                     >
                       <img [src]="image.path_url" alt="Gallery image" />
                       <div class="overlay" *ngIf="i === (maxImages - 1) && post.posts.length > maxImages">
@@ -76,55 +77,46 @@
                       </div>
                     </div>
                   </div>
-                  
-                  <!-- Modal / Lightbox -->
-                  <div class="modal" *ngIf="modalOpen">
-                    <span class="close cursor" (click)="closeModal()">&times;</span>
-                    <div class="modal-content">
-                      <!-- Large Preview -->
-                      <div class="mySlides" *ngFor="let image of post.posts; let i = index" [hidden]="i !== currentIndex">
-                        <div class="numbertext">{{ i + 1 }} / {{ post.posts.length }}</div>
-                        <img [src]="image.path_url" class="modal-image" />
-                      </div>
-                  
-                      <!-- Navigation -->
-                      <a class="prev" style="color: rgb(2, 101, 239);" (click)="changeSlide(-1)">&#10094;</a>
-                      <a class="next" style="color: rgb(2, 101, 239);" (click)="changeSlide(1)">&#10095;</a>
-                  
-                      <!-- Caption (optional) -->
-                      <div class="caption-container">
-                        <p id="caption">{{ getCaption(currentIndex) }}</p>
-                      </div>
-                  
-                      <!-- Thumbnail controls -->
-                      <div class="thumbnail-row">
-                        <div class="column" *ngFor="let image of post.posts; let i = index" (click)="goToSlide(i)">
-                          <img
-                            class="demo"
-                            [src]="image.path_url"
-                            [class.active]="i === currentIndex"
-                            [alt]="getCaption(i)"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
   
                 </mat-card-content>
             
                 <!-- Interaction Buttons -->
                 <mat-card-actions class="interaction-buttons">
-                  <button mat-button (click)="likePost(post)"><mat-icon>thumb_up</mat-icon> Like</button>
+                  <div class="like-button-wrapper" (mouseenter)="showReactions = true">
+                    <button mat-button color="primary">
+                      <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post.id]?.emoji || 'thumb_up' }}</mat-icon>
+                    </button>
+                    <div class="reactions-popup" *ngIf="showReactions">
+                      <div
+                        class="reaction"
+                        *ngFor="let r of reactions"
+                        (mouseenter)="onReactionHover(post, r)">
+                        <span>{{ r.emoji }}</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <button mat-button (click)="toggleComments(post)"><mat-icon>chat</mat-icon> Comment</button>
                   <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
                   <button mat-button><mat-icon>send</mat-icon> Send</button>
                 </mat-card-actions>
 
-                   <!-- Comment Section using Expansion Panel -->
-              <mat-expansion-panel *ngIf="post.showComments" expanded>
+                <!-- Comment Section using Expansion Panel -->
+                <div class="form-row" *ngIf="post.showComments" >
+                <mat-form-field class="form-field" appearance="standard">
+                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
+                </mat-form-field>
+              
+                <button mat-icon-button color="primary" (click)="addComment(post)" [disabled]="!post.newComment?.trim() || post.isSubmitting">
+                  <mat-icon>comment</mat-icon>
+                </button>
+
+                <mat-progress-bar *ngIf="post.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+              </div>
+
+              <mat-expansion-panel  *ngIf="post.comments">
                 <mat-expansion-panel-header>
-                  <mat-panel-title> Comments ({{ post.caption.length }}) </mat-panel-title>
+                  <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
                 </mat-expansion-panel-header>
       
                 <div class="comments-container">
@@ -132,22 +124,55 @@
                     <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
                     <div class="comment-content">
                       <strong>{{ comment.user }}</strong>
-                      <p>{{ comment.text }}</p>
+                      <p>{{ comment.comment }}</p>
+
+                      <div class="comment-actions">
+                        <button mat-button (click)="likeComment(comment)">Like</button>
+                        <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
+                        <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
+                      </div>
+
+                      <div *ngIf="comment.showReply" class="reply-input">
+                        <mat-form-field class="form-field" appearance="standard">
+                          <input matInput placeholder="Write a reply..."
+                                [(ngModel)]="comment.newReply"
+                                [disabled]="comment.isSubmitting"
+                                (keyup.enter)="addReply(comment)">
+                        </mat-form-field>
+                      
+                        <button mat-icon-button color="primary"
+                            (click)="addReply(comment)"
+                            [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
+                            <mat-icon>send</mat-icon>
+                        </button>
+                       
+                      </div>
+                      <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+                    
+                      <div class="replies" *ngIf="comment.replies?.length">
+                        <div *ngFor="let reply of comment.replies" class="comment reply">
+                          <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                          <div class="comment-content">
+                            <strong>{{ reply.user }}</strong>
+                            <p>{{ reply.comment }}</p>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
       
-                
-                <div class="comment-input">
-                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
-                  <button mat-button (click)="addComment(post)" [disabled]="!post.newComment?.trim()">
-                    <mat-icon>comment</mat-icon>
-                  </button>
-                  
-                </div>
-                </mat-expansion-panel>
-              </mat-card>
+                   <!-- Load More Button -->
+              <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
+                <button mat-button color="accent" (click)="loadMoreComments(post)">
+                  Load More Comments
+                </button>
               </div>
+
+             </mat-expansion-panel>
+           </mat-card>
+        </div>
       </div>
     </mat-tab>
 
@@ -204,10 +229,9 @@
   
     <mat-tab label="Education">
       <div class="tab-content">
-              <mat-card-header>
-                <h2>Education</h2>
-                <mat-divider></mat-divider>
-            </mat-card-header>
+          <h2>Education</h2>
+          <mat-divider></mat-divider>
+
             <mat-card-content>
               <section class="cv-section" *ngIf="profiles?.lines?.education?.length > 0">
                 <mat-list  *ngFor="let education of profiles.lines.education">
@@ -244,10 +268,9 @@
     </mat-tab>
   
     <mat-tab label="Skills">
-      <mat-card-header>
-        <h2>Skills</h2>
-        <mat-divider></mat-divider>
-    </mat-card-header>
+    <h2>Skills</h2>
+    <mat-divider></mat-divider>
+
     <div class="tab-content">
       <mat-card-content>
         <section class="cv-section" *ngIf="profiles?.lines?.skills?.length > 0">
@@ -263,10 +286,8 @@
     </mat-tab>
 
     <mat-tab label="Seminar">
-      <mat-card-header>
-        <h2>Seminar</h2>
-        <mat-divider></mat-divider>
-      </mat-card-header>
+    <h2>Seminar</h2>
+    <mat-divider></mat-divider>
 
       <div class="tab-content">
         <section class="cv-section" *ngIf="profiles?.lines?.seminar?.length > 0">
@@ -290,10 +311,8 @@
     </mat-tab>
   
     <mat-tab label="Trainings">
-      <mat-card-header>
-        <h2>Trainings</h2>
-        <mat-divider></mat-divider>
-      </mat-card-header>
+    <h2>Trainings</h2>
+    <mat-divider></mat-divider>
 
       <div class="tab-content">
         <mat-card-content>
@@ -309,10 +328,8 @@
     </mat-tab>
 
     <mat-tab label="Certificates">
-      <mat-card-header>
-        <h2>Certificates</h2>
-        <mat-divider></mat-divider>
-      </mat-card-header>
+    <h2>Certificates</h2>
+    <mat-divider></mat-divider>
 
         <div class="tab-content">
           <mat-card-content>
@@ -328,10 +345,8 @@
     </mat-tab>
 
     <mat-tab label="Work Experience">
-      <mat-card-header>
-        <h2>Work Experience</h2>
-        <mat-divider></mat-divider>
-      </mat-card-header>
+      <h2>Work Experience</h2>
+      <mat-divider></mat-divider>
 
         <div class="tab-content">
           <mat-card-content>

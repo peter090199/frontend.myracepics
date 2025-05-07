@@ -88,7 +88,9 @@
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
-
+h2{
+  margin: 2px;
+}
 .edit-cover-btn:hover {
   background-color: rgba(0, 0, 0, 0.8);
   cursor: pointer;

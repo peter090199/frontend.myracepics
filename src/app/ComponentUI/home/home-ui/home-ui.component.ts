@@ -329,7 +329,7 @@ createPost() {
               followers: post.followers || 0,
               currentIndex: 0, 
               images: post.images || [],
-              visibleComments: 5, 
+              visibleComments: 3, 
             }));
           }
           
@@ -631,7 +631,7 @@ addReply(comment: any): void {
   });
 }
 loadMoreComments(post: any): void {
-  post.visibleComments += 5; 
+  post.visibleComments += 3; 
 }
 
 addReplyx(comment: any) {

@@ -1,43 +1,48 @@
 <mat-card class="example-card">
     <mat-card-subtitle>User Profile</mat-card-subtitle>
     <mat-card-title></mat-card-title>
+    <mat-divider inset></mat-divider>
+
     <mat-card-content>
       <div class="form-row">
-         <mat-form-field class="form-field" appearance="standard">
-            <mat-icon matPrefix class="aligned-icon">email</mat-icon>
-            <mat-label>Email:</mat-label>
-            <input matInput type="email" formControlName="email" readonly>
-          </mat-form-field>
-
-          <mat-form-field class="form-field" appearance="standard">
-            <mat-icon matPrefix class="aligned-icon">person</mat-icon>
-            <mat-label>Family Name</mat-label>
-            <input matInput formControlName="lname" readonly>
-          </mat-form-field>
+        <mat-form-field class="form-field" appearance="standard">
+          <mat-icon matPrefix class="aligned-icon">person</mat-icon>
+          <mat-label>Full Name</mat-label>
+          <input matInput [value]="users?.fullname" readonly>
+        </mat-form-field>
+        
+        <mat-form-field class="form-field" appearance="standard">
+          <mat-icon matPrefix class="aligned-icon">email</mat-icon>
+          <mat-label>Email</mat-label>
+          <input matInput [value]="users?.email" readonly>
+        </mat-form-field>
           
       </div>
 
       <div class="form-row">
         <mat-form-field class="form-field" appearance="standard">
-            <mat-icon matPrefix class="aligned-icon">email</mat-icon>
-            <mat-label>Email:</mat-label>
-            <input matInput type="email" formControlName="email" readonly>
-          </mat-form-field>
-
-          <mat-form-field class="form-field" appearance="standard">
-            <mat-icon matPrefix class="aligned-icon">person</mat-icon>
-            <mat-label>Family Name</mat-label>
-            <input matInput formControlName="lname" readonly>
-          </mat-form-field>
+          <mat-icon matPrefix class="aligned-icon">business</mat-icon>
+          <mat-label>Company</mat-label>
+          <input matInput [value]="users?.company ?? 'NA'" readonly>
+        </mat-form-field>
+        
+        <mat-form-field class="form-field" appearance="standard">
+          <mat-icon matPrefix class="aligned-icon">phone</mat-icon>
+          <mat-label>Contact Number</mat-label>
+          <input matInput [value]="users?.contactno" readonly>
+        </mat-form-field>
+        
       </div>
     </mat-card-content>
-    
     <mat-divider inset></mat-divider>
-    <mat-card-actions>
-      <button mat-button>LIKE</button>
-      <button mat-button>SHARE</button>
-    </mat-card-actions>
-    <mat-card-footer>
+
+    <!-- <mat-card-actions>
+      <button mat-button (click)="Changepassword()">Change Password</button>
+    </mat-card-actions> -->
+
+    <mat-card-footer *ngIf="isLoading">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </mat-card-footer>
+    
   </mat-card>
+
