@@ -65,10 +65,32 @@ export class HomeUIComponent implements OnInit,OnDestroy {
     return Math.ceil(this.post.posts.length / this.pageSize);
   }
 
-
-  openModal(image: any): void {
+  selectedImages:any;
+  openModalx(postsUuind: string, images:any) {
+    const selectedImages = this.post.posts.filter((img: { posts_uuind: string; }) => img.posts_uuind === postsUuind);
+    console.log('Selected images for posts_uuind:', postsUuind, images);
+  
+    // Use selectedImages to populate the modal or gallery
+    this.selectedImages = selectedImages;
+    this.modalOpen = true;
     const dialogRef = this.dialog.open(ImageModalComponent, {
-      data: image,
+      data: images,
+      minWidth: '60%',
+      maxWidth: '90%',
+      maxHeight: '90vh'
+    });
+
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.loadUserPost();
+    });
+
+  }
+  
+  openModal(data: any): void {
+   // console.log(data)
+    const dialogRef = this.dialog.open(ImageModalComponent, {
+      data: data,
       minWidth: '60%',
       maxWidth: '90%',
       maxHeight: '90vh'
@@ -80,7 +102,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   
   }
   
-  openModalx(image: any): void {
+  openModalxs(image: any): void {
    // const selectedImage = this.post.posts[index];
     console.log(image.path_url)
 

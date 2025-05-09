@@ -123,8 +123,9 @@
                   <div *ngFor="let comment of post.comments" class="comment">
                     <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
                     <div class="comment-content">
-                      <strong>{{ comment.user }}</strong>
+                      <strong>{{ comment.fullname }}</strong>
                       <p>{{ comment.comment }}</p>
+                      <small>{{ comment.date_comment }}</small>
 
                       <div class="comment-actions">
                         <button mat-button (click)="likeComment(comment)">Like</button>
@@ -153,8 +154,9 @@
                         <div *ngFor="let reply of comment.replies" class="comment reply">
                           <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
                           <div class="comment-content">
-                            <strong>{{ reply.user }}</strong>
+                            <strong>{{ reply.fullname }}</strong>
                             <p>{{ reply.comment }}</p>
+                            <small>{{ reply.date_comment }}</small>
                           </div>
                         </div>
                       </div>
