@@ -2,10 +2,14 @@
   display: flex;
   flex-direction: row;
   max-width: 95vw;
-  max-height: 90vh;
-  overflow: auto;
+  position: relative;
+  max-height: 80vh; /* Adjust as per your layout */
+  overflow: hidden;
   }
-  
+  .card {
+    max-height: 100%; /* Allow the card to use the full height of its container */
+    overflow: hidden;
+  }
 .carousel-item button {
   position: absolute;
   top: 0.5rem;
@@ -14,8 +18,10 @@
 }
 
 .comment-section {
-  margin-top: 40px;
   background-color: #fafafa;
+  max-height: 600px; /* You can adjust this value */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 10px; /* Add padding to prevent content from sticking to the scrollbar */
 }
 
 
