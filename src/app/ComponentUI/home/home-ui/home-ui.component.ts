@@ -88,12 +88,11 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   }
   
   openModal(data: any): void {
-   // console.log(data)
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: data,
       minWidth: '60%',
       maxWidth: '90%',
-      maxHeight: '90vh'
+      minHeight: '60vh',
     });
   
       dialogRef.afterClosed().subscribe(result => {
@@ -485,8 +484,6 @@ createPost() {
     this.hoveredReaction = reaction;
   this.selectedReactions[post.id] = reaction;
   this.sendReactionToServer(post.id, reaction);
-
-  // optional: hide popup automatically
   setTimeout(() => this.showReactions = false, 300);
   }
   
@@ -564,9 +561,7 @@ createPost() {
     this.comment.postComment(post.posts_uuid, payload).subscribe({
       next: () => {
         post.comments.push({
-          user: 'Current User',
           comment: commentText,
-          profile_pic: '',
           likes: 0,
           replies: []
         });
@@ -586,6 +581,17 @@ getComment(post_uuid: string, post: any): void {
     next: (res) => {
       post.comments = res;
       console.log(post.comments)
+    },
+    error: (err) => {
+      this.error = err.message || 'An error occurred while fetching comments';
+    }
+  });
+}
+
+getDataComment(post_uuid:string){
+  this.comment.getComment(post_uuid).subscribe({
+    next: (res) => {
+      this.post.posts = res;
     },
     error: (err) => {
       this.error = err.message || 'An error occurred while fetching comments';

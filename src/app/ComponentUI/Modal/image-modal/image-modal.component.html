@@ -1,58 +1,72 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
   <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
+
 <div class="modal-container">
   <mat-card class="card">
     <!-- Center Image -->
     <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
     <div class="modal-content">
-      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+      <div #carousel id="carouselExample" class="carousel slide" data-bs-interval="3000">
         <div class="carousel-inner">
-          <div class="carousel-item"
+          <div
+            class="carousel-item"
             *ngFor="let post of posts; let i = index"
-            [class.active]="i === currentIndex"
-            (click)="setActive(i)">
+            [attr.data-index]="i"
+            [class.active]="i === currentIndex">
             <img [src]="post.path_url" class="d-block w-100" alt="Preview Image">
           </div>
-     
-          
+        
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <button *ngIf="posts.length > 1" class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <button *ngIf="posts.length > 1" class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
         </button>
       </div>
     </div>
+    
   </mat-card>
 
-    <div class="comment-section">
-      <div class="comment-list">
-        <!-- <div *ngFor="let comment of post.comments" class="comment-item">
-          <strong>{{ comment.username }}</strong>: {{ comment.text }}
-        </div> -->
-      </div>
-
-      <div class="comment-input">
-        <mat-form-field appearance="standard" class="comment-field">
-          <textarea
-            matInput
-            placeholder="Write a comment..."
-            cdkTextareaAutosize
-            cdkAutosizeMinRows="2"
-            cdkAutosizeMaxRows="5"
-          ></textarea>
-        </mat-form-field>
+    <div class="comment-section" >
+      <mat-card-actions class="interaction-buttons">
+        <div class="like-button-wrapper" (mouseenter)="showReactions = true">
+          <button mat-button color="primary">
+            <mat-icon>{{ hoveredReaction?.emoji || 'thumb_up'}}</mat-icon>
+          </button>
+          <div class="reactions-popup" *ngIf="showReactions">
+            <div
+              class="reaction"
+              *ngFor="let r of reactions"
+              (mouseenter)="onReactionHover(posts, r)">
+              <span>{{ r.emoji }}</span>
+            </div>
+          </div>
+        </div>
         <button mat-button color="primary">
-          <mat-icon>send</mat-icon>
+          <mat-icon>repeat</mat-icon> Repost
         </button>
-
-       
-      </div>
+        <button mat-button color="primary">
+          <mat-icon>send</mat-icon> Send
+        </button>
+      </mat-card-actions>
+     
+    <div class="form-row">
+      <mat-form-field class="form-field" appearance="standard">
+        <input matInput placeholder="Write a comment..." [(ngModel)]="newComment">
+      </mat-form-field>
+      
+      <button mat-button color="primary" (click)="addComment()">
+        <mat-icon>chat</mat-icon> Comment
+      </button>
+      
+      <mat-progress-bar *ngIf="isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+      
+    </div>
 
       <div class="comments-container">
-        <div *ngFor="let comment of posts" class="comment">
+        <div *ngFor="let comment of comments" class="comment">
           <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
           <div class="comment-content">
             <strong>{{ comment.fullname }}</strong>
@@ -99,7 +113,6 @@
       
       
       
-    </div>
 
 
 
@@ -108,7 +121,7 @@
   </button> -->
 
   <!-- <mat-menu #menu="matMenu">
-    <!-- <button mat-menu-item [disabled]="isLoading"><mat-icon color="primary">edit</mat-icon>
+     <button mat-menu-item [disabled]="isLoading"><mat-icon color="primary">edit</mat-icon>
       <span>Edit</span></button> 
     <button mat-menu-item (click)="deleteImage(posts.posts_uuind)" [disabled]="isLoading"> 
       <mat-icon color="warn">delete</mat-icon>
@@ -117,4 +130,4 @@
   </mat-menu> -->
 
 
-</div>
+

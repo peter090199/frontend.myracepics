@@ -26,17 +26,26 @@ export class CommentService {
     return new HttpParams().set('desc_code', 'top_navigation');
   }
 
+  //individual
+  postCommentIndividual(post_uuidOrUind: any, comment: any): Observable<any> {
+    const headers = this.createHeaders();
+    const params = new HttpParams().set('post_uuidOrUind', post_uuidOrUind);
+    return this.http.post(`${_url}comment`, comment, { headers, params });
+  }
+
   getComment(post_uuidOrUind:any): Observable<any> {
     const headers = this.createHeaders();
     const params = new HttpParams().set('post_uuidOrUind', post_uuidOrUind); 
     return this.http.get(`${_url}comment`, { headers, params });
   }
+  
+  //per post comment
   postComment(comment_uuid: any, comment: any): Observable<any> {
     const headers = this.createHeaders();
     const params = new HttpParams().set('post_uuid', comment_uuid);
-  
     return this.http.post(`${_url}comment`, comment, { headers, params });
   }
+
   postCommentByReply(comment_uuid: any, comment: any): Observable<any> {
     const headers = this.createHeaders();
     const params = new HttpParams().set('comment_uuid', comment_uuid);

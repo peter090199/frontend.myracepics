@@ -13,7 +13,12 @@
   background-color:none;
 }
 
-  
+.comment-section {
+  margin-top: 40px;
+  background-color: #fafafa;
+}
+
+
   .content-wrapper {
   flex: 1;
   padding: 1rem;

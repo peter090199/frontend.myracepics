@@ -1,4 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from 'src/app/services/auth.service';
 import { CommentService } from 'src/app/services/comment/comment.service';
@@ -10,110 +17,96 @@ import { PostUploadImagesService } from 'src/app/services/post-upload-images.ser
   templateUrl: './image-modal.component.html',
   styleUrls: ['./image-modal.component.css']
 })
-export class ImageModalComponent implements OnInit {
+export class ImageModalComponent implements OnInit, AfterViewInit {
+  @ViewChild('carousel') carousel!: ElementRef;
+
+  posts: any[] = [];
+  comments: any[] = [];
+
+  currentIndex: number = 0;
   isLoading: boolean = false;
-  usercode: any;
-  posts: any = [];
-  posts_uuind:any;
+  isSubmitting: boolean = false;
+
+  post_uuidOrUind: string = '';
+
+  showReactions = false;
+  selectedReaction: any = null;
+  hoveredReaction: any = null;
+
+
+  reactions = [
+    { name: 'Like', emoji: '👍' },
+    { name: 'Love', emoji: '❤️' },
+    { name: 'Haha', emoji: '😂' },
+    { name: 'Wow', emoji: '😮' },
+    { name: 'Sad', emoji: '😢' },
+    { name: 'Angry', emoji: '😡' }
+  ];
+
+  selectedReactions: { [postId: string]: any } = {};
+
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<ImageModalComponent>,
     private alert: NotificationsService,
     private postDataservices: PostUploadImagesService,
-    private authService: AuthService,private comment:CommentService,
-  ) 
-  {
-    this.posts = Array.isArray(data) ? data : [data];
-   // this.posts = this.posts.filter((p: any) => p.posts_uuind === this.posts_uuind);
-    this.posts_uuind = this.posts.map((post: { posts_uuind: any; }) => post.posts_uuind);
-     console.log("Incoming posts:", this.posts);
+    private authService: AuthService,
+    private comment: CommentService,
+  ) {
+    this.posts = data;
   }
 
   ngOnInit(): void {
-    this.getCode(); // Only needed for delete or re-fetch
-    this.loadUserPost();
-    this.getComment();
+    if (this.posts.length > 0) {
+      this.currentIndex = 0;
+      // this.posts.forEach(post => post.showComments = false);
+      this.post_uuidOrUind = this.posts[0].posts_uuind;
+      this.getComment();
+    }
   }
 
-  currentIndex = 0;
-
-setActive(index: number): void {
-  this.currentIndex = index;
-  const currentPost = this.posts[this.currentIndex];
-  this.posts_uuind = currentPost.posts_uuind;
- // this.getComment(); // Load comments for this post
-}
-
-
-  //getcomment
-comments:any = [];
-getComment(): void {
-  this.comment.getComment(this.posts_uuind).subscribe({
-    next: (res) => {
-      this.comments = res;
-      console.log(this.comments)
-    },
-    error: (err:any) => {
-      err = err.message || 'An error occurred while fetching comments';
-    }
-  });
-}
-  getCode(): void {
-    this.authService.getProfilecode().subscribe({
-      next: (res) => {
-        if (res.success && res.message.length > 0) {
-          this.usercode = res.message[0].code;
-        }
-      },
-      error: (err) => {
-        console.error("Error fetching profile:", err);
-      }
+  ngAfterViewInit(): void {
+    const el = this.carousel.nativeElement;
+    el.addEventListener('slid.bs.carousel', () => {
+      const activeIndex = el.querySelector('.carousel-item.active')?.getAttribute('data-index');
+      this.currentIndex = parseInt(activeIndex, 10);
+      this.post_uuidOrUind = this.posts[this.currentIndex]?.posts_uuind;
+      this.getComment();
     });
   }
 
-  loadUserPost(): void {
-    if (!this.usercode) return;
-
-    this.isLoading = true;
-    this.postDataservices.getDataPostAddFollow(this.usercode).subscribe(
-      (data) => {
-        if (data && Array.isArray(data)) {
-          this.posts = data.map(post => ({
-            ...post,
-            path_url: post.path_url
-          }));
-        }
-        this.isLoading = false;
+  getComment(): void {
+    this.comment.getComment(this.post_uuidOrUind).subscribe({
+      next: (res) => {
+        this.comments = res;
       },
-      (error) => {
-        console.error('Error fetching posts:', error);
-        this.isLoading = false;
+      error: (err: any) => {
+        this.alert.toastPopUpError(err?.message || 'Failed to fetch comments');
       }
-    );
+    });
   }
 
   close(): void {
     this.dialogRef.close();
   }
 
-  deleteImage(imageId: any): void {
-    this.alert.popupWarning("", "Are you sure you want to delete this image?").then((result: any) => {
+  deleteImage(imageId: string): void {
+    this.alert.popupWarning('', 'Are you sure you want to delete this image?').then((result: any) => {
       if (result?.value) {
         this.isLoading = true;
         this.postDataservices.deletePosts_uuind(imageId).subscribe({
           next: (res: any) => {
             if (res.success) {
               this.alert.toastrSuccess(res.message);
-            //  this.close();
-             // this.loadUserPost(); // reload if deleted
+              // this.close();
             } else {
               this.alert.toastrError(res.message);
             }
             this.isLoading = false;
           },
           error: (error: any) => {
-            this.alert.toastrError(error.error?.message || "An error occurred while deleting the post.");
+            this.alert.toastrError(error.error?.message || 'An error occurred while deleting the post.');
             this.isLoading = false;
           }
         });
@@ -121,56 +114,92 @@ getComment(): void {
     });
   }
 
-  addComment(post: any): void {
-    if (post.newComment?.trim()) {
-      // Add the new comment
-      const newEntry = {
-        username: "You", // Replace this with the actual logged-in user name
-        text: post.newComment
-      };
-      post.comments = post.comments || [];
-      post.comments.push(newEntry);
+  onReactionHover(post: any, reaction: any): void {
+    this.hoveredReaction = reaction;
+    this.selectedReactions[post.id] = reaction;
+    this.sendReactionToServer(post.id, reaction);
+    setTimeout(() => (this.showReactions = false), 300);
+  }
 
-      // Reset the newComment field
-      post.newComment = '';
-    }
+  sendReactionToServer(postId: string, reaction: any): void {
+    console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
+    // Use a real API call here
   }
-  likeComment(comment: any) {
-    comment.likes = (comment.likes || 0) + 1;
-  }
+
+  toggleComments(post: any): void {
+    post.showComments = !post.showComments;
   
-//reply comment
-addReply(comment: any): void {
-  const replyText = comment.newReply?.trim();
-  if (!replyText) return;
+    // if (post.showComments) {
+    //   this.post_uuidOrUind = post.posts_uuind;
+    //   this.getComment();
+    // }
+  }
 
-  comment.isSubmitting = true;
 
-  const payload = {
-    comment: replyText
-  };
+newComment: string = '';
+addComment(): void {
+  if (!this.newComment.trim()) {
+    return; 
+  }
+console.log(this.post_uuidOrUind , " ", this.newComment)
 
-  console.log(payload);
+const data = {
+  post_uuid: this.post_uuidOrUind,
+  comment: this.newComment
+};
 
-  this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
-    next: () => {
-      comment.replies = comment.replies || []; // ensure it exists
-      comment.replies.push({
-        user: 'Current User', // Replace with actual user data
-        comment: replyText,
-        profile_pic: '',
-        likes: 0,
-        replies: []
-      });
-      comment.newReply = '';
-      comment.isSubmitting = false;
+  this.comment.postCommentIndividual(this.post_uuidOrUind, data).subscribe({
+    next: (res) => {
+      // this.comments.push({
+      //   comment: this.newComment,
+      //   likes: 0,
+      //   replies: [],
+      // });
+      this.alert.toastrSuccess(res.message);
+      this.getComment();
+      this.newComment = '';
+      this.isSubmitting = false;
     },
-    error: () => {
-      comment.isSubmitting = false;
-      this.alert.toastPopUpError("Comment failed");
+    error: (err) => {
+      this.alert.toastPopUpError("Comment failed:")
     }
   });
 }
 
-}
 
+
+  likeComment(comment: any): void {
+    comment.likes = (comment.likes || 0) + 1;
+  }
+
+  addReply(comment: any): void {
+    const replyText = comment.newReply?.trim();
+    if (!replyText) return;
+
+    comment.isSubmitting = true;
+
+    const payload = { comment: replyText };
+
+    this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
+      next: () => {
+        // comment.replies = comment.replies || [];
+        // comment.replies.push({
+        //   fullname: 'You',
+        //   comment: replyText,
+        //   profile_pic: '',
+        //   likes: 0,
+        //   date_comment: new Date().toLocaleString()
+        // });
+
+        
+        comment.newReply = '';
+        this.getComment();
+        comment.isSubmitting = false;
+      },
+      error: () => {
+        comment.isSubmitting = false;
+        this.alert.toastPopUpError('Reply failed');
+      }
+    });
+  }
+}
