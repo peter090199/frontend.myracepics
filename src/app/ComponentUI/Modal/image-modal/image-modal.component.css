@@ -57,6 +57,32 @@
   width: 80%;
 }
 
+.like-button-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.reactions-popup {
+  position: absolute;
+  top: 100%; /* Position below the button */
+  left: 10%;
+  margin-top: 8px;
+  background:none;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.2s ease;
+}
+
+.reaction {
+  cursor: pointer;
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+.reaction:hover {
+  transform: scale(1.9);
+}
+
 
 @media (min-width: 1024px) {
   .comment-field {

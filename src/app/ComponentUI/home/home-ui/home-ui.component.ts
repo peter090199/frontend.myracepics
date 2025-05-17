@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, ElementRef, ViewChild, HostListener, Input } from '@angular/core';
+import { Component, OnInit,OnDestroy, ElementRef, ViewChild, HostListener, Input, NgZone } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -47,6 +47,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
     private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService,
     private authService: AuthService,private alert:NotificationsService,private comment:CommentService,
+    private ngZone: NgZone
   ) {
    
   }
@@ -66,31 +67,10 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   }
 
   selectedImages:any;
-  openModalx(postsUuind: string, images:any) {
-    const selectedImages = this.post.posts.filter((img: { posts_uuind: string; }) => img.posts_uuind === postsUuind);
-    console.log('Selected images for posts_uuind:', postsUuind, images);
-  
-    // Use selectedImages to populate the modal or gallery
-    this.selectedImages = selectedImages;
-    this.modalOpen = true;
-    const dialogRef = this.dialog.open(ImageModalComponent, {
-      data: images,
-      minWidth: '60%',
-      maxWidth: '90%',
-      maxHeight: '90vh'
-    });
-
-    
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) this.loadUserPost();
-    });
-
-  }
-  
   openModal(data: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: data,
-      minWidth: '60%',
+      width: 'auto',
       maxWidth: '90%',
       minHeight: '60vh',
     });
@@ -100,26 +80,45 @@ export class HomeUIComponent implements OnInit,OnDestroy {
       });
   
   }
-  
-  openModalxs(image: any): void {
-   // const selectedImage = this.post.posts[index];
-    console.log(image.path_url)
 
-    // this.dialog.open(ImageModalComponent, {
-    //   data: { imageUrl: selectedImage.path_url },
-    //   panelClass: 'custom-modal',
-    //   width: '90%',
-    //   maxWidth: '900px'
-    // });
+
+  isScrollIdle = false;
+  private scrollTimeout: any;
+  private hideTimeout: any;
+  private lastScrollTop2 = 0;
+  
+  onScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    const currentScroll = el.scrollTop;
+  
+    clearTimeout(this.scrollTimeout);
+    clearTimeout(this.hideTimeout);
+  
+    // Show button if idle after 1 second
+    // this.scrollTimeout = setTimeout(() => {
+    //   if (el.scrollTop === this.lastScrollTop2) {
+    //     this.ngZone.run(() => this.isScrollIdle = true);
+    //   }
+    // }, 1000);
+  
+    // Hide after 2 minutes of no scroll activity
+    this.hideTimeout = setTimeout(() => {
+      this.ngZone.run(() => this.isScrollIdle = false);
+    }, 120000); // 2 minutes
+  
+    this.lastScrollTop2 = currentScroll;
+  }
+  
+  scrollToTop(element: HTMLElement): void {
+    element.scrollTo({ top: 0, behavior: 'smooth' });
+    this.loadUserPost();
+  
+    // Hide refresh button manually
+    clearTimeout(this.hideTimeout);
+    this.ngZone.run(() => this.isScrollIdle = false);
   }
 
 
-  openModalxx(index: number): void {
-     this.selectedIndex = index;
-    this.modalOpen = true;
-    this.currentIndex = this.currentPage * this.pageSize + index;
-  }
-  
   closeModal(): void {
     this.modalOpen = false;
   }
@@ -350,7 +349,7 @@ createPost() {
               followers: post.followers || 0,
               currentIndex: 0, 
               images: post.images || [],
-              visibleComments: 3, 
+              visibleComments: 8, 
             }));
           }
           
@@ -599,34 +598,8 @@ getDataComment(post_uuid:string){
   });
 }
 
-getCommentx2(post_uuidOrUind: string): void {
-  this.comment.getComment(post_uuidOrUind).subscribe({
-    next: (res) => {
-      this.comments = res;
-    },
-    error: (err) => {
-      this.error = err.message || 'An error occurred while fetching comments';
-    }
-  });
-}
-
-getCommentxx(post_uuidOrUind:any[]): void{
-
-console.log(post_uuidOrUind)
-  this.comment.getComment(post_uuidOrUind).subscribe({
-    next: (res) => {
-      this.comments = res;
-      console.log(this.comments)
-    },
-    error: (err) => {
-      this.error = err.message || 'An error occurred while fetching profile data';
-    },
-  });
-}
-
 
 //reply comment
-
 addReply(comment: any): void {
   const replyText = comment.newReply?.trim();
   if (!replyText) return;
@@ -637,7 +610,7 @@ addReply(comment: any): void {
     comment: replyText
   };
 
-  console.log(payload);
+ // console.log(payload);
 
   this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
     next: () => {
@@ -658,20 +631,10 @@ addReply(comment: any): void {
     }
   });
 }
-loadMoreComments(post: any): void {
-  post.visibleComments += 3; 
-}
 
-addReplyx(comment: any) {
-  const reply = {
-    user: 'Current User',
-    comment: comment.newReply,
-    profile_pic: ''
-  };
-  comment.replies = comment.replies || [];
-  comment.replies.push(reply);
-  comment.newReply = '';
-  comment.showReply = false;
+loadMoreComments(post: any): void {
+  post.visibleComments += 2; 
+
 }
 
 likeComment(comment: any) {

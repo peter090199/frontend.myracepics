@@ -1,6 +1,7 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav-content>
     <div class="main-container">
+      <div class="left-sidebar">
 
       <mat-card class="post-box-container" *ngIf="!isMobile">
         <div class="profile-avatar">
@@ -28,16 +29,8 @@
         <mat-card-subtitle class="profile-email"></mat-card-subtitle>
         <mat-card-subtitle class="profile-location">{{profiles.profession}}</mat-card-subtitle>
       
-        <mat-card-content>
-          <mat-list>
-            <mat-divider></mat-divider>
-            <mat-list-item>
-              <!-- <span class="list-label">Connections</span> 16  -->
-             
-            </mat-list-item>
-           
-          </mat-list>
-
+        <mat-card-content class="scrollable-content">
+        
           <div class="button-gap">
             <button mat-button class="list-label" [routerLink]="['/profile/',usercode ]">
               <mat-icon>person</mat-icon>View Profile
@@ -54,10 +47,12 @@
 
         </mat-card-content>
       </mat-card>
-      
+      </div>
      
       <!-- Middle Column: Post Section -->
-      <div class="middle-column">
+      <div class="middle-column" (scroll)="onScroll($event)" #middleColumn>
+       
+
           <div class="post-box-container">
             <div class="input-section">
               <ng-template #defaultAvatar>
@@ -82,8 +77,20 @@
           
           <br>
           <!-- Post Display: Loop over posts -->
+          <button 
+          mat-mini-fab 
+          color="primary" 
+          class="refresh-button-top" 
+          *ngIf="isScrollIdle"
+          (click)="scrollToTop(middleColumn)">
+          <mat-icon>refresh</mat-icon>
+         </button>
+
+
           <div *ngIf="isLoading" class="loading-spinner">
-            <div class="custom-spinner">
+                <div class="custom-spinner">
+                 
+          
             </div>
           </div>
           
@@ -91,6 +98,7 @@
             <div *ngIf="posts && posts.length > 0">
              <div *ngFor="let post of posts">
               <mat-card-content class="post-box-container"  *ngIf="profile_pic">
+               
                 <!-- User Profile Section -->
                 <mat-card-header>
                   <div mat-card-avatar class="avatar">
@@ -188,9 +196,10 @@
               </mat-card-actions>
              
               <div class="form-row" *ngIf="post.showComments" >
-                <mat-form-field class="form-field" appearance="standard">
-                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
-                </mat-form-field>
+              <mat-form-field class="form-field full-width" appearance="standard">
+                <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
+              </mat-form-field>
+
               
                 <button mat-icon-button color="primary" (click)="addComment(post)" [disabled]="!post.newComment?.trim() || post.isSubmitting">
                   <mat-icon>comment</mat-icon>
@@ -247,14 +256,19 @@
                       </div>
                     </div>
                   </div>
-                </div>
+               
               </div>
               <!-- Load More Button -->
               <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
-                <button mat-button color="accent" (click)="loadMoreComments(post)">
+                <button mat-button color="primary" (click)="loadMoreComments(post)">
                   Load More Comments
                 </button>
               </div>
+
+            
+              </div>
+          
+
                       
               
             </mat-expansion-panel>

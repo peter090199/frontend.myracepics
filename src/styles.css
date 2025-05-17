@@ -1257,5 +1257,9 @@ react emoji */
   margin-top: 0.75rem;
 }
 
+.full-width {
+  width: 100%;
+  max-width: 600px; /* optional max width */
+}
 
 

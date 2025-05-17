@@ -3,16 +3,25 @@
 /* General Styles */
 .post-box-container {
   width: 100%;
-  max-width: 600px; /* Limit the width for large screens */
-  margin: 30px auto; /* Center align */
+  max-width: 500px; /* Limit the width for large screens */
+  margin: 40px auto; /* Center align */
   padding: 22px;
+  box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-height: auto;
   max-height: 900px;
   overflow-y: auto;
+  max-height: 100vh;
 }
+
+.left-sidebar {
+  width: 100%; /* Adjust width as needed */
+  overflow-y: hidden;
+  margin-left: 20px;
+}
+
 
 
 
@@ -36,6 +45,11 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+}
+.scrollable-content {
+  max-height: 300px; /* adjust to your desired height */
+  overflow-y: auto;
+  padding-right: 8px; /* optional: prevents scroll bar overlap */
 }
 
 .post-container {
@@ -321,8 +335,13 @@
 
 .interaction-buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between; /* or use space-evenly depending on layout preference */
+  align-items: center; /* ensures buttons are vertically aligned */
+  gap: 16px; /* adds spacing between items */
+  margin-top: 50px; /* more scalable than 60px */
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
 }
+
 
 /* Lists */
 .clients-list .list-item,
@@ -352,9 +371,34 @@ button {
   height: auto;
   max-height: 90vh;
   overflow-y: auto;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
+  /* scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch; */
 }
+
+.middle-column {
+  height: 90vh;
+  overflow-y: auto;
+  padding: 1rem;
+
+  /* Hide scrollbar - for Firefox */
+  scrollbar-width: none;
+
+  /* Hide scrollbar - for WebKit (Chrome, Safari, Edge) */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+.refresh-button-top {
+  position: sticky;
+  top: 30px;
+  margin: 0 auto;
+  display: block;
+  z-index: 10;
+}
+
+
+.middle-column::-webkit-scrollbar {
+  display: none;
+}
+
 
 .carousel-container {
   position: relative;
@@ -400,6 +444,8 @@ button {
 .next {
   right: 0;
 }
+
+
 
 @media (max-width: 768px) {
   .main-container {
