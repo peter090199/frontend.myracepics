@@ -580,15 +580,14 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     post.isSubmitting = true;
 
     const payload = {
-    //  post_uuid: this.post_uuidOrUind,
       comment: commentText
     };
 
     this.comment.postComment(this.post_uuidOrUind, payload).subscribe({
       next: (res) => {
-        post.comments.push(res.data);
-        console.log("comment:", post.comments)
+       post.comments.push(res.data);
 
+        console.log("comment:", post.comments)
         this.alert.toastrSuccess(res.message);
         post.newComment = '';
         post.isSubmitting = false;
@@ -626,7 +625,7 @@ export class HomeUIComponent implements OnInit, OnDestroy {
 
   //getcomment
   comments: any = [];
-  getComment(post_uuid: string, post: any): void {
+  getComment(post_uuid: any, post: any): void {
     this.comment.getComment(post_uuid).subscribe({
       next: (res) => {
         post.comments= res;
