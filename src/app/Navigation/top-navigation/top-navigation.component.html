@@ -99,6 +99,7 @@
             <!-- menus with submenus -->
             <div *ngFor="let link of nav_module" [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">
               <!-- Dropdown Menu -->
+               
               <div *ngIf="link.submenus && link.submenus.length > 0; else regularLink">
                 <button mat-button [matMenuTriggerFor]="menu"  style="color: rgb(255, 254, 254);">
                   <i class="{{ link.icon }}"></i> {{ link.description }}
@@ -114,15 +115,37 @@
             
               <!-- Regular Link with Notification Badge -->
               <ng-template #regularLink>
+                <button 
+                mat-button  [routerLink]="[link.route]"
+                *ngIf="link.description == 'Notifications' && link.description !== 'Messaging'"
+                (click)="link.description === 'Home' ? onHomeClick() : null"
+                style="cursor: pointer;"
+                [matBadge]="link.description === 'Home' && homeNewDataCount > 0 ? homeNewDataCount : null"
+                matBadgeColor="warn"
+                [matBadgeHidden]="!(link.description === 'Home' && homeNewDataCount > 0)"
+              >
+                <i class="{{ link.icon }}"></i> {{ link.description }}
+              </button>
+
+
                 <button mat-button [routerLink]="[link.route]" *ngIf="link.description !== 'Notifications' && link.description !== 'Messaging'">
                   <i class="{{ link.icon }}"></i> {{ link.description }}
                 </button>
 
                 <button mat-icon-button *ngIf="link.description === 'Messaging'" 
                   [routerLink]="[link.route]" matBadge="{{ unreadCount }}" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">
-                  
                   <i class="{{ link.icon }}"></i>
                 </button>
+
+                <!-- <button 
+                      mat-button
+                      [matBadge]="link.description === 'Home' && homeNewDataCount > 0 ? homeNewDataCount : null"
+                      matBadgeColor="warn"
+                      [matBadgeHidden]="!(link.description === 'Home' && homeNewDataCount > 0)"
+                    >
+                    <i class="{{ link.icon }}"></i> {{ link.description }}
+               </button> -->
+              
 
                 <button mat-icon-button 
                       *ngIf="link.description === 'Notifications'" 
@@ -132,11 +155,6 @@
                       matBadgeColor="warn">
                 <mat-icon>notifications</mat-icon>
               </button>
-              
-              
-        
-                                    
-
               </ng-template>
 
                

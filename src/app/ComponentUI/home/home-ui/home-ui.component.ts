@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, ElementRef, ViewChild, HostListener, Input, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Input, NgZone } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -19,39 +19,41 @@ import { CommentService } from 'src/app/services/comment/comment.service';
   templateUrl: './home-ui.component.html',
   styleUrls: ['./home-ui.component.css']
 })
-export class HomeUIComponent implements OnInit,OnDestroy {
+export class HomeUIComponent implements OnInit, OnDestroy {
 
   error: any;
-  profiles: any=[];
+  profiles: any = [];
   profile_pic: any;
-  code:any;
-  followers:any;
-  activeHours:any;
-  isLoading:boolean = false; 
-  page = 1; 
-  isMobile: boolean = false; 
+  code: any;
+  followers: any;
+  activeHours: any;
+  isLoading: boolean = false;
+  page = 1;
+  isMobile: boolean = false;
   currentIndex = 0;
   @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef;
-  posts:any[] = [];
+  posts: any[] = [];
   ismobile: boolean = false;
   autoSlideInterval: any;
   @Input() post: any = { posts: [] };
   @HostListener('window:resize', ['$event'])
-  maxImages:number = 3;
-  usercode:any;
+  maxImages: number = 3;
+  usercode: any;
   private scrollInterval: any;
   selectedIndex = 0;
   post_uuidOrUind: any[] = [];
   uuidOrUind: any = [];
+  loadCommentStep: number = 2; 
 
-  constructor(private router:Router,private profile:ProfileService,private photo:CurriculumVitaeService,
-    private dialog:MatDialog,private route:ActivatedRoute,private postDataservices:PostUploadImagesService,
-    private authService: AuthService,private alert:NotificationsService,private comment:CommentService,
+
+  constructor(private router: Router, private profile: ProfileService, private photo: CurriculumVitaeService,
+    private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
+    private authService: AuthService, private alert: NotificationsService, private comment: CommentService,
     private ngZone: NgZone
   ) {
-   
+
   }
-  
+
   modalOpen = false;
   currentPage = 0;
   pageSize = 6;
@@ -61,12 +63,12 @@ export class HomeUIComponent implements OnInit,OnDestroy {
     const start = this.currentPage * this.pageSize;
     return this.post.posts.slice(start, start + this.pageSize);
   }
-  
+
   get totalPages() {
     return Math.ceil(this.post.posts.length / this.pageSize);
   }
 
-  selectedImages:any;
+  selectedImages: any;
   openModal(data: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: data,
@@ -74,11 +76,11 @@ export class HomeUIComponent implements OnInit,OnDestroy {
       maxWidth: '90%',
       minHeight: '60vh',
     });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) this.loadUserPost();
-      });
-  
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.loadUserPost();
+    });
+
   }
 
 
@@ -86,33 +88,33 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   private scrollTimeout: any;
   private hideTimeout: any;
   private lastScrollTop2 = 0;
-  
+
   onScroll(event: Event): void {
     const el = event.target as HTMLElement;
     const currentScroll = el.scrollTop;
-  
+
     clearTimeout(this.scrollTimeout);
     clearTimeout(this.hideTimeout);
-  
+
     // Show button if idle after 1 second
     // this.scrollTimeout = setTimeout(() => {
     //   if (el.scrollTop === this.lastScrollTop2) {
     //     this.ngZone.run(() => this.isScrollIdle = true);
     //   }
     // }, 1000);
-  
+
     // Hide after 2 minutes of no scroll activity
     this.hideTimeout = setTimeout(() => {
       this.ngZone.run(() => this.isScrollIdle = false);
     }, 120000); // 2 minutes
-  
+
     this.lastScrollTop2 = currentScroll;
   }
-  
+
   scrollToTop(element: HTMLElement): void {
     element.scrollTo({ top: 0, behavior: 'smooth' });
     this.loadUserPost();
-  
+
     // Hide refresh button manually
     clearTimeout(this.hideTimeout);
     this.ngZone.run(() => this.isScrollIdle = false);
@@ -122,24 +124,24 @@ export class HomeUIComponent implements OnInit,OnDestroy {
   closeModal(): void {
     this.modalOpen = false;
   }
-  
+
   changeSlide(direction: number): void {
     const total = this.post.posts.length;
     this.currentIndex = (this.currentIndex + direction + total) % total;
   }
-  
+
   goToSlide(index: number): void {
     this.currentIndex = index;
   }
-  
+
   nextPage(): void {
     if (this.currentPage < this.totalPages - 1) this.currentPage++;
   }
-  
+
   prevPage(): void {
     if (this.currentPage > 0) this.currentPage--;
   }
-  
+
   getCaption(index: number): string {
     return this.post.posts[index]?.path_url.split('/').pop() || '';
   }
@@ -167,6 +169,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
     clearInterval(this.autoSlideInterval);
   }
 
+
   ngOnInit(): void {
     const url = window.location.href;
     const codesplit = url.split('/').pop();
@@ -177,9 +180,32 @@ export class HomeUIComponent implements OnInit,OnDestroy {
     this.getProfileByUser();
     this.startAutoSlide();
     this.getCode();
+
+
+    this.posts.forEach(post => {
+      post.visibleComments = this.loadCommentStep;
+    });
+
+    // if (this.posts.length > 0) {
+    //   this.currentIndex = 0;
+    //   // this.posts.forEach(post => post.showComments = false);
+    //   this.post_uuidOrUind = this.posts[0].posts_uuind;
+    //   console.log(this.post_uuidOrUind)
+    //   this.getComments();
+    // }
   }
 
+  // loadMoreComments(posts: number) {
+  //   console.log(posts)
+  //   posts += this.loadCommentStep;
+  // }
 
+
+  loadMoreComments(post: any) {
+    post.visibleComments += 2;
+  }
+  
+  
   getCode(): void {
     this.authService.getProfilecode().subscribe({
       next: (res) => {
@@ -193,7 +219,7 @@ export class HomeUIComponent implements OnInit,OnDestroy {
       }
     });
   }
-  
+
   startAutoSlide(): void {
     this.autoSlideInterval = setInterval(() => {
       this.nextSlide(this.posts);
@@ -215,55 +241,55 @@ export class HomeUIComponent implements OnInit,OnDestroy {
 
 
 
-createPost() {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '600px';
-  const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
+  createPost() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
 
 
-  dialogRef.afterClosed().subscribe(() => {
-    this.loadUserPost();
-  });
-}
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadUserPost();
+    });
+  }
 
 
   toggleComments(post: any): void {
     post.showComments = !post.showComments;
   }
-  
+
   addCommentxx(post: any): void {
     if (!post.newComment.trim()) return;
-  
+
     post.comments.push({
       user: 'Current User',
       text: post.newComment,
       profile_pic: 'assets/images/default.png'
     });
-  
+
     post.newComment = '';
   }
 
-  
+
   addCommentx(post: any) {
     if (!post.newComment || !post.newComment.trim()) {
       return; // Prevent adding empty or undefined comments
     }
-  
+
     // Ensure 'comments' array exists before pushing a new comment
     if (!post.comments) {
       post.comments = []; // Initialize if undefined
     }
-  
+
     post.comments.push({
       text: post.newComment,
       timestamp: new Date()
     });
-  
+
     post.newComment = ""; // Clear input after submitting
   }
-  
+
   likePost(post: any): void {
     if (!post.liked) {
       post.likes = (post.likes || 0) + 1; // Increment likes
@@ -271,7 +297,7 @@ createPost() {
       post.likes = Math.max((post.likes || 1) - 1, 0); // Decrement likes, but not below zero
     }
     post.liked = !post.liked; // Toggle liked state
-  
+
     // Call API to update like status in the backend
     // this.postDataservices.likePost(post.id, post.liked).subscribe(
     //   (response) => {
@@ -282,12 +308,12 @@ createPost() {
     //   }
     // );
   }
-  
-  getProfileByUser(): void{
+
+  getProfileByUser(): void {
     this.profile.getProfileByUser(this.code).subscribe({
       next: (response) => {
         if (response.success == true) {
-          this.profiles = response.message; 
+          this.profiles = response.message;
         } else {
           this.error = 'Failed to load profile data';
         }
@@ -303,7 +329,7 @@ createPost() {
       (response: any) => {
         if (response?.message) {
           this.profile_pic = response.message;
-  
+
           if (this.profile_pic?.code) {
             sessionStorage.setItem('code', this.profile_pic.code);
           }
@@ -316,59 +342,59 @@ createPost() {
       }
     );
   }
-  
-    // Function to calculate active hours
-    getActiveHours(lastActive: string): string {
-      if (!lastActive) return 'unknown';
 
-      const lastActiveDate = new Date(lastActive);
-      const now = new Date();
-      const diffInHours = Math.floor((now.getTime() - lastActiveDate.getTime()) / (1000 * 60 * 60));
+  // Function to calculate active hours
+  getActiveHours(lastActive: string): string {
+    if (!lastActive) return 'unknown';
 
-      if (diffInHours < 1) return 'Just now';
-      if (diffInHours === 1) return '1 hour ago';
-      return `${diffInHours} hours ago`;
+    const lastActiveDate = new Date(lastActive);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - lastActiveDate.getTime()) / (1000 * 60 * 60));
+
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours === 1) return '1 hour ago';
+    return `${diffInHours} hours ago`;
+  }
+
+
+  loadUserPost(): void {
+    if (!this.usercode) {
+      this.alert.popupWarning("Usercode is ", "undefined, cannot load posts.")
+      return;
     }
 
 
-    loadUserPost(): void {
-      if (!this.usercode) {
-        this.alert.popupWarning("Usercode is ", "undefined, cannot load posts.")
-        return;
-      }
+    this.isLoading = true;
 
-      
-      this.isLoading = true;
-
-      this.postDataservices.getDataPostAddFollow(this.usercode).subscribe(
-        (data) => {
-          if (data && Array.isArray(data)) {
-            this.posts = data.map(post => ({
-              ...post,
-              activeHours: this.getActiveHours(post.lastActive),
-              followers: post.followers || 0,
-              currentIndex: 0, 
-              images: post.images || [],
-              visibleComments: 8, 
-            }));
-          }
-          
-          this.post_uuidOrUind = data.map((item: any) => item.posts_uuid);
-          this.comments = []; // Clear before loading
-          this.post_uuidOrUind.forEach(uuid => {
-            this.getComment(uuid,this.posts );
-          });
-
-          this.isLoading = false;
-        },
-        (error) => {
-          console.error('Error fetching posts:', error);
-          this.isLoading = false;
+    this.postDataservices.getDataPostAddFollow(this.usercode).subscribe(
+      (data) => {
+        if (data && Array.isArray(data)) {
+          this.posts = data.map(post => ({
+            ...post,
+            activeHours: this.getActiveHours(post.lastActive),
+            followers: post.followers || 0,
+            currentIndex: 0,
+            images: post.images || [],
+            visibleComments: 3,
+          }));
         }
-      );
-    }
 
- 
+        this.post_uuidOrUind = data.map((item: any) => item.posts_uuid);
+        this.post.comments = []; // Clear before loading
+        this.post_uuidOrUind.forEach(uuid => {
+          this.getComment(uuid, this.posts);
+        });
+
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error fetching posts:', error);
+        this.isLoading = false;
+      }
+    );
+  }
+
+
 
 
   // onScroll() {
@@ -424,27 +450,27 @@ createPost() {
     }
   }
 
-   displayedColumns: string[] = ['item'];
-    dataSource = new MatTableDataSource([
-      { item: 'test' },
-    ]);
-  
- 
-  printCV() {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = true;
-        dialogConfig.autoFocus = true;
-        dialogConfig.width = '90%';
-        dialogConfig.height = '600px';
-        const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-          
-          }
-        });
-    }
+  displayedColumns: string[] = ['item'];
+  dataSource = new MatTableDataSource([
+    { item: 'test' },
+  ]);
 
-    uploadPic(): void {
+
+  printCV() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '90%';
+    dialogConfig.height = '600px';
+    const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+
+      }
+    });
+  }
+
+  uploadPic(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -453,7 +479,7 @@ createPost() {
     const dialogRef = this.dialog.open(UploadProfileComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        
+
       }
     });
   }
@@ -474,41 +500,41 @@ createPost() {
     { name: 'Sad', emoji: '😢' },
     { name: 'Angry', emoji: '😡' }
   ];
-  
+
 
   selectedReactions: { [postId: string]: any } = {};
 
 
   onReactionHover(post: any, reaction: any) {
     this.hoveredReaction = reaction;
-  this.selectedReactions[post.id] = reaction;
-  this.sendReactionToServer(post.id, reaction);
-  setTimeout(() => this.showReactions = false, 300);
+    this.selectedReactions[post.id] = reaction;
+    this.sendReactionToServer(post.id, reaction);
+    setTimeout(() => this.showReactions = false, 300);
   }
-  
+
   hideReactions() {
     this.showReactions = false;
-  //  this.hoveredReaction = null;
+    //  this.hoveredReaction = null;
   }
   menuRef(index: number): string {
     return `menu-${index}`;
   }
-  
+
   sendReactionToServer(postId: string, reaction: any) {
     console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
     // TODO: Use HttpClient or service here
     // this.api.sendReaction(postId, reaction).subscribe(...)
   }
 
-  onEditPost(){
+  onEditPost() {
 
   }
 
   onDelete(post: any): void {
-    this.alert.popupWarning("","Are you sure you want to delete this post?").then((result: any) => {
+    this.alert.popupWarning("", "Are you sure you want to delete this post?").then((result: any) => {
       if (result?.value) {
         this.isLoading = true;
-  
+
         this.postDataservices.deletePost(post.posts_uuid).subscribe({
           next: (res: any) => {
             if (res.success === true) {
@@ -531,9 +557,9 @@ createPost() {
   //postcomment
   addCommentxxx(post: any): void {
     if (!post.newComment?.trim()) return;
-  
+
     post.isSubmitting = true;
-  
+
     this.comment.postComment(post.post_uuidOrUind, post.newComment).subscribe({
       next: (response) => {
         post.comments = post.comments || [];
@@ -547,99 +573,120 @@ createPost() {
       }
     });
   }
-  
+
   addComment(post: any): void {
     const commentText = post.newComment?.trim();
     if (!commentText) return;
     post.isSubmitting = true;
 
     const payload = {
+    //  post_uuid: this.post_uuidOrUind,
       comment: commentText
     };
 
-    this.comment.postComment(post.posts_uuid, payload).subscribe({
-      next: () => {
-        post.comments.push({
-          comment: commentText,
-          likes: 0,
-          replies: []
-        });
+    this.comment.postComment(this.post_uuidOrUind, payload).subscribe({
+      next: (res) => {
+        post.comments.push(res.data);
+        console.log("comment:", post.comments)
+
+        this.alert.toastrSuccess(res.message);
         post.newComment = '';
         post.isSubmitting = false;
+      
       },
       error: (err) => {
         this.alert.toastPopUpError("Comment failed:")
       }
     });
   }
-  
-//getcomment
-comments:any = [];
-getComment(post_uuid: string, post: any): void {
-  this.comment.getComment(post_uuid).subscribe({
-    next: (res) => {
-      post.comments = res;
-      console.log(post.comments)
-    },
-    error: (err) => {
-      this.error = err.message || 'An error occurred while fetching comments';
-    }
-  });
-}
-
-getDataComment(post_uuid:string){
-  this.comment.getComment(post_uuid).subscribe({
-    next: (res) => {
-      this.post.posts = res;
-    },
-    error: (err) => {
-      this.error = err.message || 'An error occurred while fetching comments';
-    }
-  });
-}
 
 
-//reply comment
-addReply(comment: any): void {
-  const replyText = comment.newReply?.trim();
-  if (!replyText) return;
+  getComments(): void {
+    this.comment.getComment(this.post_uuidOrUind).subscribe({
+      next: (res) => {
+        this.comments = res;
+      },
+      error: (err: any) => {
+        this.alert.toastPopUpError(err?.message || 'Failed to fetch comments');
+      }
+    });
+  }
 
-  comment.isSubmitting = true;
 
-  const payload = {
-    comment: replyText
-  };
+  getComment2(): void {
+    this.comment.getComment(this.post_uuidOrUind).subscribe({
+      next: (res) => {
+        this.comments = res;
+      },
+      error: (err: any) => {
+        this.alert.toastPopUpError(err?.message || 'Failed to fetch comments');
+      }
+    });
+  }
 
- // console.log(payload);
+  //getcomment
+  comments: any = [];
+  getComment(post_uuid: string, post: any): void {
+    this.comment.getComment(post_uuid).subscribe({
+      next: (res) => {
+        post.comments= res;
+        console.log(post.comments)
+      },
+      error: (err) => {
+        this.error = err.message || 'An error occurred while fetching comments';
+      }
+    });
+  }
 
-  this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
-    next: () => {
-      comment.replies = comment.replies || []; // ensure it exists
-      comment.replies.push({
-        user: 'Current User', // Replace with actual user data
-        comment: replyText,
-        profile_pic: '',
-        likes: 0,
-        replies: []
-      });
-      comment.newReply = '';
-      comment.isSubmitting = false;
-    },
-    error: (err) => {
-      comment.isSubmitting = false;
-      this.alert.toastPopUpError("Comment failed");
-    }
-  });
-}
+  getDataComment(post_uuid: string) {
+    this.comment.getComment(post_uuid).subscribe({
+      next: (res) => {
+        this.post.posts = res;
+      },
+      error: (err) => {
+        this.error = err.message || 'An error occurred while fetching comments';
+      }
+    });
+  }
 
-loadMoreComments(post: any): void {
-  post.visibleComments += 2; 
 
-}
+  //reply comment
+  addReply(comment: any): void {
+    const replyText = comment.newReply?.trim();
+    if (!replyText) return;
 
-likeComment(comment: any) {
-  comment.likes = (comment.likes || 0) + 1;
-}
+    comment.isSubmitting = true;
+
+    const payload = {
+      comment: replyText
+    };
+
+    // console.log(payload);
+
+    this.comment.postCommentByReply(comment.comment_uuid, payload).subscribe({
+      next: () => {
+        comment.replies = comment.replies || []; // ensure it exists
+        comment.replies.push({
+          user: 'Current User', // Replace with actual user data
+          comment: replyText,
+          profile_pic: '',
+          likes: 0,
+          replies: []
+        });
+        comment.newReply = '';
+        comment.isSubmitting = false;
+      },
+      error: (err) => {
+        comment.isSubmitting = false;
+        this.alert.toastPopUpError("Comment failed");
+      }
+    });
+  }
+
+
+  likeComment(comment: any) {
+    comment.likes = (comment.likes || 0) + 1;
+  }
 
 
 }

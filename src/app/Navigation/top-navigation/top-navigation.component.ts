@@ -14,6 +14,8 @@ import { NotificationComponent } from 'src/app/ComponentUI/notification/notifica
 import { NotificationService } from 'src/app/services/notification.service';
 import { EchoService } from 'src/app/services/echo.service';
 import { Title } from '@angular/platform-browser';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { SharedRoutinesService } from 'src/app/services/Function/shared-routines.service';
 
 export interface User {
   name: string;
@@ -33,7 +35,7 @@ export class TopNavigationComponent implements OnInit {
   success = false;
   isChatOpen = false;
   isSearchOpen = false;
-  
+  homeModule:any;
   nav_module: any[] = [];
   submenuMenu!: MatMenuPanel<any>;
   
@@ -63,36 +65,46 @@ export class TopNavigationComponent implements OnInit {
   unreadCount:number = 0;
   count = 0;
   isOpen = false;
+  homeNewDataCount = 0;
+
   constructor(
     private authService: SigInService,
     private navigationService: TNavigationService,private dialog:MatDialog,
     private router: Router, private chatService:ChatService,private echoService:EchoService,
-    private notificationService:NotificationService, private ngZone: NgZone,private titleService: Title
-  ) {}
+    private notificationService:NotificationService, private ngZone: NgZone,private titleService: Title,
+    private alert:NotificationsService,public sharedRoutines: SharedRoutinesService
+  ) {
+    this.sharedRoutines.onNewPostsDetected = (count: number) => {
+      this.homeNewDataCount = count;
+      console.log('New posts detected:', count);
+    };
+  }
 
 
   ngOnInit(): void {
     this.loadRealtimeCounts();
-   
-   
     this.fetchModules();
+
       this.filteredOptions = this.myControl.valueChanges.pipe(
         startWith(''),
         map(value => (typeof value === 'string' ? value : value?.name)),
         map(name => (name ? this._filter(name) : this.options.slice()))
       );
 
+      this.sharedRoutines.onNewPostsDetected = (count: number) => {
+        this.homeNewDataCount = count;
+        console.log('New posts detected:', count);
+      };
   }
-  loadRealtimeCountsd() {
-    if (!this.countsSubscription || this.countsSubscription.closed) {
-      this.echoService.listenToNotificationCount();
-      this.countsSubscription = this.echoService.getCounts$().subscribe((counts) => {
-        this.unreadCount = counts;
-        console.log('Counts updated:', this.unreadCount);
-      });
-    }
+
+
+  async onHomeClick(): Promise<void> {
+    this.sharedRoutines.onNewPostsDetected = (count: number) => {
+      this.homeNewDataCount = count;
+      console.log('New posts detected:', count);
+    };
   }
-  
+
   loadRealtimeCounts(){
     if (!this.countsSubscription || this.countsSubscription.closed) {
       this.echoService.listenToNotificationCount();
@@ -271,15 +283,21 @@ export class TopNavigationComponent implements OnInit {
     this.isLoading = true;
     try {
       this.nav_module = await firstValueFrom(this.navigationService.getData());
+      // this.homeModule = this.nav_module.find(x=> x.description === 'Home');
+      // if(this.homeModule == "Home")
+      // {
+      //   this.sharedRoutines.getCode();
+      // }
+      // console.log('Home Module:', this.homeModule);
       this.success = true;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      this.alert.toastrError(`Error fetching navigation modules: ${error || error}`);
       this.success = false;
     } finally {
       this.isLoading = false;
     }
   }
-
+  
 
   sendData() {
     const requestBody = { name: 'John Doe', email: 'john@example.com' };

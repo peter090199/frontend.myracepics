@@ -96,84 +96,101 @@
                     </div>
                   </div>
 
-                  <button mat-button (click)="toggleComments(post)"><mat-icon>chat</mat-icon> Comment</button>
+                  <button mat-button color="primary" (click)="toggleComments(post)">
+                    <mat-icon matBadge="{{ post.comments?.length || 0 }}" matBadgeColor="accent" matBadgeSize="small"
+                      matBadgeOverlap="false">
+                      chat
+                    </mat-icon>
+                    Comment
+                  </button>
+
                   <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
                   <button mat-button><mat-icon>send</mat-icon> Send</button>
                 </mat-card-actions>
+           </mat-card>
 
-                <!-- Comment Section using Expansion Panel -->
-                <div class="form-row" *ngIf="post.showComments" >
-                <mat-form-field class="form-field" appearance="standard">
-                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment" (keyup.enter)="addComment(post)">
+            <!-- Comments section per post -->
+           <div class="post-box-footer" *ngIf="post.showComments">
+            <div class="comment-input-bar">
+              <div class="form-row">
+                <mat-form-field class="form-field full-width" appearance="standard">
+                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment"
+                    (keyup.enter)="addComment(post)">
                 </mat-form-field>
-              
-                <button mat-icon-button color="primary" (click)="addComment(post)" [disabled]="!post.newComment?.trim() || post.isSubmitting">
+
+
+                <button mat-icon-button color="primary" (click)="addComment(post)"
+                  [disabled]="!post.newComment?.trim() || post.isSubmitting">
                   <mat-icon>comment</mat-icon>
                 </button>
 
                 <mat-progress-bar *ngIf="post.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
               </div>
+            </div>
 
-              <mat-expansion-panel  *ngIf="post.comments">
-                <mat-expansion-panel-header>
-                  <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
-                </mat-expansion-panel-header>
-      
-                <div class="comments-container">
-                  <div *ngFor="let comment of post.comments" class="comment">
-                    <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
-                    <div class="comment-content">
-                      <strong>{{ comment.fullname }}</strong>
-                      <p>{{ comment.comment }}</p>
-                      <small>{{ comment.date_comment }}</small>
+           <mat-card-footer *ngIf="post.comments">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
+              </mat-expansion-panel-header>
+    
+              <div class="comments-container">
+                <div *ngFor="let comment of post.comments" class="comment">
+                  <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                  <div class="comment-content">
+                    <strong>{{ comment.fullname }}</strong>
+                    <p>{{ comment.comment }}</p>
+                    <small>{{ comment.date_comment }}</small>
 
-                      <div class="comment-actions">
-                        <button mat-button (click)="likeComment(comment)">Like</button>
-                        <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
-                        <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
-                      </div>
+                    <div class="comment-actions">
+                      <button mat-button (click)="likeComment(comment)">Like</button>
+                      <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
+                      <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
+                    </div>
 
-                      <div *ngIf="comment.showReply" class="reply-input">
-                        <mat-form-field class="form-field" appearance="standard">
-                          <input matInput placeholder="Write a reply..."
-                                [(ngModel)]="comment.newReply"
-                                [disabled]="comment.isSubmitting"
-                                (keyup.enter)="addReply(comment)">
-                        </mat-form-field>
-                      
-                        <button mat-icon-button color="primary"
-                            (click)="addReply(comment)"
-                            [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
-                            <mat-icon>send</mat-icon>
-                        </button>
-                       
-                      </div>
-                      <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+                    <div *ngIf="comment.showReply" class="reply-input">
+                      <mat-form-field class="form-field" appearance="standard">
+                        <input matInput placeholder="Write a reply..."
+                              [(ngModel)]="comment.newReply"
+                              [disabled]="comment.isSubmitting"
+                              (keyup.enter)="addReply(comment)">
+                      </mat-form-field>
                     
-                      <div class="replies" *ngIf="comment.replies?.length">
-                        <div *ngFor="let reply of comment.replies" class="comment reply">
-                          <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
-                          <div class="comment-content">
-                            <strong>{{ reply.fullname }}</strong>
-                            <p>{{ reply.comment }}</p>
-                            <small>{{ reply.date_comment }}</small>
-                          </div>
+                      <button mat-icon-button color="primary"
+                          (click)="addReply(comment)"
+                          [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
+                          <mat-icon>send</mat-icon>
+                      </button>
+                     
+                    </div>
+                    <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+                  
+                    <div class="replies" *ngIf="comment.replies?.length">
+                      <div *ngFor="let reply of comment.replies" class="comment reply">
+                        <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                        <div class="comment-content">
+                          <strong>{{ reply.fullname }}</strong>
+                          <p>{{ reply.comment }}</p>
+                          <small>{{ reply.date_comment }}</small>
                         </div>
                       </div>
-
                     </div>
+
                   </div>
                 </div>
-      
-                   <!-- Load More Button -->
-              <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
-                <button mat-button color="accent" (click)="loadMoreComments(post)">
-                  Load More Comments
-                </button>
               </div>
+    
+                 <!-- Load More Button -->
+            <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
+              <button mat-button color="accent" (click)="loadMoreComments(post)">
+                Load More Comments
+              </button>
+            </div>
 
-             </mat-expansion-panel>
-           </mat-card>
+           </mat-expansion-panel>
+           </mat-card-footer>
+           </div>
+
         </div>
       </div>
     </mat-tab>
