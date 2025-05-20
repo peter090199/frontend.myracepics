@@ -117,7 +117,7 @@
               <ng-template #regularLink>
                 <button 
                 mat-button  [routerLink]="[link.route]"
-                *ngIf="link.description == 'Notifications' && link.description !== 'Messaging'"
+                *ngIf="link.description == 'Notifications' && link.description == 'Messaging'"
                 (click)="link.description === 'Home' ? onHomeClick() : null"
                 style="cursor: pointer;"
                 [matBadge]="link.description === 'Home' && homeNewDataCount > 0 ? homeNewDataCount : null"

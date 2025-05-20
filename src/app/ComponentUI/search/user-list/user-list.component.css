@@ -84,7 +84,7 @@ h2 {
 .location {
   font-size: 14px;
   color: gray;
-  margin: 3px 0;
+  margin: 5px 0;
 }
 
 .experience {
@@ -92,6 +92,7 @@ h2 {
   align-items: center;
   font-size: 14px;
   color: gray;
+  width: 100%;
 }
 
 .experience mat-icon {
@@ -125,24 +126,31 @@ h2 {
   overflow-y: auto;
   width: 100%; /* Default width */
   max-width: 900px;
-  padding: 5px;
-  border: 1px solid #ccc;
+  padding: 15px;
+  /* border: 1px solid #ccc; */
   border-radius: 8px;
   background: #fff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   margin: auto;
+  margin-top: 20px;
 }
 .search-item {
   padding: 10px;
   margin-bottom: 10px;
   border-bottom: 1px solid #e0e0e0;
 }
+.no-results{
+  margin: auto;
 
+}
 .user-card {
   display: flex;
   flex-direction: column;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  width: 800px;
+  margin: auto;
+  margin-top: 60px;
+  margin-bottom: 40px;
 }
 .container {
   display: flex;
@@ -154,7 +162,7 @@ h2 {
 
 .example-spacer {
   flex: 1 1 auto;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 
@@ -173,14 +181,16 @@ h2 {
 }
 
 /* User Info */
-.user-info {
+.user-info p{
     flex-grow: 1;
+    font-size: 14px;
+     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .user-name {
-    margin: 0;
+    margin: auto;
     font-size: 16px;
-    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .user-status {

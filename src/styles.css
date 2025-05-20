@@ -1294,3 +1294,53 @@ react emoji */
 }
 
 
+/*comments reply edit */
+.replies {
+  margin-top: 10px;
+}
+
+.comment.reply {
+  margin-bottom: 10px;
+}
+
+.reply-card {
+  padding: 10px;
+}
+
+.reply-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.reply-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.reply-body {
+  margin-left: 50px;
+}
+
+.edit-field {
+  width: 100%;
+}
+
+.edit-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+

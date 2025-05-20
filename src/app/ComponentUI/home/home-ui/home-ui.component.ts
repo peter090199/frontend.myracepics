@@ -506,12 +506,24 @@ export class HomeUIComponent implements OnInit, OnDestroy {
 
 
   onReactionHover(post: any, reaction: any) {
+    console.log(post)
     this.hoveredReaction = reaction;
-    this.selectedReactions[post.id] = reaction;
-    this.sendReactionToServer(post.id, reaction);
-    setTimeout(() => this.showReactions = false, 300);
+    this.selectedReactions[post.posts_uuid] = post.posts_uuid;
+    this.sendReactionToServer(post.posts_uuid, reaction);
+    setTimeout(() => this.showReactions = false, 600);
   }
-
+  sendReactionToServer(postId: any, reaction: any): void {
+    const payload = {
+      post_id: postId,
+      reaction: reaction
+    };
+  console.log(payload)
+    // this.http.post('http://your-laravel-api.test/api/reactions', payload).subscribe({
+    //   next: response => console.log('Reaction sent successfully:', response),
+    //   error: error => console.error('Failed to send reaction:', error)
+    // });
+  }
+  
   hideReactions() {
     this.showReactions = false;
     //  this.hoveredReaction = null;
@@ -520,11 +532,7 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     return `menu-${index}`;
   }
 
-  sendReactionToServer(postId: string, reaction: any) {
-    console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
-    // TODO: Use HttpClient or service here
-    // this.api.sendReaction(postId, reaction).subscribe(...)
-  }
+
 
   onEditPost() {
 
@@ -583,14 +591,23 @@ export class HomeUIComponent implements OnInit, OnDestroy {
       comment: commentText
     };
 
-    this.comment.postComment(this.post_uuidOrUind, payload).subscribe({
+    this.comment.postComment(post.posts_uuid, payload).subscribe({
       next: (res) => {
-       post.comments.push(res.data);
-
-        console.log("comment:", post.comments)
-        this.alert.toastrSuccess(res.message);
+         post.comments.push({
+          user: 'Current User',
+          comment: commentText,
+          profile_pic: '',
+          likes: 0,
+          replies: []
+        });
         post.newComment = '';
         post.isSubmitting = false;
+      //  post.comments.push(res.data);
+
+      //   console.log("comment:", post.comments)
+      //   this.alert.toastrSuccess(res.message);
+      //   post.newComment = '';
+      //   post.isSubmitting = false;
       
       },
       error: (err) => {
@@ -686,6 +703,27 @@ export class HomeUIComponent implements OnInit, OnDestroy {
   likeComment(comment: any) {
     comment.likes = (comment.likes || 0) + 1;
   }
+
+
+  //edit reply
+  startEdit(reply: any) {
+      reply.isEditing = true;
+      reply.editText = reply.comment;
+    }
+
+    cancelEdit(reply: any) {
+      reply.isEditing = false;
+    }
+
+    saveEdit(reply: any) {
+      // You can call your backend service here to update the reply
+      reply.comment = reply.editText;
+      reply.isEditing = false;
+      // Optionally send to backend:
+      // this.commentService.updateReply(reply.id, reply.comment).subscribe(...)
+    }
+
+
 
 
 }
