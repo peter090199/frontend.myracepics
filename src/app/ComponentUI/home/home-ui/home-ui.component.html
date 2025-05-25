@@ -120,15 +120,15 @@
                 <mat-card-content class="linkedin-post">
                   <div class="post-header">
                     <!-- <img class="avatar" [src]="post.user.avatarUrl" alt="User Avatar" /> -->
-                    <!-- <div class="user-info">
-<div class="name-line">
-<span class="name">{{ post.user.fullname }}</span>
-<span class="connection">• {{ post.user.connectionLevel }}</span>
-</div>
-<div class="title">{{ post.user.title }}</div>
-<div class="timestamp">{{ post.timestamp }}</div>
-</div> -->
+                                <!-- <div class="user-info">
+                  <div class="name-line">
+                  <span class="name">{{ post.user.fullname }}</span>
+                  <span class="connection">• {{ post.user.connectionLevel }}</span>
                   </div>
+                  <div class="title">{{ post.user.title }}</div>
+                  <div class="timestamp">{{ post.timestamp }}</div>
+                  </div> -->
+                </div>
 
                   <!-- Content Section -->
                   <div *ngIf="post">
@@ -156,7 +156,7 @@
                 </mat-card-content>
                 <!-- Interaction Buttons -->
                 <mat-card-actions class="interaction-buttons">
-                  <div class="like-button-wrapper" (mouseenter)="showReactions = true" *ngIf="post">
+                  <!-- <div class="like-button-wrapper" (mouseenter)="showReactions = true" *ngIf="post">
                     <button mat-button color="primary">
                       <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post]?.emoji || 'thumb_up'
                         }}</mat-icon>
@@ -166,7 +166,19 @@
                         <span>{{ r.emoji }}</span>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
+                  <div class="like-button-wrapper" (mouseenter)="showReactions = true" *ngIf="post">
+                        <button mat-button color="primary">
+                          <mat-icon *ngIf="!hoveredReaction">{{ selectedReaction?.emoji || 'thumb_up' }}</mat-icon>
+                          <mat-icon *ngIf="hoveredReaction">{{ hoveredReaction.emoji }}</mat-icon>
+                        </button>
+                    
+                        <div class="reactions-popup" *ngIf="showReactions">
+                          <div class="reaction"  *ngFor="let react of reactions" (mouseenter)="hoveredReaction = react" (click)="selectReaction(react)">
+                            <span>{{ react.emoji }}</span>
+                          </div>
+                        </div>
+                   </div>
 
                   <button mat-button color="primary" (click)="toggleComments(post)" >
                     

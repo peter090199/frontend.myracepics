@@ -13,6 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { ImageModalComponent } from '../../Modal/image-modal/image-modal.component';
 import { CommentService } from 'src/app/services/comment/comment.service';
+import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
 
 @Component({
   selector: 'app-home-ui',
@@ -44,12 +45,45 @@ export class HomeUIComponent implements OnInit, OnDestroy {
   post_uuidOrUind: any[] = [];
   uuidOrUind: any = [];
   loadCommentStep: number = 2; 
+  hoveredReaction: { reaction: string, emoji: string } | null = null;
+  selectedReaction: any = [];
+  selectedReactions: { [postId: string]: any } = {};
+  reactionList: any[] = [];
+  displayedReactions: {
+    name: string;
+    count: number;
+    emoji: string;
+    index: number;
+    users: { code: number; fullname: string; photo_pic: string }[];
+  }[] = [];
+
+  totalReactionsCount: number = 0;
+  reactionEmojiMap: { [key: string]: string } = {
+    Like: '👍',
+    Love: '❤️',
+    Haha: '😂',
+    Wow: '😮',
+    Sad: '😢',
+    Angry: '😡',
+    
+  };
+
+  //react emoji
+  showReactions = false;
+  reactions: any[] = [
+    { reaction: 'Like', emoji: '👍' },
+    { reaction: 'Love', emoji: '❤️' },
+    { reaction: 'Haha', emoji: '😂' },
+    { reaction: 'Wow', emoji: '😮' },
+    { reaction: 'Sad', emoji: '😢' },
+    { reaction: 'Angry', emoji: '😡' }
+  ];
 
 
   constructor(private router: Router, private profile: ProfileService, private photo: CurriculumVitaeService,
     private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
     private authService: AuthService, private alert: NotificationsService, private comment: CommentService,
-    private ngZone: NgZone
+    private ngZone: NgZone,private reactionService:ReactionEmojiService
   ) {
 
   }
@@ -486,25 +520,6 @@ export class HomeUIComponent implements OnInit, OnDestroy {
 
 
 
-  //react emoji
-  showReactions = false;
-  selectedReaction: any = null;
-  hoveredReaction: any = null;
-
-
-  reactions = [
-    { name: 'Like', emoji: '👍' },
-    { name: 'Love', emoji: '❤️' },
-    { name: 'Haha', emoji: '😂' },
-    { name: 'Wow', emoji: '😮' },
-    { name: 'Sad', emoji: '😢' },
-    { name: 'Angry', emoji: '😡' }
-  ];
-
-
-  selectedReactions: { [postId: string]: any } = {};
-
-
   onReactionHover(post: any, reaction: any) {
     console.log(post)
     this.hoveredReaction = reaction;
@@ -602,12 +617,13 @@ export class HomeUIComponent implements OnInit, OnDestroy {
         });
         post.newComment = '';
         post.isSubmitting = false;
-      //  post.comments.push(res.data);
 
+      //  post.comments.push(res.data);
       //   console.log("comment:", post.comments)
       //   this.alert.toastrSuccess(res.message);
       //   post.newComment = '';
       //   post.isSubmitting = false;
+      
       
       },
       error: (err) => {
@@ -724,6 +740,66 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     }
 
 
+    //react 
+      selectReaction(react: { reaction: string, emoji: string }) {
+    this.selectedReaction = react;
+    this.hoveredReaction = null;
+    this.showReactions = false;
+    // Save to database: only send the reaction name (e.g., 'love')
+    this.saveReactionToDatabase(this.post.post_uuidOrUind, react.reaction);
+  }
+
+  //save react
+  saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
+    const payload = {
+      reaction: reaction
+    };
+    this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
+      next: (res) => {
+        //     console.log('✅ Reaction response:', res);
+        this.getReactionPost_uuidOrUuid(); // Make sure this method exists
+      },
+      error: () => {
+         this.errorMsg();
+      }
+    });
+  }
+
+  getReactionPost_uuidOrUuid(): void {
+    const currentUserCode = this.authService.getAuthCode();
+    this.reactionService.getReactionPost_uuidOrUuid(this.post_uuidOrUind).subscribe({
+      next: (res) => {
+        this.reactionList = res.react || [];
+        this.totalReactionsCount = res.count || 0;
+        this.displayedReactions = this.reactionList
+          .slice(0, 5)
+          .map((r, i) => {
+            const reactionMeta = this.reactions.find(e => e.reaction === r.reaction);
+            return {
+              name: r.reaction,
+              count: r.count,
+              emoji: reactionMeta ? reactionMeta.emoji : '',
+              index: i,
+              users: r.person || []
+            };
+          });
+        //  display select  this.selectedReaction by code
+        this.selectedReaction = this.displayedReactions.find(r =>
+          r.users.some(u => u.code === Number(currentUserCode)) // Convert string to number
+        ) || null;
+
+      },
+      error: () => {
+         this.errorMsg();
+      }
+    });
+  }
+
+
+
+  errorMsg(){
+     this.alert.toastrError('❌ Error updating reaction:')
+  }
 
 
 }

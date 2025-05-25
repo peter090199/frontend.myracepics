@@ -34,8 +34,6 @@
                 matInput
                 [type]="passwordVisible ? 'text' : 'password'"
                 formControlName="password"
-                required
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
                 placeholder="Enter your password"
               />
               <mat-icon
@@ -53,6 +51,7 @@
               <mat-error *ngIf="loginForm.get('password')?.hasError('pattern')">
                 Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character.
               </mat-error>
+
             </mat-form-field>
             <div class="spacer-top"></div>
             <button mat-raised-button color="primary" class="signin-button"

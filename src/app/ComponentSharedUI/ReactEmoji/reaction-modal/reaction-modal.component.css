@@ -1,0 +1,81 @@
+/* Container for the whole tab group */
+mat-tab-group {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+/* List styling */
+mat-list {
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Each list item */
+mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+/* Avatar */
+mat-list-item img[matListAvatar] {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px;
+}
+
+/* Person name */
+mat-list-item h4[matLine] {
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Connect button */
+mat-list-item button {
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+  mat-list-item {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+  }
+
+  mat-list-item img[matListAvatar] {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+  }
+
+  mat-list-item h4[matLine] {
+    flex-basis: 100%;
+    margin: 4px 0;
+    font-size: 0.9rem;
+  }
+
+  mat-list-item button {
+    width: 100%;
+    min-width: auto;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 400px) {
+  mat-list-item img[matListAvatar] {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+
+  mat-list-item h4[matLine] {
+    font-size: 0.85rem;
+  }
+}

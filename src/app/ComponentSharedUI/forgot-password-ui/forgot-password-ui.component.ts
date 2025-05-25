@@ -13,47 +13,56 @@ import { ForgetPasswordService } from 'src/app/services/Password/Forget/forget-p
 })
 export class ForgotPasswordUIComponent implements OnInit {
 
-  isLoading: boolean= false;
-  loginForm!: FormGroup; // Define the form group properly
-  email: string = '';
+  isLoading: boolean = false;
+  loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, 
-              private signUpService: SignUpService,
-              private notificationsService: NotificationsService,
-              private dialog: MatDialog,
-              private route:Router,
-              private forget:ForgetPasswordService
-            ) { }
-         
+  constructor(
+    private fb: FormBuilder,
+    private signUpService: SignUpService,
+    private notificationsService: NotificationsService,
+    private dialog: MatDialog,
+    private route: Router,
+    private forget: ForgetPasswordService
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.email]],
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
-  // Handle form submission
-  onSubmit() {
-    if (this.loginForm.valid) {
+ progressValue: number = 0;
+intervalId: any;
+
+onSubmit() {
+  if (this.loginForm.valid) {
+    this.isLoading = true;
+    this.progressValue = 0;
+
+    // Simulate loading progress
+    this.intervalId = setInterval(() => {
+      if (this.progressValue < 100) {
+        this.progressValue += 10;
+      }
+    }, 200);
+
     const email = this.loginForm.get('email')?.value;
     this.forget.forgotPassword(email).subscribe({
       next: (res) => {
-        if(res.success)
-        {
-          this.isLoading=true;
-          this.notificationsService.toastrSuccess(res.message);
-          this.loginForm.reset();
-          this.isLoading = false;
-        }
-        else{
-          this.isLoading = false;
-          this.notificationsService.toastrWarning(res.message);
-        }
+        clearInterval(this.intervalId);
+        this.progressValue = 100;
+        this.notificationsService.toastrSuccess(res.message);
+        this.loginForm.reset();
+        setTimeout(() => this.isLoading = false, 500); // short delay to complete bar
       },
       error: (error) => {
+        clearInterval(this.intervalId);
+        this.progressValue = 0;
         this.isLoading = false;
+        this.notificationsService.toastrError("Something went wrong.");
       }
     });
   }
 }
+
 }

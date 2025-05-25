@@ -1,23 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { _url } from 'src/global-variables';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class ReactionEmojiService {
 
   constructor(private http: HttpClient) { }
 
   private getAuthToken(): string {
-    return sessionStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
+    return sessionStorage.getItem('token') || '';
   }
-
-  getAuthCode(): string {
-    return sessionStorage.getItem('code') || ''; 
-  }
-
 
   private createHeaders(): HttpHeaders {
     const token = this.getAuthToken();
@@ -31,19 +26,19 @@ export class AuthService {
     return new HttpParams().set('desc_code', 'top_navigation');
   }
 
+  //react update
+  putReactionInvidual(post_uuidOrUuid: any, reaction: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}reaction/${post_uuidOrUuid}`, reaction, { headers });
+  }
 
+  //get react
+  getReactionPost_uuidOrUuid(post_uuidOrUuid: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}reaction/${post_uuidOrUuid}`, { headers });
+  }
   
-  getData(): Observable<any> {
-    const headers = this.createHeaders();
-    return this.http.get(`${_url}user`, { headers });
-  }
-
-  getProfilecode(): Observable<any> {
-    const headers = this.createHeaders();
-    return this.http.get(`${_url}user/profile`, { headers });
-  }
-
-
+  
   private handleAuthError(error: any): Observable<any> {
     if (error.status === 401) {
       console.error('Unauthorized: Please log in.');

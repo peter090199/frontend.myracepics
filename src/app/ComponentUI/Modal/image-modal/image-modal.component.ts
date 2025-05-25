@@ -1,16 +1,12 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from 'src/app/services/auth.service';
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
+import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ReactionModalComponent } from 'src/app/ComponentSharedUI/ReactEmoji/reaction-modal/reaction-modal.component';
 
 @Component({
   selector: 'app-image-modal',
@@ -28,28 +24,46 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
   isSubmitting: boolean = false;
 
   post_uuidOrUind: string = '';
-
-  showReactions = false;
-  selectedReaction: any = null;
-  hoveredReaction: any = null;
-
-
-  reactions = [
-    { name: 'Like', emoji: '👍' },
-    { name: 'Love', emoji: '❤️' },
-    { name: 'Haha', emoji: '😂' },
-    { name: 'Wow', emoji: '😮' },
-    { name: 'Sad', emoji: '😢' },
-    { name: 'Angry', emoji: '😡' }
+  reactions: any[] = [
+    { reaction: 'Like', emoji: '👍' },
+    { reaction: 'Love', emoji: '❤️' },
+    { reaction: 'Haha', emoji: '😂' },
+    { reaction: 'Wow', emoji: '😮' },
+    { reaction: 'Sad', emoji: '😢' },
+    { reaction: 'Angry', emoji: '😡' }
   ];
 
+  showReactions = false;
+  hoveredReaction: { reaction: string, emoji: string } | null = null;
+  selectedReaction: any = [];
   selectedReactions: { [postId: string]: any } = {};
+
+  reactionEmojiMap: { [key: string]: string } = {
+    Like: '👍',
+    Love: '❤️',
+    Haha: '😂',
+    Wow: '😮',
+    Sad: '😢',
+    Angry: '😡',
+    
+  };
+
+  reactionList: any[] = [];
+  displayedReactions: {
+    name: string;
+    count: number;
+    emoji: string;
+    index: number;
+    users: { code: number; fullname: string; photo_pic: string }[];
+  }[] = [];
+
+  totalReactionsCount: number = 0;
 
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: any, private reactionService: ReactionEmojiService,
     private dialogRef: MatDialogRef<ImageModalComponent>,
-    private alert: NotificationsService,
+    private alert: NotificationsService,private dialog: MatDialog,
     private postDataservices: PostUploadImagesService,
     private authService: AuthService,
     private comment: CommentService,
@@ -63,8 +77,10 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
       // this.posts.forEach(post => post.showComments = false);
       this.post_uuidOrUind = this.posts[0].posts_uuind;
       this.getComment();
+    //  this.getReactionPost_uuidOrUuid();
     }
   }
+
 
   ngAfterViewInit(): void {
     const el = this.carousel.nativeElement;
@@ -76,10 +92,73 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     });
   }
 
+
+  selectReaction(react: { reaction: string, emoji: string }) {
+    this.selectedReaction = react;
+    this.hoveredReaction = null;
+    this.showReactions = false;
+    // Save to database: only send the reaction name (e.g., 'love')
+    this.saveReactionToDatabase(this.post_uuidOrUind, react.reaction);
+  }
+
+  //save react
+  saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
+    const payload = {
+      reaction: reaction
+    };
+    this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
+      next: (res) => {
+        //     console.log('✅ Reaction response:', res);
+        this.getReactionPost_uuidOrUuid(); // Make sure this method exists
+      },
+      error: () => {
+         this.errorMsg();
+      }
+    });
+  }
+
+  errorMsg(){
+     this.alert.toastrError('❌ Error updating reaction:')
+  }
+
+  getReactionPost_uuidOrUuid(): void {
+    const currentUserCode = this.authService.getAuthCode();
+    this.reactionService.getReactionPost_uuidOrUuid(this.post_uuidOrUind).subscribe({
+      next: (res) => {
+        this.reactionList = res.react || [];
+        this.totalReactionsCount = res.count || 0;
+        this.displayedReactions = this.reactionList
+          .slice(0, 5)
+          .map((r, i) => {
+            const reactionMeta = this.reactions.find(e => e.reaction === r.reaction);
+            return {
+              name: r.reaction,
+              count: r.count,
+              emoji: reactionMeta ? reactionMeta.emoji : '',
+              index: i,
+              users: r.person || []
+            };
+          });
+        //  display select  this.selectedReaction by code
+        this.selectedReaction = this.displayedReactions.find(r =>
+          r.users.some(u => u.code === Number(currentUserCode)) // Convert string to number
+        ) || null;
+
+      },
+      error: () => {
+         this.errorMsg();
+      }
+    });
+  }
+
+
+  //get comment
   getComment(): void {
+    console.log(this.post_uuidOrUind)
     this.comment.getComment(this.post_uuidOrUind).subscribe({
       next: (res) => {
         this.comments = res;
+        this.getReactionPost_uuidOrUuid();
       },
       error: (err: any) => {
         this.alert.toastPopUpError(err?.message || 'Failed to fetch comments');
@@ -91,6 +170,8 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     this.dialogRef.close();
   }
 
+
+  //delete image
   deleteImage(imageId: string): void {
     this.alert.popupWarning('', 'Are you sure you want to delete this image?').then((result: any) => {
       if (result?.value) {
@@ -114,21 +195,9 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onReactionHover(post: any, reaction: any): void {
-    this.hoveredReaction = reaction;
-    this.selectedReactions[post.id] = reaction;
-    this.sendReactionToServer(post.id, reaction);
-    setTimeout(() => (this.showReactions = false), 300);
-  }
-
-  sendReactionToServer(postId: string, reaction: any): void {
-    console.log(`✅ Sent reaction '${reaction.name}' for post ID: ${postId}`);
-    // Use a real API call here
-  }
-
   toggleComments(post: any): void {
     post.showComments = !post.showComments;
-  
+
     // if (post.showComments) {
     //   this.post_uuidOrUind = post.posts_uuind;
     //   this.getComment();
@@ -136,35 +205,35 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
   }
 
 
-newComment: string = '';
-addComment(): void {
-  if (!this.newComment.trim()) {
-    return; 
-  }
-console.log(this.post_uuidOrUind , " ", this.newComment)
-
-const data = {
-  post_uuid: this.post_uuidOrUind,
-  comment: this.newComment
-};
-
-  this.comment.postCommentIndividual(this.post_uuidOrUind, data).subscribe({
-    next: (res) => {
-      // this.comments.push({
-      //   comment: this.newComment,
-      //   likes: 0,
-      //   replies: [],
-      // });
-      this.alert.toastrSuccess(res.message);
-      this.getComment();
-      this.newComment = '';
-      this.isSubmitting = false;
-    },
-    error: (err) => {
-      this.alert.toastPopUpError("Comment failed:")
+  newComment: string = '';
+  addComment(): void {
+    if (!this.newComment.trim()) {
+      return;
     }
-  });
-}
+    console.log(this.post_uuidOrUind, " ", this.newComment)
+
+    const data = {
+      post_uuid: this.post_uuidOrUind,
+      comment: this.newComment
+    };
+
+    this.comment.postCommentIndividual(this.post_uuidOrUind, data).subscribe({
+      next: (res) => {
+        // this.comments.push({
+        //   comment: this.newComment,
+        //   likes: 0,
+        //   replies: [],
+        // });
+        this.alert.toastrSuccess(res.message);
+        this.getComment();
+        this.newComment = '';
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.alert.toastPopUpError("Comment failed:")
+      }
+    });
+  }
 
 
 
@@ -191,7 +260,7 @@ const data = {
         //   date_comment: new Date().toLocaleString()
         // });
 
-        
+
         comment.newReply = '';
         this.getComment();
         comment.isSubmitting = false;
@@ -202,4 +271,15 @@ const data = {
       }
     });
   }
+
+   openReactionsModal(): void {
+    this.dialog.open(ReactionModalComponent, {
+      data: this.post_uuidOrUind,
+      width: '95%',
+      maxWidth: '600px',
+      panelClass: 'centered-modal',
+    });
+
+  }
+
 }

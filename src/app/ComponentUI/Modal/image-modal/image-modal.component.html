@@ -29,21 +29,37 @@
     
   </mat-card>
 
-    <div class="comment-section" >
+
+    <div class="comment-section">
+          <!-- Reactions Display -->
+        <div class="reactions-summary">
+          <ng-container *ngFor="let reaction of displayedReactions">
+            <span class="emoji" [ngStyle]="{ 'z-index': 10 - reaction.index, 'left.px': reaction.index * 12 }">
+              {{ reactionEmojiMap[reaction.name] }}
+            </span>
+          </ng-container>
+        <a *ngIf="totalReactionsCount > 0" 
+          (click)="openReactionsModal()" 
+          style="cursor: pointer; color: blue; text-decoration: underline;">
+          You and {{ totalReactionsCount - 1 }} others
+        </a>
+      
+        </div>
+
       <mat-card-actions class="interaction-buttons">
-        <div class="like-button-wrapper" (mouseenter)="showReactions = true">
+        <div class="like-button-wrapper" (mouseenter)="showReactions = true" (mouseenter)="showReactions = true">
           <button mat-button color="primary">
-            <mat-icon>{{ hoveredReaction?.emoji || 'thumb_up'}}</mat-icon>
+            <mat-icon *ngIf="!hoveredReaction">{{ selectedReaction?.emoji || 'thumb_up' }}</mat-icon>
+            <mat-icon *ngIf="hoveredReaction">{{ hoveredReaction.emoji }}</mat-icon>
           </button>
+      
           <div class="reactions-popup" *ngIf="showReactions">
-            <div
-              class="reaction"
-              *ngFor="let r of reactions"
-              (mouseenter)="onReactionHover(posts, r)">
-              <span>{{ r.emoji }}</span>
+            <div class="reaction"  *ngFor="let react of reactions" (mouseenter)="hoveredReaction = react" (click)="selectReaction(react)">
+              <span>{{ react.emoji }}</span>
             </div>
           </div>
         </div>
+
         <button mat-button color="primary">
           <mat-icon>repeat</mat-icon> Repost
         </button>

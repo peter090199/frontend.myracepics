@@ -1,0 +1,25 @@
+<mat-tab-group>
+
+  <!-- All Reactions Tab -->
+  <mat-tab [label]="'All ' + totalCount">
+    <mat-list>
+      <mat-list-item *ngFor="let person of allPersons">
+        <img matListAvatar [src]="person.photo_pic" alt="{{person.fullname}}" />
+        <h4 matLine>{{ person.fullname }}</h4>
+         <button mat-button color="primary" >Connect</button>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+
+  <!-- Individual Reaction Tabs -->
+  <mat-tab *ngFor="let reactionGroup of react" [label]="reactionLabel(reactionGroup)">
+    <mat-list>
+      <mat-list-item *ngFor="let person of reactionGroup.person">
+        <img matListAvatar [src]="person.photo_pic" alt="{{person.fullname}}" />
+        <h4 matLine>{{ person.fullname }}</h4>
+        <button mat-button color="primary" >Connect</button>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+
+</mat-tab-group>

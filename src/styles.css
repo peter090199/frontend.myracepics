@@ -1344,3 +1344,7 @@ react emoji */
   gap: 8px;
 }
 
+.like-button-wrapper {
+  position: relative;
+  display: inline-block;
+}
