@@ -101,27 +101,8 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     this.saveReactionToDatabase(this.post_uuidOrUind, react.reaction);
   }
 
-  //save react
-  saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
-    const payload = {
-      reaction: reaction
-    };
-    this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
-      next: (res) => {
-        //     console.log('✅ Reaction response:', res);
-        this.getReactionPost_uuidOrUuid(); // Make sure this method exists
-      },
-      error: () => {
-         this.errorMsg();
-      }
-    });
-  }
-
-  errorMsg(){
-     this.alert.toastrError('❌ Error updating reaction:')
-  }
-
-  getReactionPost_uuidOrUuid(): void {
+  
+ getReactionPost_uuidOrUuid(): void {
     const currentUserCode = this.authService.getAuthCode();
     this.reactionService.getReactionPost_uuidOrUuid(this.post_uuidOrUind).subscribe({
       next: (res) => {
@@ -150,6 +131,28 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  //save react
+  saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
+    const payload = {
+      reaction: reaction
+    };
+    this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
+      next: (res) => {
+        //     console.log('✅ Reaction response:', res);
+        this.getReactionPost_uuidOrUuid(); // Make sure this method exists
+      },
+      error: () => {
+         this.errorMsg();
+      }
+    });
+  }
+
+  errorMsg(){
+     this.alert.toastrError('❌ Error updating reaction:')
+  }
+
+ 
 
 
   //get comment

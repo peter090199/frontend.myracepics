@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Input, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Input, NgZone, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.s
   templateUrl: './home-ui.component.html',
   styleUrls: ['./home-ui.component.css']
 })
-export class HomeUIComponent implements OnInit, OnDestroy {
+export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
 
   error: any;
   profiles: any = [];
@@ -46,9 +46,9 @@ export class HomeUIComponent implements OnInit, OnDestroy {
   uuidOrUind: any = [];
   loadCommentStep: number = 2; 
   hoveredReaction: { reaction: string, emoji: string } | null = null;
-  selectedReaction: any = [];
+  selectedReaction: any;
   selectedReactions: { [postId: string]: any } = {};
-  reactionList: any[] = [];
+  reactionList: any = [];
   displayedReactions: {
     name: string;
     count: number;
@@ -65,9 +65,7 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     Wow: '😮',
     Sad: '😢',
     Angry: '😡',
-    
   };
-
   //react emoji
   showReactions = false;
   reactions: any[] = [
@@ -76,7 +74,8 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     { reaction: 'Haha', emoji: '😂' },
     { reaction: 'Wow', emoji: '😮' },
     { reaction: 'Sad', emoji: '😢' },
-    { reaction: 'Angry', emoji: '😡' }
+    { reaction: 'Angry', emoji: '😡' },
+    { reaction: 'Clap', emoji: '👏' }
   ];
 
 
@@ -218,6 +217,16 @@ export class HomeUIComponent implements OnInit, OnDestroy {
 
     this.posts.forEach(post => {
       post.visibleComments = this.loadCommentStep;
+
+      if (!this.postReactions[post.posts_uuid]) {
+          this.postReactions[post.posts_uuid] = {
+            selectedReaction: null,
+            hoveredReaction: null,
+            showPopup: false,
+          };
+        }
+
+         
     });
 
     // if (this.posts.length > 0) {
@@ -417,8 +426,8 @@ export class HomeUIComponent implements OnInit, OnDestroy {
         this.post.comments = []; // Clear before loading
         this.post_uuidOrUind.forEach(uuid => {
           this.getComment(uuid, this.posts);
+          this.getReactionPost_uuidOrUuid(uuid);
         });
-
         this.isLoading = false;
       },
       (error) => {
@@ -520,32 +529,31 @@ export class HomeUIComponent implements OnInit, OnDestroy {
 
 
 
-  onReactionHover(post: any, reaction: any) {
-    console.log(post)
-    this.hoveredReaction = reaction;
-    this.selectedReactions[post.posts_uuid] = post.posts_uuid;
-    this.sendReactionToServer(post.posts_uuid, reaction);
-    setTimeout(() => this.showReactions = false, 600);
+ 
+ hideReactions() {
+    this.showReactionsFor = null;
+    this.hoveredReaction = null;
   }
-  sendReactionToServer(postId: any, reaction: any): void {
-    const payload = {
-      post_id: postId,
-      reaction: reaction
-    };
-  console.log(payload)
-    // this.http.post('http://your-laravel-api.test/api/reactions', payload).subscribe({
-    //   next: response => console.log('Reaction sent successfully:', response),
-    //   error: error => console.error('Failed to send reaction:', error)
-    // });
-  }
-  
-  hideReactions() {
-    this.showReactions = false;
-    //  this.hoveredReaction = null;
-  }
+
   menuRef(index: number): string {
     return `menu-${index}`;
   }
+
+ singleImage:any;
+ multipleImages:any = [];
+ 
+ngAfterViewInit(): void {
+  this.post_uuidOrUind = this.posts[this.currentIndex]?.post_uuidOrUind;
+  // Handle image(s)
+  const currentPost = this.posts[this.currentIndex];
+  if (currentPost && currentPost.images?.length === 1) {
+    console.log('Only one image:', currentPost.images[0]);
+    this.singleImage = currentPost.images[0];
+  } else {
+    console.log('Multiple images:', currentPost.images);
+    this.multipleImages = currentPost.images;
+  }
+}
 
 
 
@@ -662,7 +670,6 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     this.comment.getComment(post_uuid).subscribe({
       next: (res) => {
         post.comments= res;
-        console.log(post.comments)
       },
       error: (err) => {
         this.error = err.message || 'An error occurred while fetching comments';
@@ -739,25 +746,50 @@ export class HomeUIComponent implements OnInit, OnDestroy {
       // this.commentService.updateReply(reply.id, reply.comment).subscribe(...)
     }
 
+postReactions: {
+  [postId: string]: {
+    selectedReaction: { emoji: string } | null;
+    hoveredReaction: { emoji: string } | null;
+    showPopup: boolean;
+  };
+} = {};
 
-    //react 
-      selectReaction(react: { reaction: string, emoji: string }) {
+
+initPostReaction(post_uuidOrUuid: any) {
+  if (!this.postReactions[post_uuidOrUuid]) {
+    this.postReactions[post_uuidOrUuid] = {
+      selectedReaction: null,
+      hoveredReaction: null,
+      showPopup: false,
+    };
+  }
+}
+
+togglePopup(post_uuidOrUuid: any, show: boolean) {
+  this.initPostReaction(post_uuidOrUuid);
+  this.postReactions[post_uuidOrUuid].showPopup = show;
+}
+
+//react 
+  selectReaction(post_uuidOrUuid: any, react: any) {
+    console.log("react", post_uuidOrUuid, " ", react.reaction)
+
+    this.initPostReaction(post_uuidOrUuid);
     this.selectedReaction = react;
     this.hoveredReaction = null;
     this.showReactions = false;
-    // Save to database: only send the reaction name (e.g., 'love')
-    this.saveReactionToDatabase(this.post.post_uuidOrUind, react.reaction);
+    this.saveReactionToDatabase(post_uuidOrUuid, react.reaction);
   }
 
-  //save react
+ //save react
   saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
     const payload = {
       reaction: reaction
     };
     this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
       next: (res) => {
-        //     console.log('✅ Reaction response:', res);
-        this.getReactionPost_uuidOrUuid(); // Make sure this method exists
+             console.log('✅ Reaction response:', res);
+            this.getReactionPost_uuidOrUuid(post_uuidOrUuid); // Make sure this method exists
       },
       error: () => {
          this.errorMsg();
@@ -765,42 +797,100 @@ export class HomeUIComponent implements OnInit, OnDestroy {
     });
   }
 
-  getReactionPost_uuidOrUuid(): void {
-    const currentUserCode = this.authService.getAuthCode();
-    this.reactionService.getReactionPost_uuidOrUuid(this.post_uuidOrUind).subscribe({
-      next: (res) => {
-        this.reactionList = res.react || [];
-        this.totalReactionsCount = res.count || 0;
-        this.displayedReactions = this.reactionList
-          .slice(0, 5)
-          .map((r, i) => {
-            const reactionMeta = this.reactions.find(e => e.reaction === r.reaction);
-            return {
-              name: r.reaction,
-              count: r.count,
-              emoji: reactionMeta ? reactionMeta.emoji : '',
-              index: i,
-              users: r.person || []
-            };
-          });
-        //  display select  this.selectedReaction by code
-        this.selectedReaction = this.displayedReactions.find(r =>
-          r.users.some(u => u.code === Number(currentUserCode)) // Convert string to number
-        ) || null;
-
-      },
-      error: () => {
-         this.errorMsg();
-      }
-    });
+showReactionsFor: number | null = null;
+ showReactionss(post: any) {
+   console.log(post.posts_uuid)
+    this.showReactionsFor = post.posts_uuid;
   }
 
+  
+
+setHoveredReaction(postId: string, reaction: any | null) {
+
+  this.initPostReaction(postId);
+  this.postReactions[postId].hoveredReaction = reaction;
+}
+
+reactionsMap: any = [];
+getReactionPost_uuidOrUuid(post_uuidOrUind: any): void {
+  const currentUserCode = this.authService.getAuthCode();
+
+  this.reactionService.getReactionPost_uuidOrUuid(post_uuidOrUind).subscribe({
+    next: (res) => {
+      this.reactionList = res.reaction || [];
+      this.totalReactionsCount = res.count || 0;
+
+      this.displayedReactions = this.reactionList
+        .slice(0, 5)
+        .map((r: { reaction: any; count: any; person: any; }, i: any) => {
+          const reactionMeta = this.reactions.find(e => e.reaction === r.reaction);
+          return {
+            name: r.reaction,
+            count: r.count,
+            emoji: reactionMeta?.emoji || '', // ✅ map emoji here
+            index: i,
+            users: r.person || []
+          };
+        });
+
+      // ✅ Select current user's reaction
+      this.selectedReaction = this.displayedReactions.find(r =>
+        r.users.some(u => u.code === Number(currentUserCode))
+      ) || null;
+    },
+    error: () => {
+      this.errorMsg();
+    }
+  });
+}
+
+  //save react
+  // saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
+  //   const payload = {
+  //     reaction: reaction
+  //   };
+  //   this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
+  //     next: (res) => {
+  //       //     console.log('✅ Reaction response:', res);
+  //       this.getReactionPost_uuidOrUuid(); // Make sure this method exists
+  //     },
+  //     error: () => {
+  //        this.errorMsg();
+  //     }
+  //   });
+  // }
+
+// getReactionPost_uuidOrUuid(post_uuidOrUuid: any) {
+//   const currentUserCode = this.authService.getAuthCode();
+
+//   this.reactionService.getReactionPost_uuidOrUuid(post_uuidOrUuid).subscribe({
+//     next: (res) => {
+//       const reactionList = res.reaction || [];
+
+//       this.reactionsMap[post_uuidOrUuid] = reactionList.slice(0, 5).map((r: { reaction: any; count: any; person: any; }, i: any) => {
+//        this.reactions.find(e => e.reaction === r.reaction);
+//         return {
+//           name: r.reaction,
+//           count: r.count,
+//           index: i,
+//           users: r.person || []
+//         };
+//       });
+//       this.selectedReaction = this.displayedReactions.find(r =>
+//           r.users.some(u => u.code === Number(currentUserCode)) // Convert string to number
+//         ) || null;
+
+//       // Optionally track selectedReaction per post if needed
+//     },
+//     error: () => {
+//       this.errorMsg();
+//     }
+//   });
+// }
 
 
   errorMsg(){
      this.alert.toastrError('❌ Error updating reaction:')
   }
-
-
 }
 

@@ -696,3 +696,44 @@ button {
 }
 
 
+
+
+
+
+.reactions-summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.reaction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f0f0f0;
+  border-radius: 12px;
+  padding: 4px 8px;
+}
+
+.emoji {
+  font-size: 1.4rem;
+}
+
+.count {
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.reaction-users {
+  display: flex;
+  margin-left: 8px;
+  gap: 2px;
+}
+
+.user-photo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ccc;
+}

@@ -153,35 +153,67 @@
                     </div>
                   </div>
 
-                </mat-card-content>
-                <!-- Interaction Buttons -->
-                <mat-card-actions class="interaction-buttons">
-                  <!-- <div class="like-button-wrapper" (mouseenter)="showReactions = true" *ngIf="post">
-                    <button mat-button color="primary">
-                      <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post]?.emoji || 'thumb_up'
-                        }}</mat-icon>
-                    </button>
-                    <div class="reactions-popup" *ngIf="showReactions">
-                      <div class="reaction" *ngFor="let r of reactions" (mouseenter)="onReactionHover(post, r)">
-                        <span>{{ r.emoji }}</span>
-                      </div>
-                    </div>
-                  </div> -->
-                  <div class="like-button-wrapper" (mouseenter)="showReactions = true" *ngIf="post">
-                        <button mat-button color="primary">
-                          <mat-icon *ngIf="!hoveredReaction">{{ selectedReaction?.emoji || 'thumb_up' }}</mat-icon>
-                          <mat-icon *ngIf="hoveredReaction">{{ hoveredReaction.emoji }}</mat-icon>
-                        </button>
-                    
-                        <div class="reactions-popup" *ngIf="showReactions">
-                          <div class="reaction"  *ngFor="let react of reactions" (mouseenter)="hoveredReaction = react" (click)="selectReaction(react)">
-                            <span>{{ react.emoji }}</span>
-                          </div>
-                        </div>
-                   </div>
+                
 
-                  <button mat-button color="primary" (click)="toggleComments(post)" >
-                    
+                </mat-card-content>
+               <!-- Reactions for this post -->
+             <div class="reactions-summary" *ngIf="totalReactionsCount > 0">
+              <ng-container *ngFor="let reaction of reactionList; let i = index">
+                <span
+                  class="emoji"
+                  [ngStyle]="{
+                    'z-index': 10 - i,
+                    'left.px': i * 12,
+                    'position': 'relative',
+                    'font-size': '20px'
+                  }"
+                  [title]="reaction.reaction + ': ' + reaction.count"
+                >
+                  {{ reactionEmojiMap[reaction.reaction] || '❓' }}
+                </span>
+              </ng-container>
+
+                <a
+                  *ngIf="totalReactionsCount > 0"
+                  style="cursor: pointer; color: blue; text-decoration: underline; margin-left: 8px;"
+                >
+                  You and {{totalReactionsCount- 1 }} others
+                </a>
+            </div>
+
+                <mat-card-actions class="interaction-buttons">
+                <!-- Interaction Buttons -->  
+               <div class="like-button-wrapper" (mouseenter)="showReactionsFor = post.posts_uuid" >
+
+                <button mat-button color="primary" 
+                   (mouseenter)="togglePopup(post.posts_uuid, true)"
+                 >
+                 <mat-icon>
+                    {{
+                        (postReactions[post.posts_uuid] && postReactions[post.posts_uuid].hoveredReaction?.emoji) || 'thumb_up'
+                    }}
+                </mat-icon>
+                </button>
+
+
+                <div class="reactions-popup" *ngIf="postReactions[post.posts_uuid]?.showPopup"
+                    (mouseleave)="togglePopup(post.posts_uuid, false)">
+                  <div class="reaction"
+                      *ngFor="let react of reactions"
+                      (mouseenter)="setHoveredReaction(post.posts_uuid, react)"
+                      (mouseleave)="setHoveredReaction(post.posts_uuid, null)"
+                      (click)="selectReaction(post.posts_uuid, react)">
+                    <span>{{ react.emoji }}</span>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+
+                  <!-- <button mat-button color="primary" (click)="toggleComments(post)" > -->
+                  <button mat-button color="primary" (click)="openModal(post.posts)">
                     <mat-icon
                       matBadge="{{ post.comments.length }} "
                       matBadgeColor="accent"
