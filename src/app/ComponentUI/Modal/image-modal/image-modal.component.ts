@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from 'src/app/services/auth.service';
 import { CommentService } from 'src/app/services/comment/comment.service';
@@ -16,8 +16,10 @@ import { ReactionModalComponent } from 'src/app/ComponentSharedUI/ReactEmoji/rea
 export class ImageModalComponent implements OnInit, AfterViewInit {
   @ViewChild('carousel') carousel!: ElementRef;
 
+ currentUserCode: any;
+
   posts: any[] = [];
-  comments: any[] = [];
+  comments: any = [];
 
   currentIndex: number = 0;
   isLoading: boolean = false;
@@ -59,7 +61,6 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
 
   totalReactionsCount: number = 0;
 
-
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any, private reactionService: ReactionEmojiService,
     private dialogRef: MatDialogRef<ImageModalComponent>,
@@ -68,10 +69,13 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private comment: CommentService,
   ) {
+
+   
     this.posts = data;
   }
 
   ngOnInit(): void {
+     this.currentUserCode = this.authService.getAuthCode();
     if (this.posts.length > 0) {
       this.currentIndex = 0;
       // this.posts.forEach(post => post.showComments = false);
@@ -161,6 +165,7 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     this.comment.getComment(this.post_uuidOrUind).subscribe({
       next: (res) => {
         this.comments = res;
+        console.log(this.comments)
         this.getReactionPost_uuidOrUuid();
       },
       error: (err: any) => {
@@ -227,7 +232,7 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
         //   likes: 0,
         //   replies: [],
         // });
-        this.alert.toastrSuccess(res.message);
+       // this.alert.toastrSuccess(res.message);
         this.getComment();
         this.newComment = '';
         this.isSubmitting = false;
@@ -284,5 +289,72 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
     });
 
   }
+
+
+  //edit comment
+editComment(comment:any) {
+  comment.isEditing = true;
+}
+replyeditComment(replycomment:any) {
+  replycomment.isEditing = true;
+}
+
+
+cancelCommentEdit(comment:any) {
+  comment.isEditing = false;
+}
+
+saveCommentEdit(comment:any) {
+  // TODO: API call here to save the comment
+  comment.isEditing = false;
+}
+
+editReply(reply:any) {
+  reply.isEditing = true;
+}
+
+cancelReplyEdit(reply:any) {
+  reply.isEditing = false;
+}
+
+//public headers comment
+editHeadersComment(comment: any, id: any) {
+  const data = {
+    comment: comment.comment,
+    comment_settings: "com_headers"
+  };
+   
+  this.comment.updateReply(id, data).subscribe({
+    next: (res) => {
+      console.log('commentHeaders saved:', res);
+      comment.isEditing = false;
+    },
+    error: (err) => {
+      console.error('Error saving reply:', err);
+    }
+  });
+}
+
+
+//reply edit
+saveReplyEdit(reply: any, id: any) {
+  const data = {
+    comment: reply.comment,
+    comment_settings: "com_replies"
+  };
+   
+  this.comment.updateReply(id, data).subscribe({
+    next: (res) => {
+      console.log('Reply saved:', res);
+      reply.isEditing = false;
+    },
+    error: (err) => {
+      console.error('Error saving reply:', err);
+    }
+  });
+}
+
+
+
 
 }

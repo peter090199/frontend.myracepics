@@ -3,13 +3,12 @@
   flex-direction: row;
   max-width: 95vw;
   position: relative;
-  max-height: 80vh; /* Adjust as per your layout */
+  min-height: auto;
+  max-height: 90vh; /* Adjust as per your layout */
   overflow: hidden;
   }
-  .card {
-    max-height: 100%; /* Allow the card to use the full height of its container */
-    overflow: hidden;
-  }
+
+
 .carousel-item button {
   position: absolute;
   top: 0.5rem;
@@ -21,7 +20,8 @@
   background-color: #fafafa;
   max-height: 600px; /* You can adjust this value */
   overflow-y: auto; /* Enable vertical scrolling */
-  padding-right: 10px; /* Add padding to prevent content from sticking to the scrollbar */
+  padding: 4px;
+  width: 100%;
 }
 
 
@@ -63,7 +63,7 @@
   top: 100%; /* Position below the button */
   left: 10%;
   margin-top: 8px;
-  background:none;
+  background:transparent;
   gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: opacity 0.2s ease;

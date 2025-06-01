@@ -1348,3 +1348,52 @@ react emoji */
   position: relative;
   display: inline-block;
 }
+
+
+
+/* edit button comment by usercode */
+.edit-button {
+  color: #1976d2; /* Blue (can be changed) */
+  background-color: #e3f2fd; /* Light blue background */
+  border-radius: 50%;
+  padding: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+ 
+}
+
+.edit-button:hover {
+  background-color: #bbdefb;
+  transform: scale(1.1);
+}
+/* Wrapper for editing reply */
+
+.reply-edit-actions {
+  align-items: left;     /* Vertically center the buttons */
+  gap: 2px;                /* Space between buttons */
+}
+.card {
+  width: 100vw;
+  max-height: 100%; /* Allow the card to use the full height of its container */
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .edit-button {
+    padding: 10px;
+    font-size: 18px;
+  }
+
+  .edit-button mat-icon {
+    font-size: 20px;
+  }
+}
+
+/* :fullscreen modal */
+::ng-deep .mat-dialog-container.full-screen-modal {
+  padding: 0;
+  margin: 0;
+  max-width: 70vw;
+  width: 70vw;
+  height: auto;
+  border-radius: 0; /* optional: square corners for full-screen look */
+}

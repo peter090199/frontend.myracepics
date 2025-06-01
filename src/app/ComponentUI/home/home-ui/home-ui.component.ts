@@ -104,10 +104,11 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedImages: any;
   openModal(data: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
-      data: data,
-      width: 'auto',
-      maxWidth: '90%',
-      minHeight: '60vh',
+        data: data,
+        width: '80%', 
+        maxWidth: '80vw',
+        height: 'auto',  
+        minHeight: '60vh', 
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -543,17 +544,25 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
  multipleImages:any = [];
  
 ngAfterViewInit(): void {
-  this.post_uuidOrUind = this.posts[this.currentIndex]?.post_uuidOrUind;
-  // Handle image(s)
-  const currentPost = this.posts[this.currentIndex];
-  if (currentPost && currentPost.images?.length === 1) {
+  const currentPost = this.posts?.[this.currentIndex];
+
+  if (!currentPost) {
+    console.warn('No current post found at index:', this.currentIndex);
+    return;
+  }
+
+  this.post_uuidOrUind = currentPost.post_uuidOrUind;
+
+  if (currentPost.images?.length === 1) {
     console.log('Only one image:', currentPost.images[0]);
     this.singleImage = currentPost.images[0];
+    this.multipleImages = []; // Clear if previously set
   } else {
-    console.log('Multiple images:', currentPost.images);
-    this.multipleImages = currentPost.images;
+    this.singleImage = null; // Clear if previously set
+    this.multipleImages = currentPost.images || [];
   }
 }
+
 
 
 

@@ -53,7 +53,12 @@ export class CommentService {
     return this.http.post(`${_url}commentreply`, comment, { headers, params });
   }
   
-  
+  // edit comment update
+  updateReply(id: any, data: any): Observable<any> {
+  const headers = this.createHeaders();
+    return this.http.put<any>(`${_url}comment/${id}`, data, {headers});
+ }
+
   private handleAuthError(error: any): Observable<any> {
     if (error.status === 401) {
       console.error('Unauthorized: Please log in.');

@@ -96,7 +96,7 @@
                     </div>
                   </div>
 
-                  <button mat-button color="primary" (click)="toggleComments(post)">
+                  <button mat-button color="primary" (click)="openModal(post.posts)">
                     <mat-icon matBadge="{{ post.comments?.length || 0 }}" matBadgeColor="accent" matBadgeSize="small"
                       matBadgeOverlap="false">
                       chat
