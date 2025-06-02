@@ -1,1 +1,58 @@
-<p>networking works!</p>
+<div class="main-container">
+  <!-- Middle Feed -->
+  <div class="middle-column">
+    <mat-card class="feed-card" *ngFor="let post of posts">
+      <h4>{{ post.title }}</h4>
+      <p>{{ post.content }}</p>
+    </mat-card>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="right-sidebar">
+    <mat-card class="sidebar-card">
+      <h3>People You May Know</h3>
+      <div class="user-scroll">
+        <div class="user-card" *ngFor="let user of suggestedUsers">
+          <img [src]="user.image" alt="{{ user.name }}" />
+          <div class="user-details">
+            <strong>{{ user.name }}</strong>
+            <p>{{ user.title }}</p>
+            <button mat-stroked-button color="primary" (click)="connect(user)">
+              {{ user.connected ? 'Connected' : 'Connect' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="sidebar-card">
+      <h3>Recently Connected</h3>
+      <div class="user-scroll">
+        <div class="user-card" *ngFor="let user of connectedUsers">
+          <img [src]="user.image" alt="{{ user.name }}" />
+          <div class="user-details">
+            <strong>{{ user.name }}</strong>
+            <p>{{ user.title }}</p>
+            <button mat-flat-button color="accent" disabled>Connected</button>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="sidebar-card">
+      <h3>Discover More People</h3>
+      <div class="user-scroll">
+        <div class="user-card" *ngFor="let user of moreUsers">
+          <img [src]="user.image" alt="{{ user.name }}" />
+          <div class="user-details">
+            <strong>{{ user.name }}</strong>
+            <p>{{ user.title }}</p>
+            <button mat-stroked-button color="primary" (click)="connect(user)">
+              {{ user.connected ? 'Connected' : 'Connect' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

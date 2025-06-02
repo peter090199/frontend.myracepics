@@ -42,6 +42,27 @@ export class SearchComponent implements OnInit {
       this.fetchUsers(); // Fetch users when query changes
     });
   }
+
+  usersRecent = [
+  {
+    fullname: 'Pedro Yorpo',
+    photo_pic: 'assets/images/pedro.png'
+  },
+  {
+    fullname: 'iGotSolutions Rea',
+    photo_pic: 'assets/images/igotsolutions.png'
+  },
+  {
+    fullname: 'LanceSoft, Inc.',
+    photo_pic: 'assets/images/lancesoft.png'
+  },
+  {
+    fullname: 'Harold Archival',
+    photo_pic: ''
+  }
+];
+
+
   applyFilter(){
     this.dataSource.filter = this.searchQuery.trim().toLocaleLowerCase();
   }
@@ -129,6 +150,7 @@ export class SearchComponent implements OnInit {
   }
 
   onSearch(): void {
+      this.showOverlay = !!this.searchQuery;
     if (!this.searchQuery.trim()) {
       this.clearSearch();
     }

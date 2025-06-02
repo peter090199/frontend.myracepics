@@ -92,9 +92,9 @@
     <img src="assets/images/logo.png" alt="logo" style="height:24px;">exsuz
   </div>
     <nav *ngIf="!isMobile" class="nav" >
-      <div class="fb-header-left" *ngIf="!isMobile">
-        <app-search></app-search>
-      </div>
+        <div class="fb-header-left" *ngIf="!isMobile">
+          <app-search></app-search>
+        </div>
 
             <!-- menus with submenus -->
             <div *ngFor="let link of nav_module" [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">

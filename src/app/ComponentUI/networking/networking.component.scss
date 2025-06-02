@@ -1,0 +1,128 @@
+.main-container {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  height: 100vh;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 0.5rem;
+    height: auto;
+  }
+}
+
+/* Left Sidebar */
+.left-sidebar {
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+/* Middle Feed */
+.middle-column {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    order: 2;
+    overflow: visible;
+  }
+}
+
+/* Right Sidebar */
+.right-sidebar {
+  width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    order: 3;
+  }
+}
+
+/* Cards */
+.sidebar-card,
+.feed-card {
+  padding: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-radius: 8px;
+  width: 100%;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+/* Horizontal User Scroll */
+.user-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+  }
+}
+
+/* User Card */
+.user-card {
+  min-width: 140px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1rem;
+  background-color: #fff;
+  text-align: center;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+  }
+
+  .user-details {
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    
+    button {
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+  }
+}
