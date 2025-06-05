@@ -3,7 +3,7 @@ import { Component, NgZone, OnInit } from '@angular/core';
 @Component({
   selector: 'app-networking',
   templateUrl: './networking.component.html',
-  styleUrls: ['./networking.component.scss']
+  styleUrls: ['./networking.component.css']
 })
 export class NetworkingComponent implements OnInit {
 
@@ -16,6 +16,8 @@ export class NetworkingComponent implements OnInit {
     { title: 'Welcome to my network', content: 'Excited to start new projects!' },
     { title: 'frontend devs', content: 'comming soon.' }
   ];
+
+  
 
 suggestedUsers = [
   {
@@ -37,6 +39,30 @@ suggestedUsers = [
     connected: false
   },
   {
+    name: 'Daniel Cruz',
+    title: 'UX Designer',
+    image: 'https://randomuser.me/api/portraits/men/4.jpg',
+    connected: false
+  },
+   {
+    name: 'Daniel Cruz',
+    title: 'UX Designer',
+    image: 'https://randomuser.me/api/portraits/men/4.jpg',
+    connected: false
+  },
+   {
+    name: 'Daniel Cruz',
+    title: 'UX Designer',
+    image: 'https://randomuser.me/api/portraits/men/4.jpg',
+    connected: false
+  },
+   {
+    name: 'Daniel Cruz',
+    title: 'UX Designer',
+    image: 'https://randomuser.me/api/portraits/men/4.jpg',
+    connected: false
+  },
+   {
     name: 'Daniel Cruz',
     title: 'UX Designer',
     image: 'https://randomuser.me/api/portraits/men/4.jpg',
@@ -68,6 +94,64 @@ moreUsers = [
     image: 'https://randomuser.me/api/portraits/men/8.jpg',
     connected: false
   }
+];
+
+  networkSummary = [
+  { icon: 'people', label: 'Connections', count: 17 },
+  { icon: 'person', label: 'Following & followers' },
+  { icon: 'group', label: 'Groups' },
+  { icon: 'event', label: 'Events' },
+  { icon: 'pages', label: 'Pages', count: 68 },
+  { icon: 'email', label: 'Newsletters', count: 6 }
+];
+
+invites = [
+  { avatar: 'assets/user1.jpg', name: 'John Doe', description: 'wants to connect with you' },
+  { avatar: 'assets/user2.jpg', name: 'Jane Smith', description: 'sent you an invitation' }
+];
+
+suggestions = [
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'Angular Community' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'Vue Devs' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+  { logo: 'https://randomuser.me/api/portraits/women/7.jpg', name: 'React Experts' },
+
+
+
+    // more...
 ];
 
 

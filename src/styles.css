@@ -169,13 +169,7 @@ body {
 }
 
 
-/* Base Styles */
-mat-card {
-  margin: 16px;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+
 
 .form-row {
   display: flex;
@@ -619,12 +613,10 @@ p {
   font-size: 18px;
 }
 
-.mat-card  mat-icon {
-  color: #185291; /* Replace #007bff with any color you prefer */
-}
+
 .mat-card {
   max-width: 550px; /* Limits the card width on larger screens */
-  padding:20px;
+  padding:26px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-height: 80vh; /* Maximum height to prevent overflow beyond viewport */
   background-color: #f1f1f1;
