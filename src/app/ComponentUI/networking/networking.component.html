@@ -1,43 +1,58 @@
 <div class="main-container mat-typography">
+<div class="vertical-tabs-container">
+  <!-- Vertical Tab List -->
+  <div class="tab-list">
+    <button
+      mat-button
+      *ngFor="let item of networkSummary; let i = index"
+      [class.active]="i === selectedTabIndex"
+      (click)="selectedTabIndex = i"
+    >
+      <mat-icon>{{ item.icon }}</mat-icon>
+      {{ item.label }}
+      <span *ngIf="item.count !== undefined" class="count">{{ item.count }}</span>
+    </button>
+  </div>
+</div>
 
-  <mat-card class="section-card">
-    <mat-card-title>Manage my network</mat-card-title>
-    <mat-list>
-      <mat-list-item *ngFor="let item of networkSummary">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-        <div class="spacer"></div>
-        <span *ngIf="item.count" class="count">{{ item.count }}</span>
-      </mat-list-item>
-    </mat-list>
-  </mat-card>
+  <mat-card class="section-card-container">
+    <mat-card-title>{{ networkSummary[selectedTabIndex].label }}</mat-card-title>
+    <p *ngIf="networkSummary[selectedTabIndex].count !== undefined">
+      You have {{ networkSummary[selectedTabIndex].count }}
+      {{ networkSummary[selectedTabIndex].label.toLowerCase() }}.
+    </p>
+    <p *ngIf="networkSummary[selectedTabIndex].count === undefined">
+    No data available.
+  </p>
+</mat-card>
 
-  <!-- Invitations -->
-  <mat-card class="section-card">
-    <mat-card-title>Invitations ({{ invites.length }})</mat-card-title>
-    <div class="invite-list">
-      <div *ngFor="let invite of invites" class="invite-item">
-        <img [src]="invite.avatar" class="avatar" alt="avatar">
-        <div class="invite-text">
-          <div><strong>{{ invite.name }}</strong> {{ invite.description }}</div>
-          <div class="invite-actions">
-            <button mat-stroked-button color="warn">Ignore</button>
-            <button mat-stroked-button color="primary">Accept</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </mat-card>
 
   <!-- Suggestions -->
-  <mat-card class="section-card full-width">
+  <mat-card class="section-card full-width overflow">
     <mat-card-title>People skilled in Web Development also follow these pages</mat-card-title>
+    <button mat-button color="primary" (click)="openSuggestionsModal()">
+      Show All
+    </button>
+
     <div class="suggestions">
-      <mat-card class="suggestion-card" *ngFor="let suggestion of suggestions">
-        <img [src]="suggestion.logo" alt="logo" class="logo">
-        <div class="suggestion-name">{{ suggestion.name }}</div>
-        <button mat-stroked-button color="primary">+ Connect</button>
+      <mat-card class="suggestion-card" *ngFor="let person of people">
+         <button mat-icon-button class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+           <div class="profile-image-container">
+            <img [src]="person.image" alt="{{ person.name }}" class="profile-image" />
+          </div>
+
+          <mat-card-title>{{ person.name }}</mat-card-title>
+          <mat-card-subtitle>{{ person.subtitle || '--' }}</mat-card-subtitle>
+          <p class="based-text">Based on your profile</p>
+          <button mat-stroked-button color="primary">
+            <mat-icon>person_add</mat-icon>
+            Connect
+          </button>
+
       </mat-card>
+
     </div>
   </mat-card>
 

@@ -410,7 +410,7 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.isLoading = true;
 
-    this.postDataservices.getDataPostAddFollow(this.usercode).subscribe(
+    this.postDataservices.getDataPostAddFollow().subscribe(
       (data) => {
         if (data && Array.isArray(data)) {
           this.posts = data.map(post => ({

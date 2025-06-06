@@ -1,34 +1,45 @@
-.dashboard-container {
-  display: grid;
-  grid-template-columns: 1fr;
+.vertical-tabs-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px;
   gap: 24px;
-  padding: 26px;
-  background-color: #f3f2ef;
-
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
-.section-card {
-  padding: 12px;
-  background: #fffcfc;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  margin-left: 10px;
-  overflow-x: hidden;
+/* Tab list */
+.tab-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  gap: 8px;
 }
 
-.full-width {
-  grid-column: span 2;
-}
-
-.network-summary .mat-list-item {
+.tab-list button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  padding: 12px 16px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
 }
 
+.based-text{
+    text-align: center;
+}
+.tab-list button:hover {
+  background-color: #fffbfb;
+}
+
+.tab-list button.active {
+  background-color: #cac8c8;
+  font-weight: bold;
+}
 
 .count {
   margin-left: auto;
@@ -36,80 +47,60 @@
   color: #1976d2;
 }
 
-
-.invite-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.invite-item {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-}
-
-.invite-text {
+/* Card Container */
+.section-card-container {
   flex: 1;
-}
-
-.invite-actions {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
-}
-
-.section-card.full-width {
-  grid-column: span 3;
-  padding: 26px;
+  width: 100%;
+  max-width: 100%;
+  background: #fffcfc;
+  padding: 24px;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  max-width: none;
-
+  overflow-x: hidden;
 }
 
-.suggestions {
-  display: grid;
-  grid-template-columns: 2fr;
-  gap: 16px;
-  margin-top: 16px;
-  margin: auto;
-
-  @media (min-width: 600px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 960px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (min-width: 1280px) {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-.suggestion-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 35px;
-
-  border-radius: 8px;
+/* General Section Card (for other uses) */
+.section-card {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
   background: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease-in-out;
-  width: 220px;
-  &:hover {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .vertical-tabs-container {
+    flex-direction: column;
+  }
+
+  .tab-list {
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .section-card-container,
+  .section-card {
+    padding: 16px;
+    margin-top: 16px;
   }
 }
+
+@media (max-width: 600px) {
+  .section-card {
+    max-width: 100%;
+    padding: 12px;
+  }
+}
+
+
 
 .logo {
   width: 48px;
@@ -119,16 +110,32 @@
 }
 
 .suggestion-name {
+  margin-top: 60px;
   font-weight: 500;
   font-size: 1rem;
   margin-bottom: 12px;
+  text-align: center;
   word-wrap: break-word;
-  max-width: 100%;
 }
 
-.suggestion-card button {
-  width: 100%;
-  font-weight: 600;
-  border-radius: 4px;
-}
 
+/* Utility class for full-width cards inside grid layouts */
+.section-card.full-width {
+  grid-column: span 3;
+  max-width: none;
+  padding: 36px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.profile-image-container
+{
+  margin: 10px;
+}

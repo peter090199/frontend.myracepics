@@ -289,6 +289,13 @@ mat-expansion-panel{
   margin-right: auto;
   text-align: left;
 }
+mat-card {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px;
+}
 mat-expansion-panel {
   margin-bottom: 1px;
 }

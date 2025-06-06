@@ -361,7 +361,19 @@ snack-bar-container.notification simple-snack-bar {
   scrollbar-width: thin; /* Firefox - Thin scrollbar */
   -webkit-overflow-scrolling: touch;
 }
-
+.overflow {
+  max-height: 90vh;             
+  overflow-y: auto;             
+  overflow-x: hidden;            
+  scrollbar-width: thin;       
+  -webkit-overflow-scrolling: touch; 
+  width: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+  .overflow::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
 @media (max-width: 768px) {
   .main-container {
@@ -1481,3 +1493,33 @@ react emoji */
   height: auto;
   border-radius: 0; /* optional: square corners for full-screen look */
 }
+
+/* //animation card */
+/* Suggestions */
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.suggestion-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  transform: scale(1);
+  cursor: pointer;
+
+ 
+}
+.suggestion-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: scale(1.03);
+    background-color: #ffffff;
+  }

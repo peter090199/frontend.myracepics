@@ -86,6 +86,7 @@ import { ImageModalComponent } from './ComponentUI/Modal/image-modal/image-modal
 import { SettingsComponent } from './ComponentUI/profile/settings/settings.component';
 import { ChangePasswordComponent } from './ComponentSharedUI/forgot-password-ui/ChangePassword/change-password.component';
 import { ReactionModalComponent } from './ComponentSharedUI/ReactEmoji/reaction-modal/reaction-modal.component';
+import { AllSuggestionsModalComponent } from './ComponentUI/networking/all-suggestions-modal/all-suggestions-modal.component';
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -162,7 +163,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ImageModalComponent,
     SettingsComponent,
     ChangePasswordComponent,
-    ReactionModalComponent
+    ReactionModalComponent,
+    AllSuggestionsModalComponent
   
  
   

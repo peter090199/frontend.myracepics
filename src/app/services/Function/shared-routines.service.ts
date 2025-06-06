@@ -51,7 +51,7 @@ export class SharedRoutinesService implements OnInit {
     
     this.isLoading = true;
 
-    this.postDataservices.getDataPostAddFollow(this.usercode).subscribe(
+    this.postDataservices.getDataPostAddFollow().subscribe(
       (data) => {
         const newPostCount = data.length - this.posts.length;
         

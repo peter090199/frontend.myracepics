@@ -59,10 +59,10 @@ export class PostUploadImagesService {
     }
 
 
-    getDataPostAddFollow(code: any): Observable<any> {
+    getDataPostAddFollow(): Observable<any> {
       const headers = this.createHeaders();
-      const params = new HttpParams().set('code', code); // Set code as query param
-      return this.http.get(`${_url}post`, { headers, params });
+     // const params = new HttpParams().set('code', code); // Set code as query param
+      return this.http.get(`${_url}follow`, { headers });
     }
     
     likePost(postId: number, liked: boolean) {
