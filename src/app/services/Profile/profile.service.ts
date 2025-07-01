@@ -56,6 +56,12 @@ export class ProfileService {
     );
   }
 
+  //follow users
+  AddFollow(code: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put<any>(`${_url}follow/${code}`, {}, { headers });
+  }
+
 
   getProfileByEmail(): Observable<any> {
     const headers = this.createHeaders();

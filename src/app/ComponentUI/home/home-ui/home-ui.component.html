@@ -91,8 +91,21 @@
               <div mat-card-avatar class="avatar">
                 <img [src]="post.profile_pic || 'assets/default.png'" alt="Avatar" />
               </div>
-              <mat-card-title>{{ post.Fullname }}</mat-card-title>
+              <mat-card-title>
+                {{ post.Fullname }}
+               <!-- <a class="user-name" [href]="'/profile/' + ">{{ post.Fullname }}</a> -->
+              </mat-card-title>
               <mat-card-subtitle>{{ post.created_at | date: 'medium' }}</mat-card-subtitle>
+
+                <button mat-icon-button [matMenuTriggerFor]="menu" >
+                    <mat-icon>more_horiz</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="onEditPost()">Edit</button>
+                    <button mat-menu-item (click)="onDelete(post)">Delete</button>
+
+                  </mat-menu>
+
             </mat-card-header>
 
             <!-- Caption with See More -->

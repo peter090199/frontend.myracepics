@@ -203,8 +203,10 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
     clearInterval(this.autoSlideInterval);
   }
 
-
+currentUserCode:any;
   ngOnInit(): void {
+     this.currentUserCode = this.authService.getAuthCode();
+
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;

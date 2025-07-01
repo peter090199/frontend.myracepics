@@ -10,6 +10,7 @@ import { PostUploadImagesService } from 'src/app/services/post-upload-images.ser
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { ImageModalComponent } from 'src/app/ComponentUI/Modal/image-modal/image-modal.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 @Component({
@@ -40,7 +41,7 @@ export class ProfileUIComponent implements OnInit {
 
   constructor(
             private profile:ProfileService,public dialog:MatDialog,
-            private route: ActivatedRoute,private authService: AuthGuard,
+            private route: ActivatedRoute,private authService: AuthGuard, private authServiceCode: AuthService,
             private postDataservices:PostUploadImagesService,private comment:CommentService,
             private alert:NotificationsService,
 
@@ -97,9 +98,9 @@ openModal(image: any): void {
     return caption.split(' ').slice(0, 10).join(' ') + (caption.split(' ').length > 10 ? '...' : '');
   }
   
-  
+  currentUserCode:any;
   ngOnInit(): void {
-
+   this.currentUserCode = this.authServiceCode.getAuthCode();
 
     const url = window.location.href;
     const codesplit = url.split('/').pop();
@@ -344,5 +345,28 @@ likePost(post: any): void {
     }
   );
 }
+
+
+AddFollow(code: any): void {
+  if (!code) {
+    this.alert.toastrWarning('⚠️ No user code provided for follow request.');
+    return;
+  }
+
+  this.profile.AddFollow(code).subscribe({
+    next: (res) => {
+      if(res.status == true)      
+        this.alert.toastrSuccess(res?.message || 'Followed successfully.');
+        console.log('✅ Follow status updated successfully:', res);
+    },
+    error: (error: any) => {
+      this.alert.toastrError('Failed to follow user.');
+      console.error('❌ Error updating follow status:', error);
+    }
+  });
+
+}
+
+
 
 }
