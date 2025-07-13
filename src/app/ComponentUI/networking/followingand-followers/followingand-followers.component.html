@@ -1,0 +1,30 @@
+<div class="container">
+  <h1 style="text-align: center;">Invites Request</h1>
+
+  <div class="suggestions">
+    <mat-card class="suggestion-card"
+              *ngFor="let person of people"
+              (mouseenter)="onHover(person.follower_code)">
+      
+      <button mat-icon-button class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <div class="profile-image-container">
+        <a [routerLink]="['/profile', person.code]">
+          <img [src]="person.photo_pic" [alt]="person.fullname" class="profile-image" />
+        </a>
+      </div>
+
+      <mat-card-title class="custom-title">{{ person.fullname }}</mat-card-title>
+      <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+      <p class="based-text">Based on your profile</p>
+
+      <button mat-stroked-button color="primary" (click)="AddConnect(this.hoveredCode)">
+        <mat-icon>person_add</mat-icon>
+        Accept
+      </button>
+
+    </mat-card>
+  </div>
+</div>

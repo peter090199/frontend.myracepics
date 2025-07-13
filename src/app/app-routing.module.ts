@@ -27,10 +27,7 @@ import { PrintReceiptComponent } from './print-layout/print-receipt/print-receip
 import { PrintReceiptsComponent } from './print-layout/print-receipts/print-receipts.component';
 import { PrintComponent } from './print-layout/print/print.component';
 import { UserListComponent } from './ComponentUI/search/user-list/user-list.component';
-import { MessagesUIComponent } from './ComponentSharedUI/messages-ui/messages-ui.component';
 import { NetworkingComponent } from './ComponentUI/networking/networking.component';
-import { NotificationComponent } from './ComponentUI/notification/notification.component';
-import { MessengerChatComponent } from './messenger-chat/messenger-chat.component';
 import { ChatUIComponent } from './chat-ui/chat-ui.component';
 import { SettingsComponent } from './ComponentUI/profile/settings/settings.component';
 
@@ -97,7 +94,7 @@ const routes: Routes = [
       },
     ]
   },
-
+  
   // Wildcard route for 404 handling
   { path: '**', component: PageNotFoundComponentComponent }
 ];

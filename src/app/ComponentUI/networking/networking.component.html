@@ -1,22 +1,24 @@
-<div class="main-container mat-typography">
+<!-- <!-- <div class="main-container mat-typography">
 <div class="vertical-tabs-container">
-  <!-- Vertical Tab List -->
-  <div class="tab-list">
-    <button
-      mat-button
-      *ngFor="let item of networkSummary; let i = index"
-      [class.active]="i === selectedTabIndex"
-      (click)="selectedTabIndex = i"
-    >
-      <mat-icon>{{ item.icon }}</mat-icon>
-      {{ item.label }}
-      <span *ngIf="item.count !== undefined" class="count">{{ item.count }}</span>
-    </button>
-  </div>
+    <div class="tab-list">
+        <button
+          mat-button
+          *ngFor="let item of networkSummary;" [routerLink]="[item.route]"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          {{ item.label }}
+          <span *ngIf="item.count !== undefined" class="count">{{ item.count }}</span>
+        </button>
+      </div>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+
 </div>
 
   <mat-card class="section-card-container">
-    <mat-card-title>{{ networkSummary[selectedTabIndex].label }}</mat-card-title>
+    <mat-card-title class="custom-title">{{ networkSummary[selectedTabIndex].label }}</mat-card-title>
     <p *ngIf="networkSummary[selectedTabIndex].count !== undefined">
       You have {{ networkSummary[selectedTabIndex].count }}
       {{ networkSummary[selectedTabIndex].label.toLowerCase() }}.
@@ -27,33 +29,114 @@
 </mat-card>
 
 
-  <!-- Suggestions -->
-  <mat-card class="section-card full-width overflow">
-    <mat-card-title>People skilled in Web Development also follow these pages</mat-card-title>
-    <button mat-button color="primary" (click)="openSuggestionsModal()">
-      Show All
-    </button>
 
-    <div class="suggestions">
-      <mat-card class="suggestion-card" *ngFor="let person of people">
-         <button mat-icon-button class="close-button">
-          <mat-icon>close</mat-icon>
-        </button>
-           <div class="profile-image-container">
-            <img [src]="person.image" alt="{{ person.name }}" class="profile-image" />
-          </div>
 
-          <mat-card-title>{{ person.name }}</mat-card-title>
-          <mat-card-subtitle>{{ person.subtitle || '--' }}</mat-card-subtitle>
-          <p class="based-text">Based on your profile</p>
-          <button mat-stroked-button color="primary">
-            <mat-icon>person_add</mat-icon>
-            Connect
-          </button>
+</div> -->
 
-      </mat-card>
-
+<!-- 
+<div class="main-container mat-typography">
+  <div class="vertical-tabs-container">
+    <div class="tab-list">
+      <button
+        mat-button
+        *ngFor="let item of networkSummary"
+        [routerLink]="['/network', item.route]"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon>{{ item.icon }}</mat-icon>
+        {{ item.label }}
+        <span *ngIf="item.count !== undefined" class="count">{{ item.count }}</span>
+      </button>
     </div>
-  </mat-card>
 
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
+ -->
+
+<!-- 
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+
+<mat-tab-group animationDuration="0ms"  [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="onTabChange($event)">
+  <mat-tab *ngFor="let item of networkSummary">
+    
+    <ng-template mat-tab-label>
+      <mat-icon>{{ item.icon }}</mat-icon>
+      {{ item.label }}
+      <span *ngIf="item.count !== undefined" class="count">({{ item.count }})</span>
+    </ng-template>
+
+      <div class="tab-content">
+     <ng-container *ngIf="item.count !== undefined; else noData">
+      <ng-container [ngSwitch]="item.label">
+
+      <app-peopleand-company *ngSwitchCase="'People & Company'" [active]="selectedTabIndex === i"></app-peopleand-company>
+      <app-followingand-followers *ngSwitchCase="'Followers'" [active]="selectedTabIndex === i"></app-followingand-followers>
+      <app-pending-following *ngSwitchCase="'Invites Pending'" [active]="selectedTabIndex === i"></app-pending-following>
+         <app-groups *ngSwitchCase="'Groups'"></app-groups>
+        <app-events *ngSwitchCase="'Events'"></app-events>
+        <app-pages *ngSwitchCase="'Pages'"></app-pages>
+        <app-newsletters *ngSwitchCase="'Newsletters'"></app-newsletters> 
+
+        <p *ngSwitchDefault>Component not found for {{ item.label }}</p>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #noData>
+      <p>No data available.</p>
+    </ng-template>
+
+
+        <ng-template #noData>
+          <p>No data available.</p>
+        </ng-template>
+      </div>
+
+  </mat-tab>
+</mat-tab-group>  -->
+
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+
+<mat-tab-group
+  animationDuration="0ms"
+  [(selectedIndex)]="selectedTabIndex"
+  (selectedTabChange)="onTabChange($event)"
+>
+  <mat-tab *ngFor="let item of networkSummary; let i = index">
+    <ng-template mat-tab-label>
+      <mat-icon>{{ item.icon }}</mat-icon>
+      {{ item.label }}
+      <span *ngIf="item.count !== undefined" class="count">({{ item.count }})</span>
+    </ng-template>
+
+    <div class="tab-content">
+      <ng-container [ngSwitch]="item.label">
+
+        <app-peopleand-company
+          *ngSwitchCase="'People & Company'"
+          [active]="selectedTabIndex === i"
+          (loaded)="onComponentLoaded()"
+        ></app-peopleand-company>
+
+        <app-followingand-followers
+          *ngSwitchCase="'Followers'"
+           [active]="selectedTabIndex === i"
+          (loaded)="onComponentLoaded()"
+        ></app-followingand-followers>
+
+       <app-pending-following 
+        *ngSwitchCase="'Invites Pending'" 
+        [active]="selectedTabIndex === i"
+        (loaded)="onComponentLoaded()">
+      </app-pending-following>
+
+
+        <p *ngSwitchDefault>Component not found for {{ item.label }}</p>
+      </ng-container>
+    </div>
+  </mat-tab>
+</mat-tab-group>

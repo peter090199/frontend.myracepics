@@ -11,8 +11,7 @@ import { CommentService } from 'src/app/services/comment/comment.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { ImageModalComponent } from 'src/app/ComponentUI/Modal/image-modal/image-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
-
-
+import { ClientsService } from 'src/app/services/Networking/clients.service';
 @Component({
   selector: 'app-profile-ui',
   templateUrl: './profile-ui.component.html',
@@ -43,7 +42,7 @@ export class ProfileUIComponent implements OnInit {
             private profile:ProfileService,public dialog:MatDialog,
             private route: ActivatedRoute,private authService: AuthGuard, private authServiceCode: AuthService,
             private postDataservices:PostUploadImagesService,private comment:CommentService,
-            private alert:NotificationsService,
+            private alert:NotificationsService,private clientServices:ClientsService
 
   ) { }
  
@@ -109,7 +108,18 @@ openModal(image: any): void {
     this.loadUserPost();
     this.loadUserData();
     this.loadProfileCV();
+
+    this.checkFollowStatus();
   }
+
+
+  
+checkFollowStatus() {
+  // Call backend API to check follow status
+  this.clientServices.getPendingFollowStatus(this.code).subscribe((res: any) => {
+    this.followStatus = res.follow_status;
+  });
+}
   
     //react emoji
     showReactions = false;
@@ -346,26 +356,102 @@ likePost(post: any): void {
   );
 }
 
+followStatus: 'none' | 'pending' | 'accepted' = 'none';
 
-AddFollow(code: any): void {
+AddFollow(code: any, status: string): void {
   if (!code) {
-    this.alert.toastrWarning('⚠️ No user code provided for follow request.');
+    this.alert.toastrWarning('⚠️ No user code provided.');
     return;
   }
 
-  this.profile.AddFollow(code).subscribe({
-    next: (res) => {
-      if(res.status == true)      
-        this.alert.toastrSuccess(res?.message || 'Followed successfully.');
-        console.log('✅ Follow status updated successfully:', res);
-    },
-    error: (error: any) => {
-      this.alert.toastrError('Failed to follow user.');
-      console.error('❌ Error updating follow status:', error);
+  let confirmMessage = '';
+  let successAction = '';
+
+  if (status === 'none') {
+    confirmMessage = 'Send a follow request to this user?';
+    successAction = 'Follow request sent.';
+  } else if (status === 'pending') {
+    confirmMessage = 'Cancel your pending follow request?';
+    successAction = 'Follow request canceled.';
+  } else if (status === 'accepted') {
+    confirmMessage = 'Unfollow this user?';
+    successAction = 'Unfollowed successfully.';
+  }
+
+  this.alert.popupWarning(code, confirmMessage).then((result) => {
+    if (result.value) {
+     // this.isLoading = true;
+
+      this.profile.AddFollow(code).subscribe({
+        next: (res) => {
+          if (res.success === true || res.status === true) {
+            this.alert.toastrSuccess(res.message || successAction);
+
+            // Update follow status dynamically
+            this.followStatus = res.follow_status || 'none';
+            this.checkFollowStatus();
+          } else {
+            this.alert.toastrError(res.message || 'Action failed.');
+          }
+        //  this.isLoading = false;
+        },
+        error: (error) => {
+          this.alert.toastrError(error.error?.message || 'Something went wrong.');
+          console.error('❌ Follow error:', error);
+         // this.isLoading = false;
+        }
+      });
     }
   });
-
 }
+
+// AddFollow(code: any): void {
+
+//     this.alert.popupWarning(code," "+"Are you sure to delete this role?").then((result) => {
+//       if (result.value) 
+//       {
+//         this.profile.AddFollow(code).subscribe({
+//             next:(res)=>{
+//               if(res.success === true)
+//                 {
+//                   this.alert.toastrSuccess(res.message);
+//                   this.isLoading = false;
+//                 }
+//                 else{
+//                   this.notificationsService.toastrError(res.message);
+//                   this.isLoading = false;
+//                 }
+//                 this.getRoles();
+//             },
+//             error:(error)=>{
+//               this.notificationsService.toastrError(error.error);
+//               this.isLoading = false;
+//             }
+
+//         });
+//       }
+
+//   if (!code) {
+//     this.alert.toastrWarning('⚠️ No user code provided for follow request.');
+//     return;
+//   }
+
+//   this.profile.AddFollow(code).subscribe({
+//     next: (res) => {
+//       if(res.status == true)      
+//         this.alert.toastrSuccess(res.message);
+   
+//         this.followStatus = res.follow_status;
+//            console.log(this.followStatus)
+//         this.checkFollowStatus();
+//     },
+//     error: (error: any) => {
+//       this.alert.toastrError('Failed to follow user.');
+//       console.error('❌ Error updating follow status:', error);
+//     }
+//   });
+
+// }
 
 
 

@@ -87,6 +87,9 @@ import { SettingsComponent } from './ComponentUI/profile/settings/settings.compo
 import { ChangePasswordComponent } from './ComponentSharedUI/forgot-password-ui/ChangePassword/change-password.component';
 import { ReactionModalComponent } from './ComponentSharedUI/ReactEmoji/reaction-modal/reaction-modal.component';
 import { AllSuggestionsModalComponent } from './ComponentUI/networking/all-suggestions-modal/all-suggestions-modal.component';
+import { PeopleandCompanyComponent } from './ComponentUI/networking/peopleand-company/peopleand-company.component';
+import { FollowingandFollowersComponent } from './ComponentUI/networking/followingand-followers/followingand-followers.component';
+import { PendingFollowingComponent } from './ComponentUI/networking/pending-following/pending-following.component';
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -164,10 +167,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     SettingsComponent,
     ChangePasswordComponent,
     ReactionModalComponent,
-    AllSuggestionsModalComponent
-  
- 
-  
+    AllSuggestionsModalComponent,
+    PeopleandCompanyComponent,
+    FollowingandFollowersComponent,
+    PendingFollowingComponent,
     
   ],
   imports: [

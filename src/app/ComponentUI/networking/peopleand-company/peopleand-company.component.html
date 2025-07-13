@@ -1,0 +1,104 @@
+
+<div class="main-container mat-typography">
+  <!-- People & Clients -->
+  <mat-card class="section-card full-width overflow">
+    <h1>People and Company</h1>
+    <h3>People skilled in Web Development also follow these pages</h3>
+    <button mat-button color="primary" (click)="openSuggestionsModal()">
+      Show All
+    </button>
+
+    <div class="suggestions">
+      <mat-card
+        class="suggestion-card"
+        *ngFor="let person of people"
+      >
+        <button mat-icon-button class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <div class="profile-image-container">
+          <a [routerLink]="['/profile', person.code]">
+            <img [src]="person.photo_pic" [alt]="person.fullname" class="profile-image" />
+          </a>
+        </div>
+
+     
+          <mat-card-title class="custom-title"> {{ person.fullname }}</mat-card-title>
+          <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+          <p class="based-text">Based on your profile</p>
+        <button
+          mat-flat-button
+          color="primary"
+          *ngIf="currentUserCode !== person.following_code"
+          [disabled]="followStatuses[person.code] === 'pending'"
+          (click)="AddFollow(person.code)"
+        >
+          <mat-icon *ngIf="followStatuses[person.code] === 'none'">person_add</mat-icon>
+          <mat-icon *ngIf="followStatuses[person.code] === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
+          <mat-icon *ngIf="followStatuses[person.code] === 'accepted'">check_circle</mat-icon>
+
+          <ng-container [ngSwitch]="followStatuses[person.code]">
+            <span *ngSwitchCase="'none'">Connect</span>
+            <span *ngSwitchCase="'pending'">Pending</span>
+            <span *ngSwitchCase="'accepted'">Connected</span>
+          </ng-container>
+        </button>
+      </mat-card>
+    </div>
+  </mat-card>
+</div>
+
+
+
+
+<!-- <div class="main-container mat-typography">
+  <mat-card class="section-card full-width overflow">
+    <h1>People and Company</h1>
+    <h3>People skilled in Web Development also follow these pages</h3>
+    <button mat-button color="primary" (click)="openSuggestionsModal()">
+      Show All
+    </button>
+
+    <div class="suggestions">
+      <mat-card class="suggestion-card" *ngFor="let person of people" 
+          (mouseenter)="onHoverPerson(person.code)"
+          (mouseleave)="onLeavePerson()">
+         <button mat-icon-button class="close-button">
+          <mat-icon>close</mat-icon>
+        </button>
+             <div class="profile-image-container">
+                <a [routerLink]="['/profile', person.code]">
+                    <img [src]="person.photo_pic" [alt]="person.fullname" class="profile-image" />
+                </a>
+            </div>
+
+
+          <mat-card-title class="custom-title"> {{ person.fullname }}</mat-card-title>
+          <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+          <p class="based-text">Based on your profile</p>
+              <button
+                mat-flat-button
+                color="primary"
+                *ngIf="currentUserCode !== this.hoveredPersonCode"
+                [disabled]="followStatus === 'pending'"
+                (click)="AddFollow()"
+              >  
+                <mat-icon *ngIf="followStatus === 'none'">person_add</mat-icon>
+                <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
+                <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>
+
+                <ng-container [ngSwitch]="followStatus">
+                  <span *ngSwitchCase="'none'">Connect</span>
+                  <span *ngSwitchCase="'pending'">Pending</span>
+                  <span *ngSwitchCase="'accepted'">Connected</span>
+                </ng-container>
+              </button>
+
+
+      </mat-card>
+
+    </div>
+  </mat-card>
+
+</div> -->
