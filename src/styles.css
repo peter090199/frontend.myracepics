@@ -1568,6 +1568,14 @@ react emoji */
 }
 
 
+.read-only-input {
+  background-color: #e0e0e0 !important;
+  color: #440ceb !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
 
 /* Titles and text */
 .custom-title {

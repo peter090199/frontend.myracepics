@@ -41,24 +41,51 @@ currentUserCode:any;
     });
   }
 
-AddConnect(code: any): void {
+  AddConnect(code: any, requesterFname: string): void {
   if (!code) {
     this.alert.toastrWarning('⚠️ No user code provided for follow request.');
     return;
   }
 
-  console.log('Sending PUT for code:', code);
+  const fullName = `${requesterFname}`;
+  const confirmMessage = `Accept follow request from ${fullName}?`;
 
-  this.clientsService.acceptFollowRequest(code).subscribe({
-    next: (res:any) => {
-      this.alert.toastrSuccess(res.message);
-    },
-    error: (error: any) => {
-      this.alert.toastrError('❌ Failed to accept follow request.');
-      console.error('Error on follow request:', error);
+  this.alert.popupWarning(fullName, confirmMessage).then((result) => {
+    if (result.value) {
+    //  console.log('Sending PUT to accept follow request for code:', code);
+      this.clientsService.acceptFollowRequest(code).subscribe({
+        next: () => {
+          this.alert.toastrSuccess(`You are now connected with ${fullName}.`);
+           this.getPendingFollowRequests();
+        },
+        error: (error: any) => {
+          this.alert.toastrError('❌ Failed to accept follow request.');
+          console.error('Error on follow request:', error);
+        }
+      });
     }
   });
 }
+
+
+// AddConnect(code: any): void {
+//   if (!code) {
+//     this.alert.toastrWarning('⚠️ No user code provided for follow request.');
+//     return;
+//   }
+
+//   console.log('Sending PUT for code:', code);
+
+//   this.clientsService.acceptFollowRequest(code).subscribe({
+//     next: (res:any) => {
+//       this.alert.toastrSuccess(res.message);
+//     },
+//     error: (error: any) => {
+//       this.alert.toastrError('❌ Failed to accept follow request.');
+//       console.error('Error on follow request:', error);
+//     }
+//   });
+// }
 
   // getfollowingPending(): void {
   //   this.clientsService.getfollowingPending().subscribe({

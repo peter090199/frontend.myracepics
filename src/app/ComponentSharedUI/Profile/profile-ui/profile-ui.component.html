@@ -26,23 +26,25 @@
                    <mat-icon>cloud_upload</mat-icon> Upload
               </button>
 
-              <button
-                  mat-flat-button
-                  color="primary"
-                  *ngIf="currentUserCode !== this.code"
-                  [disabled]="this.followStatus === 'pending'"
-                  (click)="AddFollow(this.code,this.followStatus)"
-                >
-                  <mat-icon *ngIf="this.followStatus === 'none'">person_add</mat-icon>
-                  <mat-icon *ngIf="this.followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
-                  <mat-icon *ngIf="this.followStatus === 'accepted'">check_circle</mat-icon>
+             <button
+                mat-flat-button
+                color="primary"
+                *ngIf="currentUserCode !== this.code"
+                [disabled]="followStatus === 'pending'"
+       
+                (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)"
+              >
+                <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
+                <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
+                <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>
 
-                  <ng-container [ngSwitch]="this.followStatus">
-                    <span *ngSwitchCase="'none'">Connect</span>
-                    <span *ngSwitchCase="'pending'">Pending</span>
-                    <span *ngSwitchCase="'accepted'">Connected</span>
-                  </ng-container>
-                </button>
+                <ng-container [ngSwitch]="followStatus">
+                  <span *ngSwitchCase="'none'">Connect</span>
+                  <span *ngSwitchCase="'pending'">Pending</span>
+                  <span *ngSwitchCase="'accepted'">Connected</span>
+                </ng-container>
+              </button>
+
 
            </div>
 

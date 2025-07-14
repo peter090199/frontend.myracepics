@@ -57,6 +57,7 @@ export class ClientsService {
     return this.http.put(`${_url}acceptFollowRequest/${followerCode}`, {}, { headers });
   }
 
+  
   // postData(role: any): Observable<any> {
   //   const headers = this.createHeaders();
   //   return this.http.post<any>(`${_url}role`, role, { headers });

@@ -113,14 +113,20 @@ openModal(image: any): void {
   }
 
 
-  
+followId: number = 0;
 checkFollowStatus() {
-  // Call backend API to check follow status
   this.clientServices.getPendingFollowStatus(this.code).subscribe((res: any) => {
-    this.followStatus = res.follow_status;
+    this.followStatus = res.follow_status || 'none';
+
+    if (res.data && res.data.length > 0) {
+      const followRecord = res.data[0]; // get the first match
+      this.followId = followRecord.id;  // 👈 store the follow ID (e.g., 142)
+    } else {
+      this.followId = 0;
+    }
   });
 }
-  
+
     //react emoji
     showReactions = false;
     selectedReaction: any = null;
@@ -356,13 +362,14 @@ likePost(post: any): void {
   );
 }
 
-followStatus: 'none' | 'pending' | 'accepted' = 'none';
-
-AddFollow(code: any, status: string): void {
+followStatus: 'none' | 'pending' | 'accepted' | 'cancelled' = 'none';
+AddFollow(code: any, status: string, profilename: any, lname: any): void {
   if (!code) {
     this.alert.toastrWarning('⚠️ No user code provided.');
     return;
   }
+
+  const fullname = profilename + " " + lname;
 
   let confirmMessage = '';
   let successAction = '';
@@ -377,33 +384,77 @@ AddFollow(code: any, status: string): void {
     confirmMessage = 'Unfollow this user?';
     successAction = 'Unfollowed successfully.';
   }
-
-  this.alert.popupWarning(code, confirmMessage).then((result) => {
+  console.log(this.followId)
+  this.alert.popupWarning(fullname, confirmMessage).then((result) => {
     if (result.value) {
-     // this.isLoading = true;
+      const request$ =
+        status === 'accepted'
+          ? this.profile.Unfollow(this.followId) // 👈 call different API for unfollow
+          : this.profile.AddFollow(code); // 👈 default follow/cancel
 
-      this.profile.AddFollow(code).subscribe({
-        next: (res) => {
+      request$.subscribe({
+        next: (res:any) => {
           if (res.success === true || res.status === true) {
             this.alert.toastrSuccess(res.message || successAction);
-
-            // Update follow status dynamically
             this.followStatus = res.follow_status || 'none';
             this.checkFollowStatus();
           } else {
             this.alert.toastrError(res.message || 'Action failed.');
           }
-        //  this.isLoading = false;
         },
-        error: (error) => {
+        error: (error:any) => {
           this.alert.toastrError(error.error?.message || 'Something went wrong.');
           console.error('❌ Follow error:', error);
-         // this.isLoading = false;
         }
       });
     }
   });
 }
+
+// AddFollow(code: any, status: string, profilename:any,lname:any): void {
+//   if (!code) {
+//     this.alert.toastrWarning('⚠️ No user code provided.');
+//     return;
+//   }
+
+//   let confirmMessage = '';
+//   let successAction = '';
+
+//   if (status === 'none') {
+//     confirmMessage = 'Send a follow request to this user?';
+//     successAction = 'Follow request sent.';
+//   } else if (status === 'pending') {
+//     confirmMessage = 'Cancel your pending follow request?';
+//     successAction = 'Follow request canceled.';
+//   } else if (status === 'accepted') {
+//     confirmMessage = 'Unfollow this user?';
+//     successAction = 'Unfollowed successfully.';
+//   }
+//   const fullname = profilename + " " + lname;
+//   this.alert.popupWarning(fullname, confirmMessage).then((result) => {
+//     if (result.value) {
+//       this.profile.AddFollow(code).subscribe({
+//         next: (res) => {
+//           if (res.success === true || res.status === true) {
+//             this.alert.toastrSuccess(res.message || successAction);
+
+//             // Update follow status dynamically
+//             this.followStatus = res.follow_status || 'none';
+//             this.checkFollowStatus();
+//           } else {
+//             this.alert.toastrError(res.message || 'Action failed.');
+//           }
+//         //  this.isLoading = false;
+//         },
+//         error: (error) => {
+//           this.alert.toastrError(error.error?.message || 'Something went wrong.');
+//           console.error('❌ Follow error:', error);
+//          // this.isLoading = false;
+//         }
+//       });
+//     }
+//   });
+// }
 
 // AddFollow(code: any): void {
 

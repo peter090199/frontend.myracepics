@@ -62,6 +62,19 @@ export class ProfileService {
     return this.http.put<any>(`${_url}follow/${code}`, {}, { headers });
   }
 
+  Unfollow(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.delete<any>(`${_url}unfollow/${id}`, { headers });
+  }
+
+
+   getFollowStatus(code:any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}follow/${code}`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+
 
   getProfileByEmail(): Observable<any> {
     const headers = this.createHeaders();
