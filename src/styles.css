@@ -1575,8 +1575,24 @@ react emoji */
   pointer-events: none;
 }
 
-
-
+.suggestions {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow: auto;
+  padding: 8px;
+}
+.suggestion-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 1 3px 4px rgba(11, 1, 1, 0.08);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  transform: scale(1);
+  cursor: pointer;
+}
 /* Titles and text */
 .custom-title {
   font-size: 16px;
@@ -1588,6 +1604,18 @@ mat-card-subtitle {
   font-size: 14px;
   color: #777;
   margin-bottom: 4px;
+}
+.profile-link {
+  display: inline-block;
+  text-decoration: underline;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
 }
 
 .based-text {

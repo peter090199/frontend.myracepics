@@ -15,10 +15,28 @@ export class NotificationsService {
     private dataService:ProfessionalService
   ) { }
 
-
-  toastrSuccess(msg:any){
-    this.toastr.success(msg);
+  toastrSuccess(msg: string): void {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: msg,
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        toast: true
+      });
   }
+
+  // toastrSuccess(msg:any){
+  // //  this.toastr.success(msg);
+  //       Swal.fire({
+  //       position: "top-end",
+  //       icon: "success",
+  //       title: msg,
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
+  // }
   toastrError(msg:any){
     this.toastr.error(msg);
   }

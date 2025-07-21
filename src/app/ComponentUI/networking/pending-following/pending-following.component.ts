@@ -52,7 +52,6 @@ currentUserCode:any;
 
   this.alert.popupWarning(fullName, confirmMessage).then((result) => {
     if (result.value) {
-    //  console.log('Sending PUT to accept follow request for code:', code);
       this.clientsService.acceptFollowRequest(code).subscribe({
         next: () => {
           this.alert.toastrSuccess(`You are now connected with ${fullName}.`);

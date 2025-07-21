@@ -1,126 +1,9 @@
-.vertical-tabs-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 24px;
-  gap: 24px;
-}
 
-/* Tab list */
-.tab-list {
-  display: flex;
-  flex-direction: column;
-  min-width: 200px;
-  gap: 8px;
-}
-
-.tab-list button {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.2s;
-}
-
-.based-text{
-    text-align: center;
-    font-size: 12px;
-}
-.tab-list button:hover {
-  background-color: #fffbfb;
-}
-
-.tab-list button.active {
-  background-color: #cac8c8;
-  font-weight: bold;
-}
-
-.count {
-  margin-left: auto;
-  font-weight: bold;
-  color: #1976d2;
-}
-
-/* Card Container */
-.section-card-container {
-  flex: 1;
-  width: 100%;
-  max-width: 100%;
-  background: #fffcfc;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  overflow-x: hidden;
-}
-
-/* General Section Card (for other uses) */
 .section-card {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 24px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  box-sizing: border-box;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 12px;
 }
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .vertical-tabs-container {
-    flex-direction: column;
-  }
-
-  .tab-list {
-    flex-direction: row;
-    overflow-x: auto;
-    width: 100%;
-    gap: 12px;
-  }
-
-  .section-card-container,
-  .section-card {
-    padding: 16px;
-    margin-top: 16px;
-  }
-}
-
-@media (max-width: 600px) {
-  .section-card {
-    max-width: 100%;
-    padding: 12px;
-  }
-}
-
-
-
-.logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  margin-bottom: 12px;
-}
-
-.suggestion-name {
-  margin-top: 60px;
-  font-weight: 500;
-  font-size: 1rem;
-  margin-bottom: 12px;
-  text-align: center;
-  word-wrap: break-word;
-}
-
-
-/* Utility class for full-width cards inside grid layouts */
 .section-card.full-width {
   grid-column: span 3;
   max-width: none;
@@ -128,11 +11,91 @@
   border-radius: 8px;
   box-sizing: border-box;
 }
-.pagination-controls {
+
+
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.suggestion-card {
+  min-width: 240px;
+  flex-shrink: 0;
+}
+.suggestions-wrapper {
+  max-height: 600px; /* adjust height as needed */
+  overflow-y: auto;
+  padding-right: 14px;
+}
+
+/* Optional: Add smooth scrollbar styling (for Webkit browsers) */
+.suggestions-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.suggestions-wrapper::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+
+/* Individual card styling */
+.suggestion-card {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  position: relative;
+  text-align: center;
+}
+
+/* Close button top-right */
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.profile-link {
+  display: inline-block;
+  text-decoration: underline;
+}
+
+.based-text {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+/* Responsive tweaks */
+@media screen and (max-width: 600px) {
+  .suggestions {
+    grid-template-columns: 1fr;
+  }
+
+  .suggestion-card {
+    padding: 12px;
+  }
+
+  .custom-title {
+    font-size: 14px;
+  }
+
+  mat-card-subtitle,
+  .based-text {
+    font-size: 12px;
+  }
+}
+
+h1{
+  margin: auto;
+  margin-top: 10px;
 }

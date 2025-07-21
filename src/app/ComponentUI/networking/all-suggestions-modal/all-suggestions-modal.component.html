@@ -9,8 +9,10 @@
 
 <mat-dialog-content >
   <div class="suggestions">
-    <mat-card class="suggestion-card" *ngFor="let person of data.people">
-        
+    <mat-card class="suggestion-card" *ngFor="let person of data.people" [routerLink]="['/profile', person.code]">
+      <button mat-icon-button class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
        <div class="profile-image-container">
                 <a [routerLink]="['/profile', person.code]">
                     <img [src]="person.photo_pic" [alt]="person.fullname" class="profile-image" />

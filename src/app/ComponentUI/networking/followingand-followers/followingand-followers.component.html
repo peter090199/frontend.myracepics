@@ -4,7 +4,7 @@
   <div class="suggestions">
     <mat-card class="suggestion-card"
               *ngFor="let person of people"
-              (mouseenter)="onHover(person.follower_code)">
+              (mouseenter)="onHover(person.follower_code)" [routerLink]="['/profile', person.code]">
       
       <button mat-icon-button class="close-button">
         <mat-icon>close</mat-icon>

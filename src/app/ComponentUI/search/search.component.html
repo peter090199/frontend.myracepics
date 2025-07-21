@@ -1,79 +1,13 @@
-<!-- 
-
-<div class="input-group custom-search-bar position-relative">
-  <input  input="text" class="form-control" placeholder="Search Nexsuz"
-         [(ngModel)]="searchQuery" (input)="onSearch()" />
-
-         <button class="clear-icon" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
-          <mat-icon>close</mat-icon>
-        </button>
-
-      <div *ngIf="searchQuery && users?.length"
-        class="dropdown-menu show"
-        style="max-height: 400px; overflow-y: auto; position: absolute; width: 100%; z-index: 999; color: black;">
-   
-     
-    <a *ngFor="let item of users"  
-       class="dropdown-item d-flex align-items-center p-2"
-       [routerLink]="['/search']" 
-       [queryParams]="{ search: searchQuery }">
-      
-      <img [src]="item.photo_pic || 'assets/images/default2.png'" alt="{{ item.fullname }}" class="rounded-circle me-2"
-           style="width: 40px; height: 40px; object-fit: cover;" />
-      <span>{{ item.fullname }}</span>
-      
-    </a>
-    
-  </div>
-</div>
-
-<div *ngIf="showOverlay" class="overlay" (click)="clearSearch()"></div> -->
-
-<!-- Wrapper for the search bar -->
-<!-- <div class="position-relative search-wrapper">
-  <input type="text"
-         class="form-control rounded-pill px-4"
-         placeholder="Search"
-         [(ngModel)]="searchQuery"
-         (input)="onSearch()" />
-
-  <button *ngIf="searchQuery"
-          class="clear-btn"
-          (click)="clearSearch()">
-    <mat-icon>close</mat-icon>
-  </button>
-
-
-  <div *ngIf="searchQuery && users?.length"
-       class="search-dropdown">
-    <div *ngFor="let user of users"
-         class="dropdown-item d-flex align-items-center"
-         [routerLink]="['/search']"
-         [queryParams]="{ search: user.fullname }">
-      <img [src]="user.photo_pic || 'assets/images/default2.png'"
-           alt="{{ user.fullname }}"
-           class="rounded-circle me-2"
-           style="width: 40px; height: 40px;" />
-          <span class="fullname-style">
-              {{ user.fullname }}
-            </span>
-    </div>
-    <div class="see-all">
-      <a [routerLink]="['/search/results/all/keywords']" [queryParams]="{ search: searchQuery }">See all results</a>
-    </div>
-  </div>
-</div>
-
-
-<div *ngIf="showOverlay" class="search-overlay" (click)="clearSearch()"></div> -->
 <div class="position-relative search-wrapper">
+  <!-- Search Input -->
   <input type="text"
-         class="form-control rounded-pill px-4"
+         class="form-control rounded-pill px-4 py-2 shadow-sm"
          placeholder="Search"
          [(ngModel)]="searchQuery"
          (input)="onSearch()"
          (focus)="showOverlay = true" />
 
+  <!-- Clear Button -->
   <button *ngIf="searchQuery"
           class="clear-btn position-absolute end-0 me-4 top-50 translate-middle-y"
           (click)="clearSearch()"
@@ -81,30 +15,54 @@
     <mat-icon>close</mat-icon>
   </button>
 
-  <div *ngIf="searchQuery && usersRecent?.length"
-       class="search-dropdown dropdown-menu show w-100 mt-1 shadow">
+  <!-- Suggestions & Recent -->
+  <div *ngIf="showOverlay"
+       class="search-dropdown dropdown-menu show w-100 mt-2 shadow rounded-4 overflow-hidden">
 
-    <div class="px-3 pt-2 text-muted small">Recent</div>
+    <!-- Autocomplete Results -->
+    <ng-container *ngIf="searchQuery && users.length > 0">
+      <div *ngFor="let user of users"
+           class="dropdown-item d-flex align-items-center hover-bg"
+           [routerLink]="['/search']"
+           [queryParams]="{ search: user.fullname }"
+           (click)="onViewUser(user)">
+        <img [src]="user.photo_pic || 'assets/images/default2.png'"
+             alt="{{ user.fullname }}"
+             class="rounded-circle me-3"
+             style="width: 40px; height: 40px;" />
+        <span class="fw-semibold">{{ user.fullname }}</span>
+      </div>
 
-    <div *ngFor="let user of users"
-         class="dropdown-item d-flex align-items-center"
-         [routerLink]="['/search']"
-         [queryParams]="{ search: user.fullname }">
-      <img [src]="user.photo_pic || 'assets/images/default2.png'"
-           alt="{{ user.fullname }}"
-           class="rounded-circle me-2"
-           style="width: 40px; height: 40px;" />
-      <span class="fullname-style">{{ user.fullname }}</span>
-    </div>
+      <!-- See All Results -->
+      <div class="see-all text-center py-2 border-top">
+        <a [routerLink]="['/search/results/all/keywords']"
+           [queryParams]="{ search: searchQuery }"
+           class="text-decoration-none text-primary fw-semibold">
+          See all results for "{{ searchQuery }}"
+        </a>
+      </div>
+    </ng-container>
 
-    <!-- See All Results -->
-    <div class="see-all text-center py-2 border-top">
-      <a [routerLink]="['/search/results/all/keywords']"
-         [queryParams]="{ search: searchQuery }"
-         class="text-decoration-none text-primary">
-        See all results
-      </a>
-    </div>
+    <!-- Recent Searches -->
+    <ng-container *ngIf="searchHistory.length > 0 && !searchQuery">
+      <div class="sticky-header px-3 pt-3 text-muted small">Recent Searches</div>
+      <div *ngFor="let user of searchHistory"
+           class="dropdown-item d-flex align-items-center hover-bg"
+           [routerLink]="['/search']"
+           [queryParams]="{ search: user.fullname }"
+           (click)="onViewUser(user)">
+        <img [src]="user.photo_pic || 'assets/images/default2.png'"
+             alt="{{ user.fullname }}"
+             class="rounded-circle me-3"
+             style="width: 40px; height: 40px;" />
+        <span class="fw-semibold">{{ user.fullname }}</span>
+      </div>
+
+      <!-- Clear History -->
+      <div class="text-end px-3 py-2 border-top">
+        <button class="btn btn-sm btn-link text-danger" (click)="clearHistory()">Clear History</button>
+      </div>
+    </ng-container>
   </div>
 </div>
 

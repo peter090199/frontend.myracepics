@@ -109,12 +109,14 @@ export class NetworkingComponent implements OnInit {
   showAll = false;
   isLoading = false;
   selectedTabIndex: number = 0;
+  cnt:number = 0;
+
 
   networkSummary: any[] = [
     { icon: 'people', label: 'People & Company', count: this.count, route: 'people' },
-    { icon: 'person', label: 'Followers', count: this.pendingCnt, route: 'followers' },
+    { icon: 'person', label: 'Followers', count: this.count, route: 'followers' },
     { icon: 'person', label: 'Following', count: 0, route: 'following' },
-    { icon: 'group', label: 'Invites Pending', count: this.pendingCnt, route: 'groups' },
+    { icon: 'group', label: 'Invites Pending', count: this.count, route: 'groups' },
   ];
 
   constructor(
@@ -180,9 +182,21 @@ export class NetworkingComponent implements OnInit {
       this.isLoading = false;
     }, 1500);
   }
+  updateTabCount(index: number, newCount: any): void {
+    this.networkSummary[index].count = newCount;
+  }
 
   onComponentLoaded() {
     this.isLoading = false;
+    this.clientsService.getPeopleyoumayknow().subscribe({
+      next: (res) => {
+       this.cnt = res.count;
+      },
+      error: (err) => {
+        console.error('Error loading clients:', err);
+      }
+    });
+
   }
 
   openSuggestionsModal(): void {

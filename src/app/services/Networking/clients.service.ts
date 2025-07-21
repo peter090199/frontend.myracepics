@@ -57,6 +57,16 @@ export class ClientsService {
     return this.http.put(`${_url}acceptFollowRequest/${followerCode}`, {}, { headers });
   }
 
+  getPeopleyoumayknow(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get<any>(`${_url}getPeopleyoumayknow`, { headers });
+  }
+
+  getPeopleRecentActivity(): Observable<any> {
+  const headers = this.createHeaders();
+  return this.http.get<any>(`${_url}getPeopleRecentActivity`, { headers });
+  } 
+
   
   // postData(role: any): Observable<any> {
   //   const headers = this.createHeaders();

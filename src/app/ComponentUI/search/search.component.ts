@@ -4,6 +4,9 @@ import { SearchModalComponent } from './search-modal/search-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
+import { SearchHistoryService } from 'src/app/services/Search/search-history.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
 
 interface User {
   code: number;
@@ -26,20 +29,36 @@ export class SearchComponent implements OnInit {
   code:any;
   onlineUsers:any=[];
   offlineUsers:any=[];
-
+  searchHistory: any = [];
 
   constructor(
     private userService: SearchService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private searchService: SearchHistoryService,
+    private authServiceCode: AuthService,
+    private notificationsService:NotificationsService
   ) {}
 
+  currentUserCode:any;
   ngOnInit(): void {
+   this.currentUserCode = this.authServiceCode.getAuthCode();
+    this.loadHistory();
+
     this.route.queryParams.subscribe(params => {
       this.searchQuery = params['search'] || '';
       console.log('Search Query:', this.searchQuery);
+     
       this.fetchUsers(); // Fetch users when query changes
+    });
+ 
+  }
+
+  loadHistory(): void {
+    this.searchService.getSearchHistory().subscribe(history => {
+      this.searchHistory = history.data;
+      console.log(this.searchHistory)
     });
   }
 
@@ -72,7 +91,7 @@ export class SearchComponent implements OnInit {
       this.userService.searchUsers(this.searchQuery).subscribe({
         next: (response) => {
           console.log('✅ API Response:', response);
-          
+            
           if (response && ('online' in response) && ('offline' in response)) {
             this.users = [...response.online, ...response.offline]; // Merge both lists
           } else {
@@ -153,6 +172,7 @@ export class SearchComponent implements OnInit {
       this.showOverlay = !!this.searchQuery;
     if (!this.searchQuery.trim()) {
       this.clearSearch();
+      this.loadHistory();
     }
     this.fetchUsers();
   }
@@ -163,11 +183,49 @@ export class SearchComponent implements OnInit {
     
   }
 
-  clearSearch() {
+  
+
+  isLoading:boolean = false;
+    clearSearch() {
     this.searchQuery = ""; // Reset search query
     this.users = [];
     this.router.navigate(['/search'], { queryParams: { search: null }, queryParamsHandling: 'merge' });
     this.showOverlay = false;
+    }
+
+  clearHistory() {
+    this.searchQuery = ""; // Reset search query
+    this.users = [];
+    this.router.navigate(['/search'], { queryParams: { search: null }, queryParamsHandling: 'merge' });
+    this.showOverlay = false;
+
+     const confirmMessage = 'Your search history is only visible to you, and it helps us to show you better results. Are you sure you want to clear it?';
+
+    this.notificationsService.popupWarning("", confirmMessage).then((result) => {
+      if (result.value) 
+      {
+        this.searchService.clearHistory().subscribe({
+            next:(res)=>{
+                this.notificationsService.toastrSuccess(res.message);
+                this.loadHistory(); 
+            },
+            error:(error)=>{
+              this.notificationsService.toastrError(error.error);
+              this.isLoading = false;
+            }
+
+        });
+      }
+
+
+    });
+  }
+
+  
+
+ searchFromHistory(query: string): void {
+    this.searchQuery = query;
+    this.onSearch();
   }
 
 
@@ -178,4 +236,24 @@ export class SearchComponent implements OnInit {
       }
     }, 200);
   }
+
+
+
+onViewUser(user: any): void {
+  const data = {
+    viewer_code: this.currentUserCode,
+    viewed_code: user.code,
+    activity_type: 'view'
+  };
+
+  this.searchService.saveSearch(data).subscribe({
+    next: () => {
+      console.log('✅ Activity logged');
+      this.loadHistory();
+    },
+    error: (err) => console.error('❌ Logging failed:', err)
+  });
+}
+
+
 }
