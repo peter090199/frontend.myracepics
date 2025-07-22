@@ -7,7 +7,7 @@
     </button> -->
 
     <div class="suggestions">
-      <mat-card class="suggestion-card" *ngFor="let person of people" [routerLink]="['/profile', person.code]">
+      <mat-card class="suggestion-card" *ngFor="let person of people" >
          <button mat-icon-button class="close-button">
           <mat-icon>close</mat-icon>
         </button>
@@ -18,7 +18,10 @@
             </div>
 
 
-          <mat-card-title class="custom-title"> {{ person.fullname }}</mat-card-title>
+          <a [routerLink]="['/profile', person.follower_code]" class="custom-title">
+            {{ person.fullname }}
+          </a>
+
           <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
           <p class="based-text">Based on your profile</p>
           <button 
@@ -28,7 +31,7 @@
             (click)="AddConnect(person.follower_code,person.fullname)">
             
             <mat-icon class="hourglass-animated">hourglass_top</mat-icon>
-            Pending
+            Accept Pending
           </button>
 
 

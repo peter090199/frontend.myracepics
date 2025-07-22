@@ -1609,7 +1609,14 @@ mat-card-subtitle {
   display: inline-block;
   text-decoration: underline;
 }
+.custom-title {
+  text-decoration: none;
+  color: inherit;
+}
 
+.custom-title:hover {
+  text-decoration: underline;
+}
 .profile-image {
   width: 80px;
   height: 80px;

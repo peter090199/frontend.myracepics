@@ -58,7 +58,6 @@ export class SearchComponent implements OnInit {
   loadHistory(): void {
     this.searchService.getSearchHistory().subscribe(history => {
       this.searchHistory = history.data;
-      console.log(this.searchHistory)
     });
   }
 
@@ -194,12 +193,8 @@ export class SearchComponent implements OnInit {
     }
 
   clearHistory() {
-    this.searchQuery = ""; // Reset search query
-    this.users = [];
-    this.router.navigate(['/search'], { queryParams: { search: null }, queryParamsHandling: 'merge' });
-    this.showOverlay = false;
-
-     const confirmMessage = 'Your search history is only visible to you, and it helps us to show you better results. Are you sure you want to clear it?';
+    //this.showOverlay = false;
+    const confirmMessage = 'Your search history is only visible to you, and it helps us to show you better results. Are you sure you want to clear it?';
 
     this.notificationsService.popupWarning("", confirmMessage).then((result) => {
       if (result.value) 

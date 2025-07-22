@@ -50,7 +50,7 @@
            class="dropdown-item d-flex align-items-center hover-bg"
            [routerLink]="['/search']"
            [queryParams]="{ search: user.fullname }"
-           (click)="onViewUser(user)">
+           (click)="onViewUser(user)" >
         <img [src]="user.photo_pic || 'assets/images/default2.png'"
              alt="{{ user.fullname }}"
              class="rounded-circle me-3"

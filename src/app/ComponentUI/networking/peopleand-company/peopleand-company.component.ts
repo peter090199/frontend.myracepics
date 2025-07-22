@@ -38,7 +38,7 @@ export class PeopleandCompanyComponent implements OnInit {
   ngOnInit(): void {
     if (this.active) {
        // this.loadStatic();
-      this.getPeopleAndCompany();
+      this.getPeopleyoumayknow();
       this.getPeopleRecentActivity();
     }
   }
@@ -46,7 +46,7 @@ export class PeopleandCompanyComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['active']?.currentValue) {
       // this.loadStatic();
-      this.getPeopleAndCompany();
+      this.getPeopleyoumayknow();
       this.getPeopleRecentActivity();
     }
   }
@@ -236,16 +236,14 @@ export class PeopleandCompanyComponent implements OnInit {
       ];
 
   }
-  getPeopleAndCompany(): void {
+
+  followStatus: 'none' | 'pending' | 'accepted' | 'cancelled' = 'none';
+  getPeopleyoumayknow(): void {
     this.currentUserCode = this.authService.getAuthCode();
 
     this.clientsService.getPeopleyoumayknow().subscribe({
       next: (res) => {
-        this.people = res.data.map((person: any) => ({
-          ...person,
-          follow_status: person.follow_status || 'none',
-          follow_id: null // optional follow_id for future unfollowing
-        }));
+        this.people = res.data;
         this.cnt = res.count;
         this.loaded.emit();
       },
@@ -315,7 +313,7 @@ export class PeopleandCompanyComponent implements OnInit {
   let successAction = '';
 
   switch (currentStatus) {
-    case 'none':
+    case 'not_following':
       confirmMessage = 'Send a follow request to this user?';
       successAction = 'Follow request sent.';
       break;
@@ -341,7 +339,7 @@ export class PeopleandCompanyComponent implements OnInit {
           if (res.status === true || res.success === true) {
             this.alert.toastrSuccess(successAction);
              follow_status = res.follow_status || 'none';
-                this.getPeopleAndCompany();
+                this.getPeopleyoumayknow();
                 this.getPeopleRecentActivity();
           } else {
             this.alert.toastrError(res.message || 'Action failed.');

@@ -29,10 +29,9 @@
 
           <mat-card-title class="custom-title">{{ person.fullname }}</mat-card-title>
           <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
-          <p class="based-text" *ngIf="person.source === 'history'">Based on your recent activity</p>
           <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
 
-        <button
+        <!-- <button
             mat-flat-button
             [color]="person.follow_status === 'accepted' ? 'primary' : undefined"
             [ngClass]="{
@@ -52,7 +51,7 @@
               <span *ngSwitchCase="'pending'">Pending</span>
               <span *ngSwitchCase="'accepted'">Connected</span>
             </ng-container>
-          </button>
+          </button> -->
 
         </mat-card>
 
@@ -87,7 +86,9 @@
                 </a>
               </div>
 
-              <mat-card-title class="custom-title">{{ person2.fullname }}</mat-card-title>
+             <a [routerLink]="['/profile', person2.code]" class="custom-title">
+               {{ person2.fullname }}
+             </a>
               <mat-card-subtitle>{{ person2.profession || '--' }}</mat-card-subtitle>
               <p class="based-text" *ngIf="person2.source === 'history'">Based on your recent activity</p>
 
@@ -95,19 +96,19 @@
                 mat-flat-button
                 [color]="person2.follow_status === 'accepted' ? 'primary' : undefined"
                 [ngClass]="{
-                  'btn-default': person2.follow_status === 'none',
+                  'btn-default': person2.follow_status === 'not_following',
                   'btn-pending': person2.follow_status === 'pending',
                   'btn-accepted': person2.follow_status === 'accepted'
                 }"
                 *ngIf="currentUserCode !== person2.code"
                 (click)="AddConnect(person2.code, person2.fullname, person2.follow_status, person2.id)"
               >
-                <mat-icon *ngIf="person2.follow_status === 'none'">person_add</mat-icon>
+                <mat-icon *ngIf="person2.follow_status === 'not_following'">person_add</mat-icon>
                 <mat-icon *ngIf="person2.follow_status === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
                 <mat-icon *ngIf="person2.follow_status === 'accepted'">check_circle</mat-icon>
 
                 <ng-container [ngSwitch]="person2.follow_status">
-                  <span *ngSwitchCase="'none'">Connect</span>
+                  <span *ngSwitchCase="'not_following'">Connect</span>
                   <span *ngSwitchCase="'pending'">Pending</span>
                   <span *ngSwitchCase="'accepted'">Connected</span>
                 </ng-container>
