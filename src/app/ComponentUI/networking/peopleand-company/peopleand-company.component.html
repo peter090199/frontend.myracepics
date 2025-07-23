@@ -1,4 +1,4 @@
-<div class="container suggestions-wrapper">
+<div class="container"  (scroll)="onScroll($event)">
   <h1 style="text-align: center;">Based on Profile</h1>
   <button mat-button color="primary" (click)="openSuggestionsModal()" style="float: right;">
     Show All
@@ -27,7 +27,9 @@
           </a>
         </div>
 
-          <mat-card-title class="custom-title">{{ person.fullname }}</mat-card-title>
+           <a [routerLink]="['/profile', person.code]" class="custom-title">
+               {{ person.fullname }}
+             </a>
           <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
           <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
 
@@ -118,6 +120,9 @@
         </div>
 
   
+   <div *ngIf="isLoading" class="loading">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
     
 </div>
 

@@ -26,6 +26,11 @@ export class PeopleandCompanyComponent implements OnInit {
   peopleRecentActivity: any[] = [];
   currentUserCode: string = '';
   cnt: number = 0;
+  dataList: any[] = [];
+  isLoading = false;
+  page = 1;
+  limit = 10; // You can change this
+  hasMoreData = true;
 
   constructor(
     private dialog: MatDialog,
@@ -35,13 +40,22 @@ export class PeopleandCompanyComponent implements OnInit {
     private profile: ProfileService
   ) {}
 
-  ngOnInit(): void {
-    if (this.active) {
-       // this.loadStatic();
-      this.getPeopleyoumayknow();
-      this.getPeopleRecentActivity();
-    }
+ngOnInit(): void {
+  if (this.active) {
+    this.page = 1;
+    this.dataList = [];
+    this.getPeopleyoumayknow();
+    this.getPeopleRecentActivity(); // Load initial data
   }
+}
+
+onScroll(event: any): void {
+  const { scrollTop, scrollHeight, clientHeight } = event.target;
+
+  if (scrollTop + clientHeight >= scrollHeight - 100 && !this.isLoading && this.hasMoreData) {
+    this.getPeopleRecentActivity(); // Load next page
+  }
+}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['active']?.currentValue) {
@@ -255,7 +269,35 @@ export class PeopleandCompanyComponent implements OnInit {
   }
 
 
-    getPeopleRecentActivity(): void {
+getPeopleRecentActivity(): void {
+  if (this.isLoading || !this.hasMoreData) return;
+
+  this.isLoading = true;
+  this.currentUserCode = this.authService.getAuthCode();
+
+  this.clientsService.getPeopleRecentActivity().subscribe({
+    next: (res) => {
+      const newData = res.data.map((person: any) => ({
+        ...person,
+        follow_status: person.follow_status || 'none',
+        follow_id: null
+      }));
+
+      this.peopleRecentActivity.push(...newData);
+      this.page++;
+      this.hasMoreData = newData.length === this.limit;
+      this.isLoading = false;
+      this.loaded.emit();
+    },
+    error: (err) => {
+      console.error('Error loading suggestions:', err);
+      this.alert.toastrError('❌ Failed to load suggestions.');
+      this.isLoading = false;
+    }
+  });
+}
+
+    getPeopleRecentActivityxxxx(): void {
     this.currentUserCode = this.authService.getAuthCode();
 
     this.clientsService.getPeopleRecentActivity().subscribe({
@@ -333,17 +375,20 @@ export class PeopleandCompanyComponent implements OnInit {
         currentStatus === 'accepted'
           ? this.profile.Unfollow(id)
           : this.profile.AddFollow(code);
-
+      
       action$.subscribe({
         next: (res: any) => {
           if (res.status === true || res.success === true) {
             this.alert.toastrSuccess(successAction);
-             follow_status = res.follow_status || 'none';
+             follow_status = res.follow_status || 'not_following';
                 this.getPeopleyoumayknow();
                 this.getPeopleRecentActivity();
           } else {
             this.alert.toastrError(res.message || 'Action failed.');
           }
+
+           this.getPeopleyoumayknow();
+           this.getPeopleRecentActivity();
         },
         error: (err) => {
           this.alert.toastrError(err.error?.message || 'Something went wrong.');
