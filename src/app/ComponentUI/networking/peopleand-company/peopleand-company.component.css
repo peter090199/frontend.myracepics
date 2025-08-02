@@ -1,3 +1,14 @@
+.tabs-container{
+  min-height: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+  .tabs-container {
+    width: 100%;
+  }
+}
 
 .section-card {
   padding: 16px;
@@ -16,7 +27,8 @@
 .suggestions {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 1rem;
+  gap: 2rem;
+  margin: auto;
 }
 
 .suggestion-card {

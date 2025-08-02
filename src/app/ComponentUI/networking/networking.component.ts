@@ -113,10 +113,11 @@ export class NetworkingComponent implements OnInit {
 
 
   networkSummary: any[] = [
-    { icon: 'people', label: 'People & Company', count: this.count, route: 'people' },
-    { icon: 'person', label: 'Followers', count: this.count, route: 'followers' },
-    { icon: 'person', label: 'Following', count: 0, route: 'following' },
-    { icon: 'group', label: 'Invites Pending', count: this.count, route: 'groups' },
+    { icon: 'badge', label: 'People & Company', count: this.count, route: 'people' },
+{ icon: 'people_alt', label: 'Connected', count: this.count, route: 'connected' },
+
+    // { icon: 'person', label: 'Following', count: 0, route: 'following' },
+    { icon: 'group', label: 'Accept Invites', count: this.count, route: 'accept-invites' },
   ];
 
   constructor(

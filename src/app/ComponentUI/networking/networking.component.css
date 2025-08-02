@@ -8,6 +8,8 @@
   gap: 24px;
 }
 
+
+
 /* Tab list */
 .tab-list {
   display: flex;
@@ -154,6 +156,7 @@
   width: 100%;
   max-width: 100%;
   background-color: #fff;
+
 }
 
 .tab-content h3 {

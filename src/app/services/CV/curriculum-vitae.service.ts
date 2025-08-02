@@ -87,6 +87,12 @@ export class CurriculumVitaeService {
     return this.http.put(`${_url}${endpoint}`, body, { headers });
   }
 
+  saveProfile(formData: FormData): Observable<any> {
+    const headers = this.createHeaders(); 
+    return this.http.post<any>(`${_url}saveProfile`, formData, { headers });
+  }
+
+
   deleteData(endpoint: string): Observable<any> {
     const headers = this.createHeaders();
     return this.http.delete(`${_url}${endpoint}`, { headers });

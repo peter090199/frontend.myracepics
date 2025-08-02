@@ -23,13 +23,13 @@
         ></app-peopleand-company>
 
         <app-followingand-followers
-          *ngSwitchCase="'Followers'"
+          *ngSwitchCase="'Connected'"
            [active]="selectedTabIndex === i"
           (loaded)="onComponentLoaded()"
         ></app-followingand-followers>
 
        <app-pending-following 
-        *ngSwitchCase="'Invites Pending'" 
+        *ngSwitchCase="'Accept Invites'" 
         [active]="selectedTabIndex === i"
         (loaded)="onComponentLoaded()">
       </app-pending-following>

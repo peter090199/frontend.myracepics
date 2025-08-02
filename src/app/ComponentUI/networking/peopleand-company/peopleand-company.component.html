@@ -1,8 +1,8 @@
-<div class="container"  (scroll)="onScroll($event)">
+<div class="tabs-container"  (scroll)="onScroll($event)">
   <h1 style="text-align: center;">Based on Profile</h1>
-  <button mat-button color="primary" (click)="openSuggestionsModal()" style="float: right;">
+  <!-- <button mat-button color="primary" (click)="openSuggestionsModal()" style="float: right;">
     Show All
-  </button>
+  </button> -->
 
       <div class="suggestions">
         <mat-card
@@ -119,6 +119,8 @@
           </div>
         </div>
 
+
+        
   
    <div *ngIf="isLoading" class="loading">
     <mat-spinner diameter="30"></mat-spinner>

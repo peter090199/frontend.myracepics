@@ -206,7 +206,8 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
 currentUserCode:any;
   ngOnInit(): void {
      this.currentUserCode = this.authService.getAuthCode();
-
+    console.log('testcode ',this.currentUserCode)
+    
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;
@@ -404,10 +405,11 @@ currentUserCode:any;
 
 
   loadUserPost(): void {
-    if (!this.usercode) {
-      this.alert.popupWarning("Usercode is ", "undefined, cannot load posts.")
-      return;
-    }
+    // if (!this.currentUserCode) {
+    //   console.log(this.currentUserCode)
+    //   this.alert.popupWarning("Usercode is ", "undefined, cannot load posts.")
+    //   return;
+    // }
 
 
     this.isLoading = true;

@@ -1,5 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild,AfterViewInit, Inject  } from '@angular/core';
+import { Component, OnInit, ViewChild,AfterViewInit, Inject, ElementRef  } from '@angular/core';
 import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
 import {FormBuilder,FormGroup,FormArray,Validators,FormControl} from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
@@ -48,7 +48,7 @@ export interface User2 {
   styleUrls: ['./user-cv.component.css']
 })
 export class UserCVComponent implements AfterViewInit  {
-
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild(MatAccordion) accordion: MatAccordion;
   @ViewChild('stepper') stepper: MatHorizontalStepper;
   progressValue: number = 0;
@@ -365,11 +365,18 @@ countries: { name: string }[] = [
   filteredCountries1: { name: string }[] = this.countries;
   filteredCountries2: { name: string }[] = this.countries;
   
+isImageSelected: boolean = false;
 
 ngOnInit(): void {
   this.initializeFormGroups();
-  this.GetUserData();
- 
+
+   this.firstFormGroup.get('date_birth')?.valueChanges.subscribe(() => {
+    this.validateAge();
+  });
+  
+  this.loadProfile1();
+  this.loadProfile2();
+
   this.LoadEducationData();
   this.loadSeminarData();
 }
@@ -412,54 +419,86 @@ resetSearch(): void {
   //this.filteredOptions = [...this.allOptions];  // Reset the filtered options to show all
 }
 
+validateAge(): void {
+  const dateOfBirth = this.firstFormGroup.get('date_birth')?.value;
 
- validateAge(): void {
-    const dateOfBirth = this.firstFormGroup.get('date_birth')?.value;
-
-    if (!dateOfBirth) {
-      this.isEligible = false;
-      return;
-    }
-
-    const today = new Date();
-    const dob = new Date(dateOfBirth);
-    const age = today.getFullYear() - dob.getFullYear();
-    const monthDifference = today.getMonth() - dob.getMonth();
-
-    // Adjust age if the current month/day is before the birth month/day
-    if (
-      monthDifference < 0 ||
-      (monthDifference === 0 && today.getDate() < dob.getDate())
-    ) {
-      this.isEligible = age - 1 >= 18;
-    } else {
-      this.isEligible = age >= 18;
-    }
+  if (!dateOfBirth) {
+    this.isEligible = false;
+    return;
   }
 
+  const today = new Date();
+  const dob = new Date(dateOfBirth);
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
 
- private GetUserData(): void {
-     this.userService.getProfileByUserOnly().subscribe({
-    next: (response) => {
-      if (response.success && response.message.length) {
-        const userData = response.message[0]; // Ensure message[0] exists
-        if(userData != null){
-          this.fname = userData.fname;
-          this.lname = userData.lname;
-          this.email =  userData.email;
-          this.contact_no = userData.contact_no;
-          this.profession = userData.profession;
-        }
-       
-      } else {
-        this.error = 'Failed to load profile data';
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  this.isEligible = age >= 18;
+}
+
+
+
+loadProfile1(): void {
+  this.userService.getProfileByUserOnly().subscribe({
+    next: (res) => {
+      if (res.success) {
+        const profile = res.message[0];
+
+        this.firstFormGroup.patchValue({
+          fname: profile.fname,
+          lname: profile.lname,
+          profession: profile.profession,
+          contact_no: profile.contact_no,
+          email: profile.email,
+        });
+        this.previewUrl = profile.photo_pic; 
+        //this.loadProfile2();
+        this.validateAge();
       }
     },
     error: (err) => {
-      this.error = err?.message || 'An error occurred while fetching profile data';
-    },
+      console.error('Failed to load profile:', err);
+    }
   });
-  }
+}
+
+getFilenameFromPath(path: any): string {
+  return path.split('/').pop() || '';
+}
+
+loadProfile2(): void {
+  this.userService.getProfileByBasicInfo().subscribe({
+    next: (res) => {
+      if (res.success) {
+          const profile = res.data;
+        const rawPath = res.data.photo_pic;
+      
+        this.previewUrl = profile.photo_pic; 
+        console.log(this.previewUrl)
+      // Try to extract valid image URL if path is malformed
+      const urlMatch = rawPath.match(/https?:\/\/[^\s]+/);
+      this.previewUrl = urlMatch ? urlMatch[0] : null;
+      this.filename = this.getFilenameFromPath(this.previewUrl);
+          
+      
+        this.firstFormGroup.patchValue({
+          contact_visibility: profile.contact_visibility,
+          email_visibility: profile.email_visibility,
+          date_birth: new Date(profile.date_birth),
+        });
+      
+        this.validateAge();
+      }
+    },
+    error: (err) => {
+      console.error('Failed to load profile:', err);
+    }
+  });
+}
+
   autoTicks = false;
   disabled = false;
   invert = false;
@@ -521,12 +560,16 @@ resetSearch(): void {
 
   private initializeFormGroups(): void {
     this.firstFormGroup = this.formBuilder.group({
-      photo_pic: [null],  // Set to null if no file is selected
-      contact_no: ['', Validators.required],
-      contact_visibility: [0],
-      email_visibility: [0],
-      date_birth: ['', Validators.required],
-      
+        fname:['',  Validators.required],
+        lname:['',  Validators.required],
+        profession:['',  Validators.required],
+        contact_no:['',  Validators.required],
+        email:['',  Validators.required],
+        contact_visibility: [false],
+        email_visibility: [false],
+        dob_visibility: [false],
+        date_birth: ['', Validators.required],
+            
     });
     this.secondFormGroup = this.formBuilder.group({
      // home_country: ['', Validators.required],
@@ -771,35 +814,50 @@ removeItemFromArray6(arrayName: 'certificate', index: number) {
     // }
 
 
-    onUploadPhoto2(event: Event): void {
-      const input = event.target as HTMLInputElement;
-      if (input?.files && input.files[0]) {
-        const file = input.files[0];
-    
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          this.fileError = 'Please upload a valid image file.';
-          this.clearPreview();
-          return;
-        }
-    
-        // Validate file size (e.g., max 2MB)
-        const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-        if (file.size > maxSizeInBytes) {
-          this.fileError = 'File size exceeds 2MB. Please upload a smaller file.';
-          this.clearPreview();
-          return;
-        }
-        this.selectedFile = file;
-        this.filename = file.name;
-        // Generate a preview URL
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.previewUrl = reader.result as string;
-        };
-        reader.readAsDataURL(file);
+  onUploadPhoto2(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input?.files && input.files[0]) {
+      const file = input.files[0];
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.fileError = 'Please upload a valid image file.';
+        return;
       }
+
+      // Validate file size (max 2MB)
+      const maxSizeInBytes = 2 * 1024 * 1024;
+      if (file.size > maxSizeInBytes) {
+        this.fileError = 'File size exceeds 2MB. Please upload a smaller file.';
+        return;
+      }
+
+      // Valid file
+      this.selectedFile = file;
+      this.filename = file.name;
+      this.fileError = '';
+      this.isImageSelected = true;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+        this.validateAge();
+      };
+      reader.readAsDataURL(file);
     }
+  }
+
+  resetPhoto(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = ''; // Clear file input
+    }
+
+    this.selectedFile = null;
+    this.previewUrl = '';
+    this.filename = '';
+    this.fileError = '';
+    this.isImageSelected = false;
+  }
     
     clearPreview(): void {
       this.previewUrl = null;
@@ -954,6 +1012,64 @@ AddCertificate(): void {
 }
 
 lines:any=[];
+
+ saveProfile(): void {
+  if (this.firstFormGroup.invalid) {
+    this.firstFormGroup.markAllAsTouched();
+         console.warn('Form is invalid:', this.firstFormGroup.value);
+    return;
+  }
+
+  // Log the form values to console
+  const formValues = this.firstFormGroup.value;
+  const formValues2 = this.secondFormGroup.value;
+  const formValues3 = this.summaryFormGroup.value;
+
+
+
+  const formData = new FormData();
+  formData.append('fname', formValues.fname);
+  formData.append('lname', formValues.lname);
+  formData.append('profession', formValues.profession);
+  formData.append('contact_no', formValues.contact_no);
+  formData.append('email', formValues.email);
+  formData.append('contact_visibility', formValues.contact_visibility ? '1' : '0');
+  formData.append('email_visibility', formValues.email_visibility ? '1' : '0');
+  formData.append('dob_visibility', formValues.dob_visibility ? '1' : '0');
+  const formattedDate = this.datePipe.transform(formValues.date_birth, 'MM/dd/yyyy');
+  formData.append('date_birth', formattedDate || ''); 
+
+  if (this.selectedFile) {
+    formData.append('photo_pic', this.selectedFile);
+  }
+
+  formData.append('home_country',this.countryControl1.value);
+  formData.append('home_state',formValues2.home_state);
+
+  formData.append('current_location',this.countryControl2.value);
+  formData.append('current_state',formValues2.current_state);
+  formData.append('summary',formValues3.summary);
+
+  for (const pair of (formData as any).entries()) {
+    console.log(pair[0], pair[1]);
+  }
+
+  this.cvService.saveProfile(formData).subscribe({
+    next: (res) => {
+      console.log(res.success);
+        if (res.success) {
+            this.loadProfile1();
+        }
+        else
+        {
+          this.notificationService.toastrError(res.message);
+        }
+    },
+    error: (err) => {
+      console.error('❌ Save failed:', err);
+    }
+  });
+}
 
 submit() {
   this.loading = true;

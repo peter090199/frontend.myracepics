@@ -56,6 +56,14 @@ export class ProfileService {
     );
   }
 
+    getProfileByBasicInfo(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getProfileData`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+
+
   //follow users
   AddFollow(code: any): Observable<any> {
     const headers = this.createHeaders();

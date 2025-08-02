@@ -41,12 +41,12 @@ app-footer {
   font-family: Verdana, sans-serif;
   font-size: 16px;
   margin: 0 auto; /* Centers the content */
-  overflow-y: auto; /* Allows scrolling */
+  overflow: auto; /* Allows scrolling */
   scrollbar-width: none; /* Hides scrollbar in Firefox */
   display: flex;
   flex-direction: column;
   min-height: 70vh;
-  max-height: 80vh;
+  max-height: 90vh;
   padding: 10px;
 }
 

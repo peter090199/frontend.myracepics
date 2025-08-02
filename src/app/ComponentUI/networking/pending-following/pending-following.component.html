@@ -11,6 +11,8 @@
          <button mat-icon-button class="close-button">
           <mat-icon>close</mat-icon>
         </button>
+
+
              <div class="profile-image-container">
                 <a [routerLink]="['/profile', person.follower_code]">
                     <img [src]="person.photo_pic" [alt]="person.fullname" class="profile-image" />
@@ -24,6 +26,27 @@
 
           <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
           <p class="based-text">Based on your profile</p>
+        <div *ngIf="currentUserCode !== person.follower_code && person.follow_status === 'pending'" class="button-gap">
+        <!-- Accept Button -->
+        <button
+          mat-button
+          color="primary"
+          (click)="AddConnect(person.follower_code,person.fullname)">
+          <mat-icon>check</mat-icon>
+          Accept
+        </button>
+
+        <!-- Cancel Button -->
+        <button
+          mat-button
+          color="warn"
+          (click)="AddConnect(person.follower_code,person.fullname)">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+      </div>
+
+<!--         
           <button 
             mat-stroked-button 
             color="primary" 
@@ -31,8 +54,9 @@
             (click)="AddConnect(person.follower_code,person.fullname)">
             
             <mat-icon class="hourglass-animated">hourglass_top</mat-icon>
-            Accept Pending
-          </button>
+            Accept Pending 
+              <mat-icon>check</mat-icon>Accept
+          </button> -->
 
 
       </mat-card>

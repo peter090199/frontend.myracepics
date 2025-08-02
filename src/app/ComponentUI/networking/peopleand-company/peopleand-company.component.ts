@@ -43,9 +43,10 @@ export class PeopleandCompanyComponent implements OnInit {
 ngOnInit(): void {
   if (this.active) {
     this.page = 1;
-    this.dataList = [];
-    this.getPeopleyoumayknow();
-    this.getPeopleRecentActivity(); // Load initial data
+     this.dataList = [];
+     this.getPeopleyoumayknow();
+   //  this.getPeopleRecentActivity(); 
+     //this.loadStatic();
   }
 }
 
@@ -54,14 +55,16 @@ onScroll(event: any): void {
 
   if (scrollTop + clientHeight >= scrollHeight - 100 && !this.isLoading && this.hasMoreData) {
     this.getPeopleRecentActivity(); // Load next page
+    //this.loadStatic();
   }
 }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['active']?.currentValue) {
       // this.loadStatic();
-      this.getPeopleyoumayknow();
-      this.getPeopleRecentActivity();
+        this.getPeopleyoumayknow();
+        this.getPeopleRecentActivity();
+      //  this.loadStatic();
     }
   }
 
@@ -279,7 +282,7 @@ getPeopleRecentActivity(): void {
     next: (res) => {
       const newData = res.data.map((person: any) => ({
         ...person,
-        follow_status: person.follow_status || 'none',
+        follow_status: person.follow_status || 'not_following',
         follow_id: null
       }));
 
@@ -297,26 +300,7 @@ getPeopleRecentActivity(): void {
   });
 }
 
-    getPeopleRecentActivityxxxx(): void {
-    this.currentUserCode = this.authService.getAuthCode();
-
-    this.clientsService.getPeopleRecentActivity().subscribe({
-      next: (res) => {
-        this.peopleRecentActivity = res.data.map((person: any) => ({
-          ...person,
-          follow_status: person.follow_status || 'none',
-          follow_id: null 
-        }));
-        this.cnt = res.count;
-        this.loaded.emit();
-      },
-      error: (err) => {
-        console.error('Error loading suggestions:', err);
-        this.alert.toastrError('❌ Failed to load suggestions.');
-      }
-    });
-  }
-
+ 
 
   recentActivities = [
   {
@@ -344,13 +328,13 @@ getPeopleRecentActivity(): void {
     });
   }
 
-  AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
+ AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
   if (!code) {
     this.alert.toastrWarning('⚠️ No user code provided.');
     return;
   }
-  const currentStatus = follow_status || 'none';
 
+  const currentStatus = follow_status || 'none';
   let confirmMessage = '';
   let successAction = '';
 
@@ -371,35 +355,29 @@ getPeopleRecentActivity(): void {
 
   this.alert.popupWarning(fullName, confirmMessage).then((result) => {
     if (result.value) {
-      const action$ =
-        currentStatus === 'accepted'
-          ? this.profile.Unfollow(id)
-          : this.profile.AddFollow(code);
-      
+      const action$ = currentStatus === 'accepted'
+        ? this.profile.Unfollow(id)
+        : this.profile.AddFollow(code);
+
       action$.subscribe({
         next: (res: any) => {
           if (res.status === true || res.success === true) {
             this.alert.toastrSuccess(successAction);
-             follow_status = res.follow_status || 'not_following';
-                this.getPeopleyoumayknow();
-                this.getPeopleRecentActivity();
+            // ✅ Automatically refresh the data
+            this.getPeopleRecentActivity();
           } else {
             this.alert.toastrError(res.message || 'Action failed.');
           }
-
-           this.getPeopleyoumayknow();
-           this.getPeopleRecentActivity();
         },
         error: (err) => {
           this.alert.toastrError(err.error?.message || 'Something went wrong.');
           console.error(err);
         }
       });
-
-    
     }
   });
 }
+
 
   // AddConnect(code: string, fullName: string, follow_status: string,id: number): void {
   //   if (!code) {
