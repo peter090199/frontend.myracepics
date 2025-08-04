@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild,AfterViewInit, Inject, ElementRef  } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, Inject, ElementRef } from '@angular/core';
 import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
-import {FormBuilder,FormGroup,FormArray,Validators,FormControl} from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { ProfileService } from 'src/app/services/Profile/profile.service';
 import { MatHorizontalStepper } from '@angular/material/stepper/stepper';
@@ -17,9 +17,7 @@ import { AddEmploymentUiComponent } from '../ProfessionalDev/add-employment-ui/a
 import { AddCertificateUiComponent } from '../ProfessionalDev/add-certificate-ui/add-certificate-ui.component';
 import { ProfessionalService } from 'src/app/services/SharedServices/professional.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import {Observable} from 'rxjs';
-
-import {startWith, map} from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { AddEditEducationDialogComponent } from '../ProfessionalDev/Edit/add-edit-education-dialog/add-edit-education-dialog.component';
 import { AddEditSeminarComponent } from '../ProfessionalDev/Edit/add-edit-seminar/add-edit-seminar.component';
 import { AddEditTrainingComponent } from '../ProfessionalDev/Edit/add-edit-training/add-edit-training.component';
@@ -28,6 +26,7 @@ import { AddEditWorkExprienceComponent } from '../ProfessionalDev/Edit/add-edit-
 import { AddEditSkillsComponent } from '../ProfessionalDev/Edit/add-edit-skills/add-edit-skills.component';
 import { AddEditLanguageComponent } from '../ProfessionalDev/Edit/add-edit-language/add-edit-language.component';
 import { ViewLanguageUIComponent } from '../Languange/view-language-ui/view-language-ui.component';
+
 
 
 /**
@@ -47,23 +46,23 @@ export interface User2 {
   templateUrl: './user-cv.component.html',
   styleUrls: ['./user-cv.component.css']
 })
-export class UserCVComponent implements AfterViewInit  {
+export class UserCVComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild(MatAccordion) accordion: MatAccordion;
   @ViewChild('stepper') stepper: MatHorizontalStepper;
   progressValue: number = 0;
-  
+
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
-  summaryFormGroup:FormGroup;
+  summaryFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
-  
+
   formEducation: any[] = [];
-  formSeminar: any[]= [];
-  formTraining: any[]= [];
-  formCertificate: any[]= [];
-  formWorkExperience: any[]= [];
-  formSkills: any[]= [];
+  formSeminar: any[] = [];
+  formTraining: any[] = [];
+  formCertificate: any[] = [];
+  formWorkExperience: any[] = [];
+  formSkills: any[] = [];
 
 
   formSkillss = [
@@ -116,6 +115,7 @@ export class UserCVComponent implements AfterViewInit  {
     this.summaryFormGroup.valueChanges.subscribe(() => {
       this.updateProgress();
     });
+    this.loadSkills();
   }
   updateProgress() {
     const totalSteps = 4; // Total steps in your stepper
@@ -134,12 +134,12 @@ export class UserCVComponent implements AfterViewInit  {
 
     return filledSteps;
   }
-  
-  constructor(private formBuilder: FormBuilder,private userService:ProfileService,
-              private cvService:CurriculumVitaeService,
-              private notificationService:NotificationsService,private router:Router,private datePipe:DatePipe,
-              private dialog:MatDialog, private passDataServices:ProfessionalService,private alert:NotificationsService,
-              private profileService: ProfessionalService,
+
+  constructor(private formBuilder: FormBuilder, private userService: ProfileService,
+    private cvService: CurriculumVitaeService,
+    private notificationService: NotificationsService, private router: Router, private datePipe: DatePipe,
+    private dialog: MatDialog, private passDataServices: ProfessionalService, private alert: NotificationsService,
+    private profileService: ProfessionalService, private educacationServices: CurriculumVitaeService,
   ) {
     this.countryControl1.valueChanges.subscribe(value => {
       this.filteredCountries1 = this.filterCountries(value);
@@ -151,353 +151,467 @@ export class UserCVComponent implements AfterViewInit  {
 
   }
 
-
-loadEducationData() {
-  this.formEducation = this.profileService.getDataEducation();
-
-}
-
-loadTrainingData() {
-  this.formTraining = this.profileService.getDataTraining();
-
-}
-
-loadSeminarData() {
-  this.formSeminar = this.profileService.getDataSeminar();
-}
-
-loadCertificateData() {
-  this.formCertificate = this.profileService.getDataCertificate();
-
-}
-
-loadWorkExperienceData() {
-  this.formWorkExperience = this.profileService.getDataEmployment();
-
-}
-loadSkillsData() {
-  this.formSkills = this.profileService.getSkills();
-}
+  loadSkills() {
+    this.educacationServices.getSkills().subscribe({
+      next: (res) => {
+        if (res.success == true) {
+          this.formSkills = res.data;
+          console.log(this.formSkills)
+        } else {
+          this.alert.toastrWarning(res.message);
+        }
+      },
+      error: (err) => {
+        //  console.error('API error:', err);
+      },
+    });
+  }
 
 
-formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+  loadEducationData() {
+    this.educacationServices.getEducationsByCode().subscribe({
+      next: (res) => {
+        if (res.success == true) {
+          this.formEducation = res.data;
+        } else {
+          this.alert.toastrWarning(res.message);
+        }
+      },
+      error: (err) => {
+        //  console.error('API error:', err);
+      },
+    });
+  }
 
 
-editSeminar(index: number): void {
-  const Edit = this.formSeminar[index];
-  console.log(Edit)
-  const dialogRef = this.dialog.open(AddEditSeminarComponent, {
-    width: '500px',
-    data: Edit, // Pass the specific education entry as data
+  loadTrainingData() {
+    this.formTraining = this.profileService.getDataTraining();
+
+  }
+
+  loadSeminarData() {
+    this.formSeminar = this.profileService.getDataSeminar();
+  }
+
+  loadCertificateData() {
+    this.formCertificate = this.profileService.getDataCertificate();
+
+  }
+
+  loadWorkExperienceData() {
+    this.formWorkExperience = this.profileService.getDataEmployment();
+
+  }
+  loadSkillsData() {
+    this.formSkills = this.profileService.getSkills();
+  }
+
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+
+  editSeminar(index: number): void {
+    const Edit = this.formSeminar[index];
+    console.log(Edit)
+    const dialogRef = this.dialog.open(AddEditSeminarComponent, {
+      width: '500px',
+      data: Edit, // Pass the specific education entry as data
+
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadSeminarData();
+      }
+    });
+  }
+
+  editEducation(educ: any): void {
+    const dialogRef = this.dialog.open(AddEditEducationDialogComponent, {
+      width: '600px',
+      data: educ,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadEducationData();
+      }
+    });
+  }
+
+  editTraining(index: number): void {
+    const Edit = this.formTraining[index];
+    console.log(Edit)
+    const dialogRef = this.dialog.open(AddEditTrainingComponent, {
+      width: '500px',
+      data: Edit, // Pass the specific education entry as data
+
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadSeminarData();
+      }
+    });
+  }
+  editCertificate(index: number): void {
+    const Edit = this.formCertificate[index];
+    const dialogRef = this.dialog.open(AddEditCertificateComponent, {
+      width: '500px',
+      data: Edit, // Pass the specific education entry as data
+
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadCertificateData();
+      }
+    });
+  }
+
+
+  editWorkexperience(index: number): void {
+    const Edit = this.formWorkExperience[index];
+    console.log(Edit)
+    const dialogRef = this.dialog.open(AddEditWorkExprienceComponent, {
+      width: '500px',
+      data: Edit, // Pass the specific education entry as data
+
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadWorkExperienceData();
+      }
+    });
+  }
+
+  // Edit a skill
+  editSkills(index: number): void {
+    const data = this.formSkills[index];
+    const dialogRef = this.dialog.open(AddEditSkillsComponent, {
+      width: '500px',
+      data: data
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadSkillsData(); // Update the skill with the edited value
+      }
+    });
+  }
+
+
+  isLoading: boolean = false;
+  removeEducation(education: any): void {
+
+    this.alert.popupWarning(education.highest_education, " " + "Are you sure to delete this education?").then((result) => {
+      if (result.value) {
+        this.isLoading = true;
+        this.educacationServices.deleteEduc(education.id).subscribe({
+          next: (res) => {
+            if (res.success === true) {
+              this.alert.toastrSuccess(res.message);
+              this.isLoading = false;
+              this.loadEducationData();
+            }
+            else {
+              this.alert.toastrError(res.message);
+              this.isLoading = false;
+            }
+
+          },
+          error: (error) => {
+            this.alert.toastrError(error.error);
+            this.isLoading = false;
+          }
+
+        });
+      }
+
+
+    });
+
+  }
+
+  removeSeminar(index: number) {
+    this.alert.toastrSuccess("Successfuly Deleted!")
+    this.formSeminar.splice(index, 1);
+
+  }
+  removeTraining(index: number) {
+    this.alert.toastrSuccess("Successfuly Deleted!")
+    this.formTraining.splice(index, 1);
+  }
+
+  removeCertificate(index: number) {
+    this.alert.toastrSuccess("Successfuly Deleted!")
+    this.formCertificate.splice(index, 1);
+
+  }
+  removeWorkExp(index: number) {
+    this.alert.toastrSuccess("Successfuly Deleted!")
+    this.formWorkExperience.splice(index, 1);
+  }
+
   
-  });
+removeSkills(data:any):void{
 
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.loadSeminarData();
-    }
-  });
-}
+    this.alert.popupWarning(data.skills," "+"Are you sure to delete this skill?").then((result) => {
+      if (result.value) 
+      {
+        this.educacationServices.deleteSkills(data.id).subscribe({
+            next:(res)=>{
+              if(res.success === true)
+                {
+                  this.alert.toastrSuccess(res.message);
+                  this.isLoading = false;
+                  
+                }
+                else{
+                  this.alert.toastrError(res.message);
+                  this.isLoading = false;
+                }
+                 this.loadSkills();
+               
+            },
+            error:(error)=>{
+              this.alert.toastrError(error.error);
+              this.isLoading = false;
+            }
 
-editEducation(index: number): void {
-  const educationToEdit = this.formEducation[index];
-  console.log(educationToEdit)
-  const dialogRef = this.dialog.open(AddEditEducationDialogComponent, {
-    width: '600px',
-    data: educationToEdit, // Pass the specific education entry as data
-  
-  });
-
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.loadEducationData();
-    }
-  });
-}
-
-editTraining(index: number): void {
-  const Edit = this.formTraining[index];
-  console.log(Edit)
-  const dialogRef = this.dialog.open(AddEditTrainingComponent, {
-    width: '500px',
-    data: Edit, // Pass the specific education entry as data
-  
-  });
-
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.loadSeminarData();
-    }
-  });
-}
-editCertificate(index: number): void {
-  const Edit = this.formCertificate[index];
-  const dialogRef = this.dialog.open(AddEditCertificateComponent, {
-    width: '500px',
-    data: Edit, // Pass the specific education entry as data
-  
-  });
-
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.loadCertificateData();
-    }
-  });
-}
+        });
+         this.loadSkills();
+      }
 
 
-editWorkexperience(index: number): void {
-  const Edit = this.formWorkExperience[index];
-  console.log(Edit)
-  const dialogRef = this.dialog.open(AddEditWorkExprienceComponent, {
-    width: '500px',
-    data: Edit, // Pass the specific education entry as data
-  
-  });
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.loadWorkExperienceData();
-    }
-  });
-}
-
- // Edit a skill
- editSkills(index: number): void {
-  const Edit = this.formSkills[index];
-  const dialogRef = this.dialog.open(AddEditSkillsComponent, {
-    width: '500px',
-    data: Edit
-  });
-
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.loadSkillsData(); // Update the skill with the edited value
-    }
-  });
-}
-
-removeEducation(index: number) {
-  this.alert.toastrSuccess("Successfuly Deleted!")
-  this.formEducation.splice(index, 1);
-
-}
-removeSeminar(index: number) {
-  this.alert.toastrSuccess("Successfuly Deleted!")
-  this.formSeminar.splice(index, 1);
+    });
   
 }
-removeTraining(index: number) {
-  this.alert.toastrSuccess("Successfuly Deleted!")
-  this.formTraining.splice(index, 1);
-}
+  // removeSkills(id: number): void {
+  //   if (!confirm('Are you sure you want to delete this language?')) return;
 
-removeCertificate(index: number) {
-  this.alert.toastrSuccess("Successfuly Deleted!")
-  this.formCertificate.splice(index, 1);
- 
-}
-removeWorkExp(index: number) {
-  this.alert.toastrSuccess("Successfuly Deleted!")
-  this.formWorkExperience.splice(index, 1);
-}
-removeSkills(index: number) {
-  this.alert.toastrSuccess("Successfuly Deleted!")
-  this.formSkills.splice(index, 1);
-}
+  //   this.isDeleting = true;
 
- userData:any;
- error: any;
- familyName:string="";
- lname:string="";
- fname:string="";
- email:string="";
- contact_no:string="";
- profession:string="";
- progressPercentage = 0;
+  //   this.languageService.deleteLanguage(id).subscribe({
+  //     next: () => {
+  //       this.formLanguage = this.formLanguage.filter((lang: { id: number; }) => lang.id !== id);
+  //       this.isDeleting = false;
+  //     },
+  //     error: err => {
+  //       console.error('Failed to delete language:', err);
+  //       this.isDeleting = false;
+  //     }
+  //   });
+  // }
 
- isEligible: boolean = false;
- searchCtrl = new FormControl('');
+  userData: any;
+  error: any;
+  familyName: string = "";
+  lname: string = "";
+  fname: string = "";
+  email: string = "";
+  contact_no: string = "";
+  profession: string = "";
+  progressPercentage = 0;
+
+  isEligible: boolean = false;
+  searchCtrl = new FormControl('');
 
 
 
-formData: any=[];
+  formData: any = [];
 
-country: any[] = [];
-selectedCountry: string;
+  country: any[] = [];
+  selectedCountry: string;
 
 
-selectedValue: string = ''; 
-countries: { name: string }[] = [
-  { name: 'USA' }, { name: 'Canada' }, { name: 'Russia' }, { name: 'Kazakhstan' }, { name: 'Egypt' },
-  { name: 'South Africa' }, { name: 'Greece' }, { name: 'Netherlands' }, { name: 'Belgium' },
-  { name: 'France' }, { name: 'Spain' }, { name: 'Hungary' }, { name: 'Italy' }, { name: 'Romania' },
-  { name: 'Switzerland' }, { name: 'Austria' }, { name: 'UK' }, { name: 'Denmark' }, { name: 'Sweden' },
-  { name: 'Norway' }, { name: 'Poland' }, { name: 'Germany' }, { name: 'Mexico' }, { name: 'Argentina' },
-  { name: 'Brazil' }, { name: 'Chile' }, { name: 'Colombia' }, { name: 'Venezuela' }, { name: 'Malaysia' },
-  { name: 'Australia' }, { name: 'Indonesia' }, { name: 'Philippines' }, { name: 'New Zealand' },
-  { name: 'Singapore' }, { name: 'Thailand' }, { name: 'Japan' }, { name: 'South Korea' },
-  { name: 'Vietnam' }, { name: 'China' }, { name: 'Turkey' }, { name: 'India' }, { name: 'Pakistan' },
-  { name: 'Afghanistan' }, { name: 'Sri Lanka' }, { name: 'Myanmar' }, { name: 'Iran' }, { name: 'Morocco' },
-  { name: 'Algeria' }, { name: 'Tunisia' }, { name: 'Libya' }, { name: 'Gambia' }, { name: 'Senegal' },
-  { name: 'Nigeria' }, { name: 'Ethiopia' }, { name: 'Kenya' }, { name: 'Tanzania' }, { name: 'Uganda' },
-  { name: 'Zambia' }, { name: 'Zimbabwe' }, { name: 'Faroe Islands' }, { name: 'Portugal' },
-  { name: 'Luxembourg' }, { name: 'Ireland' }, { name: 'Iceland' }, { name: 'Albania' }, { name: 'Malta' },
-  { name: 'Cyprus' }, { name: 'Finland' }, { name: 'Lithuania' }, { name: 'Latvia' }, { name: 'Estonia' },
-  { name: 'Ukraine' }, { name: 'Croatia' }, { name: 'Slovenia' }, { name: 'Bosnia and Herzegovina' },
-  { name: 'North Macedonia' }, { name: 'Czech Republic' }, { name: 'Slovakia' }, { name: 'Liechtenstein' },
-  { name: 'UAE' }, { name: 'Israel' }, { name: 'Bahrain' }, { name: 'Qatar' }, { name: 'Bhutan' },
-  { name: 'Mongolia' }, { name: 'Nepal' }, { name: 'Tajikistan' }, { name: 'Turkmenistan' },
-  { name: 'Azerbaijan' }, { name: 'Georgia' }, { name: 'Kyrgyzstan' }, { name: 'Uzbekistan' }
-];
+  selectedValue: string = '';
+  countries: { name: string }[] = [
+    { name: 'USA' }, { name: 'Canada' }, { name: 'Russia' }, { name: 'Kazakhstan' }, { name: 'Egypt' },
+    { name: 'South Africa' }, { name: 'Greece' }, { name: 'Netherlands' }, { name: 'Belgium' },
+    { name: 'France' }, { name: 'Spain' }, { name: 'Hungary' }, { name: 'Italy' }, { name: 'Romania' },
+    { name: 'Switzerland' }, { name: 'Austria' }, { name: 'UK' }, { name: 'Denmark' }, { name: 'Sweden' },
+    { name: 'Norway' }, { name: 'Poland' }, { name: 'Germany' }, { name: 'Mexico' }, { name: 'Argentina' },
+    { name: 'Brazil' }, { name: 'Chile' }, { name: 'Colombia' }, { name: 'Venezuela' }, { name: 'Malaysia' },
+    { name: 'Australia' }, { name: 'Indonesia' }, { name: 'Philippines' }, { name: 'New Zealand' },
+    { name: 'Singapore' }, { name: 'Thailand' }, { name: 'Japan' }, { name: 'South Korea' },
+    { name: 'Vietnam' }, { name: 'China' }, { name: 'Turkey' }, { name: 'India' }, { name: 'Pakistan' },
+    { name: 'Afghanistan' }, { name: 'Sri Lanka' }, { name: 'Myanmar' }, { name: 'Iran' }, { name: 'Morocco' },
+    { name: 'Algeria' }, { name: 'Tunisia' }, { name: 'Libya' }, { name: 'Gambia' }, { name: 'Senegal' },
+    { name: 'Nigeria' }, { name: 'Ethiopia' }, { name: 'Kenya' }, { name: 'Tanzania' }, { name: 'Uganda' },
+    { name: 'Zambia' }, { name: 'Zimbabwe' }, { name: 'Faroe Islands' }, { name: 'Portugal' },
+    { name: 'Luxembourg' }, { name: 'Ireland' }, { name: 'Iceland' }, { name: 'Albania' }, { name: 'Malta' },
+    { name: 'Cyprus' }, { name: 'Finland' }, { name: 'Lithuania' }, { name: 'Latvia' }, { name: 'Estonia' },
+    { name: 'Ukraine' }, { name: 'Croatia' }, { name: 'Slovenia' }, { name: 'Bosnia and Herzegovina' },
+    { name: 'North Macedonia' }, { name: 'Czech Republic' }, { name: 'Slovakia' }, { name: 'Liechtenstein' },
+    { name: 'UAE' }, { name: 'Israel' }, { name: 'Bahrain' }, { name: 'Qatar' }, { name: 'Bhutan' },
+    { name: 'Mongolia' }, { name: 'Nepal' }, { name: 'Tajikistan' }, { name: 'Turkmenistan' },
+    { name: 'Azerbaijan' }, { name: 'Georgia' }, { name: 'Kyrgyzstan' }, { name: 'Uzbekistan' }
+  ];
 
   homeFilteredOptions: Observable<{ name: string }[]>;
   currentFilteredOptions: Observable<{ name: string }[]>;
 
   countryControl1 = new FormControl();
   countryControl2 = new FormControl();
-  
+
   filteredCountries1: { name: string }[] = this.countries;
   filteredCountries2: { name: string }[] = this.countries;
-  
-isImageSelected: boolean = false;
 
-ngOnInit(): void {
-  this.initializeFormGroups();
+  isImageSelected: boolean = false;
 
-   this.firstFormGroup.get('date_birth')?.valueChanges.subscribe(() => {
-    this.validateAge();
-  });
-  
-  this.loadProfile1();
-  this.loadProfile2();
+  ngOnInit(): void {
+    this.initializeFormGroups();
 
-  this.LoadEducationData();
-  this.loadSeminarData();
-}
+    this.firstFormGroup.get('date_birth')?.valueChanges.subscribe(() => {
+      this.validateAge();
+    });
 
+    this.loadProfile1();
+    this.loadProfile2();
 
-displayFn(user: User): string {
-  return user && user.name ? user.name : '';
-}
-
-displayFn2(user: User): string {
-  return user && user.name ? user.name : '';
-}
-
-private filterCountries(value: string): { name: string }[] {
-  const filterValue = value.toLowerCase();
-  return this.countries.filter(country => country.name.toLowerCase().includes(filterValue));
-}
-
-// private _filterCountries(value: any, countries: { name: string }[]): { name: string }[] {
-//   console.log('Filtering value:', value); // Debugging line
-//   if (typeof value === 'string') {
-//     const filterValue = value.toLowerCase();
-//     return countries.filter(option =>
-//       option.name.toLowerCase().includes(filterValue)
-//     );
-//   }
-//   return [];
-// }
-
-
-// Function to check if a field is valid
-isFieldValid(field: string) {
-  const control = this.secondFormGroup.get(field);
-  return control?.valid || control?.touched;
-}
-
-
-resetSearch(): void {
-  this.selectedValue = '';  // Clear the selected value
-  //this.filteredOptions = [...this.allOptions];  // Reset the filtered options to show all
-}
-
-validateAge(): void {
-  const dateOfBirth = this.firstFormGroup.get('date_birth')?.value;
-
-  if (!dateOfBirth) {
-    this.isEligible = false;
-    return;
+    this.loadEducationData();
+    this.loadSkills();
+    this.loadSeminarData();
   }
 
-  const today = new Date();
-  const dob = new Date(dateOfBirth);
-  let age = today.getFullYear() - dob.getFullYear();
-  const monthDiff = today.getMonth() - dob.getMonth();
 
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-    age--;
+  displayFn(user: User): string {
+    return user && user.name ? user.name : '';
   }
 
-  this.isEligible = age >= 18;
-}
+  displayFn2(user: User): string {
+    return user && user.name ? user.name : '';
+  }
 
 
+  filterCountries(value: string): any[] {
+    const filterValue = value?.toLowerCase() || '';
+    return this.countries.filter(country =>
+      country.name.toLowerCase().includes(filterValue)
+    );
+  }
+  // private _filterCountries(value: any, countries: { name: string }[]): { name: string }[] {
+  //   console.log('Filtering value:', value); // Debugging line
+  //   if (typeof value === 'string') {
+  //     const filterValue = value.toLowerCase();
+  //     return countries.filter(option =>
+  //       option.name.toLowerCase().includes(filterValue)
+  //     );
+  //   }
+  //   return [];
+  // }
 
-loadProfile1(): void {
-  this.userService.getProfileByUserOnly().subscribe({
-    next: (res) => {
-      if (res.success) {
-        const profile = res.message[0];
 
-        this.firstFormGroup.patchValue({
-          fname: profile.fname,
-          lname: profile.lname,
-          profession: profile.profession,
-          contact_no: profile.contact_no,
-          email: profile.email,
-        });
-        this.previewUrl = profile.photo_pic; 
-        //this.loadProfile2();
-        this.validateAge();
-      }
-    },
-    error: (err) => {
-      console.error('Failed to load profile:', err);
+  // Function to check if a field is valid
+  isFieldValid(field: string) {
+    const control = this.secondFormGroup.get(field);
+    return control?.valid || control?.touched;
+  }
+
+
+  resetSearch(): void {
+    this.selectedValue = '';  // Clear the selected value
+    //this.filteredOptions = [...this.allOptions];  // Reset the filtered options to show all
+  }
+
+  validateAge(): void {
+    const dateOfBirth = this.firstFormGroup.get('date_birth')?.value;
+
+    if (!dateOfBirth) {
+      this.isEligible = false;
+      return;
     }
-  });
-}
 
-getFilenameFromPath(path: any): string {
-  return path.split('/').pop() || '';
-}
+    const today = new Date();
+    const dob = new Date(dateOfBirth);
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
 
-loadProfile2(): void {
-  this.userService.getProfileByBasicInfo().subscribe({
-    next: (res) => {
-      if (res.success) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    this.isEligible = age >= 18;
+  }
+
+
+
+  loadProfile1(): void {
+    this.userService.getProfileByUserOnly().subscribe({
+      next: (res) => {
+        if (res.success) {
+          const profile = res.message[0];
+
+          this.firstFormGroup.patchValue({
+            fname: profile.fname,
+            lname: profile.lname,
+            profession: profile.profession,
+            contact_no: profile.contact_no,
+            email: profile.email,
+          });
+          this.previewUrl = profile.photo_pic;
+          this.loadProfile2();
+          this.validateAge();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load profile:', err);
+      }
+    });
+  }
+
+  getFilenameFromPath(path: any): string {
+    return path.split('/').pop() || '';
+  }
+
+  loadProfile2(): void {
+    this.userService.getProfileByBasicInfo().subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.validateAge();
           const profile = res.data;
-        const rawPath = res.data.photo_pic;
-      
-        this.previewUrl = profile.photo_pic; 
-        console.log(this.previewUrl)
-      // Try to extract valid image URL if path is malformed
-      const urlMatch = rawPath.match(/https?:\/\/[^\s]+/);
-      this.previewUrl = urlMatch ? urlMatch[0] : null;
-      this.filename = this.getFilenameFromPath(this.previewUrl);
-          
-      
-        this.firstFormGroup.patchValue({
-          contact_visibility: profile.contact_visibility,
-          email_visibility: profile.email_visibility,
-          date_birth: new Date(profile.date_birth),
-        });
-      
-        this.validateAge();
+          const rawPath = res.data.photo_pic;
+
+          this.previewUrl = profile.photo_pic;
+          console.log(this.previewUrl)
+          // Try to extract valid image URL if path is malformed
+          const urlMatch = rawPath.match(/https?:\/\/[^\s]+/);
+          this.previewUrl = urlMatch ? urlMatch[0] : null;
+          this.filename = this.getFilenameFromPath(this.previewUrl);
+
+
+          this.firstFormGroup.patchValue({
+            contact_visibility: profile.contact_visibility,
+            email_visibility: profile.email_visibility,
+            date_birth: new Date(profile.date_birth),
+          });
+
+          //HOME LOCATION
+          this.countryControl1.setValue(profile.home_country);
+          this.countryControl2.setValue(profile.current_location);
+
+          this.secondFormGroup.patchValue({
+            home_state: profile.home_state || '',
+            current_state: profile.current_state || '',
+          });
+          this.summaryFormGroup.patchValue({
+            summary: profile.summary || '',
+          });
+
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load profile:', err);
       }
-    },
-    error: (err) => {
-      console.error('Failed to load profile:', err);
-    }
-  });
-}
+    });
+  }
 
   autoTicks = false;
   disabled = false;
@@ -529,7 +643,7 @@ loadProfile2(): void {
     // Calculate percentage
     this.percentage = (filledFields / fields.length) * 100;
     this.displayPercentage = `${this.percentage}%`;
- }
+  }
 
 
 
@@ -538,7 +652,7 @@ loadProfile2(): void {
   //   const currentIndex = event.selectedIndex + 1;
   //   this.progressPercentage = (currentIndex / stepCount) * 100;
   // }
-  label:any;
+  label: any;
   educationStatusOptions = [
     { value: 'graduate', label: 'Graduate' },
     { value: 'undergraduate', label: 'Undergraduate' },
@@ -546,7 +660,7 @@ loadProfile2(): void {
   ];
 
 
- private DisplayEmail(): void {
+  private DisplayEmail(): void {
     this.userService.getProfileByEmail().subscribe(
       (profile) => {
         // Assuming the profile contains an email property
@@ -560,26 +674,26 @@ loadProfile2(): void {
 
   private initializeFormGroups(): void {
     this.firstFormGroup = this.formBuilder.group({
-        fname:['',  Validators.required],
-        lname:['',  Validators.required],
-        profession:['',  Validators.required],
-        contact_no:['',  Validators.required],
-        email:['',  Validators.required],
-        contact_visibility: [false],
-        email_visibility: [false],
-        dob_visibility: [false],
-        date_birth: ['', Validators.required],
-            
+      fname: ['', Validators.required],
+      lname: ['', Validators.required],
+      profession: ['', Validators.required],
+      contact_no: ['', Validators.required],
+      email: ['', Validators.required],
+      contact_visibility: [false],
+      email_visibility: [false],
+      dob_visibility: [false],
+      date_birth: ['', Validators.required],
+
     });
     this.secondFormGroup = this.formBuilder.group({
-     // home_country: ['', Validators.required],
-     // current_location: ['', Validators.required],
+      // home_country: ['', Validators.required],
+      // current_country: ['', Validators.required],
       home_state: ['', Validators.required],
       current_state: ['', Validators.required],
     });
     this.summaryFormGroup = this.formBuilder.group({
       summary: ['', Validators.required],
-    
+
     });
 
     this.thirdFormGroup = this.formBuilder.group({
@@ -591,7 +705,7 @@ loadProfile2(): void {
       certificates: this.formBuilder.array([]), // Empty FormArray for certificates
     });
   }
- 
+
 
   onToggleChange(event: any, controlName: string): void {
     const toggleValue = event.checked ? 1 : 0; // 1 for Hide, 0 for Show
@@ -632,12 +746,12 @@ loadProfile2(): void {
   createSkills(): FormArray {
     const formData = this.passDataServices.getSkills();
     const skillsArray = this.formBuilder.array([]);
-  
+
     if (Array.isArray(formData) && formData.length > 0) {
       formData.forEach((data) => {
         skillsArray.push(
           this.formBuilder.group({
-               data
+            data
           })
         );
       });
@@ -647,8 +761,8 @@ loadProfile2(): void {
     }
     return skillsArray;
   }
-  
-  
+
+
   // Create a new education FormGroup
   createEducation(): FormArray {
     const formData = this.passDataServices.getDataEducation();
@@ -698,23 +812,23 @@ loadProfile2(): void {
     });
   }
 
-//employment
-createEmployment(): FormGroup {
-  return this.formBuilder.group({
-    company_name: ['', Validators.required],
-    position: ['', Validators.required],
-    job_description: ['', Validators.required],
-    date_completed: ['', Validators.required],
-  });
-}
-//employment
-createCertificate(): FormGroup {
-  return this.formBuilder.group({
-    certificate_title: ['', Validators.required],
-    certificate_provider: ['', Validators.required],
-    date_completed: ['', Validators.required],
-  });
-}
+  //employment
+  createEmployment(): FormGroup {
+    return this.formBuilder.group({
+      company_name: ['', Validators.required],
+      position: ['', Validators.required],
+      job_description: ['', Validators.required],
+      date_completed: ['', Validators.required],
+    });
+  }
+  //employment
+  createCertificate(): FormGroup {
+    return this.formBuilder.group({
+      certificate_title: ['', Validators.required],
+      certificate_provider: ['', Validators.required],
+      date_completed: ['', Validators.required],
+    });
+  }
 
   // Remove capability from the FormArray
   removeItemFromArray(arrayName: 'capability', index: number) {
@@ -738,7 +852,7 @@ createCertificate(): FormGroup {
     ) as FormArray;
     formArray.removeAt(index);
   }
-//seminar
+  //seminar
   removeItemFromArray4(arrayName: 'seminar', index: number) {
     const formArray = this.thirdFormGroup.get(
       `lines.${arrayName}`
@@ -746,20 +860,20 @@ createCertificate(): FormGroup {
     formArray.removeAt(index);
   }
 
-//employment
-removeItemFromArray5(arrayName: 'employment', index: number) {
-  const formArray = this.thirdFormGroup.get(
-    `lines.${arrayName}`
-  ) as FormArray;
-  formArray.removeAt(index);
-}
-//certificate
-removeItemFromArray6(arrayName: 'certificate', index: number) {
-  const formArray = this.thirdFormGroup.get(
-    `lines.${arrayName}`
-  ) as FormArray;
-  formArray.removeAt(index);
-}
+  //employment
+  removeItemFromArray5(arrayName: 'employment', index: number) {
+    const formArray = this.thirdFormGroup.get(
+      `lines.${arrayName}`
+    ) as FormArray;
+    formArray.removeAt(index);
+  }
+  //certificate
+  removeItemFromArray6(arrayName: 'certificate', index: number) {
+    const formArray = this.thirdFormGroup.get(
+      `lines.${arrayName}`
+    ) as FormArray;
+    formArray.removeAt(index);
+  }
 
   // Getters for the FormArrays
   get capabilityArray(): FormArray {
@@ -783,42 +897,42 @@ removeItemFromArray6(arrayName: 'certificate', index: number) {
     return this.thirdFormGroup.get('lines.certificate') as FormArray;
   }
 
-    fileError: string = ''; // To store validation error messages
-    selectedFile: File | null = null;
-    previewUrl: string | null = null;
-    filename: string = "";
+  fileError: string = ''; // To store validation error messages
+  selectedFile: File | null = null;
+  previewUrl: string | null = null;
+  filename: string = "";
 
-  
-    fileData: any = null;
-  
-    onUploadPhoto(event: any): void {
-      const file = event.target.files[0];
-      if (file) {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        if (!allowedTypes.includes(file.type)) {
-          this.fileError = 'Please upload a valid image file (JPEG/PNG).';
-          return;
-        }
-        this.fileError = 'Please upload a valid image file.';
-        this.fileData = file.toString();
+
+  fileData: any = null;
+
+  onUploadPhoto(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        this.fileError = 'Please upload a valid image file (JPEG/PNG).';
+        return;
       }
+      this.fileError = 'Please upload a valid image file.';
+      this.fileData = file.toString();
     }
+  }
 
-    // onFileSelected(event: Event): void {
-    //   const input = event.target as HTMLInputElement;
-    //   if (input.files && input.files.length > 0) {
-    //     this.input.files[0];
-    //     this.firstFormGroup.patchValue({ photo_pic: file });
-    //     this.firstFormGroup.get('photo_pic')?.updateValueAndValidity();
-    //   }
-    // }
+  // onFileSelected(event: Event): void {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length > 0) {
+  //     this.input.files[0];
+  //     this.firstFormGroup.patchValue({ photo_pic: file });
+  //     this.firstFormGroup.get('photo_pic')?.updateValueAndValidity();
+  //   }
+  // }
 
 
   onUploadPhoto2(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input?.files && input.files[0]) {
       const file = input.files[0];
-      
+
       // Validate file type
       if (!file.type.startsWith('image/')) {
         this.fileError = 'Please upload a valid image file.';
@@ -858,15 +972,15 @@ removeItemFromArray6(arrayName: 'certificate', index: number) {
     this.fileError = '';
     this.isImageSelected = false;
   }
-    
-    clearPreview(): void {
-      this.previewUrl = null;
-      this.selectedFile = null;
-    }
-    
 
-  loading     : boolean = false;
-  success : boolean = true;
+  clearPreview(): void {
+    this.previewUrl = null;
+    this.selectedFile = null;
+  }
+
+
+  loading: boolean = false;
+  success: boolean = true;
 
 
   isFormArray(value: any): boolean {
@@ -884,292 +998,296 @@ removeItemFromArray6(arrayName: 'certificate', index: number) {
 
   //basic info 
 
- onClickNew(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
+  onClickNew(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
 
-  const dialogRef = this.dialog.open(AddLanguageUIComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-    //  this.getRoles(); // Refresh the table after dialog closure
-    }
-  });
-}
-viewlanguage(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
-
-  const dialogRef = this.dialog.open(ViewLanguageUIComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-    //  this.getRoles(); // Refresh the table after dialog closure
-    }
-  });
-}
-
-
-AddSkills(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
-
-  const dialogRef = this.dialog.open(AddSkillsUIComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-     if (result) {
-      this.loadSkillsData();
-    }
-  });
-}
-educationList: any[] = [];
-AddEducationxxx(): void {
-  const dialogRef = this.dialog.open(AddEducationUIComponent, {
-    width: '600px',
-    data: { educationList: this.educationList }, // Pass current education list if needed
-  });
-
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      // Update the education list with the data returned from the dialog
-      this.educationList = result;
-    }
-  });
-}
-
-AddEducation(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.width = '500px';
-  const dialogRef = this.dialog.open(AddEducationUIComponent, dialogConfig);
-
-  dialogRef.afterClosed().subscribe((formResult) => {
-    if (formResult) {
-      this.LoadEducationData();
-    }
-  });
-}
-
-AddTrainings(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
-
-  const dialogRef = this.dialog.open(AddTrainingsUiComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-     this.loadTrainingData();
-    }
-  });
-}
-
-
-AddSeminar(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
-
-  const dialogRef = this.dialog.open(AddSeminarUiComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-     this.loadSeminarData();
-    }
-  });
-}
-
-
-
-AddEmployment(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
-
-  const dialogRef = this.dialog.open(AddEmploymentUiComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      this.loadWorkExperienceData();
-    }
-  });
-}
-
-AddCertificate(): void {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.disableClose = true;
-  dialogConfig.autoFocus = true;
-  dialogConfig.width = '500px';
-
-  const dialogRef = this.dialog.open(AddCertificateUiComponent, dialogConfig);
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      this.loadCertificateData();
-    }
-  });
-}
-
-lines:any=[];
-
- saveProfile(): void {
-  if (this.firstFormGroup.invalid) {
-    this.firstFormGroup.markAllAsTouched();
-         console.warn('Form is invalid:', this.firstFormGroup.value);
-    return;
-  }
-
-  // Log the form values to console
-  const formValues = this.firstFormGroup.value;
-  const formValues2 = this.secondFormGroup.value;
-  const formValues3 = this.summaryFormGroup.value;
-
-
-
-  const formData = new FormData();
-  formData.append('fname', formValues.fname);
-  formData.append('lname', formValues.lname);
-  formData.append('profession', formValues.profession);
-  formData.append('contact_no', formValues.contact_no);
-  formData.append('email', formValues.email);
-  formData.append('contact_visibility', formValues.contact_visibility ? '1' : '0');
-  formData.append('email_visibility', formValues.email_visibility ? '1' : '0');
-  formData.append('dob_visibility', formValues.dob_visibility ? '1' : '0');
-  const formattedDate = this.datePipe.transform(formValues.date_birth, 'MM/dd/yyyy');
-  formData.append('date_birth', formattedDate || ''); 
-
-  if (this.selectedFile) {
-    formData.append('photo_pic', this.selectedFile);
-  }
-
-  formData.append('home_country',this.countryControl1.value);
-  formData.append('home_state',formValues2.home_state);
-
-  formData.append('current_location',this.countryControl2.value);
-  formData.append('current_state',formValues2.current_state);
-  formData.append('summary',formValues3.summary);
-
-  for (const pair of (formData as any).entries()) {
-    console.log(pair[0], pair[1]);
-  }
-
-  this.cvService.saveProfile(formData).subscribe({
-    next: (res) => {
-      console.log(res.success);
-        if (res.success) {
-            this.loadProfile1();
-        }
-        else
-        {
-          this.notificationService.toastrError(res.message);
-        }
-    },
-    error: (err) => {
-      console.error('❌ Save failed:', err);
-    }
-  });
-}
-
-submit() {
-  this.loading = true;
-  const language = this.passDataServices.getLanguange();
-  const skills = this.passDataServices.getSkills();
-  const education = this.passDataServices.getDataEducation();
-  const training = this.passDataServices.getDataTraining();
-  const seminar = this.passDataServices.getDataSeminar();
-  const employment = this.passDataServices.getDataEmployment();
-  const certificate = this.passDataServices.getDataCertificate();
-
-  const lines = {
-    language,
-    skills,
-    education,
-    training,
-    seminar,
-    employment,
-    certificate,
-  };
-
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    const day = String(date.getDate()).padStart(2, '0'); 
-    return `${year}-${month}-${day}`; 
-  };
-
-  
-  if (lines) {
-    // Format the dates for each section within lines
-    if (lines.training) {
-      lines.training.forEach((training: { trainingdate: string }) => {
-        training.trainingdate = formatDate(training.trainingdate);
-      });
-    }
-
-    if (lines.seminar) {
-      lines.seminar.forEach((seminar: { seminardate: string }) => {
-        seminar.seminardate = formatDate(seminar.seminardate);
-      });
-    }
-
-    if (lines.employment) {
-      lines.employment.forEach((employment: { date_completed: string }) => {
-        employment.date_completed = formatDate(employment.date_completed);
-      });
-    }
-
-    if (lines.certificate) {
-      lines.certificate.forEach((cert: { date_completed: string }) => {
-        cert.date_completed = formatDate(cert.date_completed);
-      });
-    }
-  } else {
-    console.warn('No lines data found in thirdFormGroup.');
-  }
-
-  const mergeData = {
-    ...this.firstFormGroup.getRawValue(),
-    ...this.secondFormGroup.getRawValue(),
-    ...this.summaryFormGroup.getRawValue(),
-   lines
-  };
-  mergeData.home_country = this.countryControl1.value;
-  mergeData.current_location = this.countryControl2.value;
-  mergeData.date_birth = formatDate(mergeData.date_birth);
-
-  console.log("data:", mergeData)
- if(mergeData == null)
- {
-    this.notificationService.toastrError("Error Data!");
-    return;
- }
- else{
-    this.cvService.postCV2(mergeData).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.notificationService.toastPopUp(res.message);
-          console.log(res.message)
-          this.router.navigate(['/home']);
-        } else {
-          this.notificationService.toastrError(res.message);
-        }
-        this.loading = false;
-      },
-      error: (error: any) => {
-        this.notificationService.toastrError(error?.error || 'An unexpected error occurred.');
-        this.loading = false;
-      },
+    const dialogRef = this.dialog.open(AddLanguageUIComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        //  this.getRoles(); // Refresh the table after dialog closure
+      }
     });
- }
-  
-}
+  }
 
-View(){
-  this.loadSeminarData();
-}
+  viewlanguage(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
+
+    const dialogRef = this.dialog.open(ViewLanguageUIComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        //  this.getRoles(); // Refresh the table after dialog closure
+      }
+    });
+  }
+
+
+  AddSkills(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
+
+    const dialogRef = this.dialog.open(AddSkillsUIComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadSkills();
+      }
+    });
+  }
+  educationList: any[] = [];
+  AddEducationxxx(): void {
+    const dialogRef = this.dialog.open(AddEducationUIComponent, {
+      width: '600px',
+      data: { educationList: this.educationList }, // Pass current education list if needed
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Update the education list with the data returned from the dialog
+        this.educationList = result;
+      }
+    });
+  }
+
+  AddEducation(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '500px';
+    const dialogRef = this.dialog.open(AddEducationUIComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((formResult) => {
+      if (formResult) {
+        this.LoadEducationData();
+      }
+    });
+  }
+
+  AddTrainings(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
+
+    const dialogRef = this.dialog.open(AddTrainingsUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadTrainingData();
+      }
+    });
+  }
+
+
+  AddSeminar(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
+
+    const dialogRef = this.dialog.open(AddSeminarUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadSeminarData();
+      }
+    });
+  }
+
+
+
+  AddEmployment(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
+
+    const dialogRef = this.dialog.open(AddEmploymentUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadWorkExperienceData();
+      }
+    });
+  }
+
+  AddCertificate(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '500px';
+
+    const dialogRef = this.dialog.open(AddCertificateUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadCertificateData();
+      }
+    });
+  }
+
+  lines: any = [];
+
+  saveProfile(): void {
+    if (this.firstFormGroup.invalid) {
+      this.firstFormGroup.markAllAsTouched();
+      console.warn('Form is invalid:', this.firstFormGroup.value);
+      return;
+    }
+    if (this.secondFormGroup.invalid) {
+      this.secondFormGroup.markAllAsTouched();
+      console.warn('Form is invalid:', this.secondFormGroup.value);
+      return;
+    }
+
+    // Log the form values to console
+    const formValues = this.firstFormGroup.value;
+    const formValues2 = this.secondFormGroup.value;
+    const formValues3 = this.summaryFormGroup.value;
+
+
+
+    const formData = new FormData();
+    formData.append('fname', formValues.fname);
+    formData.append('lname', formValues.lname);
+    formData.append('profession', formValues.profession);
+    formData.append('contact_no', formValues.contact_no);
+    formData.append('email', formValues.email);
+    formData.append('contact_visibility', formValues.contact_visibility ? '1' : '0');
+    formData.append('email_visibility', formValues.email_visibility ? '1' : '0');
+    formData.append('dob_visibility', formValues.dob_visibility ? '1' : '0');
+    const formattedDate = this.datePipe.transform(formValues.date_birth, 'MM/dd/yyyy');
+    formData.append('date_birth', formattedDate || '');
+
+    if (this.selectedFile) {
+      formData.append('photo_pic', this.selectedFile);
+    }
+
+    formData.append('home_country', this.countryControl1.value);
+    formData.append('home_state', formValues2.home_state);
+
+    formData.append('current_location', this.countryControl2.value);
+    formData.append('current_state', formValues2.current_state);
+    formData.append('summary', formValues3.summary);
+
+    for (const pair of (formData as any).entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    this.cvService.saveProfile(formData).subscribe({
+      next: (res) => {
+        console.log(res.success);
+        if (res.success) {
+          this.loadProfile1();
+        }
+        else {
+          this.notificationService.toastrError(res.message);
+        }
+      },
+      error: (err) => {
+        console.error('❌ Save failed:', err);
+      }
+    });
+  }
+
+  submit() {
+    this.loading = true;
+    const language = this.passDataServices.getLanguange();
+    const skills = this.passDataServices.getSkills();
+    const education = this.passDataServices.getDataEducation();
+    const training = this.passDataServices.getDataTraining();
+    const seminar = this.passDataServices.getDataSeminar();
+    const employment = this.passDataServices.getDataEmployment();
+    const certificate = this.passDataServices.getDataCertificate();
+
+    const lines = {
+      language,
+      skills,
+      education,
+      training,
+      seminar,
+      employment,
+      certificate,
+    };
+
+
+    const formatDate = (dateString: string): string => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+
+    if (lines) {
+      // Format the dates for each section within lines
+      if (lines.training) {
+        lines.training.forEach((training: { trainingdate: string }) => {
+          training.trainingdate = formatDate(training.trainingdate);
+        });
+      }
+
+      if (lines.seminar) {
+        lines.seminar.forEach((seminar: { seminardate: string }) => {
+          seminar.seminardate = formatDate(seminar.seminardate);
+        });
+      }
+
+      if (lines.employment) {
+        lines.employment.forEach((employment: { date_completed: string }) => {
+          employment.date_completed = formatDate(employment.date_completed);
+        });
+      }
+
+      if (lines.certificate) {
+        lines.certificate.forEach((cert: { date_completed: string }) => {
+          cert.date_completed = formatDate(cert.date_completed);
+        });
+      }
+    } else {
+      console.warn('No lines data found in thirdFormGroup.');
+    }
+
+    const mergeData = {
+      ...this.firstFormGroup.getRawValue(),
+      ...this.secondFormGroup.getRawValue(),
+      ...this.summaryFormGroup.getRawValue(),
+      lines
+    };
+    mergeData.home_country = this.countryControl1.value;
+    mergeData.current_location = this.countryControl2.value;
+    mergeData.date_birth = formatDate(mergeData.date_birth);
+
+    console.log("data:", mergeData)
+    if (mergeData == null) {
+      this.notificationService.toastrError("Error Data!");
+      return;
+    }
+    else {
+      this.cvService.postCV2(mergeData).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.notificationService.toastPopUp(res.message);
+            console.log(res.message)
+            this.router.navigate(['/home']);
+          } else {
+            this.notificationService.toastrError(res.message);
+          }
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.notificationService.toastrError(error?.error || 'An unexpected error occurred.');
+          this.loading = false;
+        },
+      });
+    }
+
+  }
+
+  View() {
+    this.loadSeminarData();
+  }
 
   ViewEducationData() {
 
@@ -1178,5 +1296,5 @@ View(){
   LoadEducationData(): void {
     this.loadEducationData();
   }
-  
+
 }

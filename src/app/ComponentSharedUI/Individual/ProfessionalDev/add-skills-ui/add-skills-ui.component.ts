@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { map, startWith } from 'rxjs';
@@ -6,7 +6,8 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ProfessionalService } from 'src/app/services/SharedServices/professional.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
 
 @Component({
   selector: 'app-add-skills-ui',
@@ -16,7 +17,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class AddSkillsUIComponent {
 
   constructor(private dataService: ProfessionalService,
-    private alert:NotificationsService,public dialogRef: MatDialogRef<AddSkillsUIComponent>
+    private alert:NotificationsService,public dialogRef: MatDialogRef<AddSkillsUIComponent>,
+    private cvServices: CurriculumVitaeService, @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -52,6 +54,26 @@ export class AddSkillsUIComponent {
 
    @Output() saveData = new EventEmitter<string[]>(); // Output event for Save button
 
+  btnSave:string = "Add";
+  ngOnInit(): void {
+    this.loadSkills();
+  }
+
+    loadSkills() {
+    this.cvServices.getSkills().subscribe({
+      next: (res) => {
+        if (res.success == true) {
+          this.skillsCtrl = res.data;
+        } else {
+          this.alert.toastrWarning(res.message);
+        }
+      }, 
+      error: (err) => {
+      //  console.error('API error:', err);
+      },
+    });
+  }
+
   filteredSkills = this.skillsCtrl.valueChanges.pipe(
     startWith(null),
     map((skill: string | null) =>
@@ -65,7 +87,7 @@ export class AddSkillsUIComponent {
     // Add the skill if it's not already in the list
     if (value && !this.skills.includes(value)) {
       this.skills.push(value);
-      this.passData();  // Call passData after adding a skill
+      this.save();  // Call passData after adding a skill
     }
 
     // Clear the input field after adding
@@ -102,13 +124,33 @@ export class AddSkillsUIComponent {
 //   }
 // }
 
-  passData(): void {
-    const formattedSkills = this.skills.map(skill => ({ skills: skill }));
-    console.log(formattedSkills);
-    this.dataService.setformSkills(formattedSkills);
-    this.alert.toastrSuccess("Successfully Added.");
-    this.dialogRef.close(formattedSkills);
-  }
+  // passData(): void {
+  //   const formattedSkills = this.skills.map(skill => ({ skills: skill }));
+  //   console.log(formattedSkills);
+  //   this.dataService.setformSkills(formattedSkills);
+  //   this.alert.toastrSuccess("Successfully Added.");
+  //   this.dialogRef.close(formattedSkills);
+  // }
+
+  save(): void {
+  const skills = this.skills.map(skill => ({ skills: skill })); // ✅ key should be 'skills'
+  console.log(skills);
+
+  this.cvServices.saveSkills(skills).subscribe({
+    next: (res) => {
+      if (res.success) {
+        this.alert.toastrSuccess(res.message);
+        this.resetForm();
+      } else {
+        this.alert.toastrError(res.message);
+      }
+    },
+    error: (err) => {
+      console.error('Error saving skills:', err);
+      this.alert.toastrError('Failed to save skills.');
+    }
+  });
+}
 
 
  // Reset the form: clear skills array, reset the input control

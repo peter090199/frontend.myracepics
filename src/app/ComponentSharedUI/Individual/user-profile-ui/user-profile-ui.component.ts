@@ -192,7 +192,7 @@ loadWorkExperienceData() {
 
 }
 loadSkillsData() {
-  this.formSkills = this.profileService.getSkills();
+ this.profileService.getSkills();
 }
 
 

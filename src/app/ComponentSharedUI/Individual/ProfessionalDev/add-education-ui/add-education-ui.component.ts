@@ -3,6 +3,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalService } from 'src/app/services/SharedServices/professional.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
+
 
 @Component({
   selector: 'app-add-education-ui',
@@ -27,21 +29,24 @@ export class AddEducationUIComponent implements OnInit {
   ];
 
   constructor(
-    private formBuilder: FormBuilder,
-    private dataService: ProfessionalService,
-    private alert: NotificationsService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<AddEducationUIComponent>,
-    private profileService: ProfessionalService
+      private formBuilder: FormBuilder,
+      private dataService: ProfessionalService,
+      private alert: NotificationsService,
+      @Inject(MAT_DIALOG_DATA) public data: any,
+      public dialogRef: MatDialogRef<AddEducationUIComponent>,
+      private profileService: ProfessionalService,
+      private educationService:CurriculumVitaeService
   ) {
     // Populate year dropdown (2000 to current year)
     for (let year = 2000; year <= this.currentYear; year++) {
       this.years.push(year);
     }
-    this.loadEducationData();
+   
   }
 
   ngOnInit(): void {
+    this.loadEducationData();
+
     this.educationForm = this.formBuilder.group({
       education: this.formBuilder.array([this.createEducationGroup()]),
     });
@@ -84,17 +89,32 @@ export class AddEducationUIComponent implements OnInit {
   }
 
   // Submit the form, save data, and close the dialog
-  submitForm(): void {
-    if (this.educationForm.valid) {
-      this.educationList = this.educationArray.value;
-      this.dataService.setformEducation(this.educationList); // Save to the service or database
-      this.alert.toastrSuccess('Successfully Added.');
-      this.dialogRef.close(this.educationList);
-      this.loadEducationData();
-    } else {
-      console.error('Form is invalid');
-    }
+submitForm(): void {
+  if (this.educationForm.invalid) {
+    this.educationForm.markAllAsTouched();
+    return;
   }
+   const payload = { educations: this.educationForm.value.education };
+
+  console.log(payload)
+  this.educationService.saveEducations(payload).subscribe({
+    next: (res) => {
+      if(res.success == true)
+      {
+         this.alert.toastrSuccess(res.message);
+         this.resetForm();
+      }
+      else
+      {
+         this.alert.toastrWarning(res.message);
+      }
+    },
+    error: (error) => {
+      console.error('❌ Failed to save education records:', error);
+    }
+  });
+}
+
 
   // Reset the form and initialize it with a blank entry
   resetForm(): void {

@@ -60,7 +60,7 @@
           </div>
           <!-- Language Buttons -->
           <div class="form-row">
-             <mat-form-field appearance="standard" class="form-field">
+            <mat-form-field appearance="standard" class="form-field">
               <mat-label>Profession</mat-label>
               <input matInput formControlName="profession" readonly />
             </mat-form-field>
@@ -109,8 +109,8 @@
             </mat-form-field>
 
             <!-- <mat-slide-toggle formControlName="dob_visibility">
-Hide DOB
-</mat-slide-toggle> -->
+              Hide DOB
+              </mat-slide-toggle> -->
           </div>
 
           <!-- Submit Button -->
@@ -175,7 +175,8 @@ Hide DOB
             <button mat-raised-button color="warn" matStepperPrevious>
               Back
             </button>
-            <button mat-raised-button color="primary" matStepperNext type="submit" (click)="saveProfile()">
+            <button mat-raised-button color="primary" matStepperNext type="submit" (click)="saveProfile()"
+              [disabled]="secondFormGroup.invalid">
               Save & Continue
             </button>
           </div>
@@ -220,36 +221,44 @@ Hide DOB
 
           <mat-tab-group dynamicHeight>
             <mat-tab label="Education">
-              <mat-card-header>
-                <button mat-button color="basic" class="button-field" (click)="AddEducation()">
-                  <mat-icon>add_circle</mat-icon>
-                  Add Education
-                </button>
-              </mat-card-header>
-              <div class="card-container">
-                <div *ngFor="let edu of formEducation; let i = index" class="mat-card-border">
-                  <mat-card-content>
-                    <h3> {{ edu.highest_education }}</h3>
-                    <p><strong>School Name: </strong> {{ edu.school_name }} </p>
-                    <p><strong>Start Month:</strong> {{ edu.start_month }} {{ edu.start_year }}</p>
-                    <p><strong>End Month:</strong> {{ edu.end_month }} {{ edu.end_year }}</p>
-                    <p><strong>Status:</strong> {{ edu.status }}</p>
-                  </mat-card-content>
+          <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
+          <mat-card-header>
+            <button mat-button color="basic" class="button-field" (click)="AddEducation()">
+              <mat-icon>add_circle</mat-icon>
+              Add Education
+            </button>
+          </mat-card-header>
+
+            <!-- ✅ If there is education data -->
+            <ng-container *ngIf="formEducation.length > 0; else noEducation">
+                <mat-card-content *ngFor="let edu of formEducation; let i = index" class="mat-card-border">
+                  <h3>{{ edu.highest_education }}</h3>
+                  <p><strong>School Name: </strong> {{ edu.school_name }} </p>
+                  <p><strong>Start Month:</strong> {{ edu.start_month }} {{ edu.start_year }}</p>
+                  <p><strong>End Month:</strong> {{ edu.end_month }} {{ edu.end_year }}</p>
+                  <p><strong>Status:</strong> {{ edu.status }}</p>
 
                   <div class="button-end">
-                    <button mat-icon-button color="warn" aria-label="Remove Education" (click)="removeEducation(i)">
+                    <button mat-button color="warn" aria-label="Remove Education" (click)="removeEducation(edu)">
                       <mat-icon>delete</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" aria-label="Edit Education" (click)="editEducation(i)">
+                    <!-- <button mat-button color="primary" aria-label="Edit Education" (click)="editEducation(edu)">
                       <mat-icon>edit</mat-icon>
-                    </button>
+                    </button> -->
                   </div>
-                </div>
-              </div>
-            </mat-tab>
+                </mat-card-content>
+            </ng-container>
+
+
+            <!-- ❌ No data fallback -->
+            <ng-template #noEducation>
+                  <p class="text-center" style="margin-top: 50px;"><strong>No education data found.</strong></p>
+            </ng-template>
+        </mat-tab>
 
             <mat-tab label="Skills">
+                 <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
               <mat-card-header>
                 <button mat-button color="basic" class="button-field" (click)="AddSkills()">
                   <mat-icon>add_circle</mat-icon>
@@ -258,21 +267,28 @@ Hide DOB
               </mat-card-header>
 
               <div class="card-container">
+                <ng-container *ngIf="formSkills.length > 0; else noData">
                 <div *ngFor="let data of formSkills; let i = index" class="mat-card-border">
                   <mat-card-content>
                     <p>{{ data.skills}}</p>
 
                     <div class="button-end">
-                      <button mat-icon-button color="warn" (click)="removeSkills(i)">
+                      <button mat-button color="warn"  (click)="removeSkills(data)">
                         <mat-icon>delete</mat-icon>
                       </button>
-                      <button mat-icon-button color="primary" (click)="editSkills(i)">
+                      <!-- <button mat-button color="primary" (click)="editSkills(data)">
                         <mat-icon>edit</mat-icon>
-                      </button>
+                      </button> -->
                     </div>
                   </mat-card-content>
                 </div>
+                </ng-container>
               </div>
+
+          <!-- ❌ No data fallback -->
+            <ng-template #noData>
+                  <p class="text-center" style="margin-top: 50px;"><strong>No skills data found.</strong></p>
+            </ng-template>
             </mat-tab>
 
             <mat-tab label="Seminar">
@@ -391,16 +407,16 @@ Hide DOB
           </mat-tab-group>
 
         </div>
-        <div class="button-end">
-          <button mat-raised-button color="primary" type="submit" (click)="submit()">Finish</button>
+        <div class="button-end" style="margin-top: 10px;">
+          <button mat-raised-button color="primary" type="submit" (click)="submit()">Preview and Finish</button>
         </div>
 
       </form>
+
+      
     </mat-step>
+    
   </mat-horizontal-stepper>
-
-
-
 
   <footer class="mat-footer">
     <mat-divider></mat-divider>
@@ -420,5 +436,8 @@ Hide DOB
       </div>
     </div>
   </footer>
+
+
+
 
 </div>

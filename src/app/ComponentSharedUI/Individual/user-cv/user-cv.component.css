@@ -25,7 +25,6 @@ mat-card-content {
   padding: 16px;
   font-family: Verdana,sans-serif;
   font-size: 1rem;
-  color: #555;
   line-height: 1.5;
 }
 mat-tab-group div {
@@ -255,6 +254,13 @@ mat-radio-button {
   margin-top: 5px;
   color: #3f51b5;
   font-size: 14px;
+}
+.text-center {
+  margin-top: 60px;
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+  color: gray;
 }
 
 
@@ -541,7 +547,8 @@ textarea {
   justify-content: flex-start; /* Center-align cards */
   margin: 0px; /* Add spacing around the container */
   width: 980px;
-
+  min-height: 250px; /* adjust as needed */
+  padding: 16px;
 }
 
 .mat-card-border {

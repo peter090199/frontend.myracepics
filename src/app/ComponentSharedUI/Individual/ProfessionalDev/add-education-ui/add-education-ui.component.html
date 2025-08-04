@@ -1,102 +1,90 @@
-
 <div class="button-end">
-  <button mat-button color="primary"  (click)="addEducation()" class="button-end">
+  <button mat-button color="primary" (click)="addEducation()" class="button-end">
     <mat-icon>add_circle</mat-icon>
     Add More
-</button>
+  </button>
 </div>
 
 <form [formGroup]="educationForm" (ngSubmit)="submitForm()">
   <h2 mat-dialog-title>Education</h2>
 
-    <div mat-dialog-content formArrayName="education">
-      <div
-        *ngFor="let item of educationArray.controls; let i = index"
-        [formGroupName]="i"
-       
-      >
+  <div mat-dialog-content formArrayName="education">
+    <div *ngFor="let item of educationArray.controls; let i = index" [formGroupName]="i">
+      <div class="form-row">
         <mat-form-field appearance="standard" class="full-width">
           <mat-label>Education</mat-label>
-          <input
-           required
-            matInput
-            placeholder="Highest Education"
-            formControlName="highest_education"
-          />
+          <input required matInput placeholder="Highest Education" formControlName="highest_education" />
         </mat-form-field>
-  
-        <mat-form-field appearance="standard"  class="full-width">
+      </div>
+      <div class="form-row">
+        <mat-form-field appearance="standard" class="full-width">
           <mat-label>School Name</mat-label>
-          <input
-            required
-            matInput
-            placeholder="School name"
-            formControlName="school_name"
-          />
+          <input required matInput placeholder="School name" formControlName="school_name" />
         </mat-form-field>
-        <div class="form-row">
-            <mat-form-field appearance="standard" class="form-field">
-              <mat-label>Start Month</mat-label>
-              <mat-select formControlName="start_month">
-                <mat-option *ngFor="let month of months" [value]="month">
-                  {{ month }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="standard" class="form-field">
-              <mat-label>Year Entry</mat-label>
-              <mat-select formControlName="start_year">
-                <mat-option *ngFor="let year of years" [value]="year">
-                  {{ year }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-           
-        </div>
-       
-        <div class="form-row">
-          <mat-form-field appearance="standard" class="form-field">
-            <mat-label>End Month</mat-label>
-            <mat-select formControlName="end_month">
-              <mat-option *ngFor="let month of months" [value]="month">
-                {{ month }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="standard" class="form-field">
-            <mat-label>Year End</mat-label>
-            <mat-select formControlName="end_year">
-              <mat-option *ngFor="let year of years" [value]="year">
-                {{ year }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-      
-        </div>
-       
-        <div class="form-row">
-          <mat-form-field appearance="standard" class="full-width">
-            <mat-label>Education Status</mat-label>
-            <mat-select formControlName="status">
-              <mat-option *ngFor="let option of educationStatusOptions" [value]="option.value">
-                {{ option.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          
       </div>
-        <button mat-icon-button (click)="removeItemFromArray2('education', i)" *ngIf="educationArray.length > 1">
-          <mat-icon color="warn">delete</mat-icon>
-        </button>
+      <div class="form-row">
+        <mat-form-field appearance="standard" class="form-field">
+          <mat-label>Start Month</mat-label>
+          <mat-select formControlName="start_month">
+            <mat-option *ngFor="let month of months" [value]="month">
+              {{ month }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="standard" class="form-field">
+          <mat-label>Year Entry</mat-label>
+          <mat-select formControlName="start_year">
+            <mat-option *ngFor="let year of years" [value]="year">
+              {{ year }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
       </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="standard" class="form-field">
+          <mat-label>End Month</mat-label>
+          <mat-select formControlName="end_month">
+            <mat-option *ngFor="let month of months" [value]="month">
+              {{ month }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="standard" class="form-field">
+          <mat-label>Year End</mat-label>
+          <mat-select formControlName="end_year">
+            <mat-option *ngFor="let year of years" [value]="year">
+              {{ year }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="standard" class="full-width">
+          <mat-label>Education Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let option of educationStatusOptions" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+      <button mat-icon-button (click)="removeItemFromArray2('education', i)" *ngIf="educationArray.length > 1">
+        <mat-icon color="warn">delete</mat-icon>
+      </button>
+
     </div>
-    
-    <div class="button-end">
-      <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
-      <button mat-raised-button color="primary" type="submit" >Add</button>
-    </div>
-   
-  </form>
+  </div>
+
+  <div class="button-end">
+    <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
+    <button mat-raised-button color="primary" type="submit">Add</button>
+  </div>
+
+</form>

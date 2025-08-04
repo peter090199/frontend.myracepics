@@ -1,20 +1,22 @@
-<section class="section">
-  <h2 mat-dialog-title>Skills</h2>
-  <mat-divider></mat-divider>
-
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+  </button>
+<h2 mat-dialog-title>Language</h2>
+<mat-divider></mat-divider>
+  
   <mat-form-field class="example-chip-list" appearance="standard">
-    <mat-label>Skills</mat-label>
+    <mat-label>Add Language</mat-label>
     <mat-chip-list #chipList aria-label="Language selection">
       <mat-chip
-        *ngFor="let skill of skills"
-        (removed)="remove(skill)">
-        {{skill}}
+        *ngFor="let skills of skills"
+        (removed)="remove(skills)">
+        {{skills}}
         <button matChipRemove>
           <mat-icon>cancel</mat-icon>
         </button>
       </mat-chip>
       <input
-        placeholder="Add Skills..."
+        placeholder="Add language..."
         #languageInput
         [formControl]="skillsCtrl"
         [matAutocomplete]="auto"
@@ -23,14 +25,16 @@
         (matChipInputTokenEnd)="add($event)">
     </mat-chip-list>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-      <mat-option *ngFor="let language of filteredSkills | async" [value]="language">
-        {{language}}
+      <mat-option *ngFor="let skills of filteredSkills | async" [value]="skills">
+        {{skills}}
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-
+  
+  
   <div class="button-end">
-    <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
-    <button mat-raised-button color="primary" (click)="passData()"> Add</button>
+    <!-- <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button> -->
+    <button mat-raised-button color="primary" (click)="save()"> {{btnSave}}</button>
   </div>
-</section>
+
+  

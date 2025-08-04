@@ -15,7 +15,7 @@ export class CurriculumVitaeService {
     return sessionStorage.getItem('token') || ''; // Fetch the token from localStorage or other storage
   }
 
-  
+
   private createHeaders(): HttpHeaders {
     const token = this.getAuthToken();
     return new HttpHeaders({
@@ -23,7 +23,7 @@ export class CurriculumVitaeService {
       //'Content-Type': 'application/json'
     });
   }
-  
+
 
 
   private createParams(): HttpParams {
@@ -36,7 +36,7 @@ export class CurriculumVitaeService {
       catchError(error => this.handleAuthError(error))
     );
   }
-  
+
   private handleAuthError(error: any): Observable<any> {
     if (error.status === 401) {
       console.error('Unauthorized: Please log in.');
@@ -66,19 +66,19 @@ export class CurriculumVitaeService {
   postCV2(mergedData: any): Observable<any> {
     const token = this.getAuthToken();
     const headers = new HttpHeaders({
-     'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
     return this.http.post(`${_url}profile`, mergedData, { headers });
   }
 
   postCV(payload: FormData): Observable<any> {
-    const headers = this.createHeaders(); 
+    const headers = this.createHeaders();
     return this.http.post<any>(`${_url}profile`, payload, { headers });
   }
 
   uploadCV(payload: FormData): Observable<any> {
-    const headers = this.createHeaders(); 
+    const headers = this.createHeaders();
     return this.http.post<any>(`${_url}profile_pic`, payload, { headers });
   }
 
@@ -88,7 +88,7 @@ export class CurriculumVitaeService {
   }
 
   saveProfile(formData: FormData): Observable<any> {
-    const headers = this.createHeaders(); 
+    const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveProfile`, formData, { headers });
   }
 
@@ -100,7 +100,7 @@ export class CurriculumVitaeService {
 
   submitData(formData: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post(`${_url}security`,formData, { headers });
+    return this.http.post(`${_url}security`, formData, { headers });
   }
 
 
@@ -109,5 +109,57 @@ export class CurriculumVitaeService {
     return this.http.get(`${_url}profile`, { headers });
   }
 
-  
+  saveLanguages(languages: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveLanguage`, languages, { headers });
+  }
+
+
+  getLanguages(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getLanguagesByCode`, { headers });
+  }
+
+  deleteLanguage(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    const url = `${_url}deleteLanguageById/${id}`;
+    return this.http.delete(url, { headers });
+  }
+  //education
+   saveEducations(educations: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveEducation`, educations, { headers });
+  }
+  updateEducationById(id: number, data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}updateEducationById/${id}`, data, { headers });
+  }
+
+  deleteEduc(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    const url = `${_url}deleteEducation/${id}`;
+    return this.http.delete(url, { headers });
+  }
+  getEducationsByCode(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getEducationsByCode`, { headers });
+  }
+
+  //skills
+  saveSkills(skills: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveSkills`, skills, { headers });
+  }
+  getSkills(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getSkills`, { headers });
+  }
+  deleteSkills(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    const url = `${_url}delete/${id}`;
+    return this.http.delete(url, { headers });
+  }
+
+
+
 }
