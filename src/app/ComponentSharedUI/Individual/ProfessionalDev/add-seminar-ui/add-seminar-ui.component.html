@@ -1,63 +1,46 @@
-<div class="button-end">
-  <button mat-button color="primary"  (click)="addSeminar()" class="button-end">
-    <mat-icon>add_circle</mat-icon>
-    Add More
+<button mat-icon-button class="close-button" (click)="dialogRef.close()">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
 
-
-</div>
 <h2 mat-dialog-title>Seminar</h2>
 <mat-divider></mat-divider>
+<div class="button-end">
+  <button mat-button color="primary" type="button" (click)="addSeminar()">
+    <mat-icon>add_circle</mat-icon>
+    Add More
+  </button>
+</div>
+<form [formGroup]="seminarForm">
+  <div class="form-group-wrapper" formArrayName="seminar">
+    <div *ngFor="let item of seminarArray.controls; let i = index" [formGroupName]="i" class="form-group">
 
-<form [formGroup]="seminarForm" (ngSubmit)="submitForm()">
-
-    <div class="form-group-wrapper" formArrayName="seminar">
-        <div
-        *ngFor="let item of seminarArray.controls; let i = index"
-        [formGroupName]="i"
-        class="form-group"
-      >
       <mat-form-field appearance="standard">
         <mat-label>Enter Seminar</mat-label>
-        <input
-          matInput
-          placeholder="Seminar"
-          formControlName="seminar_title"
-        />
+        <input matInput placeholder="Seminar" formControlName="seminar_title" />
       </mat-form-field>
 
       <mat-form-field appearance="standard">
         <mat-label>Provider</mat-label>
-        <input
-          matInput
-          placeholder="Provider"
-          formControlName="seminar_provider"
-        />
+        <input matInput placeholder="Provider" formControlName="seminar_provider" />
       </mat-form-field>
 
-      <mat-form-field appearance="standard" class="form-field">
+      <mat-form-field appearance="standard">
         <mat-label>Date Completed</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          formControlName="seminardate"
-          required
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
+        <input matInput [matDatepicker]="picker" formControlName="date_completed" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
-      <button mat-icon-button color="warn" (click)="removeItemFromArray4('seminar', i)" *ngIf="seminarArray.length > 1">
+
+      <button mat-icon-button color="warn" type="button" (click)="removeItemFromArray4('seminar', i)"
+        *ngIf="seminarArray.length > 1">
         <mat-icon>delete</mat-icon>
       </button>
-      
-      </div>
+
     </div>
-    <div class="button-end">
-      <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
-      <button mat-raised-button color="primary" type="submit" >Add</button>
-    </div>
+  </div>
+
+  <div class="button-end">
+    <button mat-raised-button color="primary" (click)="submitForm()">Add</button>
+  </div>
 </form>

@@ -46,7 +46,7 @@ app-footer {
   display: flex;
   flex-direction: column;
   min-height: 70vh;
-  max-height: 90vh;
+  max-height: 100vh;
   padding: 10px;
 }
 
@@ -103,9 +103,8 @@ app-footer {
 }
 
 html, body {
-  margin: 0;
+  margin: 0px;
   padding: 0; 
-  height: auto; 
 }
 
 section{
@@ -140,8 +139,9 @@ body {
   font-family: Verdana, sans-serif;
   line-height: 1;
   margin: 0px !important;
-  height: auto;
+  height: 100vh;
   background: transparent;
+  overflow-y: auto;
 
 }
 

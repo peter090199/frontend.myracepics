@@ -1,3 +1,7 @@
+<button mat-icon-button class="close-button" (click)="dialogRef.close()">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+
 <div class="button-end">
   <button mat-button color="primary" (click)="addEducation()" class="button-end">
     <mat-icon>add_circle</mat-icon>
@@ -83,7 +87,7 @@
   </div>
 
   <div class="button-end">
-    <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
+    <!-- <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button> -->
     <button mat-raised-button color="primary" type="submit">Add</button>
   </div>
 

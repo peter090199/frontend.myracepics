@@ -156,10 +156,23 @@ export class CurriculumVitaeService {
   }
   deleteSkills(id: number): Observable<any> {
     const headers = this.createHeaders();
+    const url = `${_url}deleteSkills/${id}`;
+    return this.http.delete(url, { headers });
+  }
+  //seminar
+  saveSeminar(seminars: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveSeminar`, seminars, { headers });
+  }
+  getSeminarByCode(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getSeminarByCode`, { headers });
+  }
+  deleteSeminar(id: number): Observable<any> {
+    const headers = this.createHeaders();
     const url = `${_url}delete/${id}`;
     return this.http.delete(url, { headers });
   }
-
 
 
 }

@@ -102,6 +102,7 @@ submitForm(): void {
       if(res.success == true)
       {
          this.alert.toastrSuccess(res.message);
+         this.dialogRef.close(true);
          this.resetForm();
       }
       else

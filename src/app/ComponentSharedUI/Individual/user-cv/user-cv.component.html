@@ -25,18 +25,24 @@
                 📎 Selected: {{ filename }}
               </div>
 
+              <!-- Error display -->
               <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
 
-              <!-- Remove Button -->
+              <!-- Image preview (optional) -->
+              <!-- <div *ngIf="previewUrl" class="image-preview">
+                <img [src]="previewUrl" alt="Preview" style="max-width: 100%; height: auto;" />
+              </div> -->
+
+              <!-- Remove button -->
               <!-- <button
                 *ngIf="previewUrl"
                 mat-button
-                color="warn"
                 type="button"
                 (click)="resetPhoto()"
-                >
-                <mat-icon>close</mat-icon> Remove Image
-                </button> -->
+              >
+                <mat-icon>close</mat-icon>
+                Remove Image
+              </button> -->
             </div>
 
             <!-- Image Preview -->
@@ -221,17 +227,17 @@
 
           <mat-tab-group dynamicHeight>
             <mat-tab label="Education">
-          <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+              <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
-          <mat-card-header>
-            <button mat-button color="basic" class="button-field" (click)="AddEducation()">
-              <mat-icon>add_circle</mat-icon>
-              Add Education
-            </button>
-          </mat-card-header>
+              <mat-card-header>
+                <button mat-button color="basic" class="button-field" (click)="AddEducation()">
+                  <mat-icon>add_circle</mat-icon>
+                  Add Education
+                </button>
+              </mat-card-header>
 
-            <!-- ✅ If there is education data -->
-            <ng-container *ngIf="formEducation.length > 0; else noEducation">
+              <!-- ✅ If there is education data -->
+              <ng-container *ngIf="formEducation.length > 0; else noEducation">
                 <mat-card-content *ngFor="let edu of formEducation; let i = index" class="mat-card-border">
                   <h3>{{ edu.highest_education }}</h3>
                   <p><strong>School Name: </strong> {{ edu.school_name }} </p>
@@ -248,17 +254,17 @@
                     </button> -->
                   </div>
                 </mat-card-content>
-            </ng-container>
+              </ng-container>
 
 
-            <!-- ❌ No data fallback -->
-            <ng-template #noEducation>
-                  <p class="text-center" style="margin-top: 50px;"><strong>No education data found.</strong></p>
-            </ng-template>
-        </mat-tab>
+              <!-- ❌ No data fallback -->
+              <ng-template #noEducation>
+                <p class="text-center" style="margin-top: 50px;"><strong>No education data found.</strong></p>
+              </ng-template>
+            </mat-tab>
 
             <mat-tab label="Skills">
-                 <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+              <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
               <mat-card-header>
                 <button mat-button color="basic" class="button-field" (click)="AddSkills()">
                   <mat-icon>add_circle</mat-icon>
@@ -267,31 +273,32 @@
               </mat-card-header>
 
               <div class="card-container">
-                <ng-container *ngIf="formSkills.length > 0; else noData">
-                <div *ngFor="let data of formSkills; let i = index" class="mat-card-border">
-                  <mat-card-content>
-                    <p>{{ data.skills}}</p>
+                <ng-container *ngIf="formSkills.length > 0; else noSkills">
+                  <div *ngFor="let data of formSkills; let i = index" class="mat-card-border">
+                    <mat-card-content>
+                      <p>{{ data.skills}}</p>
 
-                    <div class="button-end">
-                      <button mat-button color="warn"  (click)="removeSkills(data)">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                      <!-- <button mat-button color="primary" (click)="editSkills(data)">
+                      <div class="button-end">
+                        <button mat-button color="warn" (click)="removeSkills(data)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                        <!-- <button mat-button color="primary" (click)="editSkills(data)">
                         <mat-icon>edit</mat-icon>
                       </button> -->
-                    </div>
-                  </mat-card-content>
-                </div>
+                      </div>
+                    </mat-card-content>
+                  </div>
                 </ng-container>
               </div>
 
-          <!-- ❌ No data fallback -->
-            <ng-template #noData>
-                  <p class="text-center" style="margin-top: 50px;"><strong>No skills data found.</strong></p>
-            </ng-template>
+              <!-- ❌ No data fallback -->
+              <ng-template #noSkills>
+                <p class="text-center" style="margin-top: 50px;"><strong>No skills data found.</strong></p>
+              </ng-template>
             </mat-tab>
 
             <mat-tab label="Seminar">
+              <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
               <mat-card-header>
                 <button mat-button color="basic" class="button-field" (click)="AddSeminar()">
                   <mat-icon>add_circle</mat-icon>
@@ -299,23 +306,29 @@
                 </button>
               </mat-card-header>
               <div class="card-container">
-                <div *ngFor="let data of formSeminar; let i = index" class="mat-card-border">
-                  <mat-card-content>
-                    <h3>{{ data.seminar_title}}</h3>
-                    <p><strong>School Name: </strong> {{ data.seminar_provider}} </p>
-                    <p><strong>Status:</strong> {{ formatDate(data.seminardate) }}</p>
-                  </mat-card-content>
+                <ng-container *ngIf="formSeminar.length > 0; else noData3">
+                  <div *ngFor="let data of formSeminar; let i = index" class="mat-card-border">
+                    <mat-card-content>
+                      <p><strong>Seminar Title: </strong> {{ data.seminar_title}}</p>
+                      <p><strong>Seminar Provider: </strong> {{ data.seminar_provider}} </p>
+                      <p><strong>Seminar Date:</strong> {{ formatDate(data.date_completed) }}</p>
+                    </mat-card-content>
 
-                  <div class="button-end">
-                    <button mat-icon-button color="warn" (click)="removeSeminar(i)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                    <button mat-icon-button color="primary" (click)="editSeminar(i)">
+                    <div class="button-end">
+                      <button mat-button color="warn" (click)="removeSeminar(data)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                      <!-- <button mat-button color="primary" (click)="editSeminar(i)">
                       <mat-icon>edit</mat-icon>
-                    </button>
+                    </button> -->
+                    </div>
                   </div>
-                </div>
+                </ng-container>
               </div>
+              <!-- ❌ No data fallback -->
+              <ng-template #noData3>
+                <p class="text-center" style="margin-top: 50px;"><strong>No seminar data found.</strong></p>
+              </ng-template>
             </mat-tab>
 
             <mat-tab label="Trainings">
@@ -326,25 +339,31 @@
                 </button>
               </mat-card-header>
               <div class="card-container">
-                <div *ngFor="let data of formTraining; let i = index" class="mat-card-border">
-                  <mat-card-content>
-                    <h3>{{ data.training_title}}</h3>
-                    <p><strong>School Name: </strong> {{ data.training_provider}} </p>
-                    <p><strong>Status:</strong> {{ formatDate(data.trainingdate) }}</p>
+                <ng-container *ngIf="formTraining.length > 0; else noData4">
+                  <div *ngFor="let data of formTraining" class="mat-card-border">
+                    <mat-card-content>
+                      <h3>{{ data.training_title}}</h3>
+                      <p><strong>School Name: </strong> {{ data.training_provider}} </p>
+                      <p><strong>Status:</strong> {{ formatDate(data.trainingdate) }}</p>
 
-                  </mat-card-content>
+                    </mat-card-content>
 
-                  <div class="button-end">
-                    <button mat-icon-button color="warn" (click)="removeTraining(i)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                    <button mat-icon-button color="primary" (click)="editTraining(i)">
-                      <mat-icon>edit</mat-icon>
-                    </button>
+                    <div class="button-end">
+                      <button mat-button color="warn" (click)="removeTraining(data)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                      <button mat-button color="primary" (click)="editTraining(data)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </div>
+
                   </div>
+                </ng-container>
 
-                </div>
               </div>
+              <ng-template #noData4>
+                <p class="text-center" style="margin-top: 50px;"><strong>No Trainings data found.</strong></p>
+              </ng-template>
             </mat-tab>
 
             <mat-tab label="Certificate">
@@ -413,9 +432,9 @@
 
       </form>
 
-      
+
     </mat-step>
-    
+
   </mat-horizontal-stepper>
 
   <footer class="mat-footer">

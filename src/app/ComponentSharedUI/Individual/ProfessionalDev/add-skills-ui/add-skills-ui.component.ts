@@ -140,6 +140,7 @@ export class AddSkillsUIComponent {
     next: (res) => {
       if (res.success) {
         this.alert.toastrSuccess(res.message);
+        this.dialogRef.close(true);
         this.resetForm();
       } else {
         this.alert.toastrError(res.message);

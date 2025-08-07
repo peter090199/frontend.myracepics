@@ -115,7 +115,7 @@ export class UserCVComponent implements AfterViewInit {
     this.summaryFormGroup.valueChanges.subscribe(() => {
       this.updateProgress();
     });
-    this.loadSkills();
+    //this.loadSkills();
   }
   updateProgress() {
     const totalSteps = 4; // Total steps in your stepper
@@ -154,10 +154,10 @@ export class UserCVComponent implements AfterViewInit {
   loadSkills() {
     this.educacationServices.getSkills().subscribe({
       next: (res) => {
-        if (res.success == true) {
+        if (res.success === true) {
           this.formSkills = res.data;
-          console.log(this.formSkills)
-        } else {
+        }
+        if (res.success === false) {
           this.alert.toastrWarning(res.message);
         }
       },
@@ -189,9 +189,30 @@ export class UserCVComponent implements AfterViewInit {
 
   }
 
-  loadSeminarData() {
-    this.formSeminar = this.profileService.getDataSeminar();
+  // loadSeminarData() {
+  //   this.formSeminar = this.profileService.getDataSeminar();
+  // }
+
+  loadSeminarData(): void {
+    this.isLoading = true;
+
+    this.cvService.getSeminarByCode().subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res.success && Array.isArray(res.data)) {
+          this.formSeminar = res.data;
+        } else {
+          this.formSeminar = [];
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Failed to load seminar data:', err);
+        this.alert.toastrError('Failed to load seminar data.');
+      }
+    });
   }
+
 
   loadCertificateData() {
     this.formCertificate = this.profileService.getDataCertificate();
@@ -216,8 +237,8 @@ export class UserCVComponent implements AfterViewInit {
   }
 
 
-  editSeminar(index: number): void {
-    const Edit = this.formSeminar[index];
+  editSeminar(id: number): void {
+    const Edit = this.formSeminar[id];
     console.log(Edit)
     const dialogRef = this.dialog.open(AddEditSeminarComponent, {
       width: '500px',
@@ -339,11 +360,37 @@ export class UserCVComponent implements AfterViewInit {
 
   }
 
-  removeSeminar(index: number) {
-    this.alert.toastrSuccess("Successfuly Deleted!")
-    this.formSeminar.splice(index, 1);
+  // removeSeminar(index: number) {
+  //   this.alert.toastrSuccess("Successfuly Deleted!")
+  //   this.formSeminar.splice(index, 1);
 
-  }
+  // }
+
+removeSeminar(data: any): void {
+  this.alert.popupWarning(data.seminar_title, "Are you sure to delete this seminar?")
+    .then((result) => {
+      if (result.value) {
+        this.isLoading = true;
+        this.cvService.deleteSeminar(data.id).subscribe({
+          next: (res) => {
+            this.isLoading = false;
+            if (res.success) {
+              this.alert.toastrSuccess(res.message);
+              this.loadSeminarData(); // ✅ Only reload if delete was successful
+            } else {
+              this.alert.toastrError(res.message);
+            }
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.alert.toastrError(error.error || 'Delete failed.');
+          }
+        });
+      }
+    });
+}
+
+
   removeTraining(index: number) {
     this.alert.toastrSuccess("Successfuly Deleted!")
     this.formTraining.splice(index, 1);
@@ -359,56 +406,29 @@ export class UserCVComponent implements AfterViewInit {
     this.formWorkExperience.splice(index, 1);
   }
 
-  
-removeSkills(data:any):void{
-
-    this.alert.popupWarning(data.skills," "+"Are you sure to delete this skill?").then((result) => {
-      if (result.value) 
-      {
+removeSkills(data: any): void {
+  this.alert.popupWarning(data.skills, "Are you sure to delete this skill?")
+    .then((result) => {
+      if (result.value) {
+        this.isLoading = true; // ✅ Show loading indicator
         this.educacationServices.deleteSkills(data.id).subscribe({
-            next:(res)=>{
-              if(res.success === true)
-                {
-                  this.alert.toastrSuccess(res.message);
-                  this.isLoading = false;
-                  
-                }
-                else{
-                  this.alert.toastrError(res.message);
-                  this.isLoading = false;
-                }
-                 this.loadSkills();
-               
-            },
-            error:(error)=>{
-              this.alert.toastrError(error.error);
-              this.isLoading = false;
+          next: (res) => {
+            this.isLoading = false;
+            if (res.success === true) {
+              this.alert.toastrSuccess(res.message);
+              this.loadSkills(); // ✅ Load updated list only on success
+            } else {
+              this.alert.toastrError(res.message);
             }
-
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.alert.toastrError(error.error || 'Failed to delete skill.');
+          }
         });
-         this.loadSkills();
       }
-
-
     });
-  
 }
-  // removeSkills(id: number): void {
-  //   if (!confirm('Are you sure you want to delete this language?')) return;
-
-  //   this.isDeleting = true;
-
-  //   this.languageService.deleteLanguage(id).subscribe({
-  //     next: () => {
-  //       this.formLanguage = this.formLanguage.filter((lang: { id: number; }) => lang.id !== id);
-  //       this.isDeleting = false;
-  //     },
-  //     error: err => {
-  //       console.error('Failed to delete language:', err);
-  //       this.isDeleting = false;
-  //     }
-  //   });
-  // }
 
   userData: any;
   error: any;
