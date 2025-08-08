@@ -26,6 +26,8 @@ import { AddEditWorkExprienceComponent } from '../ProfessionalDev/Edit/add-edit-
 import { AddEditSkillsComponent } from '../ProfessionalDev/Edit/add-edit-skills/add-edit-skills.component';
 import { AddEditLanguageComponent } from '../ProfessionalDev/Edit/add-edit-language/add-edit-language.component';
 import { ViewLanguageUIComponent } from '../Languange/view-language-ui/view-language-ui.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { PrintCVComponent } from '../print-cv/print-cv.component';
 
 
 
@@ -59,7 +61,7 @@ export class UserCVComponent implements AfterViewInit {
 
   formEducation: any[] = [];
   formSeminar: any[] = [];
-  formTraining: any[] = [];
+  formTraining: any= [];
   formCertificate: any[] = [];
   formWorkExperience: any[] = [];
   formSkills: any[] = [];
@@ -183,15 +185,47 @@ export class UserCVComponent implements AfterViewInit {
     });
   }
 
+isLoading2:boolean = false;
+loadCertificateData() {
+  this.isLoading2 = true;
+  this.cvService.getCertificates().subscribe({
+    next: (res) => {
+      this.isLoading2 = false;
+      if (res.success == true) {
+        this.formCertificate = res.data; // ensure it's always an array
+      } else {
+        this.formCertificate = [];
+        this.alert.toastrWarning(res.message);
+      }
+    },
+    error: () => {
+      this.isLoading2 = false;
+      this.formCertificate = [];
+    }
+  });
+}
 
-  loadTrainingData() {
-    this.formTraining = this.profileService.getDataTraining();
+  loadTrainingData(): void {
+    this.isLoading = true;
 
+
+    this.cvService.getTrainings().subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res.success && Array.isArray(res.data)) {
+          this.formTraining = res.data;
+        } else {
+          this.formTraining = [];
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Failed to load seminar data:', err);
+        this.alert.toastrError('Failed to load seminar data.');
+      }
+    });
   }
 
-  // loadSeminarData() {
-  //   this.formSeminar = this.profileService.getDataSeminar();
-  // }
 
   loadSeminarData(): void {
     this.isLoading = true;
@@ -213,16 +247,29 @@ export class UserCVComponent implements AfterViewInit {
     });
   }
 
+ isLoading3:boolean =false;
+  loadWorkExperienceData(): void {
+    this.isLoading3 = true;
 
-  loadCertificateData() {
-    this.formCertificate = this.profileService.getDataCertificate();
 
+    this.cvService.getEmployment().subscribe({
+      next: (res) => {
+        this.isLoading3 = false;
+        if (res.success && Array.isArray(res.data)) {
+          this.formWorkExperience = res.data;
+        } else {
+          this.formWorkExperience = [];
+        }
+      },
+      error: (err) => {
+        this.isLoading3 = false;
+        console.error('Failed to load seminar data:', err);
+        this.alert.toastrError('Failed to load seminar data.');
+      }
+    });
   }
 
-  loadWorkExperienceData() {
-    this.formWorkExperience = this.profileService.getDataEmployment();
 
-  }
   loadSkillsData() {
     this.formSkills = this.profileService.getSkills();
   }
@@ -391,20 +438,95 @@ removeSeminar(data: any): void {
 }
 
 
-  removeTraining(index: number) {
-    this.alert.toastrSuccess("Successfuly Deleted!")
-    this.formTraining.splice(index, 1);
-  }
+removeTraining(data: any): void {
+  this.alert.popupWarning(data.training_title, "Are you sure to delete this training?")
+    .then((result) => {
+      if (result.value) {
+        this.isLoading = true;
+        this.cvService.deleteTraining(data.id).subscribe({
+          next: (res) => {
+            this.isLoading = false;
+            if (res.success) {
+              this.alert.toastrSuccess(res.message);
+            } else {
+              this.alert.toastrError(res.message);
+            }
+             this.loadTrainingData();
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.alert.toastrError(error.error || 'Delete failed.');
+          }
+        });
+      }
+    });
+}
 
-  removeCertificate(index: number) {
-    this.alert.toastrSuccess("Successfuly Deleted!")
-    this.formCertificate.splice(index, 1);
 
-  }
-  removeWorkExp(index: number) {
-    this.alert.toastrSuccess("Successfuly Deleted!")
-    this.formWorkExperience.splice(index, 1);
-  }
+removeCertificate(data: any): void {
+  this.alert.popupWarning(data.certificate_title, "Are you sure to delete this certificate?")
+    .then((result) => {
+      if (result.value) {
+        this.isLoading = true;
+        this.cvService.deleteCertificate(data.id).subscribe({
+          next: (res) => {
+            this.isLoading = false;
+            if (res.success) {
+              this.alert.toastrSuccess(res.message);
+                this.loadCertificateData();
+            } else {
+              this.alert.toastrError(res.message);
+            }
+             this.loadCertificateData();
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.alert.toastrError(error.error || 'Delete failed.');
+          }
+        });
+      }
+    });
+}
+
+  // removeTraining(index: number) {
+  //   this.alert.toastrSuccess("Successfuly Deleted!")
+  //   this.formTraining.splice(index, 1);
+  // }
+
+  // removeCertificate(index: number) {
+  //   this.alert.toastrSuccess("Successfuly Deleted!")
+  //   this.formCertificate.splice(index, 1);
+
+  // }
+  // removeWorkExp(index: number) {
+  //   this.alert.toastrSuccess("Successfuly Deleted!")
+  //   this.formWorkExperience.splice(index, 1);
+  // }
+
+  removeWorkExp(data: any): void {
+  this.alert.popupWarning(data.company_name, "Are you sure to delete this company_name?")
+    .then((result) => {
+      if (result.value) {
+        this.isLoading3 = true; // ✅ Show loading indicator
+        this.educacationServices.deleteEmployment(data.id).subscribe({
+          next: (res) => {
+            this.isLoading3 = false;
+            if (res.success === true) {
+              this.alert.toastrSuccess(res.message);
+              this.loadWorkExperienceData(); // ✅ Load updated list only on success
+            } else {
+              this.alert.toastrError(res.message);
+            }
+          },
+          error: (error) => {
+            this.isLoading3 = false;
+            this.alert.toastrError(error.error || 'Failed to delete skill.');
+          }
+        });
+      }
+    });
+}
+
 
 removeSkills(data: any): void {
   this.alert.popupWarning(data.skills, "Are you sure to delete this skill?")
@@ -499,6 +621,9 @@ removeSkills(data: any): void {
     this.loadEducationData();
     this.loadSkills();
     this.loadSeminarData();
+    this.loadTrainingData();
+    this.loadCertificateData();
+    this.loadWorkExperienceData();
   }
 
 
@@ -1210,7 +1335,25 @@ removeSkills(data: any): void {
     });
   }
 
-  submit() {
+  previewAndFinish2(){
+      this.router.navigate(['/home']);
+  }
+
+  previewAndFinish() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '90%';
+    dialogConfig.height = '600px';
+    const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.previewAndFinish2();
+      }
+    });
+  }
+
+  submitxx() {
     this.loading = true;
     const language = this.passDataServices.getLanguange();
     const skills = this.passDataServices.getSkills();

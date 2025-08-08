@@ -26,12 +26,3 @@ button {
 }
 
 
-@media (max-width: 600px) {
-  .close-button {
-    position: absolute;
-    top: 18px;
-    right: 8px;
-  }
-  
-  
-}

@@ -3,6 +3,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalService } from 'src/app/services/SharedServices/professional.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-employment-ui',
@@ -15,6 +17,7 @@ export class AddEmploymentUiComponent implements OnInit {
 
   constructor(private fb:FormBuilder,private dataService: ProfessionalService,
     private alert:NotificationsService,public dialogRef: MatDialogRef<AddEmploymentUiComponent>,
+    private cvDataServices:CurriculumVitaeService, private datePipe:DatePipe
   ) { }
 
   ngOnInit(): void {
@@ -55,16 +58,31 @@ removeItemFromArray5(arrayName: 'employment', index: number) {
  
 workList: any[] = [];
 submitForm(): void {
-  if (this.employmentForm.valid) {
-    this.workList = this.employmentArray.value;
-    this.dataService.setformEmployment(this.workList); // Save to the service or database
-    this.alert.toastrSuccess('Successfully Added.');
-    this.dialogRef.close(this.workList);
-    this.resetForm(); 
-  } else {
-    console.error('Form is invalid');
+    if (this.employmentForm.invalid) {
+      this.employmentForm.markAllAsTouched();
+      return;
+    }
+    let payload = this.employmentForm.get('employment')?.value || [];
+    payload = payload.map((item: { date_completed: string | number | Date; }) => ({
+      ...item,
+      date_completed: this.datePipe.transform(item.date_completed, 'yyyy-MM-dd')
+    }));
+    this.cvDataServices.saveEmployment(payload).subscribe({
+      next: (res) => {
+        if (res.success === true) {
+          this.alert.toastrSuccess(res.message);
+          this.dialogRef.close(true);
+          this.resetForm();
+        } else {
+          this.alert.toastrWarning(res.message);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Failed to save training records:', error);
+      }
+    });
   }
-}
+
 
 resetForm(): void {
   while (this.employmentArray.length !== 0) {

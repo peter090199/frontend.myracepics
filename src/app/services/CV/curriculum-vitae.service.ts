@@ -109,6 +109,12 @@ export class CurriculumVitaeService {
     return this.http.get(`${_url}profile`, { headers });
   }
 
+  getProfileCV(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getProfileCV`, { headers });
+  }
+
+
   saveLanguages(languages: any): Observable<any> {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveLanguage`, languages, { headers });
@@ -126,7 +132,7 @@ export class CurriculumVitaeService {
     return this.http.delete(url, { headers });
   }
   //education
-   saveEducations(educations: any): Observable<any> {
+  saveEducations(educations: any): Observable<any> {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveEducation`, educations, { headers });
   }
@@ -173,6 +179,48 @@ export class CurriculumVitaeService {
     const url = `${_url}delete/${id}`;
     return this.http.delete(url, { headers });
   }
+  //trainings
+  saveTrainings(data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveTrainings`, data, { headers });
+  }
+  getTrainings(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getTrainings`, { headers });
+  }
+  deleteTraining(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    const url = `${_url}deleteTraining/${id}`;
+    return this.http.delete(url, { headers });
+  }
 
+  //certificates
+  saveCertificates(data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveCertificates`, data, { headers });
+  }
+  deleteCertificate(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    const url = `${_url}deleteCertificate/${id}`;
+    return this.http.delete(url, { headers });
+  }
+  getCertificates(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getCertificates`, { headers });
+  }
+ //work experiences
+  saveEmployment(data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}saveEmployment`, data, { headers });
+  }
+  deleteEmployment(id: number): Observable<any> {
+    const headers = this.createHeaders();
+    const url = `${_url}deleteEmployment/${id}`;
+    return this.http.delete(url, { headers });
+  }
+  getEmployment(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getEmployment`, { headers });
+  }
 
 }

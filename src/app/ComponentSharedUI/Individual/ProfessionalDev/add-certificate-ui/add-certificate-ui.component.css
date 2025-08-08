@@ -1,19 +1,20 @@
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    gap: 10px;
+    padding: 5px;
     overflow: auto;
-    margin-bottom: 20px;
+    margin-bottom: 1px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
   .form-group-wrapper {
     max-height: 500px; 
     overflow-y: auto; 
     padding-right: 10px; 
   }
-  
+
+
   .mat-dialog-content {
     max-height: 70vh; 
     overflow-y: auto;
@@ -36,15 +37,4 @@
   
   .mat-radio-button {
     margin-right: 12px;
-  }
-
-  
-  @media (max-width: 600px) {
-    .close-button {
-      position: absolute;
-      top: 18px;
-      right: 8px;
-    }
-    
-    
   }

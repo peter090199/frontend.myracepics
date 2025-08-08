@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfessionalService } from 'src/app/services/SharedServices/professional.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
 
 @Component({
   selector: 'app-add-certificate-ui',
@@ -16,6 +17,7 @@ export class AddCertificateUiComponent implements OnInit {
 
   constructor(private fb:FormBuilder,private dataService:ProfessionalService,
     private datePipe:DatePipe,private alert:NotificationsService,public dialogRef: MatDialogRef<AddCertificateUiComponent>,
+    private cvDataServices:CurriculumVitaeService
 
   ) { }
 
@@ -42,17 +44,40 @@ export class AddCertificateUiComponent implements OnInit {
   }
 
   listData: any[] = [];
-  submitForm(): void {
-    if (this.certificateForm.valid) {
-      this.listData = this.certificateArray.value;
-      this.dataService.setformCertificate(this.listData); // Save to the service or database
-      this.alert.toastrSuccess('Successfully Added.');
-      this.dialogRef.close(this.listData);
-    } else {
-      console.error('Form is invalid');
+submitForm(): void {
+    if (this.certificateForm.invalid) {
+      this.certificateForm.markAllAsTouched();
+      return;
     }
+
+    // ✅ Send directly as array
+    let payload = this.certificateForm.get('certificate')?.value || [];
+
+    // ✅ Format date to YYYY-MM-DD for backend
+    payload = payload.map((item: { date_completed: string | number | Date; }) => ({
+      ...item,
+      date_completed: this.datePipe.transform(item.date_completed, 'yyyy-MM-dd')
+    }));
+
+    console.log('🚀 Sending payload:', payload);
+
+    this.cvDataServices.saveCertificates(payload).subscribe({
+      next: (res) => {
+        if (res.success === true) {
+          this.alert.toastrSuccess(res.message);
+          this.dialogRef.close(true);
+          this.resetForm();
+        } else {
+          this.alert.toastrWarning(res.message);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Failed to save training records:', error);
+      }
+    });
   }
-  
+
+
   resetForm(): void {
     while (this.certificateArray.length !== 0) {
       this.certificateArray.removeAt(0);

@@ -1,3 +1,8 @@
+<button mat-icon-button class="close-button" (click)="dialogRef.close()">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+
+
 <div class="button-end">
   <button mat-button color="primary"  (click)="addEmployment()" class="button-end">
     <mat-icon>add_circle</mat-icon>
@@ -9,7 +14,7 @@
 <h2 mat-dialog-title>Work Experience</h2>
 <mat-divider></mat-divider>
 
-<form [formGroup]="employmentForm" (ngSubmit)="submitForm()">
+<form [formGroup]="employmentForm">
     <div class="form-group-wrapper" formArrayName="employment">
         <div *ngFor="let item of employmentArray.controls; let i = index" [formGroupName]="i" class="form-group" >
             
@@ -64,7 +69,6 @@
         </div>
    </div>
    <div class="button-end">
-    <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
-    <button mat-raised-button color="primary" type="submit"  [disabled]="employmentForm.invalid">Add</button>
+    <button mat-raised-button color="primary" type="submit"  [disabled]="employmentForm.invalid" (click)="submitForm()">Add</button>
   </div>
 </form>

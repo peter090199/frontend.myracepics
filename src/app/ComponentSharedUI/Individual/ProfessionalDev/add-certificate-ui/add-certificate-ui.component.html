@@ -1,18 +1,23 @@
-<div class="button-end">
-  <button mat-button color="primary"  (click)="addCertificate()" class="button-end">
-    <mat-icon>add_circle</mat-icon>
-    Add More
+<button mat-icon-button class="close-button" (click)="dialogRef.close()">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
 
+<div class="button-end">
+  <button mat-button color="primary" (click)="addCertificate()">
+    <mat-icon>add_circle</mat-icon>
+    Add More
+  </button>
 </div>
-<h2 mat-dialog-title>Certificate</h2>
+
+<h2 mat-dialog-title>Certificates</h2>
 <mat-divider></mat-divider>
 
-<form [formGroup]="certificateForm" (ngSubmit)="submitForm()">
-<div  class="form-group-wrapper" formArrayName="certificate">
+<form [formGroup]="certificateForm">
+  <div class="form-group-wrapper" formArrayName="certificate">
     <div
       *ngFor="let item of certificateArray.controls; let i = index"
       [formGroupName]="i"
+      class="form-group"
     >
       <mat-form-field appearance="standard">
         <mat-label>Certificate Title</mat-label>
@@ -20,6 +25,7 @@
           matInput
           placeholder="Certificate Title"
           formControlName="certificate_title"
+          required
         />
       </mat-form-field>
 
@@ -27,8 +33,9 @@
         <mat-label>Certificate Provider</mat-label>
         <input
           matInput
-          placeholder="certificate_provider"
+          placeholder="Certificate Provider"
           formControlName="certificate_provider"
+          required
         />
       </mat-form-field>
 
@@ -40,10 +47,7 @@
           formControlName="date_completed"
           required
         />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
@@ -57,10 +61,8 @@
       </button>
     </div>
   </div>
-  
+
   <div class="button-end">
-    <button mat-raised-button color="warn" [mat-dialog-close]="true"> Cancel </button>
-    <button mat-raised-button color="primary" type="submit" >Add</button>
+      <button mat-raised-button color="primary" (click)="submitForm()">Add</button>
   </div>
-  </form>
-  
+</form>

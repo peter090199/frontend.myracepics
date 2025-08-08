@@ -264,6 +264,7 @@ mat-radio-button {
 }
 
 
+
 /* Responsive for smaller screens (mobile) */
 @media (max-width: 768px) {
   .profile-picture-preview {

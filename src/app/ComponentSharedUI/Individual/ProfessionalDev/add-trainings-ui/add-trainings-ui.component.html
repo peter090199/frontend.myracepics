@@ -1,7 +1,6 @@
 <button mat-icon-button class="close-button" (click)="dialogRef.close()">
   <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
-
    
    <div class="button-end">
       <button mat-button color="primary"  (click)="addTraining()" class="button-end">
@@ -13,7 +12,7 @@
     <h2 mat-dialog-title>Trainings</h2>
     <mat-divider></mat-divider>
     
-    <form [formGroup]="trainingForm" (ngSubmit)="submitForm()">
+    <form [formGroup]="trainingForm">
     
         <div class="form-group-wrapper" formArrayName="training">
             <div *ngFor="let item of trainingArray.controls; let i = index" [formGroupName]="i" class="form-group">
@@ -43,7 +42,7 @@
                 <input
                   matInput
                   [matDatepicker]="picker"
-                  formControlName="trainingdate"
+                  formControlName="date_completed"
                   required
                 />
                 <mat-datepicker-toggle
@@ -59,8 +58,8 @@
                 
           </div>
         </div>
-        <div class="button-end">
-          <button mat-raised-button color="primary" type="submit" >Add</button>
-        </div>
+       <div class="button-end">
+        <button mat-raised-button color="primary" (click)="submitForm()">Add</button>
+      </div>
     </form>
     

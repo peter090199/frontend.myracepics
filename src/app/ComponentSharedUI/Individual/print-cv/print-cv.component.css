@@ -37,21 +37,33 @@
 
 
 
-.data-item img {
-  width: 30%; /* Make image take half the width of its container */
-  height: 200px; /* Set a fixed height for the image */
-  object-fit: cover; /* Make the image cover the area */
-  margin-left: 30px;
-  border-radius: 10px; /* Optional: rounded corners */
-}
 
 .header {
   display: flex;
-  justify-content: left;
+  justify-content: space-between; /* Pushes items to left and right */
+  align-items: center; /* Vertically centers */
   margin: 15px;
+  gap: 50px;
 }
+
 .header img {
-  width: 100px;
-  height: 100px;
-  margin-left: 460px;
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  align-items: right;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-content p {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.header-content strong {
+  text-transform: uppercase;
 }

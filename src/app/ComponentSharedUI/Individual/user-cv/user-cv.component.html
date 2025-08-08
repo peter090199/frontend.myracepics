@@ -332,69 +332,71 @@
             </mat-tab>
 
             <mat-tab label="Trainings">
+             
               <mat-card-header>
                 <button mat-button color="basic" class="button-field" (click)="AddTrainings()">
                   <mat-icon>add_circle</mat-icon>
-                  Add Trainings
+                  Add Training
                 </button>
               </mat-card-header>
-              <div class="card-container">
-                <ng-container *ngIf="formTraining.length > 0; else noData4">
+              <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+              <div class="card-container" *ngIf="formTraining.length > 0; else noData4">
                   <div *ngFor="let data of formTraining" class="mat-card-border">
                     <mat-card-content>
-                      <h3>{{ data.training_title}}</h3>
-                      <p><strong>School Name: </strong> {{ data.training_provider}} </p>
-                      <p><strong>Status:</strong> {{ formatDate(data.trainingdate) }}</p>
-
+                      <h3>{{ data.training_title }}</h3>
+                      <p><strong>Training Provider:</strong> {{ data.training_provider }}</p>
+                      <p><strong>Date Completed:</strong> {{ formatDate(data.date_completed) }}</p>
                     </mat-card-content>
 
                     <div class="button-end">
                       <button mat-button color="warn" (click)="removeTraining(data)">
                         <mat-icon>delete</mat-icon>
                       </button>
-                      <button mat-button color="primary" (click)="editTraining(data)">
+                      <!-- <button mat-button color="primary" (click)="editTraining(data)">
                         <mat-icon>edit</mat-icon>
-                      </button>
+                      </button> -->
                     </div>
-
                   </div>
-                </ng-container>
-
               </div>
+
               <ng-template #noData4>
-                <p class="text-center" style="margin-top: 50px;"><strong>No Trainings data found.</strong></p>
+                 <p class="text-center" style="margin-top: 50px;"><strong>No trainings data found.</strong>
+                </p>
               </ng-template>
-            </mat-tab>
+             </mat-tab>
+
 
             <mat-tab label="Certificate">
+               <mat-progress-bar *ngIf="isLoading2" mode="indeterminate" color="primary"></mat-progress-bar>
               <mat-card-header>
                 <button mat-button color="basic" class="button-field" (click)="AddCertificate()">
                   <mat-icon>add_circle</mat-icon>
                   Add Certificate
                 </button>
               </mat-card-header>
+                <div class="card-container" *ngIf="formCertificate && formCertificate.length > 0; else noData5">
+                  <div *ngFor="let data of formCertificate; let i = index" class="mat-card-border">
+                    <mat-card-content>
+                      <h3>{{ data.certificate_title }}</h3>
+                      <p><strong>Certificate Provider: </strong> {{ data.certificate_provider }} </p>
+                      <p><strong>Date Completed:</strong> {{ formatDate(data.date_completed) }}</p>
 
-              <div class="card-container">
-                <div *ngFor="let data of formCertificate; let i = index" class="mat-card-border">
-                  <mat-card-content>
-                    <h3>{{ data.certificate_title}}</h3>
-                    <p><strong>Certificate Provider: </strong> {{ data.certificate_provider}} </p>
-                    <p><strong>Date Completed:</strong> {{ formatDate(data.date_completed) }}</p>
-
-                    <div class="button-end">
-                      <button mat-icon-button color="warn" (click)="removeCertificate(i)">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                      <button mat-icon-button color="primary" (click)="editCertificate(i)">
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </div>
-                  </mat-card-content>
+                      <div class="button-end">
+                        <button mat-button color="warn" (click)="removeCertificate(data)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    </mat-card-content>
+                  </div>
                 </div>
-              </div>
+
+                <ng-template #noData5>
+                  <p class="text-center" style="margin-top: 50px;"><strong>No certificates data found.</strong></p>
+                </ng-template>
             </mat-tab>
 
             <mat-tab label="Work Experience">
+               <mat-progress-bar *ngIf="isLoading3" mode="indeterminate" color="primary"></mat-progress-bar>
               <mat-card-header>
                 <button mat-button color="basic" class="button-field" (click)="AddEmployment()">
                   <mat-icon>add_circle</mat-icon>
@@ -402,7 +404,7 @@
                 </button>
               </mat-card-header>
 
-              <div class="card-container">
+              <div class="card-container"  *ngIf="formWorkExperience && formWorkExperience.length > 0; else noData6">
                 <mat-card-content>
                   <div *ngFor="let data of formWorkExperience; let i = index" class="mat-card-border">
                     <h3>{{ data.company_name }}</h3>
@@ -411,23 +413,27 @@
                     <p><strong>Date Completed:</strong> {{ formatDate(data.date_completed) }}</p>
 
                     <div class="button-end">
-                      <button mat-icon-button color="warn" (click)="removeWorkExp(i)">
+                      <button mat-button color="warn" (click)="removeWorkExp(data)">
                         <mat-icon>delete</mat-icon>
                       </button>
-                      <button mat-icon-button color="primary" (click)="editWorkexperience(i)">
+                      <!-- <button mat-button color="primary" (click)="editWorkexperience(i)">
                         <mat-icon>edit</mat-icon>
-                      </button>
+                      </button> -->
                     </div>
 
                   </div>
                 </mat-card-content>
               </div>
+
+                <ng-template #noData6>
+                  <p class="text-center" style="margin-top: 50px;"><strong>No work experiences data found.</strong></p>
+                </ng-template>
             </mat-tab>
           </mat-tab-group>
 
         </div>
         <div class="button-end" style="margin-top: 10px;">
-          <button mat-raised-button color="primary" type="submit" (click)="submit()">Preview and Finish</button>
+          <button mat-raised-button color="primary" type="submit" (click)="previewAndFinish()">Preview and Finish</button>
         </div>
 
       </form>
