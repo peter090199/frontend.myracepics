@@ -199,18 +199,29 @@ export class SignInUIComponent implements OnInit {
 
     this.isLoading = true;
     const { email, password } = this.loginForm.value;
-
+    console.log(this.loginForm.value)
     this.sigInService.signin(email, password).subscribe({
       next: (res) => {
+        console.log(res)
+      // return;
         this.isLoading = false;
-        if (res.success && res.token) {
+        if (res.success == true) {
           sessionStorage.setItem('token', res.token);
           localStorage.setItem("chatmessages", "true");
+          if(res.message == 0)
+          {
+            this.router.navigateByUrl("/home")
+          }
+           if(res.message == 1)
+          {
+            this.router.navigateByUrl("/user-cv")
+          }
 
-          const targetRoute = res.message === 0 ? '/home' : '/user-cv';
-          this.router.navigate([targetRoute]).then(() => location.reload());
+          // const targetRoute = res.message === 1 ? '/home' : '/user-cv';
+          // this.router.navigate([targetRoute]).then(() => location.reload());
         } else {
           this.notificationService.toastPopUpError(res.message);
+          this.router.navigateByUrl("/user-cv")
         }
       },
       error: (err) => {
