@@ -101,6 +101,9 @@
 .header-content strong {
   text-transform: uppercase;
 }
+ .no-print {
+    display: none !important;
+  }
 
 @media print {
   @page {

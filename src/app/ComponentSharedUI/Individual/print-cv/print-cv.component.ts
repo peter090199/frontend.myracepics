@@ -10,17 +10,17 @@ import { ToolBoxService } from 'src/app/services/Global/tool-box.service';
   styleUrls: ['./print-cv.component.css']
 })
 export class PrintCVComponent implements OnInit {
-  cvData: any = []; 
+  cvData: any = [];
   error: string | null = null;
   @ViewChild('printContent') printContent!: ElementRef;
-  
+
   Title: string = '';
   Transaction: string = '';
 
   constructor(
     private cvService: CurriculumVitaeService,
     private toolBoxService: ToolBoxService,
-    private router: Router,  private dialogRef: MatDialogRef<PrintCVComponent>
+    private router: Router, private dialogRef: MatDialogRef<PrintCVComponent>
   ) { }
 
   ngOnInit(): void {
@@ -56,16 +56,164 @@ export class PrintCVComponent implements OnInit {
     }
   }
 
-  printData(): void {
-    window.print();
-   //  this.onClickPrintReceipts()
+  printData2(): void {
+    this.onClickPrintReceipts()
   }
 
-  
-proceed(): void {
-  this.dialogRef.close();
-  this.router.navigate(['/home']);
+  printData(): void {
+  const printContents = document.getElementById('print-content')?.innerHTML;
+  if (!printContents) return;
+
+  const popupWin = window.open('', '_blank', 'width=800,height=900,scrollbars=no,resizable=no');
+  if (!popupWin) return;
+
+  popupWin.document.open();
+  popupWin.document.write(`
+    <html>
+      <head>
+        <title>PrintCV</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h2 { color: #333; }
+          .logo img { width: 100%; height: 100px; object-fit: contain; }
+          .logos img { width: 2in; height: 2in; object-fit: cover; }
+          .logo { width: 100%; height: 100px; }
+          .cv-header { width: 100%; display: flex; justify-content: center; background-color: white; }
+          .cv-header .logo { width: 100%; }
+          .cv-header .logo img { width: 100%; height: auto; object-fit: contain; }
+          .data-item { display: flex; justify-content: space-between; font-family: Verdana, sans-serif; font-size: 16px; margin-bottom: 1px; }
+          .label { font-weight: bold; text-align: left; color: #808080; width: 190px; }
+          .value { text-align: left; flex: 1; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; margin-right: auto; }
+          .header img { width: 150px; height: 150px; border-radius: 8px; object-fit: cover; }
+          .header-content { display: flex; flex-direction: column; }
+          .header-content p { margin: 2px 0; font-size: 16px; }
+          .header-content strong { text-transform: uppercase; }
+        </style>
+      </head>
+      <body onload="window.print();window.close()">
+        ${printContents}
+      </body>
+    </html>
+  `);
+  popupWin.document.close();
 }
+
+
+  // printData(): void {
+  //   let printContents = document.getElementById('print-content')?.innerHTML;
+  //   if (!printContents) return;
+
+  //   let popupWin = window.open('', 'PrintCV', 'width=600,height=800');
+  //   popupWin?.document.open();
+  //   popupWin?.document.write(`
+  //   <html>
+  //     <head>
+  //       <title>Print Preview</title>
+  //       <style>
+  //         body { 
+  //         font-family: Arial, sans-serif; padding: 20px; }
+  //         h2 {color: #333; 
+  //           }   
+  //           .logo img {
+  //             width: 100%;
+  //             height: 100px;
+  //             object-fit: contain;
+  //           }
+
+  //           .logos img {
+  //             width: 2in; /* 2 inches wide */
+  //             height: 2in; /* 2 inches tall */
+  //             object-fit: cover; /* Ensures the image fits without distortion */
+  //           }
+
+  //           .logo {
+  //             width: 100%;
+  //             height: 100px;
+  //           }
+  //           .cv-header {
+  //             width: 100%;
+  //             display: flex;
+  //             justify-content: center; /* Centers logo horizontally */
+  //             background-color: white; /* Optional: Set background */
+  //           }
+
+  //           .cv-header .logo {
+  //             width: 100%; /* Full width container */
+  //           }
+
+  //           .cv-header .logo img {
+  //             width: 100%; /* Make image span full container width */
+  //             height: auto; /* Keep aspect ratio */
+  //             object-fit: contain; /* Prevent distortion */
+  //           }
+
+  //           /* Data item layout */
+  //           .data-item {
+  //             display: flex;
+  //             justify-content: space-between;
+  //             font-family: Verdana, sans-serif;
+  //             font-size: 16px;
+  //             margin-bottom: 1px;
+  //           }
+
+  //           .label {
+  //             font-weight: bold;
+  //             text-align: left;
+  //             color: #808080;
+  //             width: 190px; /* Fixed width for alignment */
+  //           }
+
+  //           .value {
+  //             text-align: left;
+  //             flex: 1; /* Let value section expand naturally */
+  //           }
+
+  //           /* Header section */
+  //           .header {
+  //             display: flex;
+  //             justify-content: space-between; /* Pushes items left and right */
+  //             align-items: flex-start; /* Top alignment */
+  //             margin-right: auto;
+  //           }
+
+  //           .header img {
+  //             width: 150px;
+  //             height: 150px;
+  //             border-radius: 8px;
+  //             object-fit: cover;
+  //           }
+
+  //           .header-content {
+  //             display: flex;
+  //             flex-direction: column;
+  //           }
+
+  //           .header-content p {
+  //             margin: 2px 0; /* Fixed margin shorthand */
+  //             font-size: 16px;
+  //           }
+
+  //           .header-content strong {
+  //             text-transform: uppercase;
+  //           }
+
+  //       </style>
+  //     </head>
+  //     <body onload="window.print();window.close()">
+  //       ${printContents}
+  //     </body>
+  //   </html>
+  // `);
+  //   popupWin?.document.close();
+  // }
+
+
+
+  proceed(): void {
+    this.dialogRef.close();
+    this.router.navigate(['/home']);
+  }
 
   onClickPrintReceipts(): void {
     const url = this.router.serializeUrl(this.router.createUrlTree(['print/printcv']));
@@ -77,4 +225,7 @@ proceed(): void {
     const x = win.screenX + (win.outerWidth - w) / 2;
     return win.open(url, windowName, `width=${w}, height=${h}, top=${y}, left=${x}`);
   }
+
+
+
 }
