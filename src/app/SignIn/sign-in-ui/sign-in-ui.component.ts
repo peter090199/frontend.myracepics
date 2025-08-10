@@ -221,7 +221,6 @@ export class SignInUIComponent implements OnInit {
           // this.router.navigate([targetRoute]).then(() => location.reload());
         } else {
           this.notificationService.toastPopUpError(res.message);
-          this.router.navigateByUrl("/user-cv")
         }
       },
       error: (err) => {
