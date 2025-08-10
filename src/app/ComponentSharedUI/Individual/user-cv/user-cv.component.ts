@@ -28,6 +28,7 @@ import { AddEditLanguageComponent } from '../ProfessionalDev/Edit/add-edit-langu
 import { ViewLanguageUIComponent } from '../Languange/view-language-ui/view-language-ui.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PrintCVComponent } from '../print-cv/print-cv.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 
@@ -61,7 +62,7 @@ export class UserCVComponent implements AfterViewInit {
 
   formEducation: any[] = [];
   formSeminar: any[] = [];
-  formTraining: any= [];
+  formTraining: any = [];
   formCertificate: any[] = [];
   formWorkExperience: any[] = [];
   formSkills: any[] = [];
@@ -141,7 +142,7 @@ export class UserCVComponent implements AfterViewInit {
     private cvService: CurriculumVitaeService,
     private notificationService: NotificationsService, private router: Router, private datePipe: DatePipe,
     private dialog: MatDialog, private passDataServices: ProfessionalService, private alert: NotificationsService,
-    private profileService: ProfessionalService, private educacationServices: CurriculumVitaeService,
+    private profileService: ProfessionalService, private educacationServices: CurriculumVitaeService, private authServiceCode: AuthService
   ) {
     this.countryControl1.valueChanges.subscribe(value => {
       this.filteredCountries1 = this.filterCountries(value);
@@ -185,25 +186,25 @@ export class UserCVComponent implements AfterViewInit {
     });
   }
 
-isLoading2:boolean = false;
-loadCertificateData() {
-  this.isLoading2 = true;
-  this.cvService.getCertificates().subscribe({
-    next: (res) => {
-      this.isLoading2 = false;
-      if (res.success == true) {
-        this.formCertificate = res.data; // ensure it's always an array
-      } else {
+  isLoading2: boolean = false;
+  loadCertificateData() {
+    this.isLoading2 = true;
+    this.cvService.getCertificates().subscribe({
+      next: (res) => {
+        this.isLoading2 = false;
+        if (res.success == true) {
+          this.formCertificate = res.data; // ensure it's always an array
+        } else {
+          this.formCertificate = [];
+          this.alert.toastrWarning(res.message);
+        }
+      },
+      error: () => {
+        this.isLoading2 = false;
         this.formCertificate = [];
-        this.alert.toastrWarning(res.message);
       }
-    },
-    error: () => {
-      this.isLoading2 = false;
-      this.formCertificate = [];
-    }
-  });
-}
+    });
+  }
 
   loadTrainingData(): void {
     this.isLoading = true;
@@ -247,7 +248,7 @@ loadCertificateData() {
     });
   }
 
- isLoading3:boolean =false;
+  isLoading3: boolean = false;
   loadWorkExperienceData(): void {
     this.isLoading3 = true;
 
@@ -413,80 +414,80 @@ loadCertificateData() {
 
   // }
 
-removeSeminar(data: any): void {
-  this.alert.popupWarning(data.seminar_title, "Are you sure to delete this seminar?")
-    .then((result) => {
-      if (result.value) {
-        this.isLoading = true;
-        this.cvService.deleteSeminar(data.id).subscribe({
-          next: (res) => {
-            this.isLoading = false;
-            if (res.success) {
-              this.alert.toastrSuccess(res.message);
-              this.loadSeminarData(); // ✅ Only reload if delete was successful
-            } else {
-              this.alert.toastrError(res.message);
+  removeSeminar(data: any): void {
+    this.alert.popupWarning(data.seminar_title, "Are you sure to delete this seminar?")
+      .then((result) => {
+        if (result.value) {
+          this.isLoading = true;
+          this.cvService.deleteSeminar(data.id).subscribe({
+            next: (res) => {
+              this.isLoading = false;
+              if (res.success) {
+                this.alert.toastrSuccess(res.message);
+                this.loadSeminarData(); // ✅ Only reload if delete was successful
+              } else {
+                this.alert.toastrError(res.message);
+              }
+            },
+            error: (error) => {
+              this.isLoading = false;
+              this.alert.toastrError(error.error || 'Delete failed.');
             }
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.alert.toastrError(error.error || 'Delete failed.');
-          }
-        });
-      }
-    });
-}
+          });
+        }
+      });
+  }
 
 
-removeTraining(data: any): void {
-  this.alert.popupWarning(data.training_title, "Are you sure to delete this training?")
-    .then((result) => {
-      if (result.value) {
-        this.isLoading = true;
-        this.cvService.deleteTraining(data.id).subscribe({
-          next: (res) => {
-            this.isLoading = false;
-            if (res.success) {
-              this.alert.toastrSuccess(res.message);
-            } else {
-              this.alert.toastrError(res.message);
+  removeTraining(data: any): void {
+    this.alert.popupWarning(data.training_title, "Are you sure to delete this training?")
+      .then((result) => {
+        if (result.value) {
+          this.isLoading = true;
+          this.cvService.deleteTraining(data.id).subscribe({
+            next: (res) => {
+              this.isLoading = false;
+              if (res.success) {
+                this.alert.toastrSuccess(res.message);
+              } else {
+                this.alert.toastrError(res.message);
+              }
+              this.loadTrainingData();
+            },
+            error: (error) => {
+              this.isLoading = false;
+              this.alert.toastrError(error.error || 'Delete failed.');
             }
-             this.loadTrainingData();
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.alert.toastrError(error.error || 'Delete failed.');
-          }
-        });
-      }
-    });
-}
+          });
+        }
+      });
+  }
 
 
-removeCertificate(data: any): void {
-  this.alert.popupWarning(data.certificate_title, "Are you sure to delete this certificate?")
-    .then((result) => {
-      if (result.value) {
-        this.isLoading = true;
-        this.cvService.deleteCertificate(data.id).subscribe({
-          next: (res) => {
-            this.isLoading = false;
-            if (res.success) {
-              this.alert.toastrSuccess(res.message);
+  removeCertificate(data: any): void {
+    this.alert.popupWarning(data.certificate_title, "Are you sure to delete this certificate?")
+      .then((result) => {
+        if (result.value) {
+          this.isLoading = true;
+          this.cvService.deleteCertificate(data.id).subscribe({
+            next: (res) => {
+              this.isLoading = false;
+              if (res.success) {
+                this.alert.toastrSuccess(res.message);
                 this.loadCertificateData();
-            } else {
-              this.alert.toastrError(res.message);
+              } else {
+                this.alert.toastrError(res.message);
+              }
+              this.loadCertificateData();
+            },
+            error: (error) => {
+              this.isLoading = false;
+              this.alert.toastrError(error.error || 'Delete failed.');
             }
-             this.loadCertificateData();
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.alert.toastrError(error.error || 'Delete failed.');
-          }
-        });
-      }
-    });
-}
+          });
+        }
+      });
+  }
 
   // removeTraining(index: number) {
   //   this.alert.toastrSuccess("Successfuly Deleted!")
@@ -504,53 +505,53 @@ removeCertificate(data: any): void {
   // }
 
   removeWorkExp(data: any): void {
-  this.alert.popupWarning(data.company_name, "Are you sure to delete this company_name?")
-    .then((result) => {
-      if (result.value) {
-        this.isLoading3 = true; // ✅ Show loading indicator
-        this.educacationServices.deleteEmployment(data.id).subscribe({
-          next: (res) => {
-            this.isLoading3 = false;
-            if (res.success === true) {
-              this.alert.toastrSuccess(res.message);
-              this.loadWorkExperienceData(); // ✅ Load updated list only on success
-            } else {
-              this.alert.toastrError(res.message);
+    this.alert.popupWarning(data.company_name, "Are you sure to delete this company_name?")
+      .then((result) => {
+        if (result.value) {
+          this.isLoading3 = true; // ✅ Show loading indicator
+          this.educacationServices.deleteEmployment(data.id).subscribe({
+            next: (res) => {
+              this.isLoading3 = false;
+              if (res.success === true) {
+                this.alert.toastrSuccess(res.message);
+                this.loadWorkExperienceData(); // ✅ Load updated list only on success
+              } else {
+                this.alert.toastrError(res.message);
+              }
+            },
+            error: (error) => {
+              this.isLoading3 = false;
+              this.alert.toastrError(error.error || 'Failed to delete skill.');
             }
-          },
-          error: (error) => {
-            this.isLoading3 = false;
-            this.alert.toastrError(error.error || 'Failed to delete skill.');
-          }
-        });
-      }
-    });
-}
+          });
+        }
+      });
+  }
 
 
-removeSkills(data: any): void {
-  this.alert.popupWarning(data.skills, "Are you sure to delete this skill?")
-    .then((result) => {
-      if (result.value) {
-        this.isLoading = true; // ✅ Show loading indicator
-        this.educacationServices.deleteSkills(data.id).subscribe({
-          next: (res) => {
-            this.isLoading = false;
-            if (res.success === true) {
-              this.alert.toastrSuccess(res.message);
-              this.loadSkills(); // ✅ Load updated list only on success
-            } else {
-              this.alert.toastrError(res.message);
+  removeSkills(data: any): void {
+    this.alert.popupWarning(data.skills, "Are you sure to delete this skill?")
+      .then((result) => {
+        if (result.value) {
+          this.isLoading = true; // ✅ Show loading indicator
+          this.educacationServices.deleteSkills(data.id).subscribe({
+            next: (res) => {
+              this.isLoading = false;
+              if (res.success === true) {
+                this.alert.toastrSuccess(res.message);
+                this.loadSkills(); // ✅ Load updated list only on success
+              } else {
+                this.alert.toastrError(res.message);
+              }
+            },
+            error: (error) => {
+              this.isLoading = false;
+              this.alert.toastrError(error.error || 'Failed to delete skill.');
             }
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.alert.toastrError(error.error || 'Failed to delete skill.');
-          }
-        });
-      }
-    });
-}
+          });
+        }
+      });
+  }
 
   userData: any;
   error: any;
@@ -607,26 +608,44 @@ removeSkills(data: any): void {
   filteredCountries2: { name: string }[] = this.countries;
 
   isImageSelected: boolean = false;
-
+  currentUserCode: any;
   ngOnInit(): void {
+    this.currentUserCode = this.authServiceCode.getAuthCode();
+    this.loadProfileCV();
+
     this.initializeFormGroups();
 
     this.firstFormGroup.get('date_birth')?.valueChanges.subscribe(() => {
       this.validateAge();
     });
-
     this.loadProfile1();
     this.loadProfile2();
-
     this.loadEducationData();
     this.loadSkills();
     this.loadSeminarData();
     this.loadTrainingData();
     this.loadCertificateData();
     this.loadWorkExperienceData();
+    
   }
 
+  profiles: any;
+  loadProfileCV() {
+    this.userService.getProfileByBasicInfo().subscribe({
+      next: (response) => {
+        if (response.success == true) {
+          this.profiles = response.data.code;
+          console.log(this.profiles)
 
+        } else {
+          this.error = 'Failed to load profile data';
+        }
+      },
+      error: (err) => {
+        this.error = err.message || 'An error occurred while fetching profile data';
+      },
+    });
+  }
   displayFn(user: User): string {
     return user && user.name ? user.name : '';
   }
@@ -635,6 +654,9 @@ removeSkills(data: any): void {
     return user && user.name ? user.name : '';
   }
 
+  clickToBack() {
+    this.router.navigateByUrl("/home");
+  }
 
   filterCountries(value: string): any[] {
     const filterValue = value?.toLowerCase() || '';
@@ -1335,8 +1357,8 @@ removeSkills(data: any): void {
     });
   }
 
-  previewAndFinish2(){
-      this.router.navigate(['/home']);
+  previewAndFinish2() {
+    this.router.navigate(['/home']);
   }
 
   previewAndFinish() {
@@ -1347,7 +1369,7 @@ removeSkills(data: any): void {
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-      //  this.previewAndFinish2();
+        //  this.previewAndFinish2();
       }
     });
   }

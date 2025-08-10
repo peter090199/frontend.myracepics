@@ -73,7 +73,7 @@ export class PrintCVComponent implements OnInit {
       <head>
         <title>PrintCV</title>
         <style>
-          body { font-family: Arial, sans-serif; padding: 20px; }
+          body { font-family: Arial, sans-serif; padding: 20px;}
           h2 { color: #333; }
           .logo img { width: 100%; height: 100px; object-fit: contain; }
           .logos img { width: 2in; height: 2in; object-fit: cover; }
@@ -89,6 +89,9 @@ export class PrintCVComponent implements OnInit {
           .header-content { display: flex; flex-direction: column; }
           .header-content p { margin: 2px 0; font-size: 16px; }
           .header-content strong { text-transform: uppercase; }
+          .cv-section h2 {font-size: 20px;font-weight: 600;margin-top: 20px;margin-bottom: 10px;padding-bottom: 4px; border-bottom: 2px solid #ccc;color: #444;
+  }
+
         </style>
       </head>
       <body onload="window.print();window.close()">
