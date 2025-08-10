@@ -1,16 +1,18 @@
-  <div id="print-content" class="print-content">
-    <div class="button-gaps">
-      <button mat-raised-button color="warn" (click)="printData()">
-        <mat-icon>print</mat-icon> Print CV
-      </button>
-      <button mat-raised-button color="primary" class="no-print" (click)="proceed()">
-        Proceed..
-      </button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">
-        Cancel
-      </button>
+    <div class="button-end">
+    <button mat-raised-button color="warn" (click)="printData()">
+      <mat-icon>print</mat-icon> Print CV
+    </button>
+    <button mat-raised-button color="primary" (click)="proceed()">
+      Proceed..
+    </button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="true">
+      Cancel
+    </button>
+  </div>
 
-    </div>
+  
+  <div id="print-content" class="print-content">
+
 
     <header class="cv-header">
       <div class="logo">

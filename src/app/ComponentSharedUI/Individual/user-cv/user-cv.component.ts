@@ -1341,9 +1341,8 @@ removeSkills(data: any): void {
 
   previewAndFinish() {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '90%';
+    dialogConfig.width = '900px';
     dialogConfig.height = '600px';
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {

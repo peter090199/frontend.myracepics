@@ -508,7 +508,7 @@ currentUserCode:any;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '90%';
+    dialogConfig.width = '100%';
     dialogConfig.height = '600px';
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
