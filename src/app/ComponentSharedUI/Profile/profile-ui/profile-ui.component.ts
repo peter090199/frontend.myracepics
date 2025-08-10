@@ -4,7 +4,7 @@ import { ProfileService } from 'src/app/services/Profile/profile.service';
 import { UploadProfileComponent } from '../../Individual/upload-profile/upload-profile.component';
 import { UserCVComponent } from '../../Individual/user-cv/user-cv.component';
 import { UserProfileUiComponent } from '../../Individual/user-profile-ui/user-profile-ui.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthGuard } from 'src/app/AuthGuard/auth.guard';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
 import { CommentService } from 'src/app/services/comment/comment.service';
@@ -42,7 +42,7 @@ export class ProfileUIComponent implements OnInit {
             private profile:ProfileService,public dialog:MatDialog,
             private route: ActivatedRoute,private authService: AuthGuard, private authServiceCode: AuthService,
             private postDataservices:PostUploadImagesService,private comment:CommentService,
-            private alert:NotificationsService,private clientServices:ClientsService
+            private alert:NotificationsService,private clientServices:ClientsService,private router:Router
 
   ) { }
  
@@ -249,21 +249,24 @@ loadMoreComments(post: any): void {
     });
   }
 
-  
   UserCV() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = '1000px';
-    dialogConfig.height = '690px';
-  //  dialogConfig.data = element || null; // Pass user data
-    
-    const dialogRef = this.dialog.open(UserProfileUiComponent, dialogConfig);
-  
-    dialogRef.afterClosed().subscribe(() => {
-      
-    });
+    this.router.navigateByUrl("/user-cv")
   }
+  
+  // UserCV() {
+  //   const dialogConfig = new MatDialogConfig();
+  //   dialogConfig.disableClose = true;
+  //   dialogConfig.autoFocus = true;
+  //   dialogConfig.width = '1000px';
+  //   dialogConfig.height = '690px';
+  // //  dialogConfig.data = element || null; // Pass user data
+    
+  //   const dialogRef = this.dialog.open(UserProfileUiComponent, dialogConfig);
+  
+  //   dialogRef.afterClosed().subscribe(() => {
+      
+  //   });
+  // }
 
   // UserCV() {
   //   const dialogConfig = new MatDialogConfig();
