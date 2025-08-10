@@ -2,12 +2,12 @@
   <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
 
-<h2 mat-dialog-title>Language</h2>
+<h2 mat-dialog-title>Skills</h2>
 <mat-divider></mat-divider>
   
   <mat-form-field class="example-chip-list" appearance="standard">
-    <mat-label>Add Language</mat-label>
-    <mat-chip-list #chipList aria-label="Language selection">
+    <mat-label>Add Skills</mat-label>
+    <mat-chip-list #chipList aria-label="Skills selection">
       <mat-chip
         *ngFor="let skills of skills"
         (removed)="remove(skills)">
@@ -17,7 +17,7 @@
         </button>
       </mat-chip>
       <input
-        placeholder="Add language..."
+        placeholder="Add Skills..."
         #languageInput
         [formControl]="skillsCtrl"
         [matAutocomplete]="auto"

@@ -1348,7 +1348,7 @@ removeSkills(data: any): void {
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.previewAndFinish2();
+      //  this.previewAndFinish2();
       }
     });
   }

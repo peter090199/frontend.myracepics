@@ -513,7 +513,7 @@ currentUserCode:any;
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-
+          
       }
     });
   }

@@ -58,6 +58,7 @@ export class PrintCVComponent implements OnInit {
 
   printData(): void {
     window.print();
+   //  this.onClickPrintReceipts()
   }
 
   
