@@ -3,6 +3,33 @@
   max-height: 70vh;
   overflow-y: auto;
 }
+.isLoading {
+  position: fixed;          /* Overlay the whole screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7); /* Light overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Keep it above other elements */
+}
+.no-data {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #777; /* neutral grey */
+  font-style: italic;
+}
+
+.no-data::before {
+  content: "⚠ ";
+  font-size: 18px;
+  color: #999;
+}
+
 
 @media (max-width: 768px) { /* Adjust breakpoint as needed */
   .tabs-container {

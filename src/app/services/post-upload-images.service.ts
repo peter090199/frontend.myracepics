@@ -55,14 +55,14 @@ export class PostUploadImagesService {
 
     uploadImages(formData:FormData): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post<any>(`${_url}post`, formData, { headers });
+    return this.http.post<any>(`${_url}savePost`, formData, { headers });
     }
 
 
     getDataPostAddFollow(): Observable<any> {
       const headers = this.createHeaders();
      // const params = new HttpParams().set('code', code); // Set code as query param
-      return this.http.get(`${_url}follow`, { headers });
+      return this.http.get(`${_url}getPost`, { headers });
     }
     
     likePost(postId: number, liked: boolean) {

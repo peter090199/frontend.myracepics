@@ -27,7 +27,12 @@ textarea {
   overflow-y: auto; /* Show scrollbar when needed */
   resize: vertical; /* Allow user to resize vertically */
 }
-
+.form-container{
+   max-height: 90vh;   /* adjust to your preference */
+  overflow-y: auto;   /* vertical scroll when content exceeds max-height */
+  padding: 20px;
+  overflow-x: hidden;
+}
 
 /* Close Button Alignment */
 .button-end {
@@ -193,4 +198,55 @@ textarea {
   mat-form-field {
     font-size: 18px;
   }
+}
+.video-player-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  background: black;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+video {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+}
+
+.overlay-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6);
+  border: none;
+  border-radius: 50%;
+  padding: 16px;
+  color: white;
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.7);
+  padding: 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.controls input[type="range"] {
+  flex-grow: 1;
+  margin: 0 10px;
+  cursor: pointer;
 }

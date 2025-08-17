@@ -14,6 +14,7 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { ImageModalComponent } from '../../Modal/image-modal/image-modal.component';
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
+import { ClientsService } from 'src/app/services/Networking/clients.service';
 
 @Component({
   selector: 'app-home-ui',
@@ -49,6 +50,8 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedReaction: any;
   selectedReactions: { [postId: string]: any } = {};
   reactionList: any = [];
+  users: any = [];
+
   displayedReactions: {
     name: string;
     count: number;
@@ -82,9 +85,9 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private router: Router, private profile: ProfileService, private photo: CurriculumVitaeService,
     private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
     private authService: AuthService, private alert: NotificationsService, private comment: CommentService,
-    private ngZone: NgZone,private reactionService:ReactionEmojiService
+    private ngZone: NgZone,private reactionService:ReactionEmojiService,private clientsService:ClientsService
   ) {
-
+      this.getPeopleRecentActivity();
   }
 
   modalOpen = false;
@@ -100,8 +103,9 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   get totalPages() {
     return Math.ceil(this.post.posts.length / this.pageSize);
   }
-
+  menuOpened:boolean = false;
   selectedImages: any;
+
   openModal(data: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
         data: data,
@@ -403,19 +407,43 @@ currentUserCode:any;
     return `${diffInHours} hours ago`;
   }
 
+loadUserPost(): void {
+  this.isLoading = true;
 
-  loadUserPost(): void {
-    // if (!this.currentUserCode) {
-    //   console.log(this.currentUserCode)
-    //   this.alert.popupWarning("Usercode is ", "undefined, cannot load posts.")
-    //   return;
-    // }
+  this.postDataservices.getDataPostAddFollow().subscribe({
+    next: (res: any) => {
+      if (res.success && Array.isArray(res.data)) {
+        this.posts = res.data.map((post: any) => ({
+          ...post,
+          expanded: false, // for caption see more/less
+          images: post.images || [],
+          videos: post.videos || []
+        }));
 
+        // Fix video URLs
+        this.posts.forEach(post => {
+          if (post.videos && post.videos.length > 0) {
+            post.videos.forEach((video: { path_url: string; }) => {
+              video.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com' + video.path_url.replace(/\\/g, '');
+            });
+          }
+        });
+      }
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Error fetching posts:', err);
+      this.isLoading = false;
+    }
+  });
+}
 
+  loadUserPostx(): void {
     this.isLoading = true;
 
     this.postDataservices.getDataPostAddFollow().subscribe(
       (data) => {
+      
         if (data && Array.isArray(data)) {
           this.posts = data.map(post => ({
             ...post,
@@ -857,53 +885,107 @@ getReactionPost_uuidOrUuid(post_uuidOrUind: any): void {
   });
 }
 
-  //save react
-  // saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
-  //   const payload = {
-  //     reaction: reaction
-  //   };
-  //   this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
-  //     next: (res) => {
-  //       //     console.log('✅ Reaction response:', res);
-  //       this.getReactionPost_uuidOrUuid(); // Make sure this method exists
-  //     },
-  //     error: () => {
-  //        this.errorMsg();
-  //     }
-  //   });
-  // }
+peopleRecentActivity:any=[];
+getPeopleRecentActivity(): void {
+  if (this.isLoading) return;
 
-// getReactionPost_uuidOrUuid(post_uuidOrUuid: any) {
-//   const currentUserCode = this.authService.getAuthCode();
+  this.isLoading = true;
+  this.currentUserCode = this.authService.getAuthCode();
 
-//   this.reactionService.getReactionPost_uuidOrUuid(post_uuidOrUuid).subscribe({
-//     next: (res) => {
-//       const reactionList = res.reaction || [];
+  this.clientsService.getPeopleRecentActivity().subscribe({
+    next: (res) => {
+      this.users = res.data;
+      // const newData = res.data.map((person: any) => ({
+      //   ...person,
+      //   follow_status: person.follow_status || 'not_following',
+      //   follow_id: null
+      // }));
 
-//       this.reactionsMap[post_uuidOrUuid] = reactionList.slice(0, 5).map((r: { reaction: any; count: any; person: any; }, i: any) => {
-//        this.reactions.find(e => e.reaction === r.reaction);
-//         return {
-//           name: r.reaction,
-//           count: r.count,
-//           index: i,
-//           users: r.person || []
-//         };
-//       });
-//       this.selectedReaction = this.displayedReactions.find(r =>
-//           r.users.some(u => u.code === Number(currentUserCode)) // Convert string to number
-//         ) || null;
+      // this.users.push(...newData);
+      // this.page++;
+      this.isLoading = false;
 
-//       // Optionally track selectedReaction per post if needed
-//     },
-//     error: () => {
-//       this.errorMsg();
-//     }
-//   });
-// }
+    },
+    error: (err) => {
+      console.error('Error loading suggestions:', err);
+      this.alert.toastrError('❌ Failed to load suggestions.');
+      this.isLoading = false;
+    }
+  });
+}
 
+ 
+
+  loadClients(): void {
+    this.isLoading = true;
+    this.clientsService.getPeopleRecentActivity().subscribe({
+      next: (res) => {
+        this.users = res.data;
+        console.log(this.users)
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.isLoading = false;
+      }
+    });
+
+  }
 
   errorMsg(){
      this.alert.toastrError('❌ Error updating reaction:')
   }
+
+   AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
+    if (!code) {
+      this.alert.toastrWarning('⚠️ No user code provided.');
+      return;
+    }
+
+    const currentStatus = follow_status || 'none';
+    let confirmMessage = '';
+    let successAction = '';
+
+    switch (currentStatus) {
+      case 'not_following':
+        confirmMessage = 'Send a follow request to this user?';
+        successAction = 'Follow request sent.';
+        break;
+      case 'pending':
+        confirmMessage = 'Cancel your pending follow request?';
+        successAction = 'Follow request canceled.';
+        break;
+      case 'accepted':
+        confirmMessage = 'Unfollow this user?';
+        successAction = 'Unfollowed successfully.';
+        break;
+    }
+
+    this.alert.popupWarning(fullName, confirmMessage).then((result) => {
+      if (result.value) {
+        const action$ = currentStatus === 'accepted'
+          ? this.profile.Unfollow(id)
+          : this.profile.AddFollow(code);
+
+        action$.subscribe({
+          next: (res) => {
+            if (res.status === true || res.success === true) {
+              this.alert.toastrSuccess(successAction);
+              this.getPeopleRecentActivity();
+            } else {
+              this.alert.toastrError(res.message || 'Action failed.');
+            }
+          },
+          error: (err) => {
+            this.alert.toastrError(err.error?.message || 'Something went wrong.');
+            console.error(err);
+          }
+        });
+      }
+    });
+  }
+
+
+
 }
 

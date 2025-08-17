@@ -281,18 +281,15 @@ mat-card.users-list {
 .right-column {
   top: 0;
   right: 0;
-  width: 380px;
-  min-height: auto;
-  max-height: 90vh;
+  width: 95%;
+  max-height: 70vh;
   overflow-y: auto;
-  padding: 15px;
+  padding: 10px;
   background-color: #f9f9f9;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  margin: 40px;
-  margin-top: 100px;
+  margin-top: 40px;
   border-radius: 10px;
-  position: fixed;
 }
 
 .right-column::-webkit-scrollbar {
@@ -668,30 +665,4 @@ button {
 
 .client-action button {
   min-width: 110px;
-}
-
-
-/* ===== MOBILE VIEW ===== */
-@media (max-width: 768px) {
-  .left-sidebar {
-    position: fixed;
-    top: 0;
-    left: -100%; /* hidden by default */
-    width: 80%;
-    max-width: 320px;
-    height: 100vh;
-    background: #fff;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
-    border-radius: 0 10px 10px 0;
-    padding: 20px;
-    z-index: 2000;
-    transition: left 0.3s ease-in-out; /* smooth slide */
-  }
-
-  /* When active (menu open) */
-  .left-sidebar.active {
-    left: 0;
-  }
-
-
 }

@@ -28,9 +28,14 @@
 
              <button
                 mat-flat-button
-                color="primary"
+               [color]="
+                  followStatus === 'accepted'
+                    ? 'accent'
+                    : followStatus === 'pending'
+                    ? 'warn'
+                    : 'primary'"
                 *ngIf="currentUserCode !== this.code"
-                [disabled]="followStatus === 'pending'"
+        
        
                 (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)"
               >

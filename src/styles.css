@@ -102,10 +102,12 @@ app-footer {
   }
 }
 
-html, body {
-  margin: 0px;
-  padding: 0; 
+html, body, div {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
 
 section{
     margin-top: 0px;
@@ -709,8 +711,10 @@ h2{
   display: flex;       /* Sets the container to a flexbox layout */
   flex-wrap: wrap;     /* Allows items to wrap to the next line if necessary */
   gap: 10px;           /* Adds consistent spacing between items */
-  margin-top: 0;       /* Removes any extra margin; 'px' is optional for zero values */
+  margin-top: 0;
+  padding: 20px;       /* Removes any extra margin; 'px' is optional for zero values */
 }
+
 
 
 .logo-container {
@@ -1634,4 +1638,36 @@ mat-card-subtitle {
 /* Responsive button */
 button[mat-stroked-button] {
   width: 100%;
+}
+
+.video-player-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  background: black;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+video {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+}
+
+.post-images img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.post-videos .video-container {
+  margin-bottom: 12px;
+}
+
+.post-video {
+  width: 100%;
+  max-height: 400px;
 }

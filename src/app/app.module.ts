@@ -90,6 +90,7 @@ import { AllSuggestionsModalComponent } from './ComponentUI/networking/all-sugge
 import { PeopleandCompanyComponent } from './ComponentUI/networking/peopleand-company/peopleand-company.component';
 import { FollowingandFollowersComponent } from './ComponentUI/networking/followingand-followers/followingand-followers.component';
 import { PendingFollowingComponent } from './ComponentUI/networking/pending-following/pending-following.component';
+
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

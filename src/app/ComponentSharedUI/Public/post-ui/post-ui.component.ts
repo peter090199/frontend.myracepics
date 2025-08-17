@@ -52,14 +52,14 @@
 //         console.log('Received images in Post UI:', this.uploadedImages);
 //       }
 //     });
-    
+
 
 //   }
 
 //   postDataxxxx() {
 //   if (this.postForm.valid && this.selectedFiles.length > 0) {
 //     const formData = new FormData();
-    
+
 //     // Append files to FormData
 //     this.selectedFiles.forEach((file: File) => {
 //       formData.append('files[]', file, file.name);
@@ -84,7 +84,7 @@
 // postData() {
 //   if (this.postForm.valid) {
 //     const formData = new FormData();
-    
+
 //     // Append files to FormData
 //     this.uploadedImages.forEach((file: File) => {
 //       formData.append('files[]', file, file.name);
@@ -119,18 +119,18 @@
 //   postDataxxx() {
 //     if (this.postForm.valid) { // Make sure selectedFiles is not empty
 //       const formData = new FormData();
-      
+
 //       // // Append files to FormData
 //       // this.selectedFiles.forEach((file: File) => {
 //       //   formData.append('files[]', file, file.name); // Ensure you append the file and its name
 //       // });
-  
+
 //       formData.append('caption', this.postForm.value.caption);
 //       formData.append('status', this.postForm.value.status.toString()); // Ensure it's a string
 //       formData.append('posts', JSON.stringify(this.uploadedImages)); 
 //       console.log(formData)
 
-  
+
 //       return;
 
 //       // Send POST request to the Laravel backend
@@ -147,8 +147,8 @@
 //       console.error('Form is invalid or no files selected');
 //     }
 //   }
-  
-  
+
+
 //   postDataxx() {
 //     if (!this.postForm.valid) return;
 
@@ -160,7 +160,7 @@
 //     formData.append('caption', this.postForm.value.caption);
 //     formData.append('status', this.postForm.value.status);
 
-  
+
 //     // Send FormData to Laravel
 //     this.http.post('http://your-laravel-api.com/api/posts', formData).subscribe({
 //       next: (response) => {
@@ -183,7 +183,7 @@
 //   //         next: (response) => {
 //   //           if (response.success == true) {
 //   //             this.profiles = response.message; 
-           
+
 //   //           } else {
 //   //             this.error = 'Failed to load profile data';
 //   //           }
@@ -222,7 +222,8 @@ import { PostUploadImagesService } from 'src/app/services/post-upload-images.ser
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';  // Import HttpClient
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import { AuthService } from 'src/app/services/auth.service';
+
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 
 
@@ -234,11 +235,12 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class PostUIComponent implements OnInit {
   postForm!: FormGroup;
-  profiles: any = [];
+  profiles: any;
   error: any;
   selectedFiles: File[] = [];
   uploadedImages: File[] = [];  // This will hold the selected images
 
+  profiles2: any = []
   statusOptions = [
     { label: 'Public', value: 1 },
     { label: 'Private', value: 0 }
@@ -251,18 +253,18 @@ export class PostUIComponent implements OnInit {
     private imageUploadService: PostUploadImagesService,
     private fb: FormBuilder,
     private http: HttpClient,
-    private alert:NotificationsService,
-    private authService: AuthService
-  ) {}
+    private alert: NotificationsService,
+    private authService: ProfileService, private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit(): void {
+    this.loadUserProfile();
     this.loadUser();
-
     this.postForm = this.fb.group({
       caption: ['', Validators.required],
       status: ['', Validators.required] // Corrected here
     });
-    
+
 
     // Subscribe to the image upload service to update uploaded images
     this.imageUploadService.images$.subscribe((formData: FormData | null) => {
@@ -278,15 +280,28 @@ export class PostUIComponent implements OnInit {
     });
   }
 
-  
-getSelectedStatus() {
-  return this.statusOptions.find(option => option.value === this.postForm.get('status')?.value)?.label;
-}
+  getProfileImage(url: string): string {
+    if (!url) {
+      return 'assets/default-profile.png';
+    }
 
-  loadUser(){
-    this.authService.getData().subscribe({
-      next: (data) => {
-        this.profiles = data;
+    // If string contains https, extract it
+    const match = url.match(/https?:\/\/[^\s]+/);
+    return match ? match[0] : url;
+  }
+
+  getSelectedStatus() {
+    return this.statusOptions.find(option => option.value === this.postForm.get('status')?.value)?.label;
+  }
+
+  loadUserProfile(): void {
+    this.authService.getProfileByUserOnly().subscribe({
+      next: (res) => {
+        if (res.success == true) {
+          this.profiles2 = res.message;
+        } else {
+          console.error('⚠️ Failed to load user profile:', res.message);
+        }
       },
       error: (err) => {
         console.error('❌ Error fetching user data:', err);
@@ -294,26 +309,43 @@ getSelectedStatus() {
     });
   }
 
-  
+  loadUser() {
+    this.authService.getProfileByBasicInfo().subscribe({
+      next: (res) => {
+        this.profiles = res.data;
+
+      },
+      error: (err) => {
+        console.error('❌ Error fetching user data:', err);
+      },
+    });
+  }
+
+
   // Post data function
   postData() {
-    if (this.postForm.valid ) {
- 
+    if (this.postForm.valid) {
+
       const formData = new FormData();
       formData.append('caption', this.postForm.value.caption);
       formData.append('status', this.postForm.value.status.toString());
-  
+
       for (let file of this.uploadedImages) {
         formData.append('posts[]', file);
       }
+
+        // Append video (if any)
+    if (this.selectedVideoFile) {
+      formData.append('video', this.selectedVideoFile);
+    }
+
       this.imageUploadService.uploadImages(formData).subscribe({
         next: (res) => {
-          if(res.success == true) 
-          {
+          if (res.success == true) {
             this.alert.toastrSuccess(res.message);
             this.resetForm();
           }
-          
+
         },
         error: (error) => {
           console.error('Upload failed:', error);
@@ -329,6 +361,8 @@ getSelectedStatus() {
     this.uploadedImages = [];
     this.postForm.reset();
     this.imageUploadService.clearImages();
+    this.selectedVideoFile = null;
+    this.videoPreviewUrl = null;
   }
 
   // Upload image function
@@ -339,7 +373,7 @@ getSelectedStatus() {
     dialogConfig.width = '700px';
     const dialogRef = this.dialog.open(PostUploadImageComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(() => {
-     // this.closeDialog()
+      // this.closeDialog()
     });
 
 
@@ -352,8 +386,88 @@ getSelectedStatus() {
     // });
   }
 
+
+  selectedVideoFile: File | null = null;
+  videoPreviewUrl: SafeUrl | null = null;
+  onVideoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files[0] ? input.files[0] : null;
+
+    if (!file) {
+      this.selectedVideoFile = null;
+      this.videoPreviewUrl = null; // will show static sample
+      return;
+    }
+  
+    // optional basic validations
+    const maxSizeMB = 50;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      alert(`Video too large. Max ${maxSizeMB}MB.`);
+      input.value = '';
+      return;
+    }
+    if (!file.type.startsWith('video/')) {
+      alert('Please select a valid video file.');
+      input.value = '';
+      return;
+    }
+
+    this.selectedVideoFile = file;
+    const blobUrl = URL.createObjectURL(file);
+    this.videoPreviewUrl = this.sanitizer.bypassSecurityTrustUrl(blobUrl);
+  }
+
+
+  isPlaying = false;
+  videoPaused = true;
+  currentTime = 0;
+
+  toggleVideo(video: HTMLVideoElement) {
+    if (video.paused) {
+      video.play();
+      this.isPlaying = true;
+      this.videoPaused = false;
+    } else {
+      video.pause();
+      this.isPlaying = false;
+      this.videoPaused = true;
+    }
+  }
+
+  updateProgress(video: HTMLVideoElement) {
+    this.currentTime = video.currentTime;
+  }
+
+  seekVideo(video: HTMLVideoElement, event: any) {
+    video.currentTime = event.target.value;
+  }
+
+  formatTime(seconds: number): string {
+    if (!seconds) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+  }
+
+  onPause() {
+    this.isPlaying = false;
+    this.videoPaused = true;
+  }
+
+  toggleFullscreen(video: HTMLVideoElement) {
+    if (video.requestFullscreen) {
+      video.requestFullscreen();
+    } else if ((video as any).webkitEnterFullscreen) {
+      (video as any).webkitEnterFullscreen(); // Safari
+    }
+  }
+
+  onPlay() {
+    this.isPlaying = true;
+  }
+
   closeDialog() {
     this.dialogRef.close();  // Close the dialog
-    
+
   }
 }
