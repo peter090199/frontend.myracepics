@@ -290,6 +290,7 @@ export class PostUIComponent implements OnInit {
     return match ? match[0] : url;
   }
 
+
   getSelectedStatus() {
     return this.statusOptions.find(option => option.value === this.postForm.get('status')?.value)?.label;
   }
@@ -321,10 +322,11 @@ export class PostUIComponent implements OnInit {
     });
   }
 
-
-  // Post data function
+  isUploading: boolean = false;
+  uploadProgress: number = 0;
   postData() {
     if (this.postForm.valid) {
+      this.isUploading = true; // show progress bar
 
       const formData = new FormData();
       formData.append('caption', this.postForm.value.caption);
@@ -334,14 +336,49 @@ export class PostUIComponent implements OnInit {
         formData.append('posts[]', file);
       }
 
-        // Append video (if any)
-    if (this.selectedVideoFile) {
-      formData.append('video', this.selectedVideoFile);
+      if (this.selectedVideoFile) {
+        formData.append('video', this.selectedVideoFile);
+      }
+
+      this.imageUploadService.uploadImages(formData).subscribe({
+        next: (res) => {
+          this.isUploading = false; // hide progress bar
+          if (res.success == true) {
+            this.alert.toastrSuccess(res.message);
+            this.resetForm();
+          }
+        },
+        error: (error) => {
+          this.isUploading = false; // hide progress bar
+          console.error('Upload failed:', error);
+          this.alert.toastrWarning(error.error?.message || "Upload failed. Please try again.");
+        }
+      });
     }
+  }
+
+  postDataxx() {
+    if (this.postForm.valid) {
+      this.isUploading = true;
+      this.uploadProgress = 0;
+
+      const formData = new FormData();
+      formData.append('caption', this.postForm.value.caption);
+      formData.append('status', this.postForm.value.status.toString());
+
+      for (let file of this.uploadedImages) {
+        formData.append('posts[]', file);
+      }
+
+      // Append video (if any)
+      if (this.selectedVideoFile) {
+        formData.append('video', this.selectedVideoFile);
+      }
 
       this.imageUploadService.uploadImages(formData).subscribe({
         next: (res) => {
           if (res.success == true) {
+            this.isUploading = false;
             this.alert.toastrSuccess(res.message);
             this.resetForm();
           }
@@ -398,7 +435,7 @@ export class PostUIComponent implements OnInit {
       this.videoPreviewUrl = null; // will show static sample
       return;
     }
-  
+
     // optional basic validations
     const maxSizeMB = 50;
     if (file.size > maxSizeMB * 1024 * 1024) {
@@ -434,8 +471,12 @@ export class PostUIComponent implements OnInit {
     }
   }
 
+  progressValue = 0;
   updateProgress(video: HTMLVideoElement) {
     this.currentTime = video.currentTime;
+    if (video.duration > 0) {
+      this.progressValue = (video.currentTime / video.duration) * 100;
+    }
   }
 
   seekVideo(video: HTMLVideoElement, event: any) {

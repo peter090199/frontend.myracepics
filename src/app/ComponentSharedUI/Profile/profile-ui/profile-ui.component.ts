@@ -186,6 +186,8 @@ checkFollowStatus() {
             followers: post.followers || 0,
             visibleComments: 3, 
           }));
+
+          
         }
      
       },

@@ -18,4 +18,102 @@
     color: #005f9e;
     font-size: 18px;
   }
+
+  /* Center everything on the page */
+.coming-soon-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full screen */
+  text-align: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+}
+
+/* Heading */
+.coming-soon-container h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  color: #3f51b5;
+}
+
+/* Description */
+.coming-soon-container p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+/* Countdown */
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.time-box {
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transform: scale(0.9);
+  transition: transform 0.3s ease-in-out;
+}
+
+.time-box:hover {
+  transform: scale(1.1);
+}
+
+.time-box span {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+  color: #3f51b5;
+}
+
+.time-box small {
+  font-size: 14px;
+  color: #777;
+}
+
+/* === Animations === */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+.delay-1 { animation-delay: 0.5s; }
+.delay-2 { animation-delay: 1s; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Bounce */
+.bounce {
+  animation: bounceIn 1s ease;
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.2); opacity: 1; }
+  80%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* Button pulse */
+.pulse {
+  animation: pulseAnim 2s infinite;
+}
+
+@keyframes pulseAnim {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
   

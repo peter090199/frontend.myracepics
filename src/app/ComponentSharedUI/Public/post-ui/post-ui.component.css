@@ -28,6 +28,7 @@ textarea {
   resize: vertical; /* Allow user to resize vertically */
 }
 .form-container{
+  min-height: 500px;
    max-height: 90vh;   /* adjust to your preference */
   overflow-y: auto;   /* vertical scroll when content exceeds max-height */
   padding: 20px;

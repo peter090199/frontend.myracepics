@@ -21,8 +21,8 @@ import { ClientsService } from 'src/app/services/Networking/clients.service';
   templateUrl: './home-ui.component.html',
   styleUrls: ['./home-ui.component.css']
 })
-export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class HomeUIComponent implements OnInit, AfterViewInit {
+  maxImages: number = 5;
   error: any;
   profiles: any = [];
   profile_pic: any;
@@ -39,13 +39,13 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   autoSlideInterval: any;
   @Input() post: any = { posts: [] };
   @HostListener('window:resize', ['$event'])
-  maxImages: number = 3;
+
   usercode: any;
   private scrollInterval: any;
   selectedIndex = 0;
   post_uuidOrUind: any[] = [];
   uuidOrUind: any = [];
-  loadCommentStep: number = 2; 
+  loadCommentStep: number = 2;
   hoveredReaction: { reaction: string, emoji: string } | null = null;
   selectedReaction: any;
   selectedReactions: { [postId: string]: any } = {};
@@ -85,9 +85,9 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private router: Router, private profile: ProfileService, private photo: CurriculumVitaeService,
     private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
     private authService: AuthService, private alert: NotificationsService, private comment: CommentService,
-    private ngZone: NgZone,private reactionService:ReactionEmojiService,private clientsService:ClientsService
+    private ngZone: NgZone, private reactionService: ReactionEmojiService, private clientsService: ClientsService
   ) {
-      this.getPeopleRecentActivity();
+    this.getPeopleRecentActivity();
   }
 
   modalOpen = false;
@@ -103,16 +103,16 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
   get totalPages() {
     return Math.ceil(this.post.posts.length / this.pageSize);
   }
-  menuOpened:boolean = false;
+  menuOpened: boolean = false;
   selectedImages: any;
 
   openModal(data: any): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
-        data: data,
-        width: '80%', 
-        maxWidth: '80vw',
-        height: 'auto',  
-        minHeight: '60vh', 
+      data: data,
+      width: '80%',
+      maxWidth: '80vw',
+      height: 'auto',
+      minHeight: '60vh',
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -207,11 +207,11 @@ export class HomeUIComponent implements OnInit, OnDestroy, AfterViewInit {
     clearInterval(this.autoSlideInterval);
   }
 
-currentUserCode:any;
+  currentUserCode: any;
   ngOnInit(): void {
-     this.currentUserCode = this.authService.getAuthCode();
-    console.log('testcode ',this.currentUserCode)
-    
+    this.currentUserCode = this.authService.getAuthCode();
+    console.log('testcode ', this.currentUserCode)
+
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;
@@ -227,14 +227,14 @@ currentUserCode:any;
       post.visibleComments = this.loadCommentStep;
 
       if (!this.postReactions[post.posts_uuid]) {
-          this.postReactions[post.posts_uuid] = {
-            selectedReaction: null,
-            hoveredReaction: null,
-            showPopup: false,
-          };
-        }
+        this.postReactions[post.posts_uuid] = {
+          selectedReaction: null,
+          hoveredReaction: null,
+          showPopup: false,
+        };
+      }
 
-         
+
     });
 
     // if (this.posts.length > 0) {
@@ -255,13 +255,13 @@ currentUserCode:any;
   loadMoreComments(post: any) {
     post.visibleComments += 2;
   }
-  
-  
+
+
   getCode(): void {
     this.authService.getProfilecode().subscribe({
       next: (res) => {
         if (res.success && res.message.length > 0) {
-          this.usercode = res.message[0].code;
+          // this.usercode = res.message[0].code;
           this.loadUserPost();
         }
       },
@@ -407,43 +407,50 @@ currentUserCode:any;
     return `${diffInHours} hours ago`;
   }
 
-loadUserPost(): void {
-  this.isLoading = true;
+  loadUserPost(): void {
+    this.isLoading = true;
 
-  this.postDataservices.getDataPostAddFollow().subscribe({
-    next: (res: any) => {
-      if (res.success && Array.isArray(res.data)) {
-        this.posts = res.data.map((post: any) => ({
-          ...post,
-          expanded: false, // for caption see more/less
-          images: post.images || [],
-          videos: post.videos || []
-        }));
+    this.postDataservices.getDataPostAddFollow().subscribe({
+      next: (res: any) => {
+        if (res.success && Array.isArray(res.data)) {
+          this.posts = res.data.map((post: any) => ({
+            ...post,
+            expanded: false, // for caption see more/less
+            images: post.images || [],
+            videos: post.videos || []
+          }));
+            this.posts.forEach(post => {
+            if (post.images && post.images.length > 0) {
+              post.images.forEach((image: { path_url: string; }) => {
+                image.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com/' + image.path_url.replace(/\\/g, '');
+              });
+            }
+          });
+          // Fix video URLs
+          this.posts.forEach(post => {
+            if (post.videos && post.videos.length > 0) {
+              post.videos.forEach((video: { path_url: string; }) => {
+                video.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com/' + video.path_url.replace(/\\/g, '');
+              });
+            }
+          });
+        }
 
-        // Fix video URLs
-        this.posts.forEach(post => {
-          if (post.videos && post.videos.length > 0) {
-            post.videos.forEach((video: { path_url: string; }) => {
-              video.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com' + video.path_url.replace(/\\/g, '');
-            });
-          }
-        });
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching posts:', err);
+        this.isLoading = false;
       }
-      this.isLoading = false;
-    },
-    error: (err) => {
-      console.error('Error fetching posts:', err);
-      this.isLoading = false;
-    }
-  });
-}
+    });
+  }
 
   loadUserPostx(): void {
     this.isLoading = true;
 
     this.postDataservices.getDataPostAddFollow().subscribe(
       (data) => {
-      
+
         if (data && Array.isArray(data)) {
           this.posts = data.map(post => ({
             ...post,
@@ -541,7 +548,7 @@ loadUserPost(): void {
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-          
+
       }
     });
   }
@@ -562,8 +569,8 @@ loadUserPost(): void {
 
 
 
- 
- hideReactions() {
+
+  hideReactions() {
     this.showReactionsFor = null;
     this.hoveredReaction = null;
   }
@@ -572,28 +579,28 @@ loadUserPost(): void {
     return `menu-${index}`;
   }
 
- singleImage:any;
- multipleImages:any = [];
- 
-ngAfterViewInit(): void {
-  const currentPost = this.posts?.[this.currentIndex];
+  singleImage: any;
+  multipleImages: any = [];
 
-  if (!currentPost) {
-    console.warn('No current post found at index:', this.currentIndex);
-    return;
+  ngAfterViewInit(): void {
+    const currentPost = this.posts?.[this.currentIndex];
+
+    if (!currentPost) {
+      console.warn('No current post found at index:', this.currentIndex);
+      return;
+    }
+
+    this.post_uuidOrUind = currentPost.post_uuidOrUind;
+
+    if (currentPost.images?.length === 1) {
+      console.log('Only one image:', currentPost.images[0]);
+      this.singleImage = currentPost.images[0];
+      this.multipleImages = []; // Clear if previously set
+    } else {
+      this.singleImage = null; // Clear if previously set
+      this.multipleImages = currentPost.images || [];
+    }
   }
-
-  this.post_uuidOrUind = currentPost.post_uuidOrUind;
-
-  if (currentPost.images?.length === 1) {
-    console.log('Only one image:', currentPost.images[0]);
-    this.singleImage = currentPost.images[0];
-    this.multipleImages = []; // Clear if previously set
-  } else {
-    this.singleImage = null; // Clear if previously set
-    this.multipleImages = currentPost.images || [];
-  }
-}
 
 
 
@@ -601,6 +608,8 @@ ngAfterViewInit(): void {
   onEditPost() {
 
   }
+
+
 
   onDelete(post: any): void {
     this.alert.popupWarning("", "Are you sure you want to delete this post?").then((result: any) => {
@@ -657,7 +666,7 @@ ngAfterViewInit(): void {
 
     this.comment.postComment(post.posts_uuid, payload).subscribe({
       next: (res) => {
-         post.comments.push({
+        post.comments.push({
           user: 'Current User',
           comment: commentText,
           profile_pic: '',
@@ -667,13 +676,13 @@ ngAfterViewInit(): void {
         post.newComment = '';
         post.isSubmitting = false;
 
-      //  post.comments.push(res.data);
-      //   console.log("comment:", post.comments)
-      //   this.alert.toastrSuccess(res.message);
-      //   post.newComment = '';
-      //   post.isSubmitting = false;
-      
-      
+        //  post.comments.push(res.data);
+        //   console.log("comment:", post.comments)
+        //   this.alert.toastrSuccess(res.message);
+        //   post.newComment = '';
+        //   post.isSubmitting = false;
+
+
       },
       error: (err) => {
         this.alert.toastPopUpError("Comment failed:")
@@ -710,7 +719,7 @@ ngAfterViewInit(): void {
   getComment(post_uuid: any, post: any): void {
     this.comment.getComment(post_uuid).subscribe({
       next: (res) => {
-        post.comments= res;
+        post.comments = res;
       },
       error: (err) => {
         this.error = err.message || 'An error occurred while fetching comments';
@@ -771,47 +780,47 @@ ngAfterViewInit(): void {
 
   //edit reply
   startEdit(reply: any) {
-      reply.isEditing = true;
-      reply.editText = reply.comment;
-    }
-
-    cancelEdit(reply: any) {
-      reply.isEditing = false;
-    }
-
-    saveEdit(reply: any) {
-      // You can call your backend service here to update the reply
-      reply.comment = reply.editText;
-      reply.isEditing = false;
-      // Optionally send to backend:
-      // this.commentService.updateReply(reply.id, reply.comment).subscribe(...)
-    }
-
-postReactions: {
-  [postId: string]: {
-    selectedReaction: { emoji: string } | null;
-    hoveredReaction: { emoji: string } | null;
-    showPopup: boolean;
-  };
-} = {};
-
-
-initPostReaction(post_uuidOrUuid: any) {
-  if (!this.postReactions[post_uuidOrUuid]) {
-    this.postReactions[post_uuidOrUuid] = {
-      selectedReaction: null,
-      hoveredReaction: null,
-      showPopup: false,
-    };
+    reply.isEditing = true;
+    reply.editText = reply.comment;
   }
-}
 
-togglePopup(post_uuidOrUuid: any, show: boolean) {
-  this.initPostReaction(post_uuidOrUuid);
-  this.postReactions[post_uuidOrUuid].showPopup = show;
-}
+  cancelEdit(reply: any) {
+    reply.isEditing = false;
+  }
 
-//react 
+  saveEdit(reply: any) {
+    // You can call your backend service here to update the reply
+    reply.comment = reply.editText;
+    reply.isEditing = false;
+    // Optionally send to backend:
+    // this.commentService.updateReply(reply.id, reply.comment).subscribe(...)
+  }
+
+  postReactions: {
+    [postId: string]: {
+      selectedReaction: { emoji: string } | null;
+      hoveredReaction: { emoji: string } | null;
+      showPopup: boolean;
+    };
+  } = {};
+
+
+  initPostReaction(post_uuidOrUuid: any) {
+    if (!this.postReactions[post_uuidOrUuid]) {
+      this.postReactions[post_uuidOrUuid] = {
+        selectedReaction: null,
+        hoveredReaction: null,
+        showPopup: false,
+      };
+    }
+  }
+
+  togglePopup(post_uuidOrUuid: any, show: boolean) {
+    this.initPostReaction(post_uuidOrUuid);
+    this.postReactions[post_uuidOrUuid].showPopup = show;
+  }
+
+  //react 
   selectReaction(post_uuidOrUuid: any, react: any) {
     console.log("react", post_uuidOrUuid, " ", react.reaction)
 
@@ -822,99 +831,99 @@ togglePopup(post_uuidOrUuid: any, show: boolean) {
     this.saveReactionToDatabase(post_uuidOrUuid, react.reaction);
   }
 
- //save react
+  //save react
   saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
     const payload = {
       reaction: reaction
     };
     this.reactionService.putReactionInvidual(post_uuidOrUuid, payload).subscribe({
       next: (res) => {
-             console.log('✅ Reaction response:', res);
-            this.getReactionPost_uuidOrUuid(post_uuidOrUuid); // Make sure this method exists
+        console.log('✅ Reaction response:', res);
+        this.getReactionPost_uuidOrUuid(post_uuidOrUuid); // Make sure this method exists
       },
       error: () => {
-         this.errorMsg();
+        this.errorMsg();
       }
     });
   }
 
-showReactionsFor: number | null = null;
- showReactionss(post: any) {
-   console.log(post.posts_uuid)
+  showReactionsFor: number | null = null;
+  showReactionss(post: any) {
+    console.log(post.posts_uuid)
     this.showReactionsFor = post.posts_uuid;
   }
 
-  
 
-setHoveredReaction(postId: string, reaction: any | null) {
 
-  this.initPostReaction(postId);
-  this.postReactions[postId].hoveredReaction = reaction;
-}
+  setHoveredReaction(postId: string, reaction: any | null) {
 
-reactionsMap: any = [];
-getReactionPost_uuidOrUuid(post_uuidOrUind: any): void {
-  const currentUserCode = this.authService.getAuthCode();
+    this.initPostReaction(postId);
+    this.postReactions[postId].hoveredReaction = reaction;
+  }
 
-  this.reactionService.getReactionPost_uuidOrUuid(post_uuidOrUind).subscribe({
-    next: (res) => {
-      this.reactionList = res.reaction || [];
-      this.totalReactionsCount = res.count || 0;
+  reactionsMap: any = [];
+  getReactionPost_uuidOrUuid(post_uuidOrUind: any): void {
+    const currentUserCode = this.authService.getAuthCode();
 
-      this.displayedReactions = this.reactionList
-        .slice(0, 5)
-        .map((r: { reaction: any; count: any; person: any; }, i: any) => {
-          const reactionMeta = this.reactions.find(e => e.reaction === r.reaction);
-          return {
-            name: r.reaction,
-            count: r.count,
-            emoji: reactionMeta?.emoji || '', // ✅ map emoji here
-            index: i,
-            users: r.person || []
-          };
-        });
+    this.reactionService.getReactionPost_uuidOrUuid(post_uuidOrUind).subscribe({
+      next: (res) => {
+        this.reactionList = res.reaction || [];
+        this.totalReactionsCount = res.count || 0;
 
-      // ✅ Select current user's reaction
-      this.selectedReaction = this.displayedReactions.find(r =>
-        r.users.some(u => u.code === Number(currentUserCode))
-      ) || null;
-    },
-    error: () => {
-      this.errorMsg();
-    }
-  });
-}
+        this.displayedReactions = this.reactionList
+          .slice(0, 5)
+          .map((r: { reaction: any; count: any; person: any; }, i: any) => {
+            const reactionMeta = this.reactions.find(e => e.reaction === r.reaction);
+            return {
+              name: r.reaction,
+              count: r.count,
+              emoji: reactionMeta?.emoji || '', // ✅ map emoji here
+              index: i,
+              users: r.person || []
+            };
+          });
 
-peopleRecentActivity:any=[];
-getPeopleRecentActivity(): void {
-  if (this.isLoading) return;
+        // ✅ Select current user's reaction
+        this.selectedReaction = this.displayedReactions.find(r =>
+          r.users.some(u => u.code === Number(currentUserCode))
+        ) || null;
+      },
+      error: () => {
+        this.errorMsg();
+      }
+    });
+  }
 
-  this.isLoading = true;
-  this.currentUserCode = this.authService.getAuthCode();
+  peopleRecentActivity: any = [];
+  getPeopleRecentActivity(): void {
+    if (this.isLoading) return;
 
-  this.clientsService.getPeopleRecentActivity().subscribe({
-    next: (res) => {
-      this.users = res.data;
-      // const newData = res.data.map((person: any) => ({
-      //   ...person,
-      //   follow_status: person.follow_status || 'not_following',
-      //   follow_id: null
-      // }));
+    this.isLoading = true;
+    this.currentUserCode = this.authService.getAuthCode();
 
-      // this.users.push(...newData);
-      // this.page++;
-      this.isLoading = false;
+    this.clientsService.getPeopleRecentActivity().subscribe({
+      next: (res) => {
+        this.users = res.data;
+        // const newData = res.data.map((person: any) => ({
+        //   ...person,
+        //   follow_status: person.follow_status || 'not_following',
+        //   follow_id: null
+        // }));
 
-    },
-    error: (err) => {
-      console.error('Error loading suggestions:', err);
-      this.alert.toastrError('❌ Failed to load suggestions.');
-      this.isLoading = false;
-    }
-  });
-}
+        // this.users.push(...newData);
+        // this.page++;
+        this.isLoading = false;
 
- 
+      },
+      error: (err) => {
+        console.error('Error loading suggestions:', err);
+        this.alert.toastrError('❌ Failed to load suggestions.');
+        this.isLoading = false;
+      }
+    });
+  }
+
+
 
   loadClients(): void {
     this.isLoading = true;
@@ -932,11 +941,11 @@ getPeopleRecentActivity(): void {
 
   }
 
-  errorMsg(){
-     this.alert.toastrError('❌ Error updating reaction:')
+  errorMsg() {
+    this.alert.toastrError('❌ Error updating reaction:')
   }
 
-   AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
+  AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
     if (!code) {
       this.alert.toastrWarning('⚠️ No user code provided.');
       return;

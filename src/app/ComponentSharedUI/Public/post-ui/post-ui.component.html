@@ -1,11 +1,12 @@
-
-
+<!-- Progress bar shown only while uploading -->
+<mat-progress-bar *ngIf="isUploading" mode="indeterminate" color="primary">
+</mat-progress-bar>
 
 
 <form [formGroup]="postForm" class="form-container">
   <div class="profile-info">
     <div class="profile-name">
-    <img
+      <img
         [src]="getProfileImage(profiles?.photo_pic)"
         alt="Profile Picture"
         class="profile-img"
@@ -19,13 +20,11 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
     </div>
-      <span class="post-status" *ngIf="profiles2">
+
+    <span class="post-status" *ngIf="profiles2">
       Create Post to {{ getSelectedStatus() }} {{ profiles2.fname }}
     </span>
-
-
   </div>
 
   <mat-dialog-content class="post-content">
@@ -37,26 +36,15 @@
     </mat-form-field>
 
     <div class="form-row">
-      <!-- <mat-form-field appearance="standard" class="form-field">
-        <mat-icon matPrefix>lock</mat-icon>
-        <mat-label>Privacy</mat-label>
-        <mat-select formControlName="status" required>
-          <mat-option *ngFor="let option of statusOptions" [value]="option.value">
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="postForm.get('status')?.hasError('required')">
-          Privacy status is required.
-        </mat-error>
-      </mat-form-field> -->
-
       <button mat-icon-button (click)="uploadImage()" class="form-field">
         <mat-icon>image</mat-icon>
       </button>
-      <!-- Hidden File Input -->
-      <input type="file" accept="video/mp4" #videoInput style="display: none" (change)="onVideoSelected($event)" />
 
-      <!-- Material Button that triggers file input -->
+      <!-- Hidden File Input for Video -->
+      <input type="file" accept="video/mp4" #videoInput style="display: none"
+        (change)="onVideoSelected($event)" />
+
+      <!-- Trigger video input -->
       <button mat-icon-button class="form-field" (click)="videoInput.click()">
         <mat-icon>videocam</mat-icon>
       </button>
@@ -65,23 +53,20 @@
         <mat-icon>settings</mat-icon>
       </button>
     </div>
-    <!-- video preview (shows uploaded video; falls back to a static sample) -->
-
   </mat-dialog-content>
 
+  <!-- Video preview -->
   <div class="video-player-container" *ngIf="videoPreviewUrl">
-    <video #videoPlayer (timeupdate)="updateProgress(videoPlayer)" (pause)="onPause()" (play)="onPlay()"
-      (ended)="onPause()">
+    <video #videoPlayer (timeupdate)="updateProgress(videoPlayer)" (pause)="onPause()"
+      (play)="onPlay()" (ended)="onPause()">
       <source [src]="videoPreviewUrl" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
 
-    <!-- Overlay Play Button -->
     <button class="overlay-btn" *ngIf="!isPlaying" (click)="toggleVideo(videoPlayer)">
       <mat-icon>play_arrow</mat-icon>
     </button>
 
-    <!-- Custom Controls -->
     <div class="controls">
       <button (click)="toggleVideo(videoPlayer)">
         <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
@@ -98,11 +83,11 @@
     </div>
   </div>
 
-  <mat-dialog-actions align="end">
+
+</form>
+  <mat-card-footer align="end">
     <button mat-button (click)="closeDialog()">Cancel</button>
-    <button mat-flat-button color="primary" [disabled]="postForm.invalid" (click)="postData()">
+    <button mat-flat-button color="primary" [disabled]="postForm.invalid || isUploading" (click)="postData()">
       Post
     </button>
-  </mat-dialog-actions>
-</form>
-
+  </mat-card-footer>
