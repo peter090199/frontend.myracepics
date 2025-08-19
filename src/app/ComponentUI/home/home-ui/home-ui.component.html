@@ -29,7 +29,7 @@
           <mat-card-content class="scrollable-content">
 
             <div class="button-gap">
-              <button mat-button class="list-label" [routerLink]="['/profile/',usercode ]">
+              <button mat-button class="list-label" [routerLink]="['/profile/',currentUserCode ]">
                 <mat-icon>person</mat-icon>View Profile
               </button>
             </div>
@@ -83,7 +83,7 @@
         <mat-card *ngFor="let post of posts" class="post-box-container">
           <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
-          <!-- Header -->
+
           <mat-card-header>
             <div mat-card-avatar class="avatar">
               <img [src]="post.profile_pic || 'assets/default.png'" alt="Avatar" />
@@ -109,7 +109,6 @@
             </mat-menu>
           </mat-card-header>
 
-          <!-- Caption -->
           <mat-card-content>
             <p class="content-display">
               {{ post.expanded ? post.caption : (post.caption | slice:0:180) + '...' }}
@@ -156,8 +155,10 @@
             </a>
           </div>
 
+
+
           <!-- Fixed Footer -->
-          <mat-card-footer class="post-footer">
+          <mat-card-footer>
             <div class="footer-btn like-button-wrapper" (mouseenter)="showReactionsFor = post.posts_uuid">
               <button mat-button (mouseenter)="togglePopup(post.posts_uuid, true)">
                 <mat-icon>
@@ -177,8 +178,8 @@
               </div>
             </div>
 
-            <div class="footer-btn">
-              <button mat-button (click)="openModal(post.posts)">
+            <div class="footer-btn" >
+              <button mat-button (click)="openModal(post.images)">
                 <mat-icon>chat</mat-icon> Comment
               </button>
             </div>
@@ -195,6 +196,7 @@
               </button>
             </div>
           </mat-card-footer>
+
         </mat-card>
 
 

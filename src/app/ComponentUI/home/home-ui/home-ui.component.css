@@ -147,10 +147,17 @@ mat-card-footer button mat-icon {
   padding: 10px;
   margin-bottom: 20px;
 }
+.card-overflow {
+  max-height: 90vh; 
+  overflow-y: auto;  
+  overflow-x: hidden; 
+  box-sizing: border-box;
+}
 
 .post-images {
   display: flex;
   flex-direction: column;
+  min-height: auto;
 }
 
 .followers, .active-hours {

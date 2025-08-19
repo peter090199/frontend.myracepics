@@ -1,12 +1,10 @@
 <div class="tabs-container" (scroll)="onScroll($event)">
   <h1 style="text-align: center;">Based on Profile</h1>
-
-  <div class="suggestions">
     <!-- ✅ Show No Data -->
     <p class="no-data" *ngIf="!people || people.length === 0">
       No data found
     </p>
-
+  <div class="suggestions">
     <mat-card class="suggestion-card" *ngFor="let person of people">
       <button mat-icon-button class="close-button">
         <mat-icon>close</mat-icon>

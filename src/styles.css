@@ -1671,3 +1671,17 @@ video {
   width: 100%;
   max-height: 400px;
 }
+.post-privacy {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #65676b; /* Facebook gray */
+  margin: 4px 0;
+}
+
+.post-privacy mat-icon {
+  font-size: 16px;
+  margin-right: 4px;
+  color: #65676b;
+  vertical-align: middle;
+}
