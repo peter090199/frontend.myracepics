@@ -30,11 +30,13 @@ import { UserListComponent } from './ComponentUI/search/user-list/user-list.comp
 import { NetworkingComponent } from './ComponentUI/networking/networking.component';
 import { ChatUIComponent } from './chat-ui/chat-ui.component';
 import { SettingsComponent } from './ComponentUI/profile/settings/settings.component';
+import { JobPostingComponent } from './ComponentUI/job-posting/job-posting.component';
+import { JobPostingUIComponent } from './ComponentSharedUI/job-posting-ui/job-posting-ui.component';
+import { JobsComponent } from './ComponentUI/jobs/jobs.component';
 
 
 const routes: Routes = [
   // Public routes
-
   { path: '', redirectTo: '/homepage', pathMatch: 'full' }, // Default redirect
   { path: 'homepage', component: UserhomepageComponent },
   { path: 'signUpUI', component: SignUpUIComponent },
@@ -45,62 +47,54 @@ const routes: Routes = [
   { path: 'reset-password/:email/:token', component: ResetPasswordUIComponent },
   { path: 'activation/:email', component: ActivationUIComponent },
   { path: 'layout', component: LayoutComponent },
-  { path: 'curriculum-vitae', component:CurriculumVitaeUIComponent,canActivate:[AuthGuard] },
-  //{ path: 'user-cv', component:UserCVComponent,canActivate:[AuthGuard] },
-  { path: 'user-cv', component:UserCVComponent},
-  { path: 'upload-cv', component:UploadProfileComponent,canActivate:[AuthGuard] },
-  { path: 'print-cv', component:PrintCVComponent,canActivate:[AuthGuard] },
-  { path: 'socket', component:ChatUIComponent},
+  { path: 'curriculum-vitae', component: CurriculumVitaeUIComponent, canActivate: [AuthGuard] },
+  { path: 'user-cv', component: UserCVComponent },
+  { path: 'upload-cv', component: UploadProfileComponent, canActivate: [AuthGuard] },
+  { path: 'print-cv', component: PrintCVComponent, canActivate: [AuthGuard] },
+  { path: 'socket', component: ChatUIComponent },
 
-  // Top navigation with sub-routes
-  { 
-    path: '', 
-    component: TopNavigationComponent, 
+  {
+    path: '',
+    component: TopNavigationComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'profile/:code', component:ProfileUIComponent },
-      { path: 'profile', component:ProfileUIComponent },
+      { path: 'profile/:code', component: ProfileUIComponent },
+      { path: 'profile', component: ProfileUIComponent },
       { path: 'home', component: HomeUIComponent },
       { path: 'message', component: MessagesComponent },
       { path: 'network', component: NetworkingComponent },
-      { path: 'settings', component: SettingsComponent },
-      // { path: 'notifications', component: NotificationComponent },
+      { path: 'settings', component: SettingsComponent }, 
       { path: 'search', component: UserListComponent },
-
-    ]
-  },
-  { 
-    path: '', 
-    component: TopNavigationComponent, 
-    canActivate: [AuthGuard],
-    children: [
-      { path: 'security', component: SecurityRolesComponent},
+      { path: 'security', component: SecurityRolesComponent },
       { path: 'user', component: UsersComponent },
       { path: 'menu', component: MenuComponent },
       { path: 'role', component: RoleComponent },
+      { path: 'job_posting', component: JobPostingComponent },
+      { path: 'jobs', component: JobsComponent },
+
     ]
   },
   {
-    path: 'print',component: PrintComponent,
+    path: 'print', component: PrintComponent,
     children: [
       {
-        path: 'printreceipts',component: PrintReceiptsComponent
+        path: 'printreceipts', component: PrintReceiptsComponent
       },
       {
-        path: 'printreceipt',component: PrintReceiptComponent
+        path: 'printreceipt', component: PrintReceiptComponent
       },
       {
-        path: 'printcv',component: PrintCVComponent
+        path: 'printcv', component: PrintCVComponent
       },
     ]
   },
-  
+
   // Wildcard route for 404 handling
   { path: '**', component: PageNotFoundComponentComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{ preloadingStrategy: PreloadAllModules })],
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

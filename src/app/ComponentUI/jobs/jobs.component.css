@@ -1,0 +1,245 @@
+/* Jobs container layout */
+.jobs-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+/* Sidebar styling */
+.sidebar {
+  flex: 1px;
+  min-width: 250px;
+  max-width: 800px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin: 12px;
+}
+
+/* Saved job card */
+.saved-job h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.job-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 50px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.job-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.job-logo {
+  width: 50px;        /* small square size */
+  height: 50px;       /* equal width and height for square */
+  border-radius: 8px; /* optional, LinkedIn uses slightly rounded corners */
+  object-fit: cover;  /* ensures image covers the square without stretching */
+}
+
+.apply-btn {
+  align-self: flex-start;
+}
+
+/* Sidebar nav and actions */
+.mat-nav-list {
+  margin-top: 20px;
+}
+.mat-list-item {
+  cursor: pointer;
+  font-size: 14px;
+}
+.sidebar-actions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Main content */
+.main-content {
+  flex: 2 1 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Job list card - LinkedIn style */
+.main-content mat-card {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Individual job items */
+mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e6e6e6;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+mat-list-item:hover {
+  background-color: #f5f5f5;
+}
+
+.job-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  padding: 20px;
+  margin: 10px;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.job-details a {
+  font-weight: 600;
+  color: #0a66c2;
+  text-decoration: none;
+  font-size: 14px;
+
+}
+
+
+.job-logo {
+  width: 50px;           /* small square size */
+  height: 50px;          /* equal width/height */
+  border-radius: 8px;    /* optional for slight rounding */
+  object-fit: cover;     /* keeps aspect ratio, crops if needed */
+  margin-right: 12px;
+  flex-shrink: 0;        /* prevents shrinking when space is tight */
+}
+.job-details a:hover {
+  text-decoration: underline;
+}
+
+.job-details p {
+  font-size: 13px;
+  color: #555;
+  margin: 2px 0;
+}
+
+.job-details small {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Show all link */
+.show-all {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #0a66c2;
+  text-decoration: none;
+}
+
+.show-all:hover {
+  text-decoration: underline;
+}
+
+/* Recent searches card */
+.recent-searches {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recent-header h3 {
+  font-size: 16px;
+}
+
+.recent-header button {
+  font-size: 12px;
+}
+
+.recent-searches p {
+  font-size: 14px;
+  margin: 10px 0 5px;
+}
+
+.recent-searches .new {
+  font-weight: bold;
+  color: #0a66c2;
+}
+
+.recent-searches small {
+  color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .jobs-container {
+    flex-direction: column;
+  }
+
+  .sidebar, .main-content {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+
+/* Logo/avatar inside mat-list-item */
+mat-list-item mat-icon img[matListAvatar] {
+  width: 160px;           /* fixed width */
+  height: 360px;          /* same as width for square */
+  margin-right: 16px;    /* spacing from job details */
+  flex-shrink: 0;        /* prevent shrinking */
+}
+
+/* Make the mat-list-item align nicely with the fixed logo width */
+mat-list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+mat-list-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Job text lines */
+mat-list-item div[mat-line] {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+mat-list-item div[mat-line]:first-child {
+  font-weight: 600;
+  color: #0a66c2;
+  font-size: 14px;
+}
+
+mat-list-item div[mat-line]:last-child {
+  font-size: 13px;
+  color: #555;
+}

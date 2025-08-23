@@ -50,7 +50,7 @@ export class RoleComponent implements OnInit {
   const dialogConfig = new MatDialogConfig();
   dialogConfig.disableClose = true;
   dialogConfig.autoFocus = true;
-  dialogConfig.width = '400px';
+  dialogConfig.width = '600px';
 
   const dialogRef = this.dialog.open(RoleUIComponent, dialogConfig);
   dialogRef.afterClosed().subscribe(result => {
@@ -124,7 +124,7 @@ delete(role:any):void{
 
 edit(element: any): void {
   const dialogRef = this.dialog.open(RoleUIComponent, {
-    width: '400px',
+    width: '600px',
     data: element || null
   });
 

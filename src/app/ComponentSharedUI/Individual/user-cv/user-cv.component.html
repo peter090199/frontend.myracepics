@@ -29,27 +29,9 @@
               <div *ngIf="filename" class="file-name">
                 📎 Selected: {{ filename }}
               </div>
-
               <!-- Error display -->
               <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
-
-              <!-- Image preview (optional) -->
-              <!-- <div *ngIf="previewUrl" class="image-preview">
-                <img [src]="previewUrl" alt="Preview" style="max-width: 100%; height: auto;" />
-              </div> -->
-
-              <!-- Remove button -->
-              <!-- <button
-                *ngIf="previewUrl"
-                mat-button
-                type="button"
-                (click)="resetPhoto()"
-              >
-                <mat-icon>close</mat-icon>
-                Remove Image
-              </button> -->
             </div>
-
             <!-- Image Preview -->
             <div class="image-preview-container form-field">
               <img [src]="previewUrl || 'assets/default-profile.png'" alt="Profile Picture"

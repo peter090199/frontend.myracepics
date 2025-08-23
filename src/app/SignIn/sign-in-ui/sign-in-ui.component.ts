@@ -202,8 +202,6 @@ export class SignInUIComponent implements OnInit {
     console.log(this.loginForm.value)
     this.sigInService.signin(email, password).subscribe({
       next: (res) => {
-        console.log(res)
-      // return;
         this.isLoading = false;
         if (res.success == true) {
           sessionStorage.setItem('token', res.token);

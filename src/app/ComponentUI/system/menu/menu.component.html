@@ -1,4 +1,4 @@
-<section class="section" class="content-scrollable">
+<section class="section">
     <div class="search-div">
         <mat-form-field class="w-40" floatLabel="never" appearance="standard">
           <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()" autocomplete="false">
@@ -6,7 +6,7 @@
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
-        <button type="button" mat-raised-button color="primary" (click)="onClickNew()">
+        <button type="button" mat-raised-button color="accent" (click)="onClickNew()">
           <mat-icon>add_circle</mat-icon> New
         </button>
       </div>

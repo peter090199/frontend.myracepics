@@ -1,0 +1,148 @@
+<section class="section">
+    <div class="search-div">
+        <mat-form-field class="w-40" floatLabel="never" appearance="standard">
+            <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()"
+                autocomplete="false">
+            <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <button type="button" mat-raised-button color="accent" (click)="onClickNew()">
+            <mat-icon>add_circle</mat-icon> Create
+        </button>
+
+        <button type="button" mat-raised-button color="primary" (click)="toggleColumns()">
+            Toggle View
+        </button>
+    </div>
+
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z4 " matSort >
+
+            <!-- ✅ Default Columns -->
+            <ng-container matColumnDef="id">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.id }}</mat-cell>
+
+            </ng-container>
+
+            <ng-container matColumnDef="job_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Job Name</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.job_name }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="job_position">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Position</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.job_position }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="job_description">
+                <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.job_description }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="job_about">
+                <mat-header-cell *matHeaderCellDef>About</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.job_about }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="qualification">
+                <mat-header-cell *matHeaderCellDef>Qualification</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.qualification }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="work_type">
+                <mat-header-cell *matHeaderCellDef>Work Type</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.work_type }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="comp_name">
+                <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.comp_name }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="comp_description">
+                <mat-header-cell *matHeaderCellDef>Company Description</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.comp_description }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="job_image">
+                <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
+                <mat-cell *matCellDef="let job">
+                    <img *ngIf="job.job_image" [src]="job.job_image" alt="Job Image" width="60" height="60"
+                        style="object-fit: cover; border-radius: 4px;" />
+                </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="created_at">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Created At</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.created_at | date:'short' }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="updated_at">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Updated At</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.updated_at | date:'short' }}</mat-cell>
+            </ng-container>
+
+            <!-- ✅ Merged Columns -->
+            <ng-container matColumnDef="job_info">
+                <mat-header-cell *matHeaderCellDef>Job Info</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.job_name }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="job_position">
+                <mat-header-cell *matHeaderCellDef>Job position</mat-header-cell>
+                <mat-cell *matCellDef="let job">{{ job.job_position }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="company_info">
+                <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
+                <mat-cell *matCellDef="let job"> {{job.comp_name}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="work_type">
+                <mat-header-cell *matHeaderCellDef>Work_type</mat-header-cell>
+                <mat-cell *matCellDef="let job"> {{job.work_type}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="timestamps">
+                <mat-header-cell *matHeaderCellDef>Timestamps</mat-header-cell>
+                <mat-cell *matCellDef="let job">
+                    <small>Created: {{ job.created_at | date:'short' }}</small><br>
+                    <small>Updated: {{ job.updated_at | date:'short' }}</small>
+                </mat-cell>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                <mat-cell *matCellDef="let job">
+                    <button mat-icon-button color="primary" (click)="edit(job)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="delete(job)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <!-- No Data Row -->
+            <ng-container matColumnDef="noData">
+                <mat-footer-cell *matFooterCellDef colspan="6">No data.</mat-footer-cell>
+            </ng-container>
+
+            <!-- Table Rows -->
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+            <!-- Footer -->
+            <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide': jobPosting.length > 0}"></mat-footer-row>
+        </mat-table>
+
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="accent"></mat-progress-bar>
+
+    <!-- Pagination -->
+    <mat-paginator class="mat-paginator-sticky" [pageSize]="8" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
+    </mat-paginator>
+</section>

@@ -1,0 +1,78 @@
+<div class="jobs-container">
+  <!-- Sidebar -->
+  <mat-card class="sidebar">
+    <div class="saved-job">
+      <h3>Apply to your saved job</h3>
+      <mat-card class="job-card">
+        <div class="job-info">
+          <!-- <img src="assets/angular-icon.png" alt="Job Logo" class="job-logo" />
+          <div>
+            <h4>Angular Full Stack Developer | WFH</h4>
+            <p>MicroSourcing</p>
+            <p>Philippines (Remote)</p>
+          </div> -->
+        </div>
+        <!-- <button mat-raised-button color="primary" class="apply-btn">Apply</button> -->
+      </mat-card>
+    </div>
+
+    <mat-nav-list>
+      <mat-list-item>Preferences</mat-list-item>
+      <mat-list-item>My jobs</mat-list-item>
+      <mat-list-item>My Career Insights</mat-list-item>
+    </mat-nav-list>
+
+    <div class="sidebar-actions">
+      <button mat-button color="primary">Post a free job</button>
+      <button mat-button>Manage job posts</button>
+    </div>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <mat-card class="sidebar">
+      <h3>Top job picks for you</h3>
+      <mat-list>
+        <div mat-subheader>Hiring Jobs</div>
+        <mat-list-item *ngFor="let job of jobs" class="job-details" >
+          <img matListAvatar [src]="job.job_image" alt="Company Logo">
+          <div mat-line><a [routerLink]="['/profile', job.code]">{{job.job_name}}</a></div>
+          <div mat-line> {{job.job_position}} 
+
+             <p>{{ job.comp_name }} · {{ job.work_type }}</p>
+          </div>
+         
+          <button mat-icon-button (click)="removeJob(job)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+
+      </mat-list>
+
+      <!-- <mat-list>
+        <mat-list-item *ngFor="let job of jobs"  >
+          <img matListAvatar [src]="job.job_image" alt="Company Logo"/>
+          <div class="job-details" [routerLink]="['/profile', job.code]">
+            <a  >{{ job.job_name }}</a>
+            <p>{{ job.comp_name }} · {{ job.work_type }}</p>
+            
+         <small *ngIf="job.recordstatus">{{ job.recordstatus }}</small>
+          </div>
+          <button mat-icon-button (click)="removeJob(job)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list> -->
+      <a href="#" class="show-all">Show all →</a>
+    </mat-card>
+
+    <mat-card class="recent-searches">
+      <div class="recent-header">
+        <h3>Recent job searches</h3>
+        <button mat-button (click)="clearSearches()">Clear</button>
+      </div>
+      <p>{{ recentSearch.term }} · <span class="new">{{ recentSearch.count }} new</span></p>
+      <small>Alert On · {{ recentSearch.location }}</small>
+    </mat-card>
+  </div>
+</div>
