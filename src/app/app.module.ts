@@ -93,6 +93,8 @@ import { PendingFollowingComponent } from './ComponentUI/networking/pending-foll
 import { JobPostingComponent } from './ComponentUI/job-posting/job-posting.component';
 import { JobPostingUIComponent } from './ComponentSharedUI/job-posting-ui/job-posting-ui.component';
 import { JobsComponent } from './ComponentUI/jobs/jobs.component';
+import { JobsProfileComponent } from './ComponentUI/jobs-profile/jobs-profile.component';
+import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job.component';
 
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -178,6 +180,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     JobPostingComponent,
     JobPostingUIComponent,
     JobsComponent,
+    JobsProfileComponent,
+    PostingJobComponent,
     
   ],
   imports: [

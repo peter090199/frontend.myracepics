@@ -1,16 +1,16 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
+import { Router, Routes } from '@angular/router';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { JobPostingService } from 'src/app/services/Jobs/job-posting.service';
-import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-  selector: 'app-job-posting-ui',
-  templateUrl: './job-posting-ui.component.html',
-  styleUrls: ['./job-posting-ui.component.css']
+  selector: 'app-posting-job',
+  templateUrl: './posting-job.component.html',
+  styleUrls: ['./posting-job.component.css']
 })
-export class JobPostingUIComponent implements OnInit {
+export class PostingJobComponent implements OnInit {
   @ViewChild('stepper') stepper!: MatStepper;
 
   imageForm!: FormGroup;
@@ -26,13 +26,12 @@ export class JobPostingUIComponent implements OnInit {
   isImageSelected = false;
 
   worktypes: string[] = ['Onsite', 'Work From Home', 'Hybrid'];
+  progressValue: number = 0;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<JobPostingUIComponent>,
     private notificationService: NotificationsService,
-    private jobServices: JobPostingService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    private jobServices: JobPostingService, private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -58,14 +57,10 @@ export class JobPostingUIComponent implements OnInit {
       comp_name: ['', Validators.required],
       comp_description: ['', Validators.required],
     });
-
-    if (this.data?.id) {
-      this.btnSave = "Update";
-      this.fillFormData();
-    }
   }
+
   getProgressValue(stepIndex: number): number {
-    const totalSteps = 3; // total mat-step count
+    const totalSteps = 3;
     return ((stepIndex + 1) / totalSteps) * 100;
   }
 
@@ -76,8 +71,6 @@ export class JobPostingUIComponent implements OnInit {
   previousStep(stepper?: MatStepper): void {
     (stepper || this.stepper).previous();
   }
-
-  progressValue: number = 0;
 
   onStepChange(event?: any) {
     if (!this.loading) {
@@ -91,61 +84,29 @@ export class JobPostingUIComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
 
     if (file) {
-      // Check file type
       if (!file.type.startsWith('image/')) {
         this.fileError = 'Only image files are allowed.';
-        this.selectedFile = null;
-        this.previewUrl = null;
         return;
       }
-
-      // Check size (e.g., max 2MB)
       if (file.size > 2 * 1024 * 1024) {
         this.fileError = 'Image size must be less than 2MB.';
-        this.selectedFile = null;
-        this.previewUrl = null;
         return;
       }
 
-      // Save file
       this.selectedFile = file;
       this.imageForm.patchValue({ image: file });
       this.imageForm.get('image')?.updateValueAndValidity();
 
-      // Preview
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result as string;
       };
       reader.readAsDataURL(file);
 
-      this.fileError = null; // clear error
-    } else {
-      this.fileError = 'Please select a valid image.';
+      this.fileError = null;
     }
   }
 
-
-  /** Fill in data when editing */
-  fillFormData() {
-    this.jobForm.patchValue({
-      job_name: this.data.job_name,
-      job_position: this.data.job_position,
-      job_description: this.data.job_description,
-      job_about: this.data.job_about,
-    });
-
-    this.companyForm.patchValue({
-      qualification: this.data.qualification,
-      work_type: this.data.work_type,
-      comp_name: this.data.comp_name,
-      comp_description: this.data.comp_description,
-    });
-
-    this.previewUrl = this.data.job_image || null;
-  }
-
-  /** Submit all forms */
   onSubmit(): void {
     if (!this.selectedFile && this.btnSave.toLowerCase() === "save") {
       this.notificationService.toastrError("Please upload a job image before saving.");
@@ -171,39 +132,20 @@ export class JobPostingUIComponent implements OnInit {
       formData.append(key, value as string);
     });
 
-    if (this.btnSave.toLowerCase() === "save") {
-      this.jobServices.saveJobPosting(formData).subscribe({
-        next: (res) => {
-          this.notificationService.toastrSuccess(res.message);
-          this.dialogRef.close(true);
-          this.loading = false;
-        },
-        error: (err) => {
-          this.notificationService.toastrError(err.error?.message || "Error saving job");
-          this.loading = false;
-        }
-      });
-    } else {
-      // Uncomment when update service is ready
-      // this.jobServices.updateJobPosting(this.data.id, formData).subscribe({
-      //   next: (res) => {
-      //     this.notificationService.toastrSuccess(res.message);
-      //     this.dialogRef.close(true);
-      //     this.loading = false;
-      //   },
-      //   error: (err) => {
-      //     this.notificationService.toastrError(err.error?.message || "Error updating job");
-      //     this.loading = false;
-      //   }
-      // });
-    }
+    this.jobServices.saveJobPosting(formData).subscribe({
+      next: (res) => {
+        this.notificationService.toastrSuccess(res.message);
+        this.loading = false;
+        this.router.navigateByUrl("/job_posting")
+      },
+      error: (err) => {
+        this.notificationService.toastrError(err.error?.message || "Error saving job");
+        this.loading = false;
+      }
+    });
   }
 
-  onClose() {
-    this.dialogRef.close();
-  }
-
-
+  // ============ Responsibilities & Qualifications =============
   jobDescription: string = '';
   charCount: number = 0;
 
@@ -248,7 +190,6 @@ export class JobPostingUIComponent implements OnInit {
     this.qualifications.splice(index, 1);
   }
 
-  // simple text formatting (placeholder for now)
   formatText(cmd: string) {
     document.execCommand(cmd, false, '');
   }

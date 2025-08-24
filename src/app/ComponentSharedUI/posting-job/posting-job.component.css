@@ -1,0 +1,24 @@
+/* Default margins for desktop */
+.container {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  max-width: 600px;
+}
+
+/* For tablets */
+@media (max-width: 992px) {
+  .container {
+    margin: 1.5rem auto;
+    padding: 1rem;
+    max-width: 90%;
+  }
+}
+
+/* For mobile */
+@media (max-width: 600px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0.8rem;
+    max-width: 100%;
+  }
+}

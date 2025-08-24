@@ -37,6 +37,7 @@ export class NetworkingComponent implements OnInit, OnChanges {
     if (this.active) {
       this.loadClients();
       this.getPeopleRecentActivity();
+      
     }
   }
 
@@ -115,7 +116,7 @@ export class NetworkingComponent implements OnInit, OnChanges {
     this.clientsService.getPeopleyoumayknow().subscribe({
       next: (res) => {
         this.cnt = res.count;
-        this.getPeopleRecentActivity();
+        // this.getPeopleRecentActivity();
       },
       error: (err) => {
         console.error('Error loading clients:', err);

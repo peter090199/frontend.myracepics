@@ -78,7 +78,6 @@
 }
 
 .suggestions-wrapper::-webkit-scrollbar-thumb {
-  background-color: #ccc;
   border-radius: 4px;
 }
 
@@ -90,7 +89,6 @@
   align-items: center;
   padding: 16px;
   border-radius: 12px;
-  background-color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   position: relative;
   text-align: center;

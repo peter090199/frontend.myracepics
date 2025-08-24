@@ -1874,3 +1874,58 @@ video {
   margin: 0;               /* remove margin around buttons */
   padding: 1px;            /* optional: small padding inside button */
 }
+
+
+/* --- Shimmer foundation --- */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(0,0,0,0.08);
+  border-radius: 6px;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.6) 50%,
+    rgba(255,255,255,0) 100%);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* --- Pieces --- */
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.skeleton-line {
+  height: 12px;
+  margin-top: 2px;
+}
+.skeleton-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+/* spacing helpers */
+.mt-6px { margin-top: 6px; }
+.w-full { width: 100%; }
+.w-56 { width: 14rem; }
+.w-40 { width: 10rem; }
+.w-32 { width: 8rem; }
+.w-28 { width: 7rem; }
+.w-24 { width: 6rem; }
+.h-5 { height: 20px; }
+.h-4 { height: 16px; }
+
+/* keep list layout tidy while loading */
+mat-list-item .job-details { flex: 1; }
+mat-list-item .job-details .skeleton-line { display: block; }
+

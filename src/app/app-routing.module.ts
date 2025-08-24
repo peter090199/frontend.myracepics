@@ -33,6 +33,8 @@ import { SettingsComponent } from './ComponentUI/profile/settings/settings.compo
 import { JobPostingComponent } from './ComponentUI/job-posting/job-posting.component';
 import { JobPostingUIComponent } from './ComponentSharedUI/job-posting-ui/job-posting-ui.component';
 import { JobsComponent } from './ComponentUI/jobs/jobs.component';
+import { JobsProfileComponent } from './ComponentUI/jobs-profile/jobs-profile.component';
+import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job.component';
 
 
 const routes: Routes = [
@@ -71,7 +73,9 @@ const routes: Routes = [
       { path: 'role', component: RoleComponent },
       { path: 'job_posting', component: JobPostingComponent },
       { path: 'jobs', component: JobsComponent },
-
+      { path: 'recommended-jobs/:id', component: JobsProfileComponent },
+      { path: 'recommended-jobs', component: JobsProfileComponent },
+      { path: 'posting-job', component: PostingJobComponent },
     ]
   },
   {

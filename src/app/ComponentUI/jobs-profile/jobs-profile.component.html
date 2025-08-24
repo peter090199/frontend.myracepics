@@ -1,0 +1,223 @@
+<div class="jobs-container">
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Job Picks -->
+    <mat-card class="sidebar">
+      <h3>Top job picks for you</h3>
+
+      <!-- Skeleton while loading -->
+      <ng-container *ngIf="isLoading; else jobsList">
+        <mat-list>
+          <div mat-subheader>Hiring Jobs</div>
+          <mat-list-item *ngFor="let _ of skeletonRows">
+            <div class="skeleton skeleton-avatar" matListAvatar aria-hidden="true"></div>
+
+            <div class="job-details w-full">
+              <div class="skeleton skeleton-line w-56"></div>
+              <div class="skeleton skeleton-line w-40 mt-6px"></div>
+              <div class="skeleton skeleton-line w-32 mt-6px"></div>
+            </div>
+
+            <button mat-icon-button disabled aria-hidden="true">
+              <div class="skeleton skeleton-icon"></div>
+            </button>
+          </mat-list-item>
+        </mat-list>
+
+        <mat-divider></mat-divider>
+        <mat-card-footer>
+          <mat-list-item>
+            <span class="skeleton skeleton-line w-24 h-5"></span>
+          </mat-list-item>
+        </mat-card-footer>
+      </ng-container>
+
+      <ng-template #jobsList>
+        <mat-list>
+          <div mat-subheader>Hiring Jobs</div>
+
+          <mat-list-item *ngFor="let job of jobs" class="job-item" (click)="selectJob(job)">
+            <!-- Company Logo -->
+            <img matListAvatar [src]="job.job_image" alt="Company Logo" class="job-logo">
+
+            <!-- Job Details -->
+            <div class="job-details">
+              <a [routerLink]="['/recommended-jobs', job.id]">{{ job.job_name }}</a>
+              <span>{{ job.job_position }}</span>
+              <small>{{ job.comp_name }} · {{ job.work_type }}</small><br>
+            </div>
+
+            <!-- Remove Button -->
+            <button mat-icon-button color="warn" (click)="removeJob(job)" matTooltip="Remove">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-list-item>
+        </mat-list>
+
+        <mat-divider></mat-divider>
+
+        <!-- Footer Link -->
+        <mat-card-footer>
+          <mat-list-item>
+            <a routerLink="/jobs" class="show-all">Show all →</a>
+          </mat-list-item>
+        </mat-card-footer>
+      </ng-template>
+    </mat-card>
+
+    <!-- Recent Searches -->
+    <mat-card class="sidebar">
+      <div class="recent-header">
+        <h3>Recent job searches</h3>
+        <button mat-button (click)="clearSearches()" [disabled]="isLoading">Clear</button>
+      </div>
+
+      <!-- Skeleton -->
+      <ng-container *ngIf="isLoading; else recentContent">
+        <div class="skeleton skeleton-line w-40 h-5"></div>
+        <div class="skeleton skeleton-line w-28 h-4 mt-6px"></div>
+      </ng-container>
+
+      <!-- Real -->
+      <ng-template #recentContent>
+        <p>
+          {{ recentSearch.term }} ·
+          <span class="new">{{ recentSearch.count }} new</span>
+        </p>
+        <small>Alert On · {{ recentSearch.location }}</small>
+      </ng-template>
+    </mat-card>
+  </div>
+
+  <mat-card class="leftsidebar" *ngIf="isLoading; else loadedSidebar">
+    <!-- Skeleton Loading -->
+    <div class="skeleton job-header-skeleton">
+      <div class="skeleton-logo"></div>
+      <div class="skeleton-text title"></div>
+      <div class="skeleton-text subtitle"></div>
+    </div>
+
+    <div class="skeleton-btns">
+      <div class="skeleton-btn"></div>
+      <div class="skeleton-btn"></div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="skeleton recruiter-skeleton">
+      <div class="skeleton-avatar"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-text small"></div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="skeleton job-details-skeleton" *ngFor="let _ of skeletonRows">
+      <div class="skeleton-text"></div>
+    </div>
+  </mat-card>
+
+  <!-- When data is ready -->
+  <ng-template #loadedSidebar>
+    <mat-card class="leftsidebar" *ngIf="selectedJob; else defaultSidebar">
+      <!-- Job Header -->
+      <div class="job-header">
+        <img [src]="selectedJob.job_image" alt="Company Logo" class="company-logo">
+        <div>
+          <h3 class="job-title">{{ selectedJob.job_name }}</h3>
+          <p class="company-name">{{ selectedJob.comp_name }} · {{ selectedJob.work_type }}</p>
+          <p class="job-meta">{{ selectedJob.location }} · Posted {{ selectedJob.created_at }}</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="sidebar-actions sticky-actions">
+        <button mat-flat-button color="primary">Apply Now</button>
+        <button mat-stroked-button>Save</button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Hiring Team -->
+      <!-- <div class="hiring-team">
+        <h4>Meet the hiring team</h4>
+        <mat-list>
+          <mat-list-item>
+            <img matListAvatar [src]="selectedJob.recruiter_image" alt="Recruiter">
+            <div>
+              <p class="recruiter-name">{{ selectedJob.recruiter_name }}</p>
+              <small>{{ selectedJob.recruiter_title }}</small>
+            </div>
+            <button mat-stroked-button color="primary" class="ml-auto">Message</button>
+          </mat-list-item>
+        </mat-list>
+      </div> -->
+
+      <mat-divider></mat-divider>
+
+      <!-- About the Job -->
+      <div class="job-details-section" *ngIf="selectedJob; else defaultSidebar">
+        <h4>About the Job</h4>
+        <p class="job-description">{{ selectedJob.job_description }}</p>
+
+        <h5>More About This Role</h5>
+        <p class="job-description">{{ selectedJob.job_about }}</p>
+
+        <!-- <h5 *ngIf="selectedJob.key_accountabilities?.length">Key Accountabilities</h5>
+        <ul>
+          <li *ngFor="let task of selectedJob.key_accountabilities">{{ task }}</li>
+        </ul> -->
+      </div>
+
+
+
+      <mat-divider></mat-divider>
+
+      <!-- Insights Section -->
+      <!-- <div class="job-insights" *ngIf="selectedJob; else defaultSidebar">
+        <h4>Hiring insights on {{ selectedJob.comp_name }}</h4>
+        <p class="growth">📈 {{ selectedJob.growth }}</p>
+
+        <div class="insight-metrics">
+          <div>
+            <h5>{{ selectedJob.education_level.percent }}%</h5>
+            <small>{{ selectedJob.education_level.label }}</small>
+          </div>
+          <div>
+            <h5>{{ selectedJob.seniority_level.percent }}%</h5>
+            <small>{{ selectedJob.seniority_level.label }}</small>
+          </div>
+        </div>
+      </div> -->
+
+      <mat-divider></mat-divider>
+
+      <!-- About the Company -->
+      <div class="company-info" *ngIf="selectedJob; else defaultSidebar">
+        <h4>About the client</h4>
+        <mat-list>
+          <mat-list-item>
+            
+            <!-- <img matListAvatar [src]="selectedJob.comp_logo" alt="Company Logo"> -->
+            <div>
+              <p class="company-name">{{ selectedJob.fullname }}</p>
+              <p class="company-name">{{ selectedJob.comp_description }}</p>
+              <!-- <small>{{ selectedJob.followers }} followers</small><br>
+              <small>{{ selectedJob.industry }} • {{ selectedJob.size }} employees</small> -->
+            </div>
+            <button mat-raised-button color="primary" class="ml-auto">+ Connect</button>
+          </mat-list-item>
+        </mat-list>
+        <p>{{ selectedJob.company_mission }}</p>
+         <mat-card-footer>
+          <mat-list-item> <a routerLink="/showMore" class="show-all">Show more →</a></mat-list-item>
+        </mat-card-footer>
+      </div>
+    </mat-card>
+  </ng-template>
+
+  <ng-template #defaultSidebar>
+    <p>Please select a job to see the details.</p>
+  </ng-template>
+
+</div>

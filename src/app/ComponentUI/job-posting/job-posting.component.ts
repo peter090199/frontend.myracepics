@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { JobPostingUIComponent } from 'src/app/ComponentSharedUI/job-posting-ui/job-posting-ui.component';
 import { JobPostingService } from 'src/app/services/Jobs/job-posting.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-posting',
@@ -51,14 +52,14 @@ export class JobPostingComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   jobPosting: any[] = [];
 
-  pageSizeOptions: number[] = [8, 10, 25, 100];
+  pageSizeOptions: number[] = [5, 10, 25, 100];
   success: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private jobServices: JobPostingService,
+    private jobServices: JobPostingService, private router: Router,
     public dialog: MatDialog,
     private notificationsService: NotificationsService
   ) { }
@@ -85,11 +86,15 @@ export class JobPostingComponent implements OnInit {
     this.applyFilter();
   }
 
+  jobPosting2() {
+    this.router.navigateByUrl("/posting-job")
+  }
+
   onClickNew(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '600px';
+    dialogConfig.width = '800px';
 
     const dialogRef = this.dialog.open(JobPostingUIComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {

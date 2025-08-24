@@ -1,5 +1,3 @@
-
-
 /* Jobs container layout */
 .jobs-container {
   display: flex;
@@ -26,16 +24,16 @@
 }
 
 .leftsidebar {
-  flex: 0 0 300px; /* fixed sidebar width (adjust as needed) */
-  width: 300px;
-  max-width: 300px;
+  flex: 0 0 510px; /* fixed sidebar width (adjust as needed) */
+  width: 800px;
+  max-width: 800px;
   background-color: #fff;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-left: 20px;
+  margin-left: 10px;
   margin-bottom: 5px;
-  height: 60vh;       /* takes 80% of viewport height */
+  height: auto;       /* takes 80% of viewport height */
   overflow-y: auto;   /* scroll if content exceeds height */
   position: sticky;
   top: 20px; 
@@ -117,9 +115,6 @@ mat-list-item {
   cursor: pointer;
   transition: background 0.2s;
 }
-mat-list-item:hover {
-  background-color: #f5f5f5;
-}
 
 .job-details {
   display: flex;
@@ -138,6 +133,51 @@ mat-list-item:hover {
   text-decoration: none;
   font-size: 14px;
 
+}
+.job-insights {
+  margin-top: 16px;
+}
+
+.job-insights h4 {
+  margin-bottom: 8px;
+}
+
+.growth {
+  font-size: 0.9rem;
+  color: green;
+  margin-bottom: 12px;
+}
+
+.insight-metrics {
+  display: flex;
+  justify-content: space-between;
+}
+
+.insight-metrics h5 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.insight-metrics small {
+  color: #555;
+}
+
+.company-info h4 {
+  margin: 8px 0;
+}
+
+.company-info p {
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+.show-more {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #0a66c2;
+  cursor: pointer;
 }
 
 
@@ -161,7 +201,7 @@ mat-list-item:hover {
 
 .job-details small {
   font-size: 11px;
-  color: #686767;
+  color: #888;
 }
 
 /* Show all link */
@@ -175,6 +215,42 @@ mat-list-item:hover {
 
 .show-all:hover {
   text-decoration: underline;
+}
+
+/* Recent searches card */
+.recent-searches {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recent-header h3 {
+  font-size: 16px;
+}
+
+.recent-header button {
+  font-size: 12px;
+}
+
+.recent-searches p {
+  font-size: 14px;
+  margin: 10px 0 5px;
+}
+
+.recent-searches .new {
+  font-weight: bold;
+  color: #0a66c2;
+}
+
+.recent-searches small {
+  color: #555;
 }
 
 /* Responsive adjustments */
@@ -193,9 +269,9 @@ mat-list-item:hover {
 
 /* Logo/avatar inside mat-list-item */
 mat-list-item mat-icon img[matListAvatar] {
-  width: 360px;           /* fixed width */
+  width: 160px;           /* fixed width */
   height: 360px;          /* same as width for square */
-  margin-right: 6px;    /* spacing from job details */
+  margin-right: 16px;    /* spacing from job details */
   flex-shrink: 0;        /* prevent shrinking */
 }
 
@@ -203,13 +279,14 @@ mat-list-item mat-icon img[matListAvatar] {
 mat-list-item {
   display: flex;
   align-items: center;
-  padding: 0px;
-  margin: 10px;
-  margin-bottom: 10px;
+  padding: 12px 16px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
+mat-list-item:hover {
+  background-color: #f5f5f5;
+}
 
 /* Job text lines */
 mat-list-item div[mat-line] {
@@ -228,4 +305,80 @@ mat-list-item div[mat-line]:first-child {
 mat-list-item div[mat-line]:last-child {
   font-size: 13px;
   color: #555;
+}
+
+
+/* Skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -450px 0;
+  }
+  100% {
+    background-position: 450px 0;
+  }
+}
+
+.skeleton {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.skeleton-logo,
+.skeleton-avatar,
+.skeleton-btn,
+.skeleton-text {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 4px;
+}
+
+.skeleton-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-text {
+  height: 14px;
+  flex: 1;
+  margin: 4px 0 4px 12px;
+}
+
+.skeleton-text.title {
+  height: 20px;
+  width: 60%;
+}
+
+.skeleton-text.subtitle {
+  height: 14px;
+  width: 40%;
+}
+
+.skeleton-btns {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.skeleton-btn {
+  width: 80px;
+  height: 32px;
+  border-radius: 20px;
+}
+
+.skeleton.small {
+  width: 30%;
+}
+
+.job-details-skeleton .skeleton-text {
+  height: 12px;
+  width: 80%;
 }
