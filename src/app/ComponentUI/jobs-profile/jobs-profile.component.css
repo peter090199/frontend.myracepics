@@ -24,19 +24,18 @@
 }
 
 .leftsidebar {
-  flex: 0 0 510px; /* fixed sidebar width (adjust as needed) */
+  flex: 0 0 510px;
   width: 800px;
   max-width: 800px;
   background-color: #fff;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-left: 10px;
-  margin-bottom: 5px;
-  height: auto;       /* takes 80% of viewport height */
-  overflow-y: auto;   /* scroll if content exceeds height */
-  position: sticky;
-  top: 20px; 
+  margin-bottom: 15px;
+  min-height: auto;
+  height: 90vh;      
+  overflow-y: auto;  
 }
 
 
@@ -308,77 +307,3 @@ mat-list-item div[mat-line]:last-child {
 }
 
 
-/* Skeleton animation */
-@keyframes shimmer {
-  0% {
-    background-position: -450px 0;
-  }
-  100% {
-    background-position: 450px 0;
-  }
-}
-
-.skeleton {
-  display: flex;
-  align-items: center;
-  margin: 12px 0;
-}
-
-.skeleton-logo,
-.skeleton-avatar,
-.skeleton-btn,
-.skeleton-text {
-  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
-  background-size: 1000px 100%;
-  animation: shimmer 1.6s infinite linear;
-  border-radius: 4px;
-}
-
-.skeleton-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-}
-
-.skeleton-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.skeleton-text {
-  height: 14px;
-  flex: 1;
-  margin: 4px 0 4px 12px;
-}
-
-.skeleton-text.title {
-  height: 20px;
-  width: 60%;
-}
-
-.skeleton-text.subtitle {
-  height: 14px;
-  width: 40%;
-}
-
-.skeleton-btns {
-  display: flex;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-.skeleton-btn {
-  width: 80px;
-  height: 32px;
-  border-radius: 20px;
-}
-
-.skeleton.small {
-  width: 30%;
-}
-
-.job-details-skeleton .skeleton-text {
-  height: 12px;
-  width: 80%;
-}

@@ -45,8 +45,7 @@ export class JobsProfileComponent implements OnInit {
       const res = await firstValueFrom(this.jobListServices.getActiveJobs());
 
       if (res.success) {
-        this.success = true;
-        console.log(res.data)
+        this.isLoading = false;
         this.jobs = res.data.map((job: any) => ({
           ...job,
           job_image: job.job_image
@@ -54,11 +53,11 @@ export class JobsProfileComponent implements OnInit {
             : null
         }));
       } else {
-        this.success = false;
+        this.isLoading = false;
       }
     } catch (error) {
       console.error('Error fetching jobs:', error);
-      this.success = false;
+      this.isLoading = false;
     } finally {
       this.isLoading = false;
     }
