@@ -127,10 +127,11 @@ mat-list-item {
 }
 
 .job-details a {
+  margin-top: 30px;
   font-weight: 600;
   color: #0a66c2;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 18px;
 
 }
 .job-insights {
@@ -195,10 +196,10 @@ mat-list-item {
 .job-details p {
   font-size: 13px;
   color: #555;
-  margin: 2px 0;
 }
 
 .job-details small {
+  margin-bottom: 30px;
   font-size: 11px;
   color: #888;
 }

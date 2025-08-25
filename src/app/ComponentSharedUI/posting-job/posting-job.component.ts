@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { Router, Routes } from '@angular/router';
+import { Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { JobPostingService } from 'src/app/services/Jobs/job-posting.service';
 
@@ -23,40 +24,65 @@ export class PostingJobComponent implements OnInit {
 
   selectedFile: File | null = null;
   previewUrl: string | null = null;
-  isImageSelected = false;
 
   worktypes: string[] = ['Onsite', 'Work From Home', 'Hybrid'];
   progressValue: number = 0;
 
   constructor(
     private fb: FormBuilder,
+     @Inject(MAT_DIALOG_DATA) @Optional() public data: any,
     private notificationService: NotificationsService,
-    private jobServices: JobPostingService, private router: Router
+    private jobServices: JobPostingService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.progressValue = ((0 + 1) / 3) * 100; // start at step 1
+    this.progressValue = this.getProgressValue(0); // start at step 1
 
-    // Step 0 - Image
     this.imageForm = this.fb.group({
       image: [null, Validators.required]
     });
 
-    // Step 1 - Job Details
     this.jobForm = this.fb.group({
       job_name: ['', Validators.required],
       job_position: ['', Validators.required],
       job_description: ['', Validators.required],
       job_about: ['', Validators.required],
+      location : ['', Validators.required],
+      benefits: ['', Validators.required],
     });
 
-    // Step 2 - Company Info
     this.companyForm = this.fb.group({
       qualification: ['', Validators.required],
       work_type: ['', Validators.required],
       comp_name: ['', Validators.required],
       comp_description: ['', Validators.required],
     });
+
+    if (this.data?.id) {
+      this.btnSave = "Update";
+      this.fillFormData();
+    }
+  }
+
+  fillFormData() {
+    this.jobForm.patchValue({
+      job_name: this.data.job_name,
+      job_position: this.data.job_position,
+      job_description: this.data.job_description,
+      job_about: this.data.job_about,
+      location: this.data.location,
+      benefits: this.data.benefits,
+    });
+
+    this.companyForm.patchValue({
+      qualification: this.data.qualification,
+      work_type: this.data.work_type,
+      comp_name: this.data.comp_name,
+      comp_description: this.data.comp_description,
+    });
+
+    this.previewUrl = this.data.job_image || null;
   }
 
   getProgressValue(stepIndex: number): number {
@@ -72,40 +98,41 @@ export class PostingJobComponent implements OnInit {
     (stepper || this.stepper).previous();
   }
 
-  onStepChange(event?: any) {
+  onStepChange(event: any) {
     if (!this.loading) {
-      const totalSteps = 3;
-      const currentStep = event?.selectedIndex ?? 0;
-      this.progressValue = ((currentStep + 1) / totalSteps) * 100;
+      const currentStep = event.selectedIndex ?? 0;
+      this.progressValue = this.getProgressValue(currentStep);
     }
   }
 
-  onUploadPhoto(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
+onUploadPhoto(event: Event): void {
+  const file = (event.target as HTMLInputElement).files?.[0];
 
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        this.fileError = 'Only image files are allowed.';
-        return;
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        this.fileError = 'Image size must be less than 2MB.';
-        return;
-      }
-
-      this.selectedFile = file;
-      this.imageForm.patchValue({ image: file });
-      this.imageForm.get('image')?.updateValueAndValidity();
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-
-      this.fileError = null;
+  if (file) {
+    if (!file.type.startsWith('image/')) {
+      this.fileError = 'Only image files are allowed.';
+      return;
     }
+    if (file.size > 2 * 1024 * 1024) {
+      this.fileError = 'Image size must be less than 2MB.';
+      return;
+    }
+
+    this.selectedFile = file;
+
+    // ✅ mark the form control as "valid" without patching file
+    this.imageForm.get('image')?.setValue('selected');
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    this.fileError = null;
   }
+}
+
 
   onSubmit(): void {
     if (!this.selectedFile && this.btnSave.toLowerCase() === "save") {
@@ -131,71 +158,18 @@ export class PostingJobComponent implements OnInit {
     Object.entries({ ...jobValues, ...companyValues }).forEach(([key, value]) => {
       formData.append(key, value as string);
     });
+    console.log(jobValues)
 
     this.jobServices.saveJobPosting(formData).subscribe({
       next: (res) => {
         this.notificationService.toastrSuccess(res.message);
         this.loading = false;
-        this.router.navigateByUrl("/job_posting")
+        this.router.navigateByUrl("/job_posting");
       },
       error: (err) => {
         this.notificationService.toastrError(err.error?.message || "Error saving job");
         this.loading = false;
       }
     });
-  }
-
-  // ============ Responsibilities & Qualifications =============
-  jobDescription: string = '';
-  charCount: number = 0;
-
-  responsibilities: string[] = [
-    'Develop quality software and web applications',
-    'Analyze and maintain existing software applications',
-    'Design highly scalable, testable code',
-    'Discover and fix programming bugs'
-  ];
-  qualifications: string[] = [
-    "Bachelor's degree or equivalent experience in Computer Science or related field",
-    'Development experience with programming languages',
-    'SQL database or relational database skills'
-  ];
-
-  newResponsibility: string = '';
-  newQualification: string = '';
-
-  updateCharCount() {
-    this.charCount = this.jobDescription.length;
-  }
-
-  addResponsibility() {
-    if (this.newResponsibility.trim()) {
-      this.responsibilities.push(this.newResponsibility.trim());
-      this.newResponsibility = '';
-    }
-  }
-
-  removeResponsibility(index: number) {
-    this.responsibilities.splice(index, 1);
-  }
-
-  addQualification() {
-    if (this.newQualification.trim()) {
-      this.qualifications.push(this.newQualification.trim());
-      this.newQualification = '';
-    }
-  }
-
-  removeQualification(index: number) {
-    this.qualifications.splice(index, 1);
-  }
-
-  formatText(cmd: string) {
-    document.execCommand(cmd, false, '');
-  }
-
-  addBullet() {
-    this.jobDescription += '\n• ';
-    this.updateCharCount();
   }
 }

@@ -6,19 +6,21 @@
 <!-- Dialog Title -->
 <h2 mat-dialog-title>{{ btnSave }} Job Posting</h2>
 <mat-divider></mat-divider>
+
 <!-- Progress Bar -->
 <mat-progress-bar color="accent" [mode]="loading ? 'indeterminate' : 'determinate'"
-  [value]="loading ? null : getProgressValue(stepper.selectedIndex)"></mat-progress-bar>
-
+  [value]="loading ? null : getProgressValue(stepper.selectedIndex)">
+</mat-progress-bar>
 
 <!-- Horizontal Stepper -->
-<mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange()" >
+<mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
 
   <!-- Step 1: Image Upload -->
-  <mat-step [stepControl]="imageForm" >
+  <mat-step [stepControl]="imageForm">
     <form [formGroup]="imageForm" class="form-container">
       <ng-template matStepLabel>Upload Job Image</ng-template>
 
+      <!-- FIX: changed to formControlName="job_image" to match TS -->
       <input id="fileUpload" formControlName="job_image" type="file" (change)="onUploadPhoto($event)" />
 
       <div *ngIf="fileError" class="text-red-500 text-sm">
@@ -39,7 +41,7 @@
 
   <!-- Step 2: Job Details -->
   <mat-step [stepControl]="jobForm">
-    <form [formGroup]="jobForm"  class="form-row">
+    <form [formGroup]="jobForm">
       <ng-template matStepLabel>Job Details</ng-template>
 
       <mat-form-field appearance="standard" class="full-width">
@@ -52,15 +54,15 @@
         <input matInput formControlName="job_position" required />
       </mat-form-field>
 
-      <!-- <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Job Description</mat-label>
-        <textarea
-          matInput
-          rows="4"
-          formControlName="job_description"
-          required
-        ></textarea>
-      </mat-form-field> -->
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Location</mat-label>
+        <input matInput formControlName="location" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Benefits</mat-label>
+        <input matInput formControlName="benefits" required />
+      </mat-form-field>
 
       <mat-form-field appearance="standard" class="full-width">
         <mat-label>About the Job</mat-label>
@@ -70,21 +72,23 @@
       <mat-card class="job-description-card">
         <h2 class="section-title">Job description</h2>
         <p class="subtitle">
-          Your job description will be visible to anyone that views this job. Edit to ensure it reflects the role’s
-          scope.
+          Your job description will be visible to anyone that views this job. Edit to ensure it reflects the role’s scope.
         </p>
 
-        <!-- Rich text editor box -->
+        <!-- Rich text editor -->
         <div class="editor-box">
           <div class="editor-toolbar">
-            <button mat-icon-button (click)="formatText('bold')"><mat-icon>format_bold</mat-icon></button>
-            <button mat-icon-button (click)="formatText('italic')"><mat-icon>format_italic</mat-icon></button>
-            <button mat-icon-button (click)="addBullet()"><mat-icon>format_list_bulleted</mat-icon></button>
+            <button mat-icon-button type="button" (click)="formatText('bold')"><mat-icon>format_bold</mat-icon></button>
+            <button mat-icon-button type="button" (click)="formatText('italic')"><mat-icon>format_italic</mat-icon></button>
+            <button mat-icon-button type="button" (click)="addBullet()"><mat-icon>format_list_bulleted</mat-icon></button>
           </div>
-          <textarea matInput class="editor-textarea" [(ngModel)]="jobDescription" (input)="updateCharCount()"
-            placeholder="Write job description here..."></textarea>
+
+          <!-- FIX: removed [(ngModel)], bind to FormControl instead -->
+          <textarea matInput class="editor-textarea" formControlName="job_description"
+            (input)="updateCharCount()" placeholder="Write job description here..."></textarea>
+
           <div class="editor-footer">
-            <button mat-stroked-button color="primary" class="ml-auto">Draft with AI</button>
+            <button mat-stroked-button color="primary" class="ml-auto" type="button">Draft with AI</button>
             <span class="char-count">{{ charCount }}/10,000</span>
           </div>
         </div>
@@ -95,14 +99,14 @@
           <ul>
             <li *ngFor="let resp of responsibilities; let i = index">
               {{ resp }}
-              <button mat-icon-button color="warn" (click)="removeResponsibility(i)">
+              <button mat-icon-button color="warn" type="button" (click)="removeResponsibility(i)">
                 <mat-icon>delete</mat-icon>
               </button>
             </li>
           </ul>
           <div class="add-box">
             <input matInput placeholder="Add responsibility..." [(ngModel)]="newResponsibility" />
-            <button mat-icon-button color="primary" (click)="addResponsibility()">
+            <button mat-icon-button color="primary" type="button" (click)="addResponsibility()">
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -114,26 +118,25 @@
           <ul>
             <li *ngFor="let qual of qualifications; let i = index">
               {{ qual }}
-              <button mat-icon-button color="warn" (click)="removeQualification(i)">
+              <button mat-icon-button color="warn" type="button" (click)="removeQualification(i)">
                 <mat-icon>delete</mat-icon>
               </button>
             </li>
           </ul>
           <div class="add-box">
             <input matInput placeholder="Add qualification..." [(ngModel)]="newQualification" />
-            <button mat-icon-button color="primary" (click)="addQualification()">
+            <button mat-icon-button color="primary" type="button" (click)="addQualification()">
               <mat-icon>add</mat-icon>
             </button>
           </div>
         </div>
       </mat-card>
 
-
       <div class="button-end">
-        <button mat-raised-button color="warn" (click)="previousStep(stepper)">
+        <button mat-raised-button color="warn" type="button" (click)="previousStep(stepper)">
           Previous
         </button>
-        <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!jobForm.valid">
+        <button mat-raised-button color="accent" type="button" (click)="nextStep(stepper)" [disabled]="!jobForm.valid">
           Next
         </button>
       </div>
@@ -170,10 +173,10 @@
       </mat-form-field>
 
       <div class="button-end">
-        <button mat-raised-button color="warn" (click)="previousStep(stepper)">
+        <button mat-raised-button color="warn" type="button" (click)="previousStep(stepper)">
           Previous
         </button>
-        <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="loading || !companyForm.valid">
+        <button mat-raised-button color="accent" type="submit" (click)="onSubmit()" [disabled]="loading || !companyForm.valid">
           {{ btnSave }}
         </button>
       </div>

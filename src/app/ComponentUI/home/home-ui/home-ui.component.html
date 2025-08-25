@@ -1,10 +1,34 @@
 <mat-sidenav-container class="example-container">
+
   <mat-sidenav-content>
     <div class="main-container">
-
       <div class="left-sidebar">
 
-        <mat-card class="post-box-container" *ngIf="!isMobile">
+        <!-- Skeleton Loader -->
+        <ng-container *ngIf="isLoading">
+          <mat-card class="post-box-container">
+            <div class="avatar-container skeleton-avatar"></div>
+
+            <mat-card-title class="skeleton-line short"></mat-card-title>
+            <mat-card-subtitle class="skeleton-line shorter"></mat-card-subtitle>
+            <mat-card-title class="skeleton-line short"></mat-card-title>
+            <mat-card-subtitle class="skeleton-line shorter"></mat-card-subtitle>
+
+            <mat-card-content class="scrollable-content">
+              <div class="button-gap">
+                <div class="skeleton-btn small"></div>
+                <div class="skeleton-btn small"></div>
+              </div>
+              <div class="button-gap">
+                <div class="skeleton-btn small"></div>
+                <div class="skeleton-btn small"></div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+
+        <!-- Actual Profile Card -->
+        <mat-card class="post-box-container" *ngIf="!isLoading && !isMobile">
           <div class="profile-avatar">
             <div class="avatar-container">
               <img *ngIf="profile_pic; else defaultAvatar" [src]="profile_pic.photo_pic" alt="Profile Picture"
@@ -12,195 +36,231 @@
               <ng-template #defaultAvatar>
                 <img src="assets/default-avatar.png" alt="Default Avatar" class="profile-pic" />
               </ng-template>
-
               <div class="edit-overlay" (click)="uploadPic()">
                 <mat-icon>photo_camera</mat-icon>
               </div>
             </div>
-
             <p *ngIf="error" class="error-message">{{ error }}</p>
           </div>
 
-          <br>
-          <mat-card-title class="profile-name">{{profiles.fname}} {{profiles.lname}}</mat-card-title>
-          <mat-card-subtitle class="profile-email"></mat-card-subtitle>
-          <mat-card-subtitle class="profile-location">{{profiles.profession}}</mat-card-subtitle>
+          <!-- User Info -->
+          <mat-card-title class="profile-name" *ngIf="showDefUserButtons">
+            {{ profiles.fname }} {{ profiles.lname }}
+          </mat-card-title>
+          <mat-card-subtitle class="profile-profession" *ngIf="showDefUserButtons">
+            {{ profiles.profession }}
+          </mat-card-subtitle>
+          <mat-card-title class="profile-name" *ngIf="showClientOrAdminButtons">
+            {{ profiles.company }}
+          </mat-card-title>
+          <mat-card-subtitle class="profile-profession" *ngIf="showClientOrAdminButtons">
+            {{ profiles.companywebsite }}
+          </mat-card-subtitle>
 
           <mat-card-content class="scrollable-content">
-
-            <div class="button-gap">
-              <button mat-button class="list-label" [routerLink]="['/profile/',currentUserCode ]">
+            <!-- Buttons -->
+            <div class="button-gap" *ngIf="showDefUserButtons">
+              <button mat-button class="list-label" [routerLink]="['/profile/', currentUserCode]">
                 <mat-icon>person</mat-icon>View Profile
+              </button>
+              <button mat-button class="list-label" (click)="printCV()">
+                <mat-icon>description</mat-icon>View CV
               </button>
             </div>
 
-
-            <button mat-button class="list-label" (click)="printCV()">
-              <mat-icon>description</mat-icon>View CV
-            </button>
-            <!-- <button mat-button  class="list-label" routerLink="/user-cv">
-            <mat-icon>description</mat-icon>Edit CV
-            </button> -->
-
+            <div class="button-gap" *ngIf="showClientOrAdminButtons">
+              <button mat-button class="list-label" [routerLink]="['/company_profile/', currentUserCode]">
+                <mat-icon>person</mat-icon>Company Profile
+              </button>
+              <button mat-button class="list-label">
+                <mat-icon>description</mat-icon>View Jobs
+              </button>
+            </div>
           </mat-card-content>
         </mat-card>
+
       </div>
 
-      <!-- Middle Column: Post Section -->
+
+      <!-- Middle Column (Scrollable) -->
       <div class="middle-column" (scroll)="onScroll($event)" #middleColumn>
 
-        <div class="post-box-container">
+        <!-- Post Input -->
+        <div class="post-box-container" *ngIf="!isLoading">
           <div class="input-section">
-
-            <ng-template #defaultAvatar>
-              <img src="assets/default.png" alt="Default Avatar" class="profile-pic" />
-            </ng-template>
             <input type="text" placeholder="Create your post?" class="post-input" readonly (click)="createPost()" />
-
           </div>
-
           <div class="actions-section">
-            <button class="action-btn live-video">
-              <span class="icon">🎥</span>Photo
-            </button>
-            <button class="action-btn photo-video">
-              <span class="icon">📷</span> Video
-            </button>
-            <button class="action-btn reel">
-              <span class="icon">🎞️</span> Events
-            </button>
+            <button class="action-btn live-video"><span class="icon">🎥</span>Photo</button>
+            <button class="action-btn photo-video"><span class="icon">📷</span> Video</button>
+            <button class="action-btn reel"><span class="icon">🎞️</span>Events</button>
           </div>
         </div>
 
-        <br>
-        <!-- Post Display: Loop over posts -->
-        <button mat-mini-fab color="primary" class="refresh-button-top" *ngIf="isScrollIdle"
-          (click)="scrollToTop(middleColumn)">
-          <mat-icon>refresh</mat-icon>
-        </button>
+        <!-- Skeleton Posts -->
+        <ng-container *ngIf="isLoading">
+          <mat-card class="post-box-container" *ngFor="let item of skeletonPosts">
+            <mat-card-header>
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line shorter"></div>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line medium"></div>
+              <div class="skeleton-line short"></div>
+            </mat-card-content>
+            <mat-card-content class="skeleton-image"></mat-card-content>
+            <mat-card-footer class="skeleton-footer">
+              <div class="skeleton-btn small"></div>
+              <div class="skeleton-btn small"></div>
+              <div class="skeleton-btn small"></div>
+            </mat-card-footer>
+          </mat-card>
+        </ng-container>
 
-        <!-- post -->
-        <mat-card *ngFor="let post of posts" class="post-box-container">
-          <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+        <!-- Middle Column: Post Section -->
+        <div>
 
+          <button mat-mini-fab color="primary" class="refresh-button-top" *ngIf="isScrollIdle"
+            (click)="scrollToTop(middleColumn)">
+            <mat-icon>refresh</mat-icon>
+          </button>
 
-          <mat-card-header>
-            <div mat-card-avatar class="avatar">
-              <img [src]="post.profile_pic || 'assets/default.png'" alt="Avatar" />
-            </div>
-            <mat-card-title>
-              <a class="user-name">{{ post.Fullname }}</a>
-            </mat-card-title>
-            <mat-card-subtitle>{{ post.created_at | date: 'medium' }}</mat-card-subtitle>
+          <!-- post -->
+          <mat-card *ngFor="let post of posts" class="post-box-container">
+            <mat-card-header>
+              <div mat-card-avatar class="avatar">
+                <img [src]="post.profile_pic || 'assets/default.png'" alt="Avatar" />
+              </div>
+              <mat-card-title>
+                <a class="user-name">{{ post.Fullname }}</a>
+              </mat-card-title>
+              <mat-card-subtitle>{{ post.created_at | date: 'medium' }}</mat-card-subtitle>
 
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_horiz</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onEditPost()">Edit</button>
-              <button mat-menu-item (click)="onDelete(post)" [disabled]="isLoading">
-                <ng-container *ngIf="!isLoading; else deletingTpl">
-                  Delete
-                </ng-container>
-                <ng-template #deletingTpl>
-                  <mat-progress-spinner diameter="20" mode="indeterminate" color="warn"></mat-progress-spinner>
-                </ng-template>
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_horiz</mat-icon>
               </button>
-            </mat-menu>
-          </mat-card-header>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onEditPost()">Edit</button>
+                <button mat-menu-item (click)="onDelete(post)" [disabled]="isLoading">
+                  <ng-container *ngIf="!isLoading; else deletingTpl">
+                    Delete
+                  </ng-container>
+                  <ng-template #deletingTpl>
+                    <mat-progress-spinner diameter="20" mode="indeterminate" color="warn"></mat-progress-spinner>
+                  </ng-template>
+                </button>
+              </mat-menu>
+            </mat-card-header>
 
-          <mat-card-content>
-            <p class="content-display">
-              {{ post.expanded ? post.caption : (post.caption | slice:0:180) + '...' }}
-              <a *ngIf="post.caption.length > 180" (click)="post.expanded = !post.expanded" class="see-more">
-                {{ post.expanded ? 'See Less' : 'See More' }}
-              </a>
-            </p>
-          </mat-card-content>
+            <mat-card-content>
+              <p class="content-display">
+                {{ post.expanded ? post.caption : (post.caption | slice:0:180) + '...' }}
+                <a *ngIf="post.caption.length > 180" (click)="post.expanded = !post.expanded" class="see-more">
+                  {{ post.expanded ? 'See Less' : 'See More' }}
+                </a>
+              </p>
+            </mat-card-content>
 
-          <!-- Images -->
-          <mat-card-content class="post-images" *ngIf="post.images.length > 0">
-            <div class="fb-gallery" [ngClass]="{ 'single': post.images.length === 1, 'multi': post.images.length > 1 }">
-              <div class="gallery-item" *ngFor="let image of post.images.slice(0, maxImages); let i = index"
-                (click)="openModal(post.images)">
-                <img [src]="image.path_url" alt="Gallery image" />
-                <div class="overlay" *ngIf="i === maxImages - 1 && post.images.length > maxImages">
-                  +{{ post.images.length - maxImages }}
+            <!-- Images -->
+            <mat-card-content class="post-images" *ngIf="post.images.length > 0">
+              <div class="fb-gallery"
+                [ngClass]="{ 'single': post.images.length === 1, 'multi': post.images.length > 1 }">
+                <div class="gallery-item" *ngFor="let image of post.images.slice(0, maxImages); let i = index"
+                  (click)="openModal(post.images)">
+                  <img [src]="image.path_url" alt="Gallery image" />
+                  <div class="overlay" *ngIf="i === maxImages - 1 && post.images.length > maxImages">
+                    +{{ post.images.length - maxImages }}
+                  </div>
                 </div>
               </div>
-            </div>
-          </mat-card-content>
+            </mat-card-content>
 
-          <!-- Videos -->
-          <mat-card-content *ngIf="post.videos && post.videos.length > 0" class="video-gallery">
-            <div *ngFor="let video of post.videos" class="video-preview">
-              <video width="100%" height="auto" [src]="video.path_url" controls preload="metadata"></video>
-            </div>
-          </mat-card-content>
+            <!-- Videos -->
+            <!-- <mat-card-content *ngIf="post.videos && post.videos.length > 0" class="video-gallery-video">
+              <div *ngFor="let video of post.videos" class="video-preview">
+                <video width="100%" height="auto" [src]="video.path_url" controls ></video>
+              </div>
+            </mat-card-content> -->
+            <div class="video-gallery" *ngFor="let video of post.videos?.slice(0, maxImages); let j = index"
+              [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || j === 0 }"
+              (click)="openModal(post.videos)">
 
-          <!-- Reaction summary -->
-          <div class="reactions-summary" *ngIf="totalReactionsCount > 0">
-            <ng-container *ngFor="let reaction of reactionList; let i = index">
-              <span class="emoji" [ngStyle]="{
+              <video controls [src]="video.path_url" width="100%" height="auto">
+                Your browser does not support the video tag.
+              </video>
+
+              <div class="overlay" *ngIf="j === (maxImages - 1) && post.videos?.length > maxImages">
+                +{{ post.videos.length - maxImages }}
+              </div>
+            </div>
+
+
+
+            <!-- Reaction summary -->
+            <div class="reactions-summary" *ngIf="totalReactionsCount > 0">
+              <ng-container *ngFor="let reaction of reactionList; let i = index">
+                <span class="emoji" [ngStyle]="{
           'z-index': 10 - i,
           'left.px': i * 12,
           'position': 'relative',
           'font-size': '18px'
         }" [title]="reaction.reaction + ': ' + reaction.count">
-                {{ reactionEmojiMap[reaction.reaction] || '❓' }}
-              </span>
-            </ng-container>
-            <a *ngIf="totalReactionsCount > 0" class="reaction-count-text">
-              You and {{ totalReactionsCount - 1 }} others
-            </a>
-          </div>
+                  {{ reactionEmojiMap[reaction.reaction] || '❓' }}
+                </span>
+              </ng-container>
+              <a *ngIf="totalReactionsCount > 0" class="reaction-count-text">
+                You and {{ totalReactionsCount - 1 }} others
+              </a>
+            </div>
 
 
 
-          <!-- Fixed Footer -->
-          <mat-card-footer>
-            <div class="footer-btn like-button-wrapper" (mouseenter)="showReactionsFor = post.posts_uuid">
-              <button mat-button (mouseenter)="togglePopup(post.posts_uuid, true)">
-                <mat-icon>
-                  {{ (postReactions[post.posts_uuid] &&
-                  postReactions[post.posts_uuid].hoveredReaction?.emoji) || 'thumb_up' }}
-                </mat-icon>
-                Like
-              </button>
-              <div class="reactions-popup" *ngIf="postReactions[post.posts_uuid]?.showPopup"
-                (mouseleave)="togglePopup(post.posts_uuid, false)">
-                <div class="reaction" *ngFor="let react of reactions"
-                  (mouseenter)="setHoveredReaction(post.posts_uuid, react)"
-                  (mouseleave)="setHoveredReaction(post.posts_uuid, null)"
-                  (click)="selectReaction(post.posts_uuid, react)">
-                  <span>{{ react.emoji }}</span>
+            <!-- Fixed Footer -->
+            <mat-card-footer>
+              <div class="footer-btn like-button-wrapper" (mouseenter)="showReactionsFor = post.posts_uuid">
+                <button mat-button (mouseenter)="togglePopup(post.posts_uuid, true)">
+                  <mat-icon>
+                    {{ (postReactions[post.posts_uuid] &&
+                    postReactions[post.posts_uuid].hoveredReaction?.emoji) || 'thumb_up' }}
+                  </mat-icon>
+                  Like
+                </button>
+                <div class="reactions-popup" *ngIf="postReactions[post.posts_uuid]?.showPopup"
+                  (mouseleave)="togglePopup(post.posts_uuid, false)">
+                  <div class="reaction" *ngFor="let react of reactions"
+                    (mouseenter)="setHoveredReaction(post.posts_uuid, react)"
+                    (mouseleave)="setHoveredReaction(post.posts_uuid, null)"
+                    (click)="selectReaction(post.posts_uuid, react)">
+                    <span>{{ react.emoji }}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="footer-btn" >
-              <button mat-button (click)="openModal(post.images)">
-                <mat-icon>chat</mat-icon> Comment
-              </button>
-            </div>
+              <div class="footer-btn">
+                <button mat-button (click)="openModal(post.images)">
+                  <mat-icon>chat</mat-icon> Comment
+                </button>
+              </div>
 
-            <div class="footer-btn">
-              <button mat-button>
-                <mat-icon>repeat</mat-icon> Repost
-              </button>
-            </div>
+              <div class="footer-btn">
+                <button mat-button>
+                  <mat-icon>repeat</mat-icon> Repost
+                </button>
+              </div>
 
-            <div class="footer-btn">
-              <button mat-button>
-                <mat-icon>send</mat-icon> Send
-              </button>
-            </div>
-          </mat-card-footer>
+              <div class="footer-btn">
+                <button mat-button>
+                  <mat-icon>send</mat-icon> Send
+                </button>
+              </div>
+            </mat-card-footer>
 
-        </mat-card>
+          </mat-card>
 
 
-        <!-- <mat-card class="post-box-container" *ngFor="let post of posts">
+          <!-- <mat-card class="post-box-container" *ngFor="let post of posts">
           <mat-card-header>
             <div mat-card-avatar class="avatar">
               <img [src]="post.profile_pic || 'assets/default.png'" alt="Avatar" />
@@ -298,18 +358,27 @@
         </mat-card> -->
 
 
+        </div>
       </div>
 
-      <!-- Right Column: Lists -->
+      <!-- Right Sidebar (Fixed) -->
       <div class="right-column" *ngIf="!isMobile">
         <mat-card-header>
           <mat-card-title>Suggested History</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
-          <!-- Loading Progress Bar -->
-          <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary">
-          </mat-progress-bar>
+          <!-- Skeleton Users -->
+          <ng-container *ngIf="isLoading">
+            <div *ngFor="let item of skeletonUsers" class="client-item skeleton-user">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-info">
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line shorter"></div>
+              </div>
+              <div class="skeleton-btn small"></div>
+            </div>
+          </ng-container>
 
           <!-- Show if users list has data -->
           <div *ngIf="!isLoading && users && users.length > 0; else noData">
@@ -357,9 +426,7 @@
         <div class="spacer-top"></div>
       </div>
 
-      
+
     </div>
-
   </mat-sidenav-content>
-
 </mat-sidenav-container>

@@ -46,7 +46,7 @@
 //     this.page = 1;
 //      this.dataList = [];
 //      this.getPeopleyoumayknow();
-     
+
 //      //this.loadStatic();
 //   }
 // }
@@ -301,7 +301,7 @@
 //   });
 // }
 
- 
+
 
 //   recentActivities = [
 //   {
@@ -472,7 +472,7 @@ export class PeopleandCompanyComponent implements OnInit {
     private authService: AuthService,
     private alert: NotificationsService,
     private profile: ProfileService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.active) {
@@ -483,6 +483,7 @@ export class PeopleandCompanyComponent implements OnInit {
       this.getPeopleRecentActivity();
     }
   }
+  skeletonRows: number[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['active']?.currentValue) {
@@ -503,14 +504,17 @@ export class PeopleandCompanyComponent implements OnInit {
   }
 
   /** Load Suggestions */
+
+
   getPeopleyoumayknow(): void {
     this.currentUserCode = this.authService.getAuthCode();
 
     this.clientsService.getPeopleyoumayknow().subscribe({
       next: (res) => {
         this.people = res.data || [];
+
         this.cnt = res.count || 0;
-        this.loaded.emit();
+        // this.loaded.emit();
       },
       error: (err) => {
         console.error('Error loading suggestions:', err);
@@ -525,13 +529,17 @@ export class PeopleandCompanyComponent implements OnInit {
 
     this.isLoading = true;
     this.currentUserCode = this.authService.getAuthCode();
+    this.skeletonRows = Array.from({ length: this.limit }, (_, i) => i);
 
     this.clientsService.getPeopleRecentActivity().subscribe({
       next: (res) => {
+        this.skeletonRows = [];
+
         const newData = (res.data || []).map((person: any) => ({
           ...person,
           follow_status: person.follow_status,
-          follow_id: person.follow_id || null
+          follow_id: person.follow_id || null,
+          role_code: person.role_code // ✅ keep role_code per person
         }));
 
         this.peopleRecentActivity.push(...newData);
@@ -546,6 +554,9 @@ export class PeopleandCompanyComponent implements OnInit {
       }
     });
   }
+
+
+
 
   /** Open Modal */
   openSuggestionsModal(): void {

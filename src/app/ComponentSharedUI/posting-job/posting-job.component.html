@@ -1,33 +1,28 @@
-<!-- Page Header -->
 <div class="container">
-
     <div class="page-header">
         <h2>{{ btnSave }} Job Posting</h2>
-        <!-- <button mat-icon-button class="close-button" [routerLink]="['/']">
-            <mat-icon class="close-icon">close</mat-icon>
-        </button> -->
     </div>
 
     <mat-divider></mat-divider>
 
     <!-- Progress Bar -->
     <mat-progress-bar color="accent" [mode]="loading ? 'indeterminate' : 'determinate'"
-        [value]="loading ? null : getProgressValue(stepper.selectedIndex)">
+        [value]="loading ? null : progressValue">
     </mat-progress-bar>
 
-    <!-- Horizontal Stepper -->
-    <mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange()">
+    <!-- Stepper -->
+    <mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
 
         <!-- Step 1: Image Upload -->
         <mat-step [stepControl]="imageForm">
             <form [formGroup]="imageForm" class="form-container">
                 <ng-template matStepLabel>Upload Job Image</ng-template>
 
-                <input id="fileUpload" formControlName="job_image" type="file" (change)="onUploadPhoto($event)" />
+                <!-- remove formControlName -->
+                <input id="fileUpload" type="file" (change)="onUploadPhoto($event)" />
 
-                <div *ngIf="fileError" class="text-red-500 text-sm">
-                    {{ fileError }}
-                </div>
+
+                <div *ngIf="fileError" class="text-red-500 text-sm">{{ fileError }}</div>
 
                 <div *ngIf="previewUrl" class="image-preview-container mt-2">
                     <img [src]="previewUrl" alt="Preview" class="preview-img" />
@@ -43,88 +38,38 @@
 
         <!-- Step 2: Job Details -->
         <mat-step [stepControl]="jobForm">
-            <form [formGroup]="jobForm" class="form-row">
+            <form [formGroup]="jobForm">
                 <ng-template matStepLabel>Job Details</ng-template>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
                     <mat-label>Job Name</mat-label>
                     <input matInput formControlName="job_name" required />
                 </mat-form-field>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
                     <mat-label>Position</mat-label>
                     <input matInput formControlName="job_position" required />
                 </mat-form-field>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
+                    <mat-label>Location</mat-label>
+                    <input matInput formControlName="location" required />
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Benefits</mat-label>
+                     <textarea matInput rows="3" formControlName="benefits" required></textarea>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
                     <mat-label>About the Job</mat-label>
                     <textarea matInput rows="2" formControlName="job_about" required></textarea>
                 </mat-form-field>
-                <mat-form-field appearance="standard" class="full-width">
+
+                <mat-form-field class="full-width">
                     <mat-label>Job Description</mat-label>
                     <textarea matInput rows="3" formControlName="job_description" required></textarea>
                 </mat-form-field>
-
-                <!-- <mat-card class="job-description-card">
-                    <h2 class="section-title">Job description</h2>
-                    <p class="subtitle">
-                        Your job description will be visible to anyone that views this job. Edit to ensure it reflects
-                        the role’s scope.
-                    </p>
-
-                    <div class="editor-box">
-                        <div class="editor-toolbar">
-                            <button mat-icon-button
-                                (click)="formatText('bold')"><mat-icon>format_bold</mat-icon></button>
-                            <button mat-icon-button
-                                (click)="formatText('italic')"><mat-icon>format_italic</mat-icon></button>
-                            <button mat-icon-button
-                                (click)="addBullet()"><mat-icon>format_list_bulleted</mat-icon></button>
-                        </div>
-                        <textarea matInput class="editor-textarea" [(ngModel)]="jobDescription"
-                            (input)="updateCharCount()" placeholder="Write job description here..."></textarea>
-                        <div class="editor-footer">
-                            <button mat-stroked-button color="primary" class="ml-auto">Draft with AI</button>
-                            <span class="char-count">{{ charCount }}/10,000</span>
-                        </div>
-                    </div>
-
-                    <div class="description-section">
-                        <h3>Responsibilities</h3>
-                        <ul>
-                            <li *ngFor="let resp of responsibilities; let i = index">
-                                {{ resp }}
-                                <button mat-icon-button color="warn" (click)="removeResponsibility(i)">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </li>
-                        </ul>
-                        <div class="add-box">
-                            <input matInput placeholder="Add responsibility..." [(ngModel)]="newResponsibility" />
-                            <button mat-icon-button color="primary" (click)="addResponsibility()">
-                                <mat-icon>add</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="description-section">
-                        <h3>Qualifications</h3>
-                        <ul>
-                            <li *ngFor="let qual of qualifications; let i = index">
-                                {{ qual }}
-                                <button mat-icon-button color="warn" (click)="removeQualification(i)">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </li>
-                        </ul>
-                        <div class="add-box">
-                            <input matInput placeholder="Add qualification..." [(ngModel)]="newQualification" />
-                            <button mat-icon-button color="primary" (click)="addQualification()">
-                                <mat-icon>add</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-                </mat-card> -->
 
                 <div class="button-end">
                     <button mat-raised-button color="warn" (click)="previousStep(stepper)">
@@ -142,26 +87,24 @@
             <form [formGroup]="companyForm">
                 <ng-template matStepLabel>Company Info</ng-template>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
                     <mat-label>Qualification</mat-label>
-                     <textarea matInput rows="3" formControlName="qualification" required></textarea>
+                    <textarea matInput rows="3" formControlName="qualification" required></textarea>
                 </mat-form-field>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
                     <mat-label>Work Type</mat-label>
                     <mat-select formControlName="work_type" required>
-                        <mat-option *ngFor="let type of worktypes" [value]="type">
-                            {{ type }}
-                        </mat-option>
+                        <mat-option *ngFor="let type of worktypes" [value]="type">{{ type }}</mat-option>
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
                     <mat-label>Company Name</mat-label>
                     <input matInput formControlName="comp_name" required />
                 </mat-form-field>
 
-                <mat-form-field appearance="standard" class="full-width">
+                <mat-form-field class="full-width">
                     <mat-label>Company Description</mat-label>
                     <textarea matInput rows="3" formControlName="comp_description" required></textarea>
                 </mat-form-field>
@@ -177,6 +120,5 @@
                 </div>
             </form>
         </mat-step>
-
     </mat-horizontal-stepper>
 </div>

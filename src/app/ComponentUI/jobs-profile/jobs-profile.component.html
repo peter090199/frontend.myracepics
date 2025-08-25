@@ -249,8 +249,9 @@
             </div>
 
             <!-- <span class="company-name">{{ selectedJob.fullname }}</span> -->
-            <a [routerLink]="['/profile', selectedJob.code]" class="custom-title">
-              {{ selectedJob.fullname }}
+             
+            <a [routerLink]="['/company_profile/', selectedJob.code]" class="custom-title">
+              {{ selectedJob.company }}
             </a>
 
             <!-- <small>{{ selectedJob.followers }} followers</small><br>

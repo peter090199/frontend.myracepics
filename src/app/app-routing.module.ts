@@ -35,6 +35,7 @@ import { JobPostingUIComponent } from './ComponentSharedUI/job-posting-ui/job-po
 import { JobsComponent } from './ComponentUI/jobs/jobs.component';
 import { JobsProfileComponent } from './ComponentUI/jobs-profile/jobs-profile.component';
 import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job.component';
+import { CompanyProfileUIComponent } from './ComponentSharedUI/Jobs/company-profile-ui/company-profile-ui.component';
 
 
 const routes: Routes = [
@@ -76,6 +77,7 @@ const routes: Routes = [
       { path: 'recommended-jobs/:id', component: JobsProfileComponent },
       { path: 'recommended-jobs', component: JobsProfileComponent },
       { path: 'posting-job', component: PostingJobComponent },
+      { path: 'company_profile/:code', component: CompanyProfileUIComponent },
     ]
   },
   {

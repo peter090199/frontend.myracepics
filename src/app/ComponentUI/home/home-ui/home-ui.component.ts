@@ -15,6 +15,8 @@ import { ImageModalComponent } from '../../Modal/image-modal/image-modal.compone
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
 import { ClientsService } from 'src/app/services/Networking/clients.service';
+import { Subscription } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home-ui',
@@ -82,10 +84,12 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
   ];
 
 
+
   constructor(private router: Router, private profile: ProfileService, private photo: CurriculumVitaeService,
     private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
     private authService: AuthService, private alert: NotificationsService, private comment: CommentService,
-    private ngZone: NgZone, private reactionService: ReactionEmojiService, private clientsService: ClientsService
+    private ngZone: NgZone, private reactionService: ReactionEmojiService, private clientsService: ClientsService,
+    private sanitizer: DomSanitizer
   ) {
     this.getPeopleRecentActivity();
   }
@@ -106,7 +110,8 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
   menuOpened: boolean = false;
   selectedImages: any;
 
-  openModal(data: any): void {
+
+  openModal(data: any[]): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: data,
       width: '80%',
@@ -203,11 +208,12 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     this.isMobile = window.innerWidth <= 768; // or your breakpoint for mobile
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.autoSlideInterval);
-  }
 
   currentUserCode: any;
+  // Skeleton placeholders
+  skeletonPosts = Array(5); // 5 skeleton posts
+  skeletonUsers = Array(4); // 4 skeleton users
+
   ngOnInit(): void {
     this.currentUserCode = this.authService.getAuthCode();
     console.log('testcode ', this.currentUserCode)
@@ -219,37 +225,31 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     this.onResize();
     this.fetchProfilePicture();
     this.getProfileByUser();
-    this.startAutoSlide();
     this.getCode();
 
-
-    this.posts.forEach(post => {
-      post.visibleComments = this.loadCommentStep;
-
-      if (!this.postReactions[post.posts_uuid]) {
-        this.postReactions[post.posts_uuid] = {
-          selectedReaction: null,
-          hoveredReaction: null,
-          showPopup: false,
-        };
-      }
-
-
+    const sub = this.authService.getProfilecode().subscribe({
+      next: (res) => { this.loadUserPost(); },
+      error: (err) => console.error(err)
     });
-
-    // if (this.posts.length > 0) {
-    //   this.currentIndex = 0;
-    //   // this.posts.forEach(post => post.showComments = false);
-    //   this.post_uuidOrUind = this.posts[0].posts_uuind;
-    //   console.log(this.post_uuidOrUind)
-    //   this.getComments();
-    // }
+    this.subscriptions.push(sub);
   }
 
-  // loadMoreComments(posts: number) {
-  //   console.log(posts)
-  //   posts += this.loadCommentStep;
-  // }
+  private subscriptions: Subscription[] = [];
+
+  ngOnDestroy(): void {
+    // Clear intervals & timeouts
+    clearInterval(this.autoSlideInterval);
+    clearInterval(this.scrollInterval);
+    clearTimeout(this.scrollTimeout);
+    clearTimeout(this.hideTimeout);
+
+    // Unsubscribe all API subscriptions
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+  sanitizeVideoUrl(url: string): SafeResourceUrl {
+    if (!url) return '';
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
 
 
   loadMoreComments(post: any) {
@@ -260,7 +260,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
   getCode(): void {
     this.authService.getProfilecode().subscribe({
       next: (res) => {
-        if (res.success && res.message.length > 0) {
+        if (res.success) {
           // this.usercode = res.message[0].code;
           this.loadUserPost();
         }
@@ -359,21 +359,37 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     //   }
     // );
   }
+  showDefUserButtons: boolean = false;
+  showClientOrAdminButtons: boolean = false;
 
   getProfileByUser(): void {
-    this.profile.getProfileByUser(this.code).subscribe({
-      next: (response) => {
-        if (response.success == true) {
-          this.profiles = response.message;
+    this.profile.getProfileByUserOnly().subscribe({
+      next: (res) => {
+        if (res.success) {
+          // Take the first profile object
+          this.profiles = res.message;
+          console.log('Profile:', this.profiles);
+
+          // Set button visibility
+          this.showDefUserButtons = this.profiles.role_code === 'DEF-USERS';
+          this.showClientOrAdminButtons = ['DEF-CLIENT', 'DEF-MASTERADMIN'].includes(this.profiles.role_code);
         } else {
+          this.profiles = null;
+          this.showDefUserButtons = false;
+          this.showClientOrAdminButtons = false;
           this.error = 'Failed to load profile data';
         }
       },
       error: (err) => {
+        console.error(err);
+        this.profiles = null;
+        this.showDefUserButtons = false;
+        this.showClientOrAdminButtons = false;
         this.error = err.message || 'An error occurred while fetching profile data';
       },
     });
   }
+
 
   fetchProfilePicture(): void {
     this.photo.getDataCV().subscribe(
@@ -419,7 +435,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
             images: post.images || [],
             videos: post.videos || []
           }));
-            this.posts.forEach(post => {
+          this.posts.forEach(post => {
             if (post.images && post.images.length > 0) {
               post.images.forEach((image: { path_url: string; }) => {
                 image.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com/' + image.path_url.replace(/\\/g, '');
