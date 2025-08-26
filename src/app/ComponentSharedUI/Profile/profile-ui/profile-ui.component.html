@@ -1,14 +1,19 @@
 <div class="container">
 
-  <div class="cover-photo">
+  <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
     <img src="
         https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
       alt="Cover Photo" class="cover-photo-img" />
     <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button>
   </div>
 
-  <div class="profile-details" *ngIf="profiles">
-    <div class="profile-info">
+  <ng-template #coverSkeleton>
+    <div class="skeleton skeleton-img" style="height:200px;width:100%;border-radius:0;"></div>
+  </ng-template>
+
+
+  <div *ngIf="!isloading; else profileSkeleton" class="profile-details">
+    <div class="profile-info" *ngIf="profiles">
       <div class="profile-picture">
         <div class="avatar-container">
           <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default2.png'" alt="Profile" />
@@ -51,185 +56,208 @@
     </div>
   </div>
 
+  <ng-template #profileSkeleton>
+    <div class="profile-skeleton">
+      <div class="skeleton skeleton-avatar"></div>
+      <div class="skeleton skeleton-text" style="width:40%"></div>
+      <div class="skeleton skeleton-text" style="width:20%"></div>
+    </div>
+  </ng-template>
+
 
   <mat-tab-group class="tabs-container">
     <mat-tab label="Posts">
 
-      <!-- Post Display: Loop over posts -->
-      <div *ngFor="let post of posts">
-        <mat-card class="post-box-container" *ngIf="profiles">
-          <!-- User Profile Section -->
+      <div *ngIf="isloading">
+        <mat-card class="post-box-container">
           <mat-card-header>
-            <div mat-card-avatar class="avatar">
-              <img [src]="profiles?.photo_pic || 'assets/default.png'" alt="Profile Picture">
-            </div>
-            <mat-card-title>{{ post.Fullname }}</mat-card-title>
-            <p class="post-privacy">
-              <mat-icon>
-                {{ post.status === 1 ? 'public' : 'lock' }}
-              </mat-icon>
-              {{ post.status === 1 ? 'Public' : 'Private' }}
-            </p>
-
-            <mat-card-subtitle>
-              <span class="followers">{{ followers }} followers</span> •
-              <span class="active-hours">Active {{ activeHours }} ago</span>
-            </mat-card-subtitle>
+            <div class="skeleton skeleton-avatar"></div>
+            <div class="skeleton skeleton-text" style="width: 50%"></div>
           </mat-card-header>
+          <div class="skeleton skeleton-img"></div>
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-text" style="width: 70%"></div>
+        </mat-card>
+      </div>
 
-          <!-- Post Content -->
-          <div class="linkedin-post">
-            <div *ngIf="post">
-              <p class="content-display">
-                {{ post.expanded ? post.caption : (post.caption | slice:0:100) + '...' }}
-                <a *ngIf="post.caption.length > 180" (click)="post.expanded = !post.expanded" class="see-more">
-                  {{ post.expanded ? 'See Less' : 'See More' }}
-                </a>
+      <!-- Post Display: Loop over posts -->
+      <div *ngIf="!isloading">
+        <div *ngFor="let post of posts">
+          <mat-card class="post-box-container" *ngIf="profiles">
+            <!-- User Profile Section -->
+            <mat-card-header>
+              <div mat-card-avatar class="avatar">
+                <img [src]="profiles?.photo_pic || 'assets/default.png'" alt="Profile Picture">
+              </div>
+              <mat-card-title>{{ post.Fullname }}</mat-card-title>
+              <p class="post-privacy">
+                <mat-icon>
+                  {{ post.status === 1 ? 'public' : 'lock' }}
+                </mat-icon>
+                {{ post.status === 1 ? 'Public' : 'Private' }}
               </p>
-            </div>
 
-            <!-- Image Gallery -->
-            <div class="fb-gallery" [ngClass]="{ 'single': (post.images?.length + post.videos?.length) === 1,
+              <mat-card-subtitle>
+                <span class="followers">{{ followers }} followers</span> •
+                <span class="active-hours">Active {{ activeHours }} ago</span>
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <!-- Post Content -->
+            <div class="linkedin-post">
+              <div *ngIf="post">
+                <p class="content-display">
+                  {{ post.expanded ? post.caption : (post.caption | slice:0:100) + '...' }}
+                  <a *ngIf="post.caption.length > 180" (click)="post.expanded = !post.expanded" class="see-more">
+                    {{ post.expanded ? 'See Less' : 'See More' }}
+                  </a>
+                </p>
+              </div>
+
+              <!-- Image Gallery -->
+              <div class="fb-gallery" [ngClass]="{ 'single': (post.images?.length + post.videos?.length) === 1,
                   'multi': (post.images?.length + post.videos?.length) > 1 }">
 
-              <!-- Loop over IMAGES -->
-              <div class="gallery-item" *ngFor="let image of post.images?.slice(0, maxImages); let i = index"
-                [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || i === 0 }"
-                (click)="openModal(post.images)">
+                <!-- Loop over IMAGES -->
+                <div class="gallery-item" *ngFor="let image of post.images?.slice(0, maxImages); let i = index"
+                  [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || i === 0 }"
+                  (click)="openModal(post.images)">
 
-                <img [src]="image.path_url" alt="Gallery image" />
+                  <img [src]="image.path_url" alt="Gallery image" />
 
-                <!-- Show overlay if more than maxImages -->
-                <div class="overlay" *ngIf="i === (maxImages - 1) && post.images?.length > maxImages">
-                  +{{ post.images.length - maxImages }}
+                  <!-- Show overlay if more than maxImages -->
+                  <div class="overlay" *ngIf="i === (maxImages - 1) && post.images?.length > maxImages">
+                    +{{ post.images.length - maxImages }}
+                  </div>
                 </div>
+
+                <!-- Loop over VIDEOS -->
+                <div class="gallery-item" *ngFor="let video of post.videos?.slice(0, maxImages); let j = index"
+                  [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || j === 0 }"
+                  (click)="openModal(post.videos)">
+
+                  <video controls [src]="video.path_url"></video>
+
+                  <!-- Show overlay if more than maxImages -->
+                  <div class="overlay" *ngIf="j === (maxImages - 1) && post.videos?.length > maxImages">
+                    +{{ post.videos.length - maxImages }}
+                  </div>
+                </div>
+
               </div>
 
-              <!-- Loop over VIDEOS -->
-              <div class="gallery-item" *ngFor="let video of post.videos?.slice(0, maxImages); let j = index"
-                [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || j === 0 }"
-                (click)="openModal(post.videos)">
 
-                <video controls [src]="video.path_url"></video>
-
-                <!-- Show overlay if more than maxImages -->
-                <div class="overlay" *ngIf="j === (maxImages - 1) && post.videos?.length > maxImages">
-                  +{{ post.videos.length - maxImages }}
-                </div>
-              </div>
 
             </div>
 
-
-
-          </div>
-
-          <!-- Interaction Buttons -->
-          <mat-card-actions class="interaction-buttons">
-            <div class="like-button-wrapper" (mouseenter)="showReactions = true">
-              <button mat-button color="primary">
-                <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post.id]?.emoji || 'thumb_up' }}</mat-icon>
-              </button>
-              <div class="reactions-popup" *ngIf="showReactions">
-                <div class="reaction" *ngFor="let r of reactions" (mouseenter)="onReactionHover(post, r)">
-                  <span>{{ r.emoji }}</span>
-                </div>
-              </div>
-            </div>
-
-            <button mat-button color="primary" (click)="openModal(post.attachments)">
-              <mat-icon matBadge="{{ post.comments?.length || 0 }}" matBadgeColor="accent" matBadgeSize="small"
-                matBadgeOverlap="false">
-                chat
-              </mat-icon>
-              Comment
-            </button>
-
-            <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
-            <button mat-button><mat-icon>send</mat-icon> Send</button>
-          </mat-card-actions>
-        </mat-card>
-
-        <!-- Comments section per post -->
-        <div class="post-box-footer" *ngIf="post.showComments">
-          <div class="comment-input-bar">
-            <div class="form-row">
-              <mat-form-field class="form-field full-width" appearance="standard">
-                <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment"
-                  (keyup.enter)="addComment(post)">
-              </mat-form-field>
-
-
-              <button mat-icon-button color="primary" (click)="addComment(post)"
-                [disabled]="!post.newComment?.trim() || post.isSubmitting">
-                <mat-icon>comment</mat-icon>
-              </button>
-
-              <mat-progress-bar *ngIf="post.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
-            </div>
-          </div>
-
-          <mat-card-footer *ngIf="post.comments">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <div class="comments-container">
-                <div *ngFor="let comment of post.comments" class="comment">
-                  <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
-                  <div class="comment-content">
-                    <strong>{{ comment.fullname }}</strong>
-                    <p>{{ comment.comment }}</p>
-                    <small>{{ comment.date_comment }}</small>
-
-                    <div class="comment-actions">
-                      <button mat-button (click)="likeComment(comment)">Like</button>
-                      <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
-                      <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
-                    </div>
-
-                    <div *ngIf="comment.showReply" class="reply-input">
-                      <mat-form-field class="form-field" appearance="standard">
-                        <input matInput placeholder="Write a reply..." [(ngModel)]="comment.newReply"
-                          [disabled]="comment.isSubmitting" (keyup.enter)="addReply(comment)">
-                      </mat-form-field>
-
-                      <button mat-icon-button color="primary" (click)="addReply(comment)"
-                        [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
-                        <mat-icon>send</mat-icon>
-                      </button>
-
-                    </div>
-                    <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate"
-                      color="primary"></mat-progress-bar>
-
-                    <div class="replies" *ngIf="comment.replies?.length">
-                      <div *ngFor="let reply of comment.replies" class="comment reply">
-                        <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
-                        <div class="comment-content">
-                          <strong>{{ reply.fullname }}</strong>
-                          <p>{{ reply.comment }}</p>
-                          <small>{{ reply.date_comment }}</small>
-                        </div>
-                      </div>
-                    </div>
-
+            <!-- Interaction Buttons -->
+            <mat-card-actions class="interaction-buttons">
+              <div class="like-button-wrapper" (mouseenter)="showReactions = true">
+                <button mat-button color="primary">
+                  <mat-icon>{{ hoveredReaction?.emoji || selectedReactions[post.id]?.emoji || 'thumb_up' }}</mat-icon>
+                </button>
+                <div class="reactions-popup" *ngIf="showReactions">
+                  <div class="reaction" *ngFor="let r of reactions" (mouseenter)="onReactionHover(post, r)">
+                    <span>{{ r.emoji }}</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Load More Button -->
-              <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
-                <button mat-button color="accent" (click)="loadMoreComments(post)">
-                  Load More Comments
+              <button mat-button color="primary" (click)="openModal(post.attachments)">
+                <mat-icon matBadge="{{ post.comments?.length || 0 }}" matBadgeColor="accent" matBadgeSize="small"
+                  matBadgeOverlap="false">
+                  chat
+                </mat-icon>
+                Comment
+              </button>
+
+              <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
+              <button mat-button><mat-icon>send</mat-icon> Send</button>
+            </mat-card-actions>
+          </mat-card>
+
+          <!-- Comments section per post -->
+          <div class="post-box-footer" *ngIf="post.showComments">
+            <div class="comment-input-bar">
+              <div class="form-row">
+                <mat-form-field class="form-field full-width" appearance="standard">
+                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment"
+                    (keyup.enter)="addComment(post)">
+                </mat-form-field>
+
+
+                <button mat-icon-button color="primary" (click)="addComment(post)"
+                  [disabled]="!post.newComment?.trim() || post.isSubmitting">
+                  <mat-icon>comment</mat-icon>
                 </button>
+
+                <mat-progress-bar *ngIf="post.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
               </div>
+            </div>
 
-            </mat-expansion-panel>
-          </mat-card-footer>
+            <mat-card-footer *ngIf="post.comments">
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="comments-container">
+                  <div *ngFor="let comment of post.comments" class="comment">
+                    <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
+                    <div class="comment-content">
+                      <strong>{{ comment.fullname }}</strong>
+                      <p>{{ comment.comment }}</p>
+                      <small>{{ comment.date_comment }}</small>
+
+                      <div class="comment-actions">
+                        <button mat-button (click)="likeComment(comment)">Like</button>
+                        <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
+                        <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
+                      </div>
+
+                      <div *ngIf="comment.showReply" class="reply-input">
+                        <mat-form-field class="form-field" appearance="standard">
+                          <input matInput placeholder="Write a reply..." [(ngModel)]="comment.newReply"
+                            [disabled]="comment.isSubmitting" (keyup.enter)="addReply(comment)">
+                        </mat-form-field>
+
+                        <button mat-icon-button color="primary" (click)="addReply(comment)"
+                          [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
+                          <mat-icon>send</mat-icon>
+                        </button>
+
+                      </div>
+                      <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate"
+                        color="primary"></mat-progress-bar>
+
+                      <div class="replies" *ngIf="comment.replies?.length">
+                        <div *ngFor="let reply of comment.replies" class="comment reply">
+                          <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User"
+                            class="comment-avatar">
+                          <div class="comment-content">
+                            <strong>{{ reply.fullname }}</strong>
+                            <p>{{ reply.comment }}</p>
+                            <small>{{ reply.date_comment }}</small>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
+                  <button mat-button color="accent" (click)="loadMoreComments(post)">
+                    Load More Comments
+                  </button>
+                </div>
+
+              </mat-expansion-panel>
+            </mat-card-footer>
+          </div>
+
         </div>
-
       </div>
     </mat-tab>
 

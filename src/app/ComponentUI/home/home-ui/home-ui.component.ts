@@ -461,40 +461,6 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     });
   }
 
-  loadUserPostx(): void {
-    this.isLoading = true;
-
-    this.postDataservices.getDataPostAddFollow().subscribe(
-      (data) => {
-
-        if (data && Array.isArray(data)) {
-          this.posts = data.map(post => ({
-            ...post,
-            activeHours: this.getActiveHours(post.lastActive),
-            followers: post.followers || 0,
-            currentIndex: 0,
-            images: post.images || [],
-            visibleComments: 3,
-          }));
-        }
-
-        this.post_uuidOrUind = data.map((item: any) => item.posts_uuid);
-        this.post.comments = []; // Clear before loading
-        this.post_uuidOrUind.forEach(uuid => {
-          this.getComment(uuid, this.posts);
-          this.getReactionPost_uuidOrUuid(uuid);
-        });
-        this.isLoading = false;
-      },
-      (error) => {
-        console.error('Error fetching posts:', error);
-        this.isLoading = false;
-      }
-    );
-  }
-
-
-
 
   // onScroll() {
   //   const scrollElement = this.scrollContainer.nativeElement;

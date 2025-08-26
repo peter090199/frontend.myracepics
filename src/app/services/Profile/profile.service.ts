@@ -34,12 +34,21 @@ export class ProfileService {
   }
 
 
-  getProfileByUser(code:any): Observable<any> {
-    const headers = this.createHeaders();
-    return this.http.get(`${_url}profile/${code}`, { headers }).pipe(
-      catchError(error => this.handleAuthError(error))
-    );
-  }
+getProfileByUser(code:any): Observable<any> {
+  const headers = this.createHeaders();
+  return this.http.get(`${_url}profile/${code}`, { headers }).pipe(
+    catchError(error => this.handleAuthError(error))
+  );
+}
+
+getCompanyProfile(code: string): Observable<any> {
+  const headers = this.createHeaders();
+  return this.http.get(`${_url}profile/${code}`, { headers }).pipe(
+    catchError(error => this.handleAuthError(error))
+  );
+}
+
+
 
   getDataPost(code:any): Observable<any> {
     const headers = this.createHeaders();

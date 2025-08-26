@@ -714,7 +714,7 @@ export class UserCVComponent implements AfterViewInit {
     this.userService.getProfileByUserOnly().subscribe({
       next: (res) => {
         if (res.success) {
-          const profile = res.message[0];
+          const profile = res.message;
 
           this.firstFormGroup.patchValue({
             fname: profile.fname,

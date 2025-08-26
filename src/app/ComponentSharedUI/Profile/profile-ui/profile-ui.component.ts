@@ -98,6 +98,13 @@ export class ProfileUIComponent implements OnInit {
   }
 
   currentUserCode: any;
+  isloading: boolean = false;
+  coverSkeleton = Array(3);
+  profileSkeleton = Array(1);
+
+
+
+
   ngOnInit(): void {
     this.currentUserCode = this.authServiceCode.getAuthCode();
 
@@ -176,20 +183,24 @@ export class ProfileUIComponent implements OnInit {
   }
 
 loadUserPost(): void {
-  this.postDataservices.getDataPost(this.code).subscribe(
-    (res) => {
+  this.isloading = true; // start skeleton
+
+  this.postDataservices.getDataPost(this.code).subscribe({
+    next: (res) => {
       if (res && res.success && Array.isArray(res.data)) {
-        this.posts = res.data.map((post: { images: any; videos: any; comments: any; fullname: any; Fullname: any; profile_pic: string; lastActive: string; followers: any; }) => {
+        this.posts = res.data.map((post: any) => {
           // ✅ Fix image URLs
           const images = (post.images || []).map((img: any) => ({
             ...img,
-            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' + img.path_url.replace(/\\/g, '')
+            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
+              img.path_url.replace(/\\/g, '')
           }));
 
           // ✅ Fix video URLs
           const videos = (post.videos || []).map((vid: any) => ({
             ...vid,
-            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' + vid.path_url.replace(/\\/g, '')
+            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
+              vid.path_url.replace(/\\/g, '')
           }));
 
           // ✅ Fix comments & replies
@@ -221,10 +232,15 @@ loadUserPost(): void {
           };
         });
       }
+      this.isloading = false; // ✅ stop skeleton after success
     },
-    (error) => console.error('Error fetching posts:', error)
-  );
+    error: (err) => {
+      console.error('Error fetching posts:', err);
+      this.isloading = false; // ✅ stop skeleton on error too
+    }
+  });
 }
+
 
 
   // loadUserPost(): void {
