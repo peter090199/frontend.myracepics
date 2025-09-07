@@ -4,7 +4,7 @@
 </button>
 
 <!-- Dialog Title -->
-<h2 mat-dialog-title>{{ btnSave }} Job Posting</h2>
+<h2 style="text-align: center; font-size: 14px;" >{{ btnSave }} Job Posting</h2>
 <mat-divider></mat-divider>
 
 <!-- Progress Bar -->
@@ -72,20 +72,23 @@
       <mat-card class="job-description-card">
         <h2 class="section-title">Job description</h2>
         <p class="subtitle">
-          Your job description will be visible to anyone that views this job. Edit to ensure it reflects the role’s scope.
+          Your job description will be visible to anyone that views this job. Edit to ensure it reflects the role’s
+          scope.
         </p>
 
         <!-- Rich text editor -->
         <div class="editor-box">
           <div class="editor-toolbar">
             <button mat-icon-button type="button" (click)="formatText('bold')"><mat-icon>format_bold</mat-icon></button>
-            <button mat-icon-button type="button" (click)="formatText('italic')"><mat-icon>format_italic</mat-icon></button>
-            <button mat-icon-button type="button" (click)="addBullet()"><mat-icon>format_list_bulleted</mat-icon></button>
+            <button mat-icon-button type="button"
+              (click)="formatText('italic')"><mat-icon>format_italic</mat-icon></button>
+            <button mat-icon-button type="button"
+              (click)="addBullet()"><mat-icon>format_list_bulleted</mat-icon></button>
           </div>
 
           <!-- FIX: removed [(ngModel)], bind to FormControl instead -->
-          <textarea matInput class="editor-textarea" formControlName="job_description"
-            (input)="updateCharCount()" placeholder="Write job description here..."></textarea>
+          <textarea matInput class="editor-textarea" formControlName="job_description" (input)="updateCharCount()"
+            placeholder="Write job description here..."></textarea>
 
           <div class="editor-footer">
             <button mat-stroked-button color="primary" class="ml-auto" type="button">Draft with AI</button>
@@ -176,11 +179,14 @@
         <button mat-raised-button color="warn" type="button" (click)="previousStep(stepper)">
           Previous
         </button>
-        <button mat-raised-button color="accent" type="submit" (click)="onSubmit()" [disabled]="loading || !companyForm.valid">
+        <button mat-raised-button color="accent" type="submit" (click)="onSubmit()"
+          [disabled]="loading || !companyForm.valid">
           {{ btnSave }}
         </button>
       </div>
     </form>
   </mat-step>
+
+
 
 </mat-horizontal-stepper>

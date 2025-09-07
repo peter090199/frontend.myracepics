@@ -66,6 +66,8 @@ export class TopNavigationComponent implements OnInit {
   count = 0;
   isOpen = false;
   homeNewDataCount = 0;
+mobileMenu: MatMenuPanel<any>;
+desktopMenu: MatMenuPanel<any>;
 
   constructor(
     private authService: SigInService,

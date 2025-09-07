@@ -43,16 +43,13 @@ app-footer {
   font-family: Verdana, sans-serif;
   font-size: 16px;
   margin: 0 auto;
-  /* Centers the content */
   overflow: auto;
-  /* Allows scrolling */
   scrollbar-width: none;
-  /* Hides scrollbar in Firefox */
   display: flex;
   flex-direction: column;
   min-height: 70vh;
   max-height: 100vh;
-  padding: 10px;
+  padding: 0px;
 }
 
 
@@ -431,21 +428,31 @@ snack-bar-container.notification simple-snack-bar {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+.page-container {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 600px) 300px; 
+  /* left spacer | main feed | right panel */
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto; /* centers everything in the page */
+}
+
 .main-container {
   display: grid;
   gap: 12px;
   padding-top: 10px;
-  margin-top: 5px;
-  width: 100%;
+  margin: auto;
   height: auto;
-  /* Allows content to expand */
   max-height: 90vh;
-  /* Prevents exceeding the viewport */
   overflow-y: auto;
-  /* Enables scrolling if content overflows */
   scrollbar-width: thin;
-  /* Firefox - Thin scrollbar */
   -webkit-overflow-scrolling: touch;
+}
+
+.right-panel {
+  overflow-y: auto;  /* allows independent scrolling */
+  max-height: 90vh;
 }
 
 .overflow {
@@ -1928,4 +1935,14 @@ video {
 /* keep list layout tidy while loading */
 mat-list-item .job-details { flex: 1; }
 mat-list-item .job-details .skeleton-line { display: block; }
+
+
+button{
+  transition: all 0.5s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
 

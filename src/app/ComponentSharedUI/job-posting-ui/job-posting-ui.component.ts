@@ -17,6 +17,7 @@ export class JobPostingUIComponent implements OnInit {
   jobForm!: FormGroup;
   companyForm!: FormGroup;
 
+
   btnSave = "Save";
   loading = false;
   fileError: string | null = null;
@@ -44,6 +45,7 @@ export class JobPostingUIComponent implements OnInit {
   newResponsibility: string = '';
   newQualification: string = '';
 
+  
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<JobPostingUIComponent>,
@@ -78,6 +80,7 @@ export class JobPostingUIComponent implements OnInit {
       comp_description: ['', Validators.required],
     });
 
+ 
     if (this.data?.id) {
       this.btnSave = "Update";
       this.fillFormData();

@@ -25,18 +25,21 @@ export class JobsProfileComponent implements OnInit {
   constructor(
     private jobListServices: JobListService,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.route.paramMap.subscribe(params => {
+      const transNo = Number(params.get('transNo'));
+      if (transNo && this.jobs.length > 0) {
+        this.selectedJob = this.jobs.find(job => job.transNo === transNo) || null;
+      }
+    });
+
+  }
 
   async ngOnInit(): Promise<void> {
     await this.getJobPosting();
 
     // after jobs are loaded, check the route param
-    this.route.paramMap.subscribe(params => {
-      const id = Number(params.get('id'));
-      if (id && this.jobs.length > 0) {
-        this.selectedJob = this.jobs.find(job => job.id === id) || null;
-      }
-    });
+
   }
 
   async getJobPosting(): Promise<void> {

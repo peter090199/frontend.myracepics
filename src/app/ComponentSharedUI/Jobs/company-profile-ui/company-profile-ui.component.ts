@@ -314,6 +314,7 @@ loadUserPost(): void {
   }
 
   loadProfileCV(code: string) {
+    console.log("code: ",code)
     this.profile.getCompanyProfile(code).subscribe({
       next: (res) => {
         if (res.success == true) {

@@ -1,7 +1,7 @@
 <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
 <div class="app-container">
-  <mat-toolbar class="header">
+  <mat-toolbar  class="header">
     <div *ngIf="isMobile" class="logo">
       <img src="assets/images/logo.png" alt="logo" style="height:24px;">
     </div>
@@ -199,7 +199,7 @@
   </div>
 
   <!-- Main Content -->
-  <div class="container-fixed">
+  <div class="app-container">
     <router-outlet></router-outlet>
   </div>
 

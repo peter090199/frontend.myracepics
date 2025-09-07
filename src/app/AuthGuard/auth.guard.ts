@@ -60,7 +60,7 @@
 
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { _url } from 'src/global-variables';
 
@@ -83,26 +83,25 @@ export class AuthGuard implements CanActivate {
     }
   }
 
-  logout(): Observable<any> {
-    return this.http.post(`${_url}logout`, {}).pipe(
-      tap({
-        next: () => {
-          sessionStorage.clear(); // Clear all session data
-          localStorage.setItem('showWebsiteChat', JSON.stringify(true));
-          localStorage.setItem('cookiesAccepted', JSON.stringify(true));
-          this.isUserOnline.next(false);
-          this.router.navigate(['/homepage']);
-        },
-        error: (error) => {
-          console.error('Logout failed:', error);
-        }
-      }),
-      catchError((error) => {
-        console.error('Error during logout:', error);
-        return throwError(() => error);
-      })
-    );
-  }
+logout(): Observable<any> {
+  return this.http.post(`${_url}logout`, {}).pipe(
+    map((res: any) => {
+      // ✅ Clear session and reset states only if logout succeeds
+      sessionStorage.clear();
+      localStorage.setItem('showWebsiteChat', JSON.stringify(true));
+      localStorage.setItem('cookiesAccepted', JSON.stringify(true));
+
+      this.isUserOnline.next(false);
+      this.router.navigate(['/homepage']);
+
+      return res; // pass response to subscriber if needed
+    }),
+    catchError((error) => {
+      console.error('Error during logout:', error);
+      return throwError(() => error);
+    })
+  );
+}
 
   isAuthenticated(): boolean {
     return !!sessionStorage.getItem('token');

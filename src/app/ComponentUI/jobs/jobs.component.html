@@ -47,11 +47,10 @@
       <ng-template #jobsList>
         <mat-list>
           <div mat-subheader>Hiring Jobs</div>
-
           <mat-list-item *ngFor="let job of jobs">
             <img matListAvatar [src]="job.job_image" alt="Company Logo">
             <div class="job-details">
-              <a [routerLink]="['/recommended-jobs', job.id]">{{ job.job_name }}</a>
+              <a [routerLink]="['/recommended-jobs', job.transNo]">{{ job.job_name }}</a>
               <span>{{ job.job_position }}</span>
               <small>{{ job.company }} · {{ job.work_type }}</small><br>
             </div>

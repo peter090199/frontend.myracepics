@@ -41,9 +41,9 @@ getProfileByUser(code:any): Observable<any> {
   );
 }
 
-getCompanyProfile(code: string): Observable<any> {
+getCompanyProfile(code: any): Observable<any> {
   const headers = this.createHeaders();
-  return this.http.get(`${_url}profile/${code}`, { headers }).pipe(
+  return this.http.get(`${_url}company/profile/${code}`, { headers }).pipe(
     catchError(error => this.handleAuthError(error))
   );
 }

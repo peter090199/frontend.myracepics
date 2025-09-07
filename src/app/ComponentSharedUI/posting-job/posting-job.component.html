@@ -1,124 +1,158 @@
 <div class="container">
-    <div class="page-header">
-        <h2>{{ btnSave }} Job Posting</h2>
-    </div>
+  <div class="page-header">
+    <h2>{{ btnSave }} Job Posting</h2>
+  </div>
 
-    <mat-divider></mat-divider>
+  <mat-divider></mat-divider>
 
-    <!-- Progress Bar -->
-    <mat-progress-bar color="accent" [mode]="loading ? 'indeterminate' : 'determinate'"
-        [value]="loading ? null : progressValue">
-    </mat-progress-bar>
+  <!-- Progress Bar -->
+  <mat-progress-bar
+    color="accent"
+    [mode]="loading ? 'indeterminate' : 'determinate'"
+    [value]="loading ? null : progressValue">
+  </mat-progress-bar>
 
-    <!-- Stepper -->
-    <mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
+  <!-- Stepper -->
+  <mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
 
-        <!-- Step 1: Image Upload -->
-        <mat-step [stepControl]="imageForm">
-            <form [formGroup]="imageForm" class="form-container">
-                <ng-template matStepLabel>Upload Job Image</ng-template>
+    <!-- Step 1: Image Upload -->
+    <mat-step [stepControl]="imageForm">
+      <form [formGroup]="imageForm" class="form-container">
+        <ng-template matStepLabel>Upload Job Image</ng-template>
 
-                <!-- remove formControlName -->
-                <input id="fileUpload" type="file" (change)="onUploadPhoto($event)" />
+        <input id="fileUpload" type="file" (change)="onUploadPhoto($event)" />
 
+        <div *ngIf="fileError" class="text-red-500 text-sm">{{ fileError }}</div>
 
-                <div *ngIf="fileError" class="text-red-500 text-sm">{{ fileError }}</div>
+        <div *ngIf="previewUrl" class="image-preview-container mt-2">
+          <img [src]="previewUrl" alt="Preview" class="preview-img" />
+        </div>
 
-                <div *ngIf="previewUrl" class="image-preview-container mt-2">
-                    <img [src]="previewUrl" alt="Preview" class="preview-img" />
-                </div>
+        <div class="button-end" *ngIf="previewUrl">
+          <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!imageForm.valid">
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
 
-                <div class="button-end" *ngIf="previewUrl">
-                    <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!imageForm.valid">
-                        Next
-                    </button>
-                </div>
-            </form>
-        </mat-step>
+    <!-- Step 2: Job Details -->
+    <mat-step [stepControl]="jobForm">
+      <form [formGroup]="jobForm">
+        <ng-template matStepLabel>Job Details</ng-template>
 
-        <!-- Step 2: Job Details -->
-        <mat-step [stepControl]="jobForm">
-            <form [formGroup]="jobForm">
-                <ng-template matStepLabel>Job Details</ng-template>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Job Name</mat-label>
+            <input matInput formControlName="job_name" required />
+          </mat-form-field>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Job Name</mat-label>
-                    <input matInput formControlName="job_name" required />
-                </mat-form-field>
+          <mat-form-field class="form-field">
+            <mat-label>Position</mat-label>
+            <input matInput formControlName="job_position" required />
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Position</mat-label>
-                    <input matInput formControlName="job_position" required />
-                </mat-form-field>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Location</mat-label>
+            <input matInput formControlName="location" required />
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Location</mat-label>
-                    <input matInput formControlName="location" required />
-                </mat-form-field>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Benefits</mat-label>
+            <textarea matInput rows="3" formControlName="benefits" required></textarea>
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Benefits</mat-label>
-                     <textarea matInput rows="3" formControlName="benefits" required></textarea>
-                </mat-form-field>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>About the Job</mat-label>
+            <textarea matInput rows="2" formControlName="job_about" required></textarea>
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>About the Job</mat-label>
-                    <textarea matInput rows="2" formControlName="job_about" required></textarea>
-                </mat-form-field>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Job Description</mat-label>
+            <textarea matInput rows="3" formControlName="job_description" required></textarea>
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Job Description</mat-label>
-                    <textarea matInput rows="3" formControlName="job_description" required></textarea>
-                </mat-form-field>
+        <div class="button-end">
+          <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+          <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!jobForm.valid">
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
 
-                <div class="button-end">
-                    <button mat-raised-button color="warn" (click)="previousStep(stepper)">
-                        Previous
-                    </button>
-                    <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!jobForm.valid">
-                        Next
-                    </button>
-                </div>
-            </form>
-        </mat-step>
+    <!-- Step 3: Company Info -->
+    <mat-step [stepControl]="companyForm">
+      <form [formGroup]="companyForm">
+        <ng-template matStepLabel>Company Info</ng-template>
 
-        <!-- Step 3: Company Info -->
-        <mat-step [stepControl]="companyForm">
-            <form [formGroup]="companyForm">
-                <ng-template matStepLabel>Company Info</ng-template>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Qualification</mat-label>
+            <textarea matInput rows="3" formControlName="qualification" required></textarea>
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Qualification</mat-label>
-                    <textarea matInput rows="3" formControlName="qualification" required></textarea>
-                </mat-form-field>
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Work Type</mat-label>
+            <mat-select formControlName="work_type" required>
+              <mat-option *ngFor="let type of worktypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Work Type</mat-label>
-                    <mat-select formControlName="work_type" required>
-                        <mat-option *ngFor="let type of worktypes" [value]="type">{{ type }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+        <div class="button-end">
+          <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+          <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!companyForm.valid">
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Company Name</mat-label>
-                    <input matInput formControlName="comp_name" required />
-                </mat-form-field>
+    <!-- Step 4: Applied Questions -->
+    <mat-step [stepControl]="appliedQuestionForm">
+      <form [formGroup]="appliedQuestionForm">
+        <ng-template matStepLabel>Applied Questions</ng-template>
 
-                <mat-form-field class="full-width">
-                    <mat-label>Company Description</mat-label>
-                    <textarea matInput rows="3" formControlName="comp_description" required></textarea>
-                </mat-form-field>
+        <button mat-button color="primary" type="button" (click)="addQuestion()">Add Question</button>
+        <br />
+        <mat-divider></mat-divider>
+        <br />
 
-                <div class="button-end">
-                    <button mat-raised-button color="warn" (click)="previousStep(stepper)">
-                        Previous
-                    </button>
-                    <button mat-raised-button color="accent" (click)="onSubmit()"
-                        [disabled]="loading || !companyForm.valid">
-                        {{ btnSave }}
-                    </button>
-                </div>
-            </form>
-        </mat-step>
-    </mat-horizontal-stepper>
+        <div formArrayName="questions">
+          <div *ngIf="questions.length === 0" class="no-questions">No questions added yet.</div>
+
+          <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="question-item">
+            <div class="form-row">
+              <mat-form-field class="form-field2" appearance="standard">
+                <mat-label>{{ 'Question ' + (i + 1) }}</mat-label>
+                <input matInput placeholder="Enter question" formControlName="question_text" required />
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" type="button" (click)="removeQuestion(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="button-end">
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading">
+          {{ btnSave }}
+        </button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
 </div>

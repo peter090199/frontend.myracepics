@@ -1,0 +1,166 @@
+<div class="container">
+    <div class="page-header">
+        <button mat-button color="primary" [routerLink]="['/company_profile/:transNo']">
+            Back
+        </button>
+        <h2>{{ btnSave }} Apply Job</h2>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Progress Bar -->
+    <mat-progress-bar color="accent" [mode]="loading ? 'indeterminate' : 'determinate'"
+        [value]="loading ? null : progressValue">
+    </mat-progress-bar>
+
+    <mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
+        <!-- Step 2: Upload Resume -->
+        <mat-step [stepControl]="imageForm">
+            <form [formGroup]="imageForm" class="form-container">
+                <ng-template matStepLabel>Upload Resume</ng-template>
+
+                <input id="fileUpload" type="file" accept="application/pdf" (change)="onUploadResume($event)" />
+
+                <div *ngIf="fileError" class="text-red-500 text-sm">{{ fileError }}</div>
+
+                <div *ngIf="resumeName" class="resume-preview mt-2">
+                    <mat-icon>description</mat-icon>
+                    <span>{{ resumeName }}</span>
+                </div>
+
+                <div class="button-end" *ngIf="resumeName">
+                    <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!imageForm.valid">
+                        Next
+                    </button>
+                </div>
+            </form>
+        </mat-step>
+
+        <!-- Step 3: Personal Information -->
+        <mat-step [stepControl]="personalForm">
+            <form [formGroup]="personalForm">
+                <ng-template matStepLabel>Personal Information</ng-template>
+
+                <!-- Profile picture -->
+                <div class="form-row">
+                    <div *ngIf="profiles" class="form-field">
+                        <div class="profile-picture">
+                            <div class="avatar-container">
+                                <img class="profile-img"
+                                    [src]="profiles.profile_picture || 'assets/images/default2.png'"
+                                    alt="User Profile Picture" />
+                                <mat-icon class="status-icon online">fiber_manual_record</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-row">
+                    <mat-form-field appearance="standard" class="form-field">
+                        <mat-label>Email Address</mat-label>
+                        <input matInput type="email" formControlName="email" required readonly />
+                    </mat-form-field>
+                </div>
+
+                <!-- Country + Phone -->
+                <div class="form-row">
+                    <mat-form-field appearance="standard" class="half-width" *ngIf="countryCodes?.length">
+                        <mat-label>Country Code</mat-label>
+                        <input type="text" matInput [formControl]="countryControl" [matAutocomplete]="autoCountry"
+                            placeholder="Select or search country code" />
+
+                        <mat-autocomplete #autoCountry="matAutocomplete"
+                            (optionSelected)="onCountrySelected($event.option.value)">
+                            <mat-option *ngFor="let code of filteredCountryCodes | async" [value]="code.label">
+                                {{ code.label }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="standard" class="form-field">
+                        <mat-label>Mobile Phone Number</mat-label>
+                        <input matInput type="tel" formControlName="phone_number" required />
+                    </mat-form-field>
+                </div>
+
+                <div class="button-end">
+                    <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+                    <button mat-raised-button color="accent" (click)="onCheckCountryCode()"
+                        [disabled]="!personalForm.valid">
+                        Next
+                    </button>
+                </div>
+            </form>
+        </mat-step>
+
+        <!-- Step 4: Dynamic Questions -->
+        <mat-step>
+            <ng-template matStepLabel>Questions</ng-template>
+
+            <div *ngFor="let q of questions; let i = index" class="form-row">
+                <mat-form-field appearance="standard" class="form-field">
+                    <mat-label>{{ q.question_text }}</mat-label>
+                    <textarea matInput rows="3" [(ngModel)]="q.answer" required></textarea>
+                </mat-form-field>
+            </div>
+
+            <div class="button-end">
+                <button mat-raised-button color="warn" (click)="previousStep(stepper)">
+                    Previous
+                </button>
+                <button mat-raised-button color="accent" (click)="nextStep(stepper)"
+                    [disabled]="!areAllQuestionsAnswered()">
+                    Next
+                </button>
+            </div>
+        </mat-step>
+
+        <!-- <mat-step>
+      <ng-template matStepLabel>Questions</ng-template>
+
+      <div *ngFor="let q of questions; let i = index" class="form-row">
+        <mat-form-field appearance="standard" class="form-field">
+          <mat-label>{{ q.question_text }}</mat-label>
+          <textarea matInput rows="3" [(ngModel)]="q.answer"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="button-end">
+        <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+        <button mat-raised-button color="accent" (click)="nextStep(stepper)">Next</button>
+      </div>
+    </mat-step> -->
+
+        <!-- Step 5: Submit -->
+        <mat-step [stepControl]="companyForm">
+            <form [formGroup]="companyForm">
+                <ng-template matStepLabel>Additional Info</ng-template>
+
+                <div class="form-row">
+                    <mat-form-field class="form-field">
+                        <mat-label>Qualification</mat-label>
+                        <textarea matInput rows="3" formControlName="qualification" required></textarea>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field class="form-field">
+                        <mat-label>Work Type</mat-label>
+                        <mat-select formControlName="work_type" required>
+                            <mat-option *ngFor="let wt of worktypes" [value]="wt">{{ wt }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="button-end">
+                    <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+                    <button mat-raised-button color="accent" (click)="onSubmit()"
+                        [disabled]="loading">
+                        {{ btnSave }}
+                    </button>
+                </div>
+            </form>
+        </mat-step>
+    </mat-horizontal-stepper>
+</div>

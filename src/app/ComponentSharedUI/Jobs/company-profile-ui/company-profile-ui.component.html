@@ -16,21 +16,25 @@
     <div class="profile-info" *ngIf="profiles">
       <div class="profile-picture">
         <div class="avatar-container">
-          <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default2.png'" alt="Profile" />
+          <img class="profile-img" [src]="profiles?.profile_picture || 'assets/images/default2.png'" alt="Profile" />
           <mat-icon class="status-icon online">circle</mat-icon>
         </div>
       </div>
       <br>
-      <h1>{{ profiles.company}} <small style="color: rgb(24, 24, 24);">{{ profiles.profession
+      <h1>{{ profiles.company}} <small style="color: rgb(24, 24, 24);">{{ profiles.current_location
           }}</small></h1>
       <p>761 followers · 369 following</p>
       <div class="button-gap">
-        <button *ngIf="profiles?.btnCurriculum === 1" mat-flat-button (click)="UserCV()" color="primary">New Curriculum
-          Vitae</button>
+        <!-- <button *ngIf="profiles?.btnCurriculum === 1" mat-flat-button (click)="UserCV()" color="primary">New Curriculum
+          Vitae</button> -->
 
-        <button *ngIf="profiles?.btnCurriculum === 1" mat-raised-button (click)="uploadPic()">
+        <!-- <button *ngIf="profiles?.btnCurriculum === 1" mat-raised-button (click)="uploadPic()">
           <mat-icon>cloud_upload</mat-icon> Upload
-        </button>
+        </button> -->
+        <!-- <button mat-flat-button color="warn" routerLink="/apply-job">
+          <mat-icon>work</mat-icon>
+          Apply Job
+        </button> -->
 
         <button mat-flat-button [color]="
                   followStatus === 'accepted'
@@ -38,15 +42,15 @@
                     : followStatus === 'pending'
                     ? 'warn'
                     : 'primary'" *ngIf="currentUserCode !== this.code"
-          (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)">
+          (click)="AddFollow(profiles.code, followStatus, profiles.fname, profiles.lname)">
           <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
           <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
           <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>
 
           <ng-container [ngSwitch]="followStatus">
-            <span *ngSwitchCase="'none'">Connect</span>
+            <span *ngSwitchCase="'none'">Follow</span>
             <span *ngSwitchCase="'pending'">Pending</span>
-            <span *ngSwitchCase="'accepted'">Connected</span>
+            <span *ngSwitchCase="'accepted'">Followed</span>
           </ng-container>
         </button>
 
@@ -66,7 +70,58 @@
 
 
   <mat-tab-group class="tabs-container">
-    <mat-tab label="Home">
+   <mat-tab label="Home">
+
+  <!-- Loading skeleton -->
+  <div *ngIf="isloading">
+    <mat-card class="post-box-container">
+      <mat-card-header>
+        <div class="skeleton skeleton-avatar"></div>
+        <div class="skeleton skeleton-text" style="width: 50%"></div>
+      </mat-card-header>
+      <div class="skeleton skeleton-img"></div>
+      <div class="skeleton skeleton-text"></div>
+      <div class="skeleton skeleton-text" style="width: 70%"></div>
+    </mat-card>
+  </div>
+
+  <!-- Company Profile Home -->
+  <mat-card class="post-box-container" *ngIf="profiles">
+    <!-- Cover Photo -->
+    <div class="cover-photo">
+      <img [src]="profiles.coverPhoto || 'assets/default-cover.jpg'" alt="Company Cover">
+    </div>
+
+    <!-- Logo + Basic Info -->
+    <div class="company-header">
+      <img class="company-logo" [src]="profiles.logo || 'assets/default-logo.png'" alt="Company Logo">
+      <div class="company-info">
+        <h2>{{ profiles.companyname }}</h2>
+        <p>{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
+        <a [href]="profiles.companywebsite" target="_blank" rel="noopener noreferrer">
+          {{ profiles.companywebsite }}
+        </a>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <mat-divider></mat-divider>
+    <div class="about-section">
+      <h3>About</h3>
+      <p>{{ profiles.about || 'No company description available.' }}</p>
+    </div>
+
+    <!-- Location -->
+    <mat-divider></mat-divider>
+    <div class="location-section">
+      <h3>Headquarters</h3>
+      <p>{{ profiles.current_location || 'Location not provided' }}</p>
+    </div>
+  </mat-card>
+
+</mat-tab>
+
+    <mat-tab label="Post">
 
       <div *ngIf="isloading">
         <mat-card class="post-box-container">
@@ -266,18 +321,11 @@
         <h2>About</h2>
         <mat-divider></mat-divider>
 
-        <mat-card-content>
-          <!-- Display static information -->
+        <mat-card-content class="post-box-container">
           <mat-list>
             <mat-list-item *ngIf="profiles">
               <span>Full Name: {{ profiles.fname }} {{ profiles.lname }}</span>
             </mat-list-item>
-            <!-- <mat-list-item>
-              <span>First Name: {{ users.fname }}</span>
-            </mat-list-item>
-            <mat-list-item>
-              <span>Last Name: {{ users.lname }}</span>
-            </mat-list-item> -->
             <mat-list-item *ngIf="profiles">
               <span>Contact No: {{ profiles.contact_no }}</span>
             </mat-list-item>
@@ -293,19 +341,21 @@
               <span>Date of Birth: {{ profiles.date_birth }}</span>
             </mat-list-item>
             <mat-list-item *ngIf="profiles?.companywebsite">
-              <span>Company Website: {{ profiles.companywebsite }}</span>
+              Company Website: {{ profiles.companywebsite }}
+            </mat-list-item>
+            <mat-list-item *ngIf="profiles?.industry">
+              Industry: {{ profiles.industry }}
+            </mat-list-item>
+            <mat-list-item *ngIf="profiles?.home_country">
+              Home Country: {{ profiles.home_country }}
+            </mat-list-item>
+            <mat-list-item *ngIf="profiles?.current_location">
+              Current Location: {{ profiles.current_location }}
             </mat-list-item>
           </mat-list>
-          <!-- Language Section -->
 
-          <section class="cv-section" *ngIf="profiles?.lines?.language?.length">
-            <h2>Language</h2>
-            <mat-list>
-              <mat-list-item *ngFor="let language of profiles.lines.language">
-                {{ language.language }}
-              </mat-list-item>
-            </mat-list>
-          </section>
+
+
         </mat-card-content>
 
       </div>

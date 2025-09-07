@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PostUIComponent } from './post-ui.component';
+import { ApplyJobComponent } from './apply-job.component';
 
-describe('PostUIComponent', () => {
-  let component: PostUIComponent;
-  let fixture: ComponentFixture<PostUIComponent>;
+describe('ApplyJobComponent', () => {
+  let component: ApplyJobComponent;
+  let fixture: ComponentFixture<ApplyJobComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PostUIComponent ]
+      declarations: [ ApplyJobComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PostUIComponent);
+    fixture = TestBed.createComponent(ApplyJobComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
