@@ -103,21 +103,19 @@ export class ProfileUIComponent implements OnInit {
   profileSkeleton = Array(1);
 
 
+ngOnInit(): void {
+  this.currentUserCode = this.authServiceCode.getAuthCode();
 
+  const url = window.location.href;
+  const codesplit = url.split('/').pop();
+  this.code = codesplit;
 
-  ngOnInit(): void {
-    this.currentUserCode = this.authServiceCode.getAuthCode();
+  this.loadUserPost();
+  this.loadUserData();
+  this.loadProfileCV();
 
-    const url = window.location.href;
-    const codesplit = url.split('/').pop();
-    this.code = codesplit;
-
-    this.loadUserPost();
-    this.loadUserData();
-    this.loadProfileCV();
-
-    this.checkFollowStatus();
-  }
+  this.checkFollowStatus(); 
+}
 
 
   followId: number = 0;
@@ -476,7 +474,7 @@ loadUserPost(): void {
             if (res.success === true || res.status === true) {
               this.alert.toastrSuccess(res.message || successAction);
               this.followStatus = res.follow_status || 'none';
-              this.checkFollowStatus();
+            //  this.checkFollowStatus();
             } else {
               this.alert.toastrError(res.message || 'Action failed.');
             }

@@ -46,18 +46,18 @@
             <!-- Job Details -->
             <div class="job-details">
               <a [routerLink]="['/recommended-jobs', job.transNo]">{{ job.job_name }}</a>
-              <span>{{ job.job_position }}</span>
+              <!-- <span>{{ job.job_position }}</span> -->
               <small>{{ job.comp_name }} · {{ job.work_type }}</small><br />
             </div>
 
             <!-- Remove Button -->
-            <button
+            <!-- <button
               mat-icon-button
               color="warn"
               (click)="removeJob(job); $event.stopPropagation()"
               matTooltip="Remove">
               <mat-icon>close</mat-icon>
-            </button>
+            </button> -->
           </mat-list-item>
         </mat-list>
 
@@ -160,15 +160,11 @@
             {{ selectedJob.location }} · Posted {{ selectedJob.created_at }}
           </p>
         </div>
-        <button mat-flat-button color="warn" [routerLink]="['/apply-job', selectedJob.transNo]">
-          <mat-icon>work</mat-icon>
-          Apply Job
-        </button>
       </div>
 
       <!-- Action Buttons -->
       <div class="sidebar-actions sticky-actions">
-        <button mat-flat-button color="primary">Apply Now</button>
+        <button mat-flat-button color="primary"  [routerLink]="['/apply-job', selectedJob.transNo]">Apply Now</button>
         <button mat-stroked-button>Save</button>
       </div>
       <br />

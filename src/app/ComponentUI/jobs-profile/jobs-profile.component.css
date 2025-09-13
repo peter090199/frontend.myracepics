@@ -12,9 +12,8 @@
 
 /* Sidebar styling */
 .sidebar {
-  flex: 1px;
-  width: 800px;
-  max-width: 800px;
+  flex: 1;
+  max-width: 650px;
   background-color: #fff;
   padding: 10px;
   border-radius: 8px;
@@ -33,12 +32,9 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-left: 10px;
   margin-bottom: 15px;
-  min-height: auto;
   height: 90vh;      
   overflow-y: auto;  
 }
-
-
 
 /* Saved job card */
 .saved-job h3 {
@@ -50,10 +46,16 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 50px;
+  padding: 30px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   margin-bottom: 20px;
+  transition: box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.job-card:hover {
+  border-color: #d0d0d0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .job-info {
@@ -63,10 +65,12 @@
 }
 
 .job-logo {
-  width: 50px;        /* small square size */
-  height: 50px;       /* equal width and height for square */
-  border-radius: 8px; /* optional, LinkedIn uses slightly rounded corners */
-  object-fit: cover;  /* ensures image covers the square without stretching */
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
 
 .apply-btn {
@@ -77,10 +81,12 @@
 .mat-nav-list {
   margin-top: 20px;
 }
+
 .mat-list-item {
   cursor: pointer;
   font-size: 14px;
 }
+
 .sidebar-actions {
   margin-top: 20px;
   display: flex;
@@ -104,36 +110,70 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* Individual job items */
+/* Job list items */
 mat-list-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
+  padding: 40px;
   border-bottom: 1px solid #e6e6e6;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, border-left 0.2s;
+  border-radius: 6px;
+  margin-top: 20px;
 }
 
+mat-list-item:hover {
+  background-color: #f3f6f9;
+}
+
+mat-list-item.active {
+  background: #47a0ff;
+  border-left: 3px solid #0a66c2;
+}
+
+/* Job details inside list */
 .job-details {
   display: flex;
   flex-direction: column;
-  margin-left: 10px;
-  padding: 20px;
   margin: 10px;
-  margin-top: 40px;
   flex: 1;
-  margin-bottom: 20px;
 }
 
 .job-details a {
-  margin-top: 30px;
   font-weight: 600;
   color: #0a66c2;
-  text-decoration: none;
-  font-size: 18px;
-
+  text-decoration: none !important;
+  font-size: 16px;
+  transition: color 0.2s ease;
 }
+
+.job-details a:hover,
+.job-details a:focus {
+  color: #004182;
+  text-decoration: none !important;
+}
+
+.job-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  border-radius: 8px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-details p {
+  font-size: 16px;
+  color: #555;
+}
+
+.job-details small {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* Job insights */
 .job-insights {
   margin-top: 16px;
 }
@@ -172,6 +212,7 @@ mat-list-item {
   margin-top: 8px;
 }
 
+/* Show more link */
 .show-more {
   display: inline-block;
   margin-top: 8px;
@@ -180,28 +221,8 @@ mat-list-item {
   cursor: pointer;
 }
 
-
-.job-logo {
-  width: 50px;           /* small square size */
-  height: 50px;          /* equal width/height */
-  border-radius: 8px;    /* optional for slight rounding */
-  object-fit: cover;     /* keeps aspect ratio, crops if needed */
-  margin-right: 12px;
-  flex-shrink: 0;        /* prevents shrinking when space is tight */
-}
-.job-details a:hover {
+.show-more:hover {
   text-decoration: underline;
-}
-
-.job-details p {
-  font-size: 13px;
-  color: #555;
-}
-
-.job-details small {
-  margin-bottom: 30px;
-  font-size: 11px;
-  color: #888;
 }
 
 /* Show all link */
@@ -237,6 +258,12 @@ mat-list-item {
 
 .recent-header button {
   font-size: 12px;
+  transition: background 0.2s;
+  border-radius: 6px;
+}
+
+.recent-header button:hover {
+  background: rgba(10, 102, 194, 0.08);
 }
 
 .recent-searches p {
@@ -259,52 +286,9 @@ mat-list-item {
     flex-direction: column;
   }
 
-  .sidebar, .main-content,.leftsidebar {
+  .sidebar, .main-content, .leftsidebar {
     width: 100%;
     padding: 0px;
     margin: auto;
   }
 }
-
-
-/* Logo/avatar inside mat-list-item */
-mat-list-item mat-icon img[matListAvatar] {
-  width: 160px;           /* fixed width */
-  height: 360px;          /* same as width for square */
-  margin-right: 16px;    /* spacing from job details */
-  flex-shrink: 0;        /* prevent shrinking */
-}
-
-/* Make the mat-list-item align nicely with the fixed logo width */
-mat-list-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-mat-list-item:hover {
-  background-color: #f5f5f5;
-}
-
-/* Job text lines */
-mat-list-item div[mat-line] {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-mat-list-item div[mat-line]:first-child {
-  font-weight: 600;
-  color: #0a66c2;
-  font-size: 14px;
-}
-
-mat-list-item div[mat-line]:last-child {
-  font-size: 13px;
-  color: #555;
-}
-
-

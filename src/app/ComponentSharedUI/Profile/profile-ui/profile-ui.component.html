@@ -33,20 +33,27 @@
         </button>
 
         <button mat-flat-button [color]="
-                  followStatus === 'accepted'
-                    ? 'accent'
-                    : followStatus === 'pending'
-                    ? 'warn'
-                    : 'primary'" *ngIf="currentUserCode !== this.code"
-          (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)">
-          <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
-          <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
+    followStatus === 'accepted'
+      ? 'accent'
+      : followStatus === 'pending'
+      ? 'warn'
+      : 'primary'
+  " *ngIf="currentUserCode !== this.code" (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)">
+          <!-- Icons -->
+          <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">
+            person_add
+          </mat-icon>
+          <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">
+            hourglass_top
+          </mat-icon>
           <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>
 
+          <!-- Text -->
           <ng-container [ngSwitch]="followStatus">
             <span *ngSwitchCase="'none'">Connect</span>
             <span *ngSwitchCase="'pending'">Pending</span>
             <span *ngSwitchCase="'accepted'">Connected</span>
+            <span *ngSwitchCase="'cancelled'">Connect</span>
           </ng-container>
         </button>
 

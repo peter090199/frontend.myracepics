@@ -45,10 +45,10 @@ export class AppComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    const user = sessionStorage.getItem('token');
-    if (!user) {
-      this.authguard.logout();
-    }
+    // const user = sessionStorage.getItem('token');
+    // if (!user) {
+    // this.authguard.logout();
+    // }
     
     this.cookieService.set('myCookie', 'cookieValue', { expires: 7, path: '/' });
     const myCookieValue = this.cookieService.get('myCookie');
@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
     this.showWebsiteChat = localStorage.getItem('chatmessages') === 'true';
     this.reloadOnce();
     this.loadUserID();
-    this.inactivityService.startWatching();
+   // this.inactivityService.startWatching();
 
 
     

@@ -99,8 +99,8 @@ nav {
 /* Middle Column (center feed) */
 .middle-column {
   flex: 1;
-  max-width: 800px;   /* feed width */
-   margin: 0 auto; 
+  max-width: 600px;   /* feed width */
+  margin: 0 auto; 
   padding: 1rem;
   overflow: visible;   /* remove inner scrolling */
   height: auto;        /* let body handle the scroll */
@@ -446,3 +446,4 @@ mat-card-footer button mat-icon { margin-right: 6px; }
 .skeleton-user .skeleton-btn {
   flex-shrink: 0;
 }
+

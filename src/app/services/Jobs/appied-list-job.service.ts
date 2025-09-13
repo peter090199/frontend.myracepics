@@ -7,7 +7,7 @@ import { _url } from 'src/global-variables';
 @Injectable({
   providedIn: 'root'
 })
-export class AppliedQuestionsService {
+export class AppiedListJobService {
 
   constructor(private http: HttpClient) { }
 
@@ -75,5 +75,11 @@ export class AppliedQuestionsService {
       catchError(error => this.handleAuthError(error))
     );
   }
+
+  getAppliedJob(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getAppliedJob`,{headers});
+  }
+
 
 }

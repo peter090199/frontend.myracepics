@@ -1,7 +1,19 @@
-import { Component, EventEmitter, Input, NgZone, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { AllSuggestionsModalComponent } from './all-suggestions-modal/all-suggestions-modal.component';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ClientsService } from 'src/app/services/Networking/clients.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { ProfileService } from 'src/app/services/Profile/profile.service';
+import { AllSuggestionsModalComponent } from './all-suggestions-modal/all-suggestions-modal.component';
 
 @Component({
   selector: 'app-networking',
@@ -9,121 +21,135 @@ import { ClientsService } from 'src/app/services/Networking/clients.service';
   styleUrls: ['./networking.component.css']
 })
 export class NetworkingComponent implements OnInit, OnChanges {
-  people: any[] = [];
-  users: any[] = [];
-  count = 0;
-  pendingCnt = 0;
-  showAll = false;
-  isLoading = false;
-  selectedTabIndex = 0;
-  cnt = 0;
-
   @Input() active: boolean = false;
   @Output() loaded = new EventEmitter<void>();
 
-  networkSummary: any[] = [
-    { icon: 'badge', label: 'People & Company', count: 0, route: 'people' },
-    { icon: 'people_alt', label: 'Connected', count: 0, route: 'connected' },
-    { icon: 'group', label: 'Accept Invites', count: 0, route: 'accept-invites' }
-  ];
+  people: any[] = [];
+  peopleInvites: any[] = [];               // Suggestions (People you may know)
+  peopleRecentActivity: any[] = []; // Recent Activity
+  currentUserCode: string = '';
+  cnt: number = 0;
+
+  isLoading = false;
+  skeletonRows: number[] = [];
+  page = 1;
+  limit = 10;
+  hasMoreData = true;
+
+  // ✅ New tab handling
+  selectedTabIndex: number = 0;
 
   constructor(
-    private ngZone: NgZone,
     private dialog: MatDialog,
-    private clientsService: ClientsService
+    private clientsService: ClientsService,
+    private authService: AuthService,
+    private alert: NotificationsService,
+    private profile: ProfileService
   ) {}
 
   ngOnInit(): void {
-    if (this.active) {
-      this.loadClients();
-      this.getPeopleRecentActivity();
-      
-    }
+    this.loadTabData(this.selectedTabIndex);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['active'] && this.active) {
-      this.loadClients();
+    if (changes['active']?.currentValue) {
+      this.loadTabData(this.selectedTabIndex);
+    }
+  }
+
+  /** ✅ Handle tab change */
+  onTabChange(event: MatTabChangeEvent): void {
+    this.selectedTabIndex = event.index;
+    this.resetData();
+    this.loadTabData(this.selectedTabIndex);
+  }
+
+  /** ✅ Load data depending on tab */
+  private loadTabData(index: number): void {
+    if (index === 0) {
+      this.getPeopleyoumayknow();
+      this.getPeopleRecentActivity();
+      this.getPendingFollowRequests();
+    } else if (index === 1) {
+      // Future tab
+    }
+  }
+
+  /** Reset data when tab is reloaded */
+  private resetData(): void {
+    this.page = 1;
+    this.people = [];
+    this.peopleRecentActivity = [];
+    this.hasMoreData = true;
+  }
+
+  /** Infinite scroll */
+  onScroll(event: any): void {
+    const { scrollTop, scrollHeight, clientHeight } = event.target;
+    if (scrollTop + clientHeight >= scrollHeight - 100 && !this.isLoading && this.hasMoreData) {
       this.getPeopleRecentActivity();
     }
   }
 
-  getfollowingPending(): void {
-    this.isLoading = true;
-    this.clientsService.getfollowingPending().subscribe({
-      next: (res) => {
-        this.people = res.data;
-        this.pendingCnt = res.count;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading pending follow requests:', err);
-        this.isLoading = false;
-      }
-    });
-  }
+  /** Load Suggestions */
+  getPeopleyoumayknow(): void {
+    this.currentUserCode = this.authService.getAuthCode();
 
-  getPeopleRecentActivity(): void {
-    if (this.isLoading) return;
-    this.isLoading = true;
-    this.clientsService.getPeopleRecentActivity().subscribe({
+    this.clientsService.getPeopleyoumayknow().subscribe({
       next: (res) => {
-        this.ngZone.run(() => {
-          this.users = res.data || [];
-          this.isLoading = false;
-        });
+        this.people = res.data || [];
+        this.cnt = res.count || 0;
       },
       error: (err) => {
         console.error('Error loading suggestions:', err);
-        this.isLoading = false;
+        this.alert.toastrError('❌ Failed to load suggestions.');
       }
     });
   }
 
-  loadClients(): void {
-    this.isLoading = true;
-    this.clientsService.getListClients().subscribe({
-      next: (res) => {
-        this.people = res.data;
-        this.count = res.count;
-        this.isLoading = false;
+  /** Load Recent Activity with Pagination */
+  getPeopleRecentActivity(): void {
+    if (this.isLoading || !this.hasMoreData) return;
 
-        this.networkSummary[0].count = res.count;
-        this.getfollowingPending();
+    this.isLoading = true;
+    this.currentUserCode = this.authService.getAuthCode();
+    this.skeletonRows = Array.from({ length: this.limit }, (_, i) => i);
+
+    this.clientsService.getPeopleRecentActivity().subscribe({
+      next: (res) => {
+        this.skeletonRows = [];
+        const newData = (res.data || []).map((person: any) => ({
+          ...person,
+          follow_status: person.follow_status || 'not_following',
+          follow_id: person.follow_id || null,
+          role_code: person.role_code
+        }));
+
+        this.peopleRecentActivity.push(...newData);
+        this.page++;
+        this.hasMoreData = newData.length === this.limit;
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading clients:', err);
+        console.error('Error loading recent activity:', err);
+        this.alert.toastrError('❌ Failed to load recent activity.');
         this.isLoading = false;
       }
     });
   }
 
-  onTabChange(event: any) {
-    this.selectedTabIndex = event.index;
-    this.isLoading = true;
-
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 1200);
-  }
-
-  updateTabCount(index: number, newCount: any): void {
-    this.networkSummary[index].count = newCount;
-  }
-
-  onComponentLoaded() {
-    this.isLoading = false;
-    this.clientsService.getPeopleyoumayknow().subscribe({
+  getPendingFollowRequests(): void {
+    this.clientsService.getPendingFollowRequests().subscribe({
       next: (res) => {
-        this.cnt = res.count;
-        // this.getPeopleRecentActivity();
+        this.peopleInvites = res.data;
       },
       error: (err) => {
-        console.error('Error loading clients:', err);
+        console.error('Error loading pending follow requests:', err);
       }
     });
   }
 
+  /** Open All Suggestions Modal */
   openSuggestionsModal(): void {
     this.dialog.open(AllSuggestionsModalComponent, {
       width: '900px',
@@ -131,7 +157,90 @@ export class NetworkingComponent implements OnInit, OnChanges {
     });
   }
 
-  toggleShowAll(): void {
-    this.showAll = !this.showAll;
+  /** Follow / Unfollow / Cancel Request */
+  AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
+    if (!code) {
+      this.alert.toastrWarning('⚠️ No user code provided.');
+      return;
+    }
+
+    let confirmMessage = '';
+    let successAction = '';
+    switch (follow_status) {
+      case 'not_following':
+        confirmMessage = 'Send a follow request to this user?';
+        successAction = 'Follow request sent.';
+        break;
+      case 'pending':
+        confirmMessage = 'Cancel your pending follow request?';
+        successAction = 'Follow request canceled.';
+        break;
+      case 'accepted':
+        confirmMessage = 'Unfollow this user?';
+        successAction = 'Unfollowed successfully.';
+        break;
+    }
+
+    this.alert.popupWarning(fullName, confirmMessage).then((result) => {
+      if (result.value) {
+        const action$ =
+          follow_status === 'accepted'
+            ? this.profile.Unfollow(id)
+            : this.profile.AddFollow(code);
+
+        action$.subscribe({
+          next: (res) => {
+            if (res.status === true || res.success === true) {
+              this.alert.toastrSuccess(successAction);
+
+              // ✅ Update UI without reloading
+              this.peopleRecentActivity = this.peopleRecentActivity.map(p =>
+                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+              );
+              this.people = this.people.map(p =>
+                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+              );
+            } else {
+              this.alert.toastrError(res.message || 'Action failed.');
+            }
+          },
+          error: (err) => {
+            this.alert.toastrError(err.error?.message || 'Something went wrong.');
+            console.error(err);
+          }
+        });
+      }
+    });
   }
+
+
+  
+  ConnectInvites(code: any, requesterFname: string): void {
+  if (!code) {
+    this.alert.toastrWarning('⚠️ No user code provided for follow request.');
+    return;
+  }
+
+  const fullName = `${requesterFname}`;
+  const confirmMessage = `Accept follow request from ${fullName}?`;
+
+  this.alert.popupWarning(fullName, confirmMessage).then((result) => {
+    if (result.value) {
+      this.clientsService.acceptFollowRequest(code).subscribe({
+        next: () => {
+          this.alert.toastrSuccess(`You are now connected with ${fullName}.`);
+           this.getPendingFollowRequests();
+        },
+        error: (error: any) => {
+          this.alert.toastrError('❌ Failed to accept follow request.');
+          console.error('Error on follow request:', error);
+        }
+      });
+    }
+  });
+}
+
+
+
+
 }

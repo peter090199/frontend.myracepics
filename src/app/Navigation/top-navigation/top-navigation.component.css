@@ -4,13 +4,13 @@
   min-height: 70vh;
   margin: 10px;
 }
-
+/* 
 .app-container {
   display: flex;
   flex-direction: column;
   margin: 0px;
   background-color: transparent;
-}
+} */
 
 /* Ensure the rest of the page doesn't overlheaderap */
 .router-outlet+* {

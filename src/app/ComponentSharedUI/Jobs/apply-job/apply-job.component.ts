@@ -2,15 +2,14 @@ import { Component, Inject, OnInit, OnDestroy, Optional, ViewChild } from '@angu
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 import { CountryCodesService } from 'src/app/services/country-codes.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { JobPostingService } from 'src/app/services/Jobs/job-posting.service';
 import { ProfileService } from 'src/app/services/Profile/profile.service';
-import { ActivatedRoute } from '@angular/router';
 import { AppliedQuestionsService } from 'src/app/services/Jobs/applied-questions.service';
 
 @Component({
@@ -24,29 +23,28 @@ export class ApplyJobComponent implements OnInit, OnDestroy {
   profiles: any;
   imageForm!: FormGroup;
   personalForm!: FormGroup;
-  companyForm!: FormGroup;
+  companyForm!: FormGroup; // ⚠️ Not used in HTML, you may remove if not needed
 
   btnSave = "Save All";
   loading = false;
   fileError: string | null = null;
 
   selectedFile: File | null = null;
-  previewUrl: string | null = null;
+  resumeName: string | null = null;
 
-  worktypes: string[] = ['Onsite', 'Work From Home', 'Hybrid'];
   progressValue: number = 0;
-  error: string = '';
 
-  // country data + search
   countryCodes: { label: string; value: string }[] = [];
   countryControl: FormControl = new FormControl('');
   filteredCountryCodes!: Observable<{ label: string; value: string }[]>;
 
   private _onDestroy = new Subject<void>();
-  resumeName: string | null = null;
 
   job: any = null;
   questions: any[] = [];
+transNo:any;
+  responseMessage: string = "";
+  isPhoneValid: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -55,14 +53,17 @@ export class ApplyJobComponent implements OnInit, OnDestroy {
     private jobServices: JobPostingService,
     private router: Router,
     private profileService: ProfileService,
-    private appliedService:AppliedQuestionsService,
-    private countrycodeServices: CountryCodesService,private route:ActivatedRoute
-  ) { }
+    private appliedService: AppliedQuestionsService,
+    private countrycodeServices: CountryCodesService,
+    private route: ActivatedRoute
+  ) {
+
+  }
 
   ngOnInit(): void {
-    const transNo = this.route.snapshot.paramMap.get('transNo');
-    if (transNo) {
-      this.fetchJobPosting(transNo);
+     this.transNo = this.route.snapshot.paramMap.get('transNo');
+    if (this.transNo) {
+      this.fetchJobPosting(this.transNo);
     }
 
     this.imageForm = this.fb.group({
@@ -72,19 +73,11 @@ export class ApplyJobComponent implements OnInit, OnDestroy {
     this.personalForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       country_code: ['', Validators.required],
-      phone_number: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
+      phone_number: [''],
+      answers: this.fb.array(this.questions.map(() => this.fb.control('', Validators.required)))
     });
-
-    this.companyForm = this.fb.group({
-      qualification: ['', Validators.required],
-      work_type: ['', Validators.required],
-      comp_name: ['', Validators.required],
-      comp_description: ['', Validators.required],
-    });
-
-    // Load data
-    this.loadProfile();
     this.loadCountryCodes();
+    this.loadProfile();
 
     this.progressValue = this.getProgressValue(0);
 
@@ -93,126 +86,163 @@ export class ApplyJobComponent implements OnInit, OnDestroy {
       this.fillFormData();
     }
 
-
-    // wire autocomplete filter (default empty until countryCodes populated)
     this.filteredCountryCodes = this.countryControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || ''))
     );
   }
 
-   fetchJobPosting(transNo: string): void {
+  fetchJobPosting(transNo: string): void {
     this.loading = true;
     this.appliedService.getJobPostingByTransNo(transNo).subscribe({
       next: (res) => {
         if (res.success) {
           this.job = res.job;
-          this.questions = res.questions;
+          this.questions = (res.questions || []).map((q: any) => ({ ...q, answer: '' }));
         }
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Failed to load job posting:', err);
+      error: () => {
         this.loading = false;
       }
     });
   }
+  
 
   areAllQuestionsAnswered(): boolean {
-  if (!this.questions || this.questions.length === 0) return false;
-  return this.questions.every(q => q.answer && q.answer.trim().length > 0);
-}
+    if (!this.questions?.length) return false;
+    return this.questions.every(q => q.answer?.toString().trim().length > 0);
+  }
 
-
-  /** Load user profile and prefill */
   loadProfile(): void {
     this.profileService.getProfileByUserOnly().subscribe({
       next: (res) => {
         if (res?.success) {
           const profile = res.message;
+          this.profiles = profile;
           this.personalForm.patchValue({
             email: profile.email || '',
             phone_number: profile.contact_no || ''
           });
-          this.previewUrl = profile.photo_pic || null;
-
-          // try to preselect country_code based on contact_no (if +63 etc.)
-          if (profile.contact_no) {
-            const matched = this.countryCodes.find(c => profile.contact_no.startsWith(c.value));
-            if (matched) {
-              this.personalForm.patchValue({ country_code: matched.value });
-            } else if (profile.contact_no.startsWith('+63')) {
-              this.personalForm.patchValue({ country_code: '+63' });
-            }
-          }
         }
-      },
-      error: (err) => {
-        console.error('Failed to load profile:', err);
       }
     });
   }
 
-  /** Load and transform country codes */
   loadCountryCodes(): void {
     this.countrycodeServices.loadCountryCodes().subscribe({
       next: (res) => {
-        if (res && res.phones && res.names) {
-          this.countryCodes = Object.entries(res.phones).map(([code, dial]) => ({
-            label: `${code} (+${dial})`,  // ✅ Example: "BD (+880)"
-            value: `+${code}`             // ✅ Stores only the dial code
-          }));
-        } else {
-          this.countryCodes = [];
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching country codes:', err);
-        this.countryCodes = [];
-      }
-    });
-  }
-
-  loadCountryCodesxx(): void {
-    this.countrycodeServices.loadCountryCodes().subscribe({
-      next: (res) => {
-        if (res && res.phones && res.names) {
-          this.countryCodes = Object.entries(res.phones).map(([code, dial]) => ({
-            label: `${res.names[code] || code} (+${dial})`,
+        if (res?.phones) {
+          this.countryCodes = Object.entries(res.phones).map(([code, dial]: any) => ({
+            label: `${code} (+${dial})`,
             value: `+${dial}`
           }));
-        } else {
-          this.countryCodes = [];
         }
-        // re-evaluate filtered observable by emitting current search value
-        const current = (this.countryControl.value as string) || '';
-        // push new filtered observable mapping (keeps subscription chain)
-        this.filteredCountryCodes = this.countryControl.valueChanges.pipe(
-          startWith(current),
-          map(value => this._filter(value || ''))
-        );
       },
-      error: (err) => {
-        console.error('Error fetching country codes:', err);
+      error: () => {
         this.countryCodes = [];
-        this.filteredCountryCodes = this.countryControl.valueChanges.pipe(
-          startWith(''),
-          map(() => [])
-        );
       }
     });
   }
 
-  /** Filter logic used by autocomplete */
   private _filter(value: string): { label: string; value: string }[] {
     const filterValue = value.toLowerCase().trim();
-    if (!filterValue) {
-      return this.countryCodes.slice();
-    }
     return this.countryCodes.filter(c =>
-      c.label.toLowerCase().includes(filterValue) ||
-      c.value.includes(filterValue)
+      c.label.toLowerCase().includes(filterValue) || c.value.includes(filterValue)
     );
+  }
+
+  onUploadResume(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      this.fileError = 'Only PDF files are allowed.';
+      this.resumeName = null;
+      this.selectedFile = null;
+      this.imageForm.reset();
+      return;
+    }
+
+    this.fileError = null;
+    this.resumeName = file.name;
+    this.selectedFile = file;
+    this.imageForm.patchValue({ resume: file });
+  }
+
+  fillFormData(): void {
+    if (this.data) {
+      this.personalForm.patchValue({
+        email: this.data.email || '',
+        country_code: this.data.country_code || '',
+        phone_number: this.data.phone_number || ''
+      });
+    }
+  }
+
+  getProgressValue(stepIndex: number): number {
+    const totalSteps = 3;
+    return ((stepIndex + 1) / totalSteps) * 100;
+  }
+
+  nextStep(stepper?: MatStepper): void { (stepper || this.stepper).next(); }
+  previousStep(stepper?: MatStepper): void { (stepper || this.stepper).previous(); }
+
+  onStepChange(event: any): void {
+    this.progressValue = this.getProgressValue(event.selectedIndex ?? 0);
+  }
+
+  onCheckCountryCode(): void {
+    this.responseMessage = '';
+
+    if (this.personalForm.invalid) {
+      this.responseMessage = '⚠️ Please fill out all fields correctly';
+      this.showPopup(this.responseMessage);
+      return;
+    }
+
+    const { country_code, phone_number } = this.personalForm.value;
+    console.log('Country Code:', country_code, 'Phone Number:', phone_number);
+    return;
+
+    this.countrycodeServices.validatePhone(country_code, phone_number).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.responseMessage = '';
+          this.nextStep(this.stepper);
+        } else {
+          this.responseMessage = res.message;
+
+          // Optionally map field-specific errors
+          if (res.errors?.phone_number) {
+            this.personalForm.get('phone_number')?.setErrors({ invalidPhone: true });
+          }
+
+          this.showPopup(this.responseMessage);
+        }
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.responseMessage = 'Invalid country code or phone number';
+        } else {
+          this.responseMessage = 'Server error, try again later';
+        }
+        this.showPopup(this.responseMessage);
+      }
+    });
+  }
+
+  proceedToNext(stepper: any): void {
+    if (this.isPhoneValid) {
+      this.nextStep(stepper);
+    } else {
+      this.showPopup('⚠️ Please validate your phone number first.');
+    }
+  }
+
+  showPopup(message: string): void {
+    if (message) this.notificationService.toastrWarning(message);
   }
 
   countryPatterns: { [key: string]: RegExp } = {
@@ -243,142 +273,50 @@ export class ApplyJobComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Resume upload */
-  onUploadResume(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
-    const file = input.files[0];
-    if (file.type !== 'application/pdf') {
-      this.fileError = 'Only PDF files are allowed.';
-      this.resumeName = null;
-      this.imageForm.reset();
-      return;
-    }
-    this.fileError = null;
-    this.resumeName = file.name;
-    this.imageForm.patchValue({ resume: file });
-    this.imageForm.get('resume')?.updateValueAndValidity();
-  }
-
-  fillFormData(): void {
-    // fill personal and company forms from `data` if provided
-    if (this.data) {
-      this.personalForm.patchValue({
-        email: this.data.email || '',
-        country_code: this.data.country_code || '',
-        phone_number: this.data.phone_number || ''
-      });
-
-      this.companyForm.patchValue({
-        qualification: this.data.qualification || '',
-        work_type: this.data.work_type || '',
-        comp_name: this.data.comp_name || '',
-        comp_description: this.data.comp_description || ''
-      });
-
-      this.previewUrl = this.data.job_image || null;
-    }
-  }
-
-  getProgressValue(stepIndex: number): number {
-    const totalSteps = 3;
-    return ((stepIndex + 1) / totalSteps) * 100;
-  }
-
-  nextStep(stepper?: MatStepper): void {
-    (stepper || this.stepper).next();
-  }
-
-  previousStep(stepper?: MatStepper): void {
-    (stepper || this.stepper).previous();
-  }
-
-  onStepChange(event: any): void {
-    if (!this.loading) {
-      const currentStep = event.selectedIndex ?? 0;
-      this.progressValue = this.getProgressValue(currentStep);
-    }
-  }
-  responseMessage: string = "";
-
-  onCheckCountryCode(): void {
-    this.responseMessage = '';
-
-    if (this.personalForm.invalid) {
-      this.responseMessage = '⚠️ Please fill out all fields correctly';
-      this.showPopup(this.responseMessage);
-      return;
-    }
-
-    const { country_code, phone_number } = this.personalForm.value;
-    //  console.log('Country Code:', country_code, 'Phone Number:', phone_number);
-
-    this.countrycodeServices.validatePhone(country_code, phone_number).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.responseMessage = '';
-          this.nextStep(this.stepper);
-        } else {
-          this.responseMessage = res.message;
-
-          // Optionally map field-specific errors
-          if (res.errors?.phone_number) {
-            this.personalForm.get('phone_number')?.setErrors({ invalidPhone: true });
-          }
-
-          this.showPopup(this.responseMessage);
-        }
-      },
-      error: (err) => {
-        if (err.status === 404) {
-          this.responseMessage = 'Invalid country code or phone number';
-        } else {
-          this.responseMessage = 'Server error, try again later';
-        }
-        this.showPopup(this.responseMessage);
-      }
-    });
-  }
-
-  // Helper method to show popup
-  showPopup(message: string): void {
-    if (!message) return;
-    this.notificationService.toastrWarning(message);
-  }
-
-
   onSubmit(): void {
-    if (this.personalForm.invalid || this.companyForm.invalid) {
-      this.notificationService.toastrError("Please complete all required fields.");
+    if (this.personalForm.invalid) {
+      this.notificationService.toastrError("Please complete all required personal fields.");
+      return;
+    }
+    if (!this.selectedFile) {
+      this.notificationService.toastrError("Please upload your resume (PDF).");
+      return;
+    }
+    if (!this.areAllQuestionsAnswered()) {
+      this.notificationService.toastrError("Please answer all questions.");
       return;
     }
 
     this.loading = true;
+
     const formData = new FormData();
+    formData.append('resume_pdf', this.selectedFile as File);
+    formData.append('job_name', this.job?.job_name || '');
+    formData.append('email', this.personalForm.value.email);
+    formData.append('country_code', this.personalForm.value.country_code);
+    formData.append('phone_number', this.personalForm.value.phone_number);
+    formData.append('transNo', this.job?.transNo || `TR-${Date.now()}`);
 
-    if (this.selectedFile) {
-      formData.append('job_image', this.selectedFile);
-    }
-
-    const jobValues = this.personalForm.value;
-    const companyValues = this.companyForm.value;
-
-    Object.entries({ ...jobValues, ...companyValues }).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, String(value));
-      }
+    // ✅ Append answers properly
+    this.questions.forEach((q, index) => {
+      formData.append(`answers[${index}][question_id]`, String(q.question_id));
+      formData.append(`answers[${index}][answer_text]`, q.answer || '');
     });
 
-    return;
 
-    this.jobServices.saveJobPosting(formData).subscribe({
-      next: (res) => {
-        this.notificationService.toastrSuccess(res.message);
+    // Debug check
+    for (let pair of (formData as any).entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    this.appliedService.saveAppliedJob(formData).subscribe({
+      next: (res: any) => {
+        this.notificationService.toastrSuccess(res.message || "Application submitted");
         this.loading = false;
-        this.router.navigateByUrl("/job_posting");
+        this.router.navigate(['/recommended-jobs', res.transNo]);
       },
-      error: (err) => {
-        this.notificationService.toastrError(err.error?.message || "Error saving job");
+      error: (err: any) => {
+        this.notificationService.toastrError(err.error?.message || "Error saving application");
         this.loading = false;
       }
     });

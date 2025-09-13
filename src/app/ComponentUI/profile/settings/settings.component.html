@@ -1,48 +1,105 @@
-<mat-card class="example-card">
-    <mat-card-subtitle>User Profile</mat-card-subtitle>
-    <mat-card-title></mat-card-title>
-    <mat-divider inset></mat-divider>
+<mat-card class="profile-card mat-elevation-z6">
+  <!-- Loader -->
+  <mat-card-footer *ngIf="isLoading">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </mat-card-footer>
 
-    <mat-card-content>
-      <div class="form-row">
-        <mat-form-field class="form-field" appearance="standard">
-          <mat-icon matPrefix class="aligned-icon">person</mat-icon>
-          <mat-label>Full Name</mat-label>
-          <input matInput [value]="users?.fullname" readonly>
-        </mat-form-field>
-        
-        <mat-form-field class="form-field" appearance="standard">
-          <mat-icon matPrefix class="aligned-icon">email</mat-icon>
-          <mat-label>Email</mat-label>
-          <input matInput [value]="users?.email" readonly>
-        </mat-form-field>
-          
-      </div>
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <img
+      class="profile-avatar"
+      [src]="users?.profile_picture || 'assets/avatar.png'"
+      alt="Profile Picture"
+    />
+    <div class="profile-info">
+      <h2>{{ users?.fullname || 'User Name' }}</h2>
+      <p class="subtitle">{{ users?.profession || 'No profession' }}</p>
+      <small>{{ users?.designation || 'No designation' }}</small>
+    </div>
+  </div>
 
-      <div class="form-row">
-        <mat-form-field class="form-field" appearance="standard">
-          <mat-icon matPrefix class="aligned-icon">business</mat-icon>
-          <mat-label>Company</mat-label>
-          <input matInput [value]="users?.company ?? 'NA'" readonly>
-        </mat-form-field>
-        
-        <mat-form-field class="form-field" appearance="standard">
-          <mat-icon matPrefix class="aligned-icon">phone</mat-icon>
-          <mat-label>Contact Number</mat-label>
-          <input matInput [value]="users?.contactno" readonly>
-        </mat-form-field>
-        
-      </div>
-    </mat-card-content>
-    <mat-divider inset></mat-divider>
+  <mat-divider></mat-divider>
 
-    <!-- <mat-card-actions>
-      <button mat-button (click)="Changepassword()">Change Password</button>
-    </mat-card-actions> -->
+  <!-- Tabs for Profile Management -->
+  <mat-tab-group mat-stretch-tabs>
+    <!-- Profile Details -->
+    <mat-tab label="Profile Details">
+      <mat-card-content>
+        <div class="profile-row">
+          <mat-icon class="profile-icon">email</mat-icon>
+          <span>{{ users?.email || 'No email available' }}</span>
+        </div>
 
-    <mat-card-footer *ngIf="isLoading">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </mat-card-footer>
-    
-  </mat-card>
+        <div class="profile-row">
+          <mat-icon class="profile-icon">business</mat-icon>
+          <span>{{ users?.company || 'N/A' }} ({{ users?.industry || 'Industry N/A' }})</span>
+        </div>
 
+        <div class="profile-row">
+          <mat-icon class="profile-icon">link</mat-icon>
+          <a
+            *ngIf="users?.companywebsite"
+            [href]="'https://' + users.companywebsite"
+            target="_blank"
+          >
+            {{ users.companywebsite }}
+          </a>
+          <span *ngIf="!users?.companywebsite">No website</span>
+        </div>
+
+        <div class="profile-row">
+          <mat-icon class="profile-icon">phone</mat-icon>
+          <span>{{ users?.contact_no || 'N/A' }}</span>
+        </div>
+
+        <div class="profile-row">
+          <mat-icon class="profile-icon">location_on</mat-icon>
+          <span>{{ users?.current_location || 'N/A' }} ({{ users?.home_country || 'N/A' }})</span>
+        </div>
+
+        <div class="profile-row">
+          <mat-icon class="profile-icon">cake</mat-icon>
+          <span>{{ users?.date_birth || 'Birthday not set' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-tab>
+
+    <!-- Account Settings -->
+    <mat-tab label="Account Settings">
+      <mat-card-content>
+        <div class="profile-row">
+          <mat-icon class="profile-icon">security</mat-icon>
+          <span>Password last changed: {{ users?.password_updated_at || 'Not set' }}</span>
+        </div>
+        <div class="profile-row">
+          <mat-icon class="profile-icon">visibility</mat-icon>
+          <span>Account Visibility: {{ users?.visibility || 'Private' }}</span>
+        </div>
+  
+      <mat-card-actions class="button-end">
+        <button mat-raised-button color="primary" (click)="editProfile()">
+          Edit Profile
+        </button>
+        <button mat-stroked-button color="accent" (click)="Changepassword()">
+          Change Password
+        </button>
+      </mat-card-actions>
+          </mat-card-content>
+    </mat-tab>
+
+    <!-- Activity -->
+    <mat-tab label="Activity">
+      <mat-card-content>
+         <div class="profile-row">
+        <p *ngIf="!users?.activity?.length">No recent activity.</p>
+        <ul *ngIf="users?.activity?.length">
+          <li *ngFor="let activity of users.activity">
+            <mat-icon class="profile-icon">history</mat-icon>
+            {{ activity }}
+          </li>
+        </ul>
+        </div>
+      </mat-card-content>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

@@ -109,6 +109,7 @@ app-footer {
   }
 }
 
+
 html,
 body,
 div {
@@ -837,7 +838,19 @@ h2 {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 0px;
+  margin:10px;
+}
+/* Make the mat-form-field adapt */
+.search-div .mat-form-field {
+  min-width: 220px;            /* never too small */
+  max-width: 640px;            /* avoid getting too wide on very large screens */
+  width: clamp(220px, 40%, 420px); /* preferred responsive width */
+}
+
+/* utility width class used in your HTML */
+.w-40 {
+  width: 40%;
+  min-width: 220px;
 }
 
 .content-scrollable {
@@ -1937,12 +1950,45 @@ mat-list-item .job-details { flex: 1; }
 mat-list-item .job-details .skeleton-line { display: block; }
 
 
-button{
-  transition: all 0.5s ease-in-out;
+
+
+/* =============== Mat-Select Hover Styles =============== */
+::ng-deep .mat-select-trigger {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: #fff;
+  transition: all 0.2s ease-in-out;
 }
 
-button:hover {
-  transform: scale(1.05); /* Slight zoom effect */
+/* Hover state for the select trigger */
+::ng-deep .mat-select-trigger:hover {
+  border-color: #3f51b5; /* Material Primary */
+  box-shadow: 0 0 6px rgba(63, 81, 181, 0.3);
+  cursor: pointer;
 }
 
+/* Focused / Open state */
+::ng-deep .mat-select.mat-focused .mat-select-trigger {
+  border-color: #3f51b5;
+  box-shadow: 0 0 8px rgba(63, 81, 181, 0.4);
+}
 
+/* Dropdown option hover */
+::ng-deep .mat-option:hover {
+  background-color: rgba(63, 81, 181, 0.08); /* Light blue hover */
+  color: #3f51b5;
+}
+
+/* Selected option highlight */
+::ng-deep .mat-option.mat-selected {
+  background-color: rgba(63, 81, 181, 0.15) !important;
+  color: #3f51b5 !important;
+}
+
+/* =============== Table Row Hover Styles =============== */
+.mat-row:hover {
+  background-color: rgba(63, 81, 181, 0.05); /* Subtle hover on table rows */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}

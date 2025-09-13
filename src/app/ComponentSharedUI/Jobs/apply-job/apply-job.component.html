@@ -1,9 +1,10 @@
 <div class="container">
     <div class="page-header">
-        <button mat-button color="primary" [routerLink]="['/company_profile/:transNo']">
+        <button mat-button color="primary" [routerLink]="['/recommended-jobs', transNo]">
             Back
-        </button>
-        <h2>{{ btnSave }} Apply Job</h2>
+            </button>
+
+        <h2> Apply Job</h2>
     </div>
 
     <mat-divider></mat-divider>
@@ -86,10 +87,11 @@
 
                 <div class="button-end">
                     <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
-                    <button mat-raised-button color="accent" (click)="onCheckCountryCode()"
+                    <button mat-raised-button color="accent" (click)="nextStep(stepper)">Next</button>
+                    <!-- <button mat-raised-button color="accent" (click)="onCheckCountryCode()"
                         [disabled]="!personalForm.valid">
                         Next
-                    </button>
+                    </button> -->
                 </div>
             </form>
         </mat-step>
@@ -109,9 +111,8 @@
                 <button mat-raised-button color="warn" (click)="previousStep(stepper)">
                     Previous
                 </button>
-                <button mat-raised-button color="accent" (click)="nextStep(stepper)"
-                    [disabled]="!areAllQuestionsAnswered()">
-                    Next
+                <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="!areAllQuestionsAnswered()">
+                    {{ btnSave }}
                 </button>
             </div>
         </mat-step>
@@ -133,7 +134,7 @@
     </mat-step> -->
 
         <!-- Step 5: Submit -->
-        <mat-step [stepControl]="companyForm">
+        <!-- <mat-step [stepControl]="companyForm">
             <form [formGroup]="companyForm">
                 <ng-template matStepLabel>Additional Info</ng-template>
 
@@ -161,6 +162,6 @@
                     </button>
                 </div>
             </form>
-        </mat-step>
+        </mat-step> -->
     </mat-horizontal-stepper>
 </div>

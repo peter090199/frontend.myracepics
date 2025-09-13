@@ -31,13 +31,13 @@ import { NetworkingComponent } from './ComponentUI/networking/networking.compone
 import { ChatUIComponent } from './chat-ui/chat-ui.component';
 import { SettingsComponent } from './ComponentUI/profile/settings/settings.component';
 import { JobPostingComponent } from './ComponentUI/job-posting/job-posting.component';
-import { JobPostingUIComponent } from './ComponentSharedUI/job-posting-ui/job-posting-ui.component';
 import { JobsComponent } from './ComponentUI/jobs/jobs.component';
 import { JobsProfileComponent } from './ComponentUI/jobs-profile/jobs-profile.component';
 import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job.component';
 import { CompanyProfileUIComponent } from './ComponentSharedUI/Jobs/company-profile-ui/company-profile-ui.component';
-import { PostFeedsComponent } from './ComponentUI/Feeds/post-feeds/post-feeds.component';
 import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.component';
+import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
+
 
 
 const routes: Routes = [
@@ -77,12 +77,11 @@ const routes: Routes = [
       { path: 'role', component: RoleComponent },
       { path: 'job_posting', component: JobPostingComponent },
       { path: 'jobs', component: JobsComponent },
-      { path: 'recommended-jobs/:job_id', component: JobsProfileComponent },
-      { path: 'recommended-jobs', component: JobsProfileComponent },
+      { path: 'recommended-jobs/:transNo', component: JobsProfileComponent },
       { path: 'posting-job', component: PostingJobComponent },
       { path: 'company_profile/:code', component: CompanyProfileUIComponent },
-      //{ path: 'apply-job', component: ApplyJobComponent },
-      { path: 'apply-job/:transNo', component: ApplyJobComponent }
+      { path: 'apply-job/:transNo', component: ApplyJobComponent },
+      { path: 'applied-jobs', component: ListAppliedJobsComponent },
 
 
     ]

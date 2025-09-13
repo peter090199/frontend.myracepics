@@ -1,0 +1,135 @@
+<section class="section">
+  <div class="search-div">
+    <mat-form-field class="w-40" appearance="standard" floatLabel="never">
+      <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()" autocomplete="off" />
+      <button *ngIf="searchKey" mat-icon-button matSuffix aria-label="Clear" (click)="clearSearch()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+
+  <mat-tab-group>
+    <mat-tab label="List Applied Job">
+      <mat-table [dataSource]="dataSourceApply" matSort class="mat-elevation-z4">
+
+        <!-- Columns -->
+        <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ col.header }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let job">
+            <ng-container *ngIf="col.columnDef !== 'actions'; else actionButtons">
+              {{ col.cell(job) }}
+            </ng-container>
+            <ng-template #actionButtons>
+              <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <!-- No Data -->
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">
+            No data available
+          </mat-footer-cell>
+        </ng-container>
+
+        <!-- Rows -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceApply.data.length > 0 }"></mat-footer-row>
+      </mat-table>
+
+      <!-- Progress Bar -->
+      <mat-progress-bar *ngIf="isLoadingApply" mode="indeterminate" color="primary"></mat-progress-bar>
+
+      <!-- Paginator -->
+      <mat-paginator #paginatorApply [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+      </mat-paginator>
+    </mat-tab>
+
+    <!-- Ongoing Feedback Tab -->
+    <mat-tab label="Ongoing Feedback">
+      <mat-table [dataSource]="dataSourceOngoing" matSort class="mat-elevation-z4">
+
+        <!-- Columns -->
+        <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ col.header }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let job">
+            <ng-container *ngIf="col.columnDef !== 'actions'; else actionButtons2">
+              {{ col.cell(job) }}
+            </ng-container>
+            <ng-template #actionButtons2>
+              <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <!-- No Data -->
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">
+            No data available
+          </mat-footer-cell>
+        </ng-container>
+
+        <!-- Rows -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceOngoing.data.length > 0 }"></mat-footer-row>
+      </mat-table>
+
+      <!-- Progress Bar -->
+      <mat-progress-bar *ngIf="isLoadingOngoing" mode="indeterminate" color="primary"></mat-progress-bar>
+
+      <!-- Paginator -->
+      <mat-paginator #paginatorOngoing [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+      </mat-paginator>
+    </mat-tab>
+
+    <!-- Finish Feedback Tab -->
+    <mat-tab label="Finish Feedback">
+      <mat-table [dataSource]="dataSourceFinished" matSort class="mat-elevation-z4">
+
+        <!-- Columns -->
+        <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ col.header }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let job">
+            <ng-container *ngIf="col.columnDef !== 'actions'; else actionButtons3">
+              {{ col.cell(job) }}
+            </ng-container>
+            <ng-template #actionButtons3>
+              <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <!-- No Data -->
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">
+            No data available
+          </mat-footer-cell>
+        </ng-container>
+
+        <!-- Rows -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceFinished.data.length > 0 }"></mat-footer-row>
+      </mat-table>
+
+      <!-- Progress Bar -->
+      <mat-progress-bar *ngIf="isLoadingFinished" mode="indeterminate" color="primary"></mat-progress-bar>
+
+      <!-- Paginator -->
+      <mat-paginator #paginatorFinished [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+      </mat-paginator>
+    </mat-tab>
+  </mat-tab-group>
+</section>

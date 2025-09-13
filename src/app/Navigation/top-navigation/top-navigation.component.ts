@@ -16,6 +16,7 @@ import { EchoService } from 'src/app/services/echo.service';
 import { Title } from '@angular/platform-browser';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { SharedRoutinesService } from 'src/app/services/Function/shared-routines.service';
+import { ProfileService } from 'src/app/services/Profile/profile.service';
 
 export interface User {
   name: string;
@@ -74,7 +75,7 @@ desktopMenu: MatMenuPanel<any>;
     private navigationService: TNavigationService,private dialog:MatDialog,
     private router: Router, private chatService:ChatService,private echoService:EchoService,
     private notificationService:NotificationService, private ngZone: NgZone,private titleService: Title,
-    private alert:NotificationsService,public sharedRoutines: SharedRoutinesService
+    private alert:NotificationsService,public sharedRoutines: SharedRoutinesService,private profile: ProfileService
   ) {
     this.sharedRoutines.onNewPostsDetected = (count: number) => {
       this.homeNewDataCount = count;
@@ -82,11 +83,12 @@ desktopMenu: MatMenuPanel<any>;
     };
   }
 
+  user: any;
 
   ngOnInit(): void {
     this.loadRealtimeCounts();
     this.fetchModules();
-
+     this.loadUserData();
       this.filteredOptions = this.myControl.valueChanges.pipe(
         startWith(''),
         map(value => (typeof value === 'string' ? value : value?.name)),
@@ -97,6 +99,22 @@ desktopMenu: MatMenuPanel<any>;
         this.homeNewDataCount = count;
         console.log('New posts detected:', count);
       };
+  }
+
+  error:any;
+ loadUserData() {
+    this.profile.getProfileByUserOnly().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.user = response.message; // assume backend returns [{ fullname, email, ... }]
+        } else {
+          this.error = 'Failed to load profile data';
+        }
+      },
+      error: (err) => {
+        this.error = err.message || 'An error occurred while fetching profile data';
+      },
+    });
   }
 
 

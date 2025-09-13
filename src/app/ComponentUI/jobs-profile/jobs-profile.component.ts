@@ -12,7 +12,7 @@ export class JobsProfileComponent implements OnInit {
   jobs: any[] = [];
   success = false;
   isLoading = false;
-  selectedJob: any = [];
+  selectedJob: any = null;
 
   recentSearch = {
     term: 'software engineer',
@@ -25,21 +25,16 @@ export class JobsProfileComponent implements OnInit {
   constructor(
     private jobListServices: JobListService,
     private route: ActivatedRoute
-  ) {
-    this.route.paramMap.subscribe(params => {
-      const transNo = Number(params.get('transNo'));
-      if (transNo && this.jobs.length > 0) {
-        this.selectedJob = this.jobs.find(job => job.transNo === transNo) || null;
-      }
-    });
-
-  }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     await this.getJobPosting();
 
-    // after jobs are loaded, check the route param
-
+    // ✅ After jobs are loaded, check the route param
+    const transNo = this.route.snapshot.paramMap.get('transNo');
+    if (transNo) {
+      this.selectedJob = this.jobs.find(job => job.transNo == transNo) || null;
+    }
   }
 
   async getJobPosting(): Promise<void> {
@@ -48,19 +43,15 @@ export class JobsProfileComponent implements OnInit {
       const res = await firstValueFrom(this.jobListServices.getActiveJobs());
 
       if (res.success) {
-        this.isLoading = false;
         this.jobs = res.data.map((job: any) => ({
           ...job,
           job_image: job.job_image
             ? `https://lightgreen-pigeon-122992.hostingersite.com${job.job_image}`
             : null
         }));
-      } else {
-        this.isLoading = false;
       }
     } catch (error) {
       console.error('Error fetching jobs:', error);
-      this.isLoading = false;
     } finally {
       this.isLoading = false;
     }
@@ -68,7 +59,7 @@ export class JobsProfileComponent implements OnInit {
 
   removeJob(job: any) {
     this.jobs = this.jobs.filter(j => j !== job);
-    if (this.selectedJob?.id === job.id) {
+    if (this.selectedJob?.transNo === job.transNo) {
       this.selectedJob = null;
     }
   }
