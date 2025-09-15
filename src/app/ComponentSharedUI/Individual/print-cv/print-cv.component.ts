@@ -23,6 +23,7 @@ export class PrintCVComponent implements OnInit {
     private router: Router, private dialogRef: MatDialogRef<PrintCVComponent>
   ) { }
 
+  code: any;
   ngOnInit(): void {
     this.getCVData();
   }
@@ -31,7 +32,9 @@ export class PrintCVComponent implements OnInit {
     this.cvService.getProfileCV().subscribe(
       (response) => {
         if (response?.success && Array.isArray(response.message)) {
-          this.cvData = response.message;
+          this.cvData = response.message[0];
+          this.code = this.cvData.code;
+          console.log("CODE: ", this.code)
           // Save to localStorage for print popup use
           localStorage.setItem('Headers', JSON.stringify(this.cvData));
           localStorage.setItem('Transaction', 'items');
@@ -61,14 +64,14 @@ export class PrintCVComponent implements OnInit {
   }
 
   printData(): void {
-  const printContents = document.getElementById('print-content')?.innerHTML;
-  if (!printContents) return;
+    const printContents = document.getElementById('print-content')?.innerHTML;
+    if (!printContents) return;
 
-  const popupWin = window.open('', '_blank', 'width=800,height=900,scrollbars=no,resizable=no');
-  if (!popupWin) return;
+    const popupWin = window.open('', '_blank', 'width=800,height=900,scrollbars=no,resizable=no');
+    if (!popupWin) return;
 
-  popupWin.document.open();
-  popupWin.document.write(`
+    popupWin.document.open();
+    popupWin.document.write(`
     <html>
       <head>
         <title>PrintCV</title>
@@ -99,8 +102,8 @@ export class PrintCVComponent implements OnInit {
       </body>
     </html>
   `);
-  popupWin.document.close();
-}
+    popupWin.document.close();
+  }
 
 
   // printData(): void {
@@ -215,8 +218,10 @@ export class PrintCVComponent implements OnInit {
 
   proceed(): void {
     this.dialogRef.close();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/profile', this.code]);
   }
+
+
 
   onClickPrintReceipts(): void {
     const url = this.router.serializeUrl(this.router.createUrlTree(['print/printcv']));
