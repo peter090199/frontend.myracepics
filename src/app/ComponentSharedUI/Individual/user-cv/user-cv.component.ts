@@ -7,7 +7,7 @@ import { ProfileService } from 'src/app/services/Profile/profile.service';
 import { MatHorizontalStepper } from '@angular/material/stepper/stepper';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { AddLanguageUIComponent } from '../Languange/add-language-ui/add-language-ui.component';
 import { AddEducationUIComponent } from '../ProfessionalDev/add-education-ui/add-education-ui.component';
 import { AddSkillsUIComponent } from '../ProfessionalDev/add-skills-ui/add-skills-ui.component';
@@ -29,6 +29,7 @@ import { ViewLanguageUIComponent } from '../Languange/view-language-ui/view-lang
 import { TranslateModule } from '@ngx-translate/core';
 import { PrintCVComponent } from '../print-cv/print-cv.component';
 import { AuthService } from 'src/app/services/auth.service';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 
@@ -142,7 +143,8 @@ export class UserCVComponent implements AfterViewInit {
     private cvService: CurriculumVitaeService,
     private notificationService: NotificationsService, private router: Router, private datePipe: DatePipe,
     private dialog: MatDialog, private passDataServices: ProfessionalService, private alert: NotificationsService,
-    private profileService: ProfessionalService, private educacationServices: CurriculumVitaeService, private authServiceCode: AuthService
+    private profileService: ProfessionalService, private educacationServices: CurriculumVitaeService,
+    private authServiceCode: AuthService
   ) {
     this.countryControl1.valueChanges.subscribe(value => {
       this.filteredCountries1 = this.filterCountries(value);
@@ -151,8 +153,23 @@ export class UserCVComponent implements AfterViewInit {
     this.countryControl2.valueChanges.subscribe(value => {
       this.filteredCountries2 = this.filterCountries(value);
     });
-
   }
+  animationClass: string = '';
+  profileTitle: string = 'Build Your Basic Information';
+  stepLabels: string[] = [
+    'Build Your Basic Information',
+    'Build Your Location Details',
+    'Build Your Summary',
+    'Build Your Qualifications'
+  ];
+
+  onStepChange(event: StepperSelectionEvent) {
+    this.profileTitle = this.stepLabels[event.selectedIndex];
+  }
+  onTabChange(event: MatTabChangeEvent) {
+    this.profileTitle = `${this.stepLabels[3]} - ${event.tab.textLabel}`;
+  }
+
 
   loadSkills() {
     this.educacationServices.getSkills().subscribe({
@@ -284,17 +301,15 @@ export class UserCVComponent implements AfterViewInit {
     return `${year}-${month}-${day}`;
   }
 
+  editSeminar(data: any): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = data;
 
-  editSeminar(id: number): void {
-    const Edit = this.formSeminar[id];
-    console.log(Edit)
-    const dialogRef = this.dialog.open(AddEditSeminarComponent, {
-      width: '500px',
-      data: Edit, // Pass the specific education entry as data
-
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
+    const dialogRef = this.dialog.open(AddSeminarUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadSeminarData();
       }
@@ -303,7 +318,7 @@ export class UserCVComponent implements AfterViewInit {
 
   editEducation(educ: any): void {
     const dialogRef = this.dialog.open(AddEditEducationDialogComponent, {
-      width: '600px',
+      width: '500px',
       data: educ,
     });
 
@@ -314,63 +329,65 @@ export class UserCVComponent implements AfterViewInit {
     });
   }
 
-  editTraining(index: number): void {
-    const Edit = this.formTraining[index];
-    console.log(Edit)
-    const dialogRef = this.dialog.open(AddEditTrainingComponent, {
-      width: '500px',
-      data: Edit, // Pass the specific education entry as data
+  editTraining(data: any): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = data;
 
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
+    const dialogRef = this.dialog.open(AddTrainingsUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadSeminarData();
+        this.loadTrainingData();
       }
     });
   }
-  editCertificate(index: number): void {
-    const Edit = this.formCertificate[index];
-    const dialogRef = this.dialog.open(AddEditCertificateComponent, {
-      width: '500px',
-      data: Edit, // Pass the specific education entry as data
 
-    });
 
-    dialogRef.afterClosed().subscribe((result) => {
+  editCertificate(data: any): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = data;
+
+    const dialogRef = this.dialog.open(AddCertificateUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadCertificateData();
       }
     });
   }
 
+  editWorkexperience(data: any): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = data;
 
-  editWorkexperience(index: number): void {
-    const Edit = this.formWorkExperience[index];
-    console.log(Edit)
-    const dialogRef = this.dialog.open(AddEditWorkExprienceComponent, {
-      width: '500px',
-      data: Edit, // Pass the specific education entry as data
-
-    });
-    dialogRef.afterClosed().subscribe((result) => {
+    const dialogRef = this.dialog.open(AddEmploymentUiComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadWorkExperienceData();
       }
     });
   }
 
+
   // Edit a skill
-  editSkills(index: number): void {
-    const data = this.formSkills[index];
+  editSkills(skill: any): void {
+    console.log("skill", skill)
     const dialogRef = this.dialog.open(AddEditSkillsComponent, {
       width: '500px',
-      data: data
+      data: skill,
+      autoFocus: false,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadSkillsData(); // Update the skill with the edited value
+        this.loadSkills();
       }
     });
   }
@@ -626,7 +643,7 @@ export class UserCVComponent implements AfterViewInit {
     this.loadTrainingData();
     this.loadCertificateData();
     this.loadWorkExperienceData();
-    
+
   }
 
   profiles: any;
@@ -1169,7 +1186,7 @@ export class UserCVComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(AddLanguageUIComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
@@ -1183,7 +1200,7 @@ export class UserCVComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(ViewLanguageUIComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
@@ -1192,21 +1209,21 @@ export class UserCVComponent implements AfterViewInit {
       }
     });
   }
-
-
   AddSkills(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.autoFocus = false;
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(AddSkillsUIComponent, dialogConfig);
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadSkills();
       }
     });
   }
+
   educationList: any[] = [];
   AddEducationxxx(): void {
     const dialogRef = this.dialog.open(AddEducationUIComponent, {
@@ -1224,7 +1241,7 @@ export class UserCVComponent implements AfterViewInit {
 
   AddEducation(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
     const dialogRef = this.dialog.open(AddEducationUIComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((formResult) => {
@@ -1238,7 +1255,7 @@ export class UserCVComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(AddTrainingsUiComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
@@ -1253,7 +1270,7 @@ export class UserCVComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(AddSeminarUiComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
@@ -1269,7 +1286,7 @@ export class UserCVComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(AddEmploymentUiComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
@@ -1283,7 +1300,7 @@ export class UserCVComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '500px';
+    dialogConfig.width = '600px';
 
     const dialogRef = this.dialog.open(AddCertificateUiComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
@@ -1369,114 +1386,15 @@ export class UserCVComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(PrintCVComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        //  this.previewAndFinish2();
+        this.previewAndFinish2();
       }
     });
   }
-
-  submitxx() {
-    this.loading = true;
-    const language = this.passDataServices.getLanguange();
-    const skills = this.passDataServices.getSkills();
-    const education = this.passDataServices.getDataEducation();
-    const training = this.passDataServices.getDataTraining();
-    const seminar = this.passDataServices.getDataSeminar();
-    const employment = this.passDataServices.getDataEmployment();
-    const certificate = this.passDataServices.getDataCertificate();
-
-    const lines = {
-      language,
-      skills,
-      education,
-      training,
-      seminar,
-      employment,
-      certificate,
-    };
-
-
-    const formatDate = (dateString: string): string => {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
-
-
-    if (lines) {
-      // Format the dates for each section within lines
-      if (lines.training) {
-        lines.training.forEach((training: { trainingdate: string }) => {
-          training.trainingdate = formatDate(training.trainingdate);
-        });
-      }
-
-      if (lines.seminar) {
-        lines.seminar.forEach((seminar: { seminardate: string }) => {
-          seminar.seminardate = formatDate(seminar.seminardate);
-        });
-      }
-
-      if (lines.employment) {
-        lines.employment.forEach((employment: { date_completed: string }) => {
-          employment.date_completed = formatDate(employment.date_completed);
-        });
-      }
-
-      if (lines.certificate) {
-        lines.certificate.forEach((cert: { date_completed: string }) => {
-          cert.date_completed = formatDate(cert.date_completed);
-        });
-      }
-    } else {
-      console.warn('No lines data found in thirdFormGroup.');
-    }
-
-    const mergeData = {
-      ...this.firstFormGroup.getRawValue(),
-      ...this.secondFormGroup.getRawValue(),
-      ...this.summaryFormGroup.getRawValue(),
-      lines
-    };
-    mergeData.home_country = this.countryControl1.value;
-    mergeData.current_location = this.countryControl2.value;
-    mergeData.date_birth = formatDate(mergeData.date_birth);
-
-    console.log("data:", mergeData)
-    if (mergeData == null) {
-      this.notificationService.toastrError("Error Data!");
-      return;
-    }
-    else {
-      this.cvService.postCV2(mergeData).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.notificationService.toastPopUp(res.message);
-            console.log(res.message)
-            this.router.navigate(['/home']);
-          } else {
-            this.notificationService.toastrError(res.message);
-          }
-          this.loading = false;
-        },
-        error: (error: any) => {
-          this.notificationService.toastrError(error?.error || 'An unexpected error occurred.');
-          this.loading = false;
-        },
-      });
-    }
-
-  }
-
   View() {
     this.loadSeminarData();
   }
-
   ViewEducationData() {
-
   }
-
   LoadEducationData(): void {
     this.loadEducationData();
   }

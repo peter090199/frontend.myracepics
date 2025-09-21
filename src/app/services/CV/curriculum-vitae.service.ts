@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { _url } from 'src/global-variables';
+import { C } from '@angular/cdk/keycodes';
 
 
 @Injectable({
@@ -156,6 +157,13 @@ export class CurriculumVitaeService {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveSkills`, skills, { headers });
   }
+
+  updateSkills(id: number, data: { skills: string }): Observable<any> {
+  const headers = this.createHeaders();
+  return this.http.put(`${_url}skills/${id}`, data,{headers});
+}
+
+
   getSkills(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getSkills`, { headers });
@@ -174,6 +182,12 @@ export class CurriculumVitaeService {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getSeminarByCode`, { headers });
   }
+  
+  updateSeminar(id: number, data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}updateSeminar/${id}`, data, { headers });
+  }
+
   deleteSeminar(id: number): Observable<any> {
     const headers = this.createHeaders();
     const url = `${_url}delete/${id}`;
@@ -184,6 +198,12 @@ export class CurriculumVitaeService {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveTrainings`, data, { headers });
   }
+    
+  updateTrainings(id: number, data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}updateTrainings/${id}`, data, { headers });
+  }
+
   getTrainings(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getTrainings`, { headers });
@@ -198,6 +218,10 @@ export class CurriculumVitaeService {
   saveCertificates(data: any): Observable<any> {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveCertificates`, data, { headers });
+  }
+  updateCertificates(id: number, data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}updateCertificates/${id}`, data, { headers });
   }
   deleteCertificate(id: number): Observable<any> {
     const headers = this.createHeaders();
@@ -221,6 +245,10 @@ export class CurriculumVitaeService {
   getEmployment(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getEmployment`, { headers });
+  } 
+  updateWorkExperience(id: number, data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}updateWorkExperience/${id}`, data, { headers });
   }
 
 }

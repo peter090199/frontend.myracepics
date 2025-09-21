@@ -1,14 +1,16 @@
 <h2 mat-dialog-title>Edit Skill</h2>
-<form>
+
+<form #skillForm="ngForm">
   <div mat-dialog-content>
     <mat-form-field appearance="standard" class="full-width">
       <mat-label>Skill</mat-label>
       <input
         matInput
+        placeholder="Skill"
         [(ngModel)]="data.skills"
         name="skill"
         required
-        [matAutocomplete]="auto"
+        [matAutocomplete]="auto" cdkFocusInitial 
         (input)="filterSkills($any($event.target)?.value)"
       />
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSkillSelected($event)">
@@ -18,8 +20,11 @@
       </mat-autocomplete>
     </mat-form-field>
   </div>
+
   <div mat-dialog-actions class="button-end">
     <button mat-raised-button color="warn" (click)="dialogRef.close()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="save()">Update</button>
+    <button mat-raised-button color="primary" (click)="updateSkill()" [disabled]="skillForm.invalid">
+      Update
+    </button>
   </div>
 </form>

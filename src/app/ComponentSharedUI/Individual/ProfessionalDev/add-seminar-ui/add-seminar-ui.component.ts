@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProfessionalService } from 'src/app/services/SharedServices/professional.service';
-import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
 
 @Component({
   selector: 'app-add-seminar-ui',
@@ -11,24 +10,27 @@ import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.ser
   styleUrls: ['./add-seminar-ui.component.css']
 })
 export class AddSeminarUiComponent implements OnInit {
-  seminarForm: FormGroup;
+  seminarForm!: FormGroup;
+  btnSave: string = 'Save';
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private dataService: ProfessionalService,
-    private alert: NotificationsService,
-    private profileService: ProfessionalService,
+    private cvServices: CurriculumVitaeService,
+    private notificationService: NotificationsService,
     public dialogRef: MatDialogRef<AddSeminarUiComponent>,
-    private cvServices: CurriculumVitaeService
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   ngOnInit(): void {
-   // this.loadSeminarData();
     this.seminarForm = this.fb.group({
-      seminar: this.fb.array([
-        this.createSeminar()
-      ])
+      seminar: this.fb.array([this.createSeminar()])
     });
+
+    if (this.data?.id) {
+      this.btnSave = 'Update';
+      this.patchFormData(this.data);
+    }
   }
 
   get seminarArray(): FormArray {
@@ -52,69 +54,12 @@ export class AddSeminarUiComponent implements OnInit {
     formArray.removeAt(index);
   }
 
-  resetForm(): void {
-    this.seminarForm.setControl('seminar', this.fb.array([
-      this.createSeminar()
-    ]));
-    this.seminarForm.markAsPristine();
-    this.seminarForm.markAsUntouched();
-  }
-
-// loadSeminarData(): void {
-//   this.cvServices.getSeminarByCode().subscribe({
-//     next: (res) => {
-//       if (res.success && Array.isArray(res.data)) {
-//           this.seminars = res.data;
-//         // const seminarFormGroups = res.data.map((seminar: any) =>
-//         //   this.fb.group({
-//         //     seminar_title: [seminar.seminar_title || '', Validators.required],
-//         //     seminar_provider: [seminar.seminar_provider || '', Validators.required],
-//         //     date_completed: [seminar.date_completed || '', Validators.required],
-//         //   })
-//         // );
-
-//         // Replace the current seminar form array with the new data
-//         this.seminarForm.get('seminar', this.fb.array(seminarFormGroups));
-//       } else {
-//         this.alert.toastrWarning(res.message || 'No seminar data found.');
-//       }
-//     },
-//     error: (err) => {
-//       console.error('Failed to load seminar data:', err);
-//       this.alert.toastrError('Failed to load seminar data.');
-//     }
-//   });
-// }
-
-
-
-  submitForm(): void {
-    if (this.seminarForm.invalid) {
-      this.seminarForm.markAllAsTouched();
-      return;
-    }
-    const seminars = this.seminarArray.value.map((item: any) => ({
-      seminar_title: item.seminar_title,
-      seminar_provider: item.seminar_provider,
-      date_completed: this.formatDate(item.date_completed), // ✅ format here
-    }));
-
-    const payload = { seminars };
-    this.cvServices.saveSeminar(payload).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.alert.toastrSuccess(res.message);
-          this.dialogRef.close(true);
-        } else {
-          this.alert.toastrWarning(res.message);
-        }
-       //  this.loadSeminarData();
-
-      },
-      error: (error) => {
-        console.error('❌ Failed to save seminar records:', error);
-        this.alert.toastrError('Something went wrong while saving seminars.');
-      }
+  patchFormData(data: any) {
+    const group = this.seminarArray.at(0) as FormGroup;
+    group.patchValue({
+      seminar_title: data.seminar_title,
+      seminar_provider: data.seminar_provider,
+      date_completed: data.date_completed ? new Date(data.date_completed) : ''
     });
   }
 
@@ -124,7 +69,108 @@ export class AddSeminarUiComponent implements OnInit {
     const month = ('0' + (d.getMonth() + 1)).slice(-2);
     const day = ('0' + d.getDate()).slice(-2);
     const year = d.getFullYear();
-    return `${year}-${month}-${day}`; // "YYYY-MM-DD"
+    return `${year}-${month}-${day}`; // YYYY-MM-DD
+  }
+
+  submitFormxx(): void {
+    if (this.seminarForm.invalid) {
+      this.seminarForm.markAllAsTouched();
+      return;
+    }
+
+    const seminars = this.seminarArray.value.map((item: any) => ({
+      seminar_title: item.seminar_title,
+      seminar_provider: item.seminar_provider,
+      date_completed: this.formatDate(item.date_completed),
+    }));
+
+    this.loading = true;
+
+    const payload = { seminars };
+
+    this.cvServices.saveSeminar(payload).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.success) {
+          this.notificationService.toastrSuccess(res.message);
+          this.dialogRef.close(true);
+        } else {
+          // ✅ Show warning popup if API returns a warning message
+          this.notificationService.toastrWarning(res.message);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        // Handle validation error from Laravel (422)
+        if (err.status === 422 && err.error?.message) {
+          this.notificationService.toastrWarning(err.error.message);
+        } else {
+          this.notificationService.toastrError('Failed to save seminar');
+        }
+      }
+    });
+  }
+
+
+  submitForm(): void {
+    if (this.seminarForm.invalid) {
+      this.seminarForm.markAllAsTouched();
+      return;
+    }
+
+    const seminars = this.seminarArray.value.map((item: any) => ({
+      seminar_title: item.seminar_title,
+      seminar_provider: item.seminar_provider,
+      date_completed: this.formatDate(item.date_completed),
+    }));
+
+    this.loading = true;
+
+    if (this.btnSave === 'Save') {
+      const payload = { seminars };
+      this.cvServices.saveSeminar(payload).subscribe({
+        next: (res) => {
+          this.loading = false;
+          if (res.success == true) 
+            {
+            this.notificationService.toastrSuccess(res.message);
+            this.dialogRef.close(true);
+          }
+          else{
+            this.notificationService.toastrWarning(res.message);
+          }
+        },
+        error: (err) => {
+         if (err.status === 422 && err.error?.message) {
+          this.notificationService.toastrWarning(err.error.message);
+        } else {
+          this.notificationService.toastrError('Failed to save seminar');
+        }
+        }
+      });
+
+    } 
+    else {
+      const seminar = seminars[0]; // only the first one
+      this.cvServices.updateSeminar(this.data.id, seminar).subscribe({
+        next: (res) => {
+          this.loading = false;
+          if (res.success) {
+            this.notificationService.toastrSuccess(res.message);
+            this.dialogRef.close(true);
+          } else {
+            this.notificationService.toastrWarning(res.message);
+          }
+        },
+        error: (err) => {
+          if (err.status === 422 && err.error?.message) {
+          this.notificationService.toastrWarning(err.error.message);
+        } else {
+          this.notificationService.toastrError('Failed to save seminar');
+        }
+        }
+      });
+    }
   }
 
 }

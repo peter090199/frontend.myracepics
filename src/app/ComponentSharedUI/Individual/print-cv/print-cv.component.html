@@ -1,143 +1,148 @@
-    <div class="button-end">
-    <button mat-raised-button color="warn" (click)="printData()">
-      <mat-icon>print</mat-icon> Print CV
-    </button>
-    <button mat-raised-button color="primary" (click)="proceed()">
-      Proceed..
-    </button>
-    <button mat-raised-button color="warn" [mat-dialog-close]="true">
-      Cancel
-    </button>
-  </div>
+<!-- <div class="button-end">
+  <button mat-raised-button color="warn" (click)="printData()">
+    <mat-icon>print</mat-icon> Print CV
+  </button>
+  <button mat-raised-button color="primary" (click)="proceed()">
+    Proceed..
+  </button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">
+    Cancel
+  </button>
+</div> -->
 
-  
-  <div id="print-content" class="print-content">
+<!-- Print Header -->
+<mat-toolbar color="primary" class="print-header">
+  <span>Curriculum Vitae</span>
+  <span class="spacer"></span>
+  <button mat-icon-button (click)="printData()">
+    <mat-icon>print</mat-icon>
+  </button>
+</mat-toolbar>
 
+<!-- Print Content -->
+<div id="print-content" class="print-content">
 
-    <header class="cv-header">
-      <div class="logo">
-        <img src="assets/images/nexsuz.png" alt="logo">
-      </div>
-    </header>
-
-    <div *ngIf="cvData?.length; else loadingOrError">
-      <div *ngFor="let cv of cvData">
-
-        <div class="header">
-          <div class="header-content">
-            <div class="data-item">
-              <div class="label">FIRST NAME:</div>
-              <div class="value">{{ cv.fname }}</div>
-            </div>
-            <div class="data-item">
-              <div class="label">FAMILY NAME:</div>
-              <div class="value">{{ cv.lname }}</div>
-            </div>
-            <div class="data-item">
-              <div class="label">PROFESSION:</div>
-              <div class="value">{{ cv.profession }}</div>
-            </div>
-            <div class="data-item">
-              <div class="label">DATE OF BIRTH:</div>
-              <div class="value">{{ cv.date_birth }}</div>
-            </div>
-            <div class="data-item">
-              <div class="label">CONTACT NUMBER:</div>
-              <div class="value">{{ cv.contact_no }}</div>
-            </div>
-            <div class="data-item">
-              <div class="label">EMAIL ADDRESS:</div>
-              <div class="value">{{ cv.email }}</div>
-            </div>
-            <div class="data-item">
-              <div class="label">CURRENT LOCATION:</div>
-              <div class="value">{{ cv.current_location }}</div>
-            </div>
-
-          </div>
-          <img [src]="cv.photo_pic" alt="CV Photo">
-        </div>
-
-        <!-- Education -->
-        <section class="cv-section" *ngIf="cv.lines.education?.length">
-          <h2>Education</h2>
-          <div *ngFor="let edu of cv.lines.education" class="cv-item">
-            <p>{{ edu.highest_education }}</p>
-            <p>{{ edu.school_name }}</p>
-            <p>{{ edu.start_month }} {{ edu.start_year }} - {{ edu.end_month }} {{ edu.end_year }}</p>
-          </div>
-        </section>
-
-        <!-- Languages -->
-        <section class="cv-section" *ngIf="cv.lines.language?.length">
-          <h2>Languages</h2>
-          <ul>
-            <li *ngFor="let lang of cv.lines.language">{{ lang.language }}</li>
-          </ul>
-        </section>
-
-        <!-- Trainings -->
-        <section class="cv-section" *ngIf="cv.lines.training?.length">
-          <h2>Trainings</h2>
-          <div *ngFor="let t of cv.lines.training" class="cv-item">
-            <p>Training Title: {{ t.training_title }}</p>
-            <p>Training Provider: {{ t.training_provider }}</p>
-            <p>Date Completed: {{ t.date_completed }}</p>
-          </div>
-        </section>
-
-        <!-- Seminars -->
-        <section class="cv-section" *ngIf="cv.lines.seminar?.length">
-          <h2>Seminars</h2>
-          <div *ngFor="let s of cv.lines.seminar" class="cv-item">
-            <p>Seminar Title: {{ s.seminar_title }}</p>
-            <p>Seminar Provider: {{ s.seminar_provider }}</p>
-            <p>Date Completed: {{ s.date_completed }}</p>
-          </div>
-        </section>
-
-        <!-- Skills -->
-        <section class="cv-section" *ngIf="cv.lines.skills?.length">
-          <h2>Skills</h2>
-          <ul>
-            <li *ngFor="let skill of cv.lines.skills">{{ skill.skills }}</li>
-          </ul>
-        </section>
-
-        <!-- Employment -->
-        <section class="cv-section" *ngIf="cv.lines.employment?.length">
-          <h2>Employment</h2>
-          <div *ngFor="let job of cv.lines.employment" class="cv-item">
-            <p>Company Name: {{ job.company_name }}</p>
-            <p>Position: {{ job.position }}</p>
-            <p>Description: {{ job.job_description }}</p>
-            <p>End Date: {{ job.date_completed }}</p>
-          </div>
-        </section>
-
-        <!-- Certificates -->
-        <section class="cv-section" *ngIf="cv.lines.certificate?.length">
-          <h2>Certificates</h2>
-          <div *ngFor="let cert of cv.lines.certificate" class="cv-item">
-            <p>Certificate Title: {{ cert.certificate_title }}</p>
-            <p>Provider: {{ cert.certificate_provider }}</p>
-            <p>Completion Date: {{ cert.date_completed }}</p>
-          </div>
-        </section>
-
-        <!-- Summary -->
-        <section class="cv-section" *ngIf="cv.summary">
-          <h2>Summary</h2>
-          <p>{{ cv.summary }}</p>
-        </section>
-
-      </div>
+  <header class="cv-header">
+    <div class="logo">
+      <img src="assets/images/nexsuz.png" alt="logo">
     </div>
+  </header>
 
-    <ng-template #loadingOrError>
-      <p *ngIf="!error">Loading CV data...</p>
-      <p *ngIf="error" class="error-message">{{ error }}</p>
-    </ng-template>
+  <div *ngIf="cvData?.length; else loadingOrError">
+    <div *ngFor="let cv of cvData">
+
+      <div class="header">
+        <div class="header-content">
+          <div class="data-item">
+            <div class="label">FIRST NAME:</div>
+            <div class="value">{{ cv.fname }}</div>
+          </div>
+          <div class="data-item">
+            <div class="label">FAMILY NAME:</div>
+            <div class="value">{{ cv.lname }}</div>
+          </div>
+          <div class="data-item">
+            <div class="label">PROFESSION:</div>
+            <div class="value">{{ cv.profession }}</div>
+          </div>
+          <div class="data-item">
+            <div class="label">DATE OF BIRTH:</div>
+            <div class="value">{{ cv.date_birth }}</div>
+          </div>
+          <div class="data-item">
+            <div class="label">CONTACT NUMBER:</div>
+            <div class="value">{{ cv.contact_no }}</div>
+          </div>
+          <div class="data-item">
+            <div class="label">EMAIL ADDRESS:</div>
+            <div class="value">{{ cv.email }}</div>
+          </div>
+          <div class="data-item">
+            <div class="label">CURRENT LOCATION:</div>
+            <div class="value">{{ cv.current_location }}</div>
+          </div>
+        </div>
+        <img [src]="cv.photo_pic" alt="CV Photo">
+      </div>
+
+      <!-- Education -->
+      <section class="cv-section" *ngIf="cv.lines.education?.length">
+        <h2>Education</h2>
+        <div *ngFor="let edu of cv.lines.education" class="cv-item">
+          <p>{{ edu.highest_education }}</p>
+          <p>{{ edu.school_name }}</p>
+          <p>{{ edu.start_month }} {{ edu.start_year }} - {{ edu.end_month }} {{ edu.end_year }}</p>
+        </div>
+      </section>
+
+      <!-- Languages -->
+      <section class="cv-section" *ngIf="cv.lines.language?.length">
+        <h2>Languages</h2>
+        <ul>
+          <li *ngFor="let lang of cv.lines.language">{{ lang.language }}</li>
+        </ul>
+      </section>
+
+      <!-- Trainings -->
+      <section class="cv-section" *ngIf="cv.lines.training?.length">
+        <h2>Trainings</h2>
+        <div *ngFor="let t of cv.lines.training" class="cv-item">
+          <p>Training Title: {{ t.training_title }}</p>
+          <p>Training Provider: {{ t.training_provider }}</p>
+          <p>Date Completed: {{ t.date_completed }}</p>
+        </div>
+      </section>
+
+      <!-- Seminars -->
+      <section class="cv-section" *ngIf="cv.lines.seminar?.length">
+        <h2>Seminars</h2>
+        <div *ngFor="let s of cv.lines.seminar" class="cv-item">
+          <p>Seminar Title: {{ s.seminar_title }}</p>
+          <p>Seminar Provider: {{ s.seminar_provider }}</p>
+          <p>Date Completed: {{ s.date_completed }}</p>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section class="cv-section" *ngIf="cv.lines.skills?.length">
+        <h2>Skills</h2>
+        <ul>
+          <li *ngFor="let skill of cv.lines.skills">{{ skill.skills }}</li>
+        </ul>
+      </section>
+
+      <!-- Employment -->
+      <section class="cv-section" *ngIf="cv.lines.employment?.length">
+        <h2>Employment</h2>
+        <div *ngFor="let job of cv.lines.employment" class="cv-item">
+          <p>Company Name: {{ job.company_name }}</p>
+          <p>Position: {{ job.position }}</p>
+          <p>Description: {{ job.job_description }}</p>
+          <p>End Date: {{ job.date_completed }}</p>
+        </div>
+      </section>
+
+      <!-- Certificates -->
+      <section class="cv-section" *ngIf="cv.lines.certificate?.length">
+        <h2>Certificates</h2>
+        <div *ngFor="let cert of cv.lines.certificate" class="cv-item">
+          <p>Certificate Title: {{ cert.certificate_title }}</p>
+          <p>Provider: {{ cert.certificate_provider }}</p>
+          <p>Completion Date: {{ cert.date_completed }}</p>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="cv-section" *ngIf="cv.summary">
+        <h2>Summary</h2>
+        <p>{{ cv.summary }}</p>
+      </section>
+
+    </div>
   </div>
 
-
+  <ng-template #loadingOrError>
+    <p *ngIf="!error">Loading CV data...</p>
+    <p *ngIf="error" class="error-message">{{ error }}</p>
+  </ng-template>
+</div>

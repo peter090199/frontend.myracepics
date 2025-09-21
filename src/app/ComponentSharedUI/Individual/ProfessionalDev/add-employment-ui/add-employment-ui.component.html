@@ -1,74 +1,53 @@
 <button mat-icon-button class="close-button" (click)="dialogRef.close()">
   <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
-
-
-<div class="button-end">
-  <button mat-button color="primary"  (click)="addEmployment()" class="button-end">
+<div class="button-end" *ngIf="btnSave === 'Save'">
+  <button mat-button color="primary" type="button" (click)="addEmployment()">
     <mat-icon>add_circle</mat-icon>
     Add More
-</button>
-
-
+  </button>
 </div>
-<h2 mat-dialog-title>Work Experience</h2>
+<h2 mat-dialog-title> {{btnSave}} Work Experience</h2>
 <mat-divider></mat-divider>
+<br>
 
-<form [formGroup]="employmentForm">
-    <div class="form-group-wrapper" formArrayName="employment">
-        <div *ngFor="let item of employmentArray.controls; let i = index" [formGroupName]="i" class="form-group" >
-            
-            <mat-form-field appearance="standard">
-                <mat-label>Company Name</mat-label>
-                <input
-                  matInput
-                  placeholder="Company_name"
-                  formControlName="company_name"
-                />
-              </mat-form-field>
+<form [formGroup]="employmentForm" (ngSubmit)="submitForm()">
+  <div class="form-group-wrapper" formArrayName="employment">
+    <div *ngFor="let item of employmentArray.controls; let i = index" [formGroupName]="i" class="form-group">
 
-              <mat-form-field appearance="standard">
-                <mat-label>Position</mat-label>
-                <input
-                  matInput
-                  placeholder="Position"
-                  formControlName="position"
-                />
-              </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Company Name</mat-label>
+        <input matInput placeholder="Company_name" formControlName="company_name" />
+      </mat-form-field>
 
-              <mat-form-field appearance="standard">
-                <mat-label>Job_description</mat-label>
-                <input
-                  matInput
-                  placeholder="Job_description"
-                  formControlName="job_description"
-                />
-              </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Position</mat-label>
+        <input matInput placeholder="Position" formControlName="position" />
+      </mat-form-field>
 
-              <mat-form-field appearance="standard" class="form-field">
-                <mat-label>Date Completed</mat-label>
-                <input
-                  matInput
-                  [matDatepicker]="picker"
-                  formControlName="date_completed"
-                  required
-                />
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-              
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="removeItemFromArray5('employment', i)"
-                *ngIf="employmentArray.length > 1"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Job Description</mat-label>
+        <textarea matInput placeholder="Enter job description" formControlName="job_description" rows="4"></textarea>
+      </mat-form-field>
 
-        </div>
-   </div>
-   <div class="button-end">
-    <button mat-raised-button color="primary" type="submit"  [disabled]="employmentForm.invalid" (click)="submitForm()">Add</button>
+
+      <mat-form-field appearance="standard" class="form-field">
+        <mat-label>Date Completed</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date_completed" required />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-icon-button color="warn" (click)="removeItemFromArray5('employment', i)"
+        *ngIf="employmentArray.length > 1">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button type="submit" mat-raised-button color="primary" [disabled]="employmentForm.invalid">
+      {{btnSave}}
+    </button>
   </div>
 </form>

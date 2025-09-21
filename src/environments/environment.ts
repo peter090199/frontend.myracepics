@@ -1,4 +1,4 @@
-import { C } from '@angular/cdk/keycodes';
+
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
@@ -17,7 +17,7 @@ export const echo = new Echo({
     enabledTransports: ['ws', 'wss'], // Allows WebSockets
     auth: {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
     },
     client: Pusher, // Ensure Laravel Echo uses the correct Pusher client

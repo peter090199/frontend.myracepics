@@ -110,6 +110,12 @@ app-footer {
 }
 
 
+.form-group-wrapper {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
 html,
 body,
 div {
@@ -128,6 +134,7 @@ div {
 .section {
   padding: 16px;
 }
+
 .mat-footer-cell {
   text-align: center;
   font-style: italic;
@@ -431,12 +438,13 @@ snack-bar-container.notification simple-snack-bar {
 
 .page-container {
   display: grid;
-  grid-template-columns: 1fr minmax(0, 600px) 300px; 
+  grid-template-columns: 1fr minmax(0, 600px) 300px;
   /* left spacer | main feed | right panel */
   gap: 20px;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto; /* centers everything in the page */
+  margin: 0 auto;
+  /* centers everything in the page */
 }
 
 .main-container {
@@ -452,7 +460,8 @@ snack-bar-container.notification simple-snack-bar {
 }
 
 .right-panel {
-  overflow-y: auto;  /* allows independent scrolling */
+  overflow-y: auto;
+  /* allows independent scrolling */
   max-height: 90vh;
 }
 
@@ -838,13 +847,17 @@ h2 {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin:10px;
+  margin: 10px;
 }
+
 /* Make the mat-form-field adapt */
 .search-div .mat-form-field {
-  min-width: 220px;            /* never too small */
-  max-width: 640px;            /* avoid getting too wide on very large screens */
-  width: clamp(220px, 40%, 420px); /* preferred responsive width */
+  min-width: 220px;
+  /* never too small */
+  max-width: 640px;
+  /* avoid getting too wide on very large screens */
+  width: clamp(220px, 40%, 420px);
+  /* preferred responsive width */
 }
 
 /* utility width class used in your HTML */
@@ -1885,14 +1898,18 @@ video {
 
 /* Actions column styling */
 .mat-column-actions {
-  text-align: right;       /* align content to right */
-  padding: 0px;          /* optional: small horizontal padding */
+  text-align: right;
+  /* align content to right */
+  padding: 0px;
+  /* optional: small horizontal padding */
 }
 
 /* Optional: remove extra margin from buttons */
 .mat-column-actions button {
-  margin: 0;               /* remove margin around buttons */
-  padding: 1px;            /* optional: small padding inside button */
+  margin: 0;
+  /* remove margin around buttons */
+  padding: 1px;
+  /* optional: small padding inside button */
 }
 
 
@@ -1900,22 +1917,26 @@ video {
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: rgba(0,0,0,0.08);
+  background: rgba(0, 0, 0, 0.08);
   border-radius: 6px;
 }
+
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
   background: linear-gradient(90deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.6) 50%,
-    rgba(255,255,255,0) 100%);
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(255, 255, 255, 0) 100%);
   animation: shimmer 1.4s infinite;
 }
+
 @keyframes shimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* --- Pieces --- */
@@ -1924,10 +1945,12 @@ video {
   height: 40px;
   border-radius: 50%;
 }
+
 .skeleton-line {
   height: 12px;
   margin-top: 2px;
 }
+
 .skeleton-icon {
   width: 24px;
   height: 24px;
@@ -1935,19 +1958,50 @@ video {
 }
 
 /* spacing helpers */
-.mt-6px { margin-top: 6px; }
-.w-full { width: 100%; }
-.w-56 { width: 14rem; }
-.w-40 { width: 10rem; }
-.w-32 { width: 8rem; }
-.w-28 { width: 7rem; }
-.w-24 { width: 6rem; }
-.h-5 { height: 20px; }
-.h-4 { height: 16px; }
+.mt-6px {
+  margin-top: 6px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.w-56 {
+  width: 14rem;
+}
+
+.w-40 {
+  width: 10rem;
+}
+
+.w-32 {
+  width: 8rem;
+}
+
+.w-28 {
+  width: 7rem;
+}
+
+.w-24 {
+  width: 6rem;
+}
+
+.h-5 {
+  height: 20px;
+}
+
+.h-4 {
+  height: 16px;
+}
 
 /* keep list layout tidy while loading */
-mat-list-item .job-details { flex: 1; }
-mat-list-item .job-details .skeleton-line { display: block; }
+mat-list-item .job-details {
+  flex: 1;
+}
+
+mat-list-item .job-details .skeleton-line {
+  display: block;
+}
 
 
 
@@ -1963,7 +2017,8 @@ mat-list-item .job-details .skeleton-line { display: block; }
 
 /* Hover state for the select trigger */
 ::ng-deep .mat-select-trigger:hover {
-  border-color: #3f51b5; /* Material Primary */
+  border-color: #3f51b5;
+  /* Material Primary */
   box-shadow: 0 0 6px rgba(63, 81, 181, 0.3);
   cursor: pointer;
 }
@@ -1976,7 +2031,8 @@ mat-list-item .job-details .skeleton-line { display: block; }
 
 /* Dropdown option hover */
 ::ng-deep .mat-option:hover {
-  background-color: rgba(63, 81, 181, 0.08); /* Light blue hover */
+  background-color: rgba(63, 81, 181, 0.08);
+  /* Light blue hover */
   color: #3f51b5;
 }
 
@@ -1988,7 +2044,8 @@ mat-list-item .job-details .skeleton-line { display: block; }
 
 /* =============== Table Row Hover Styles =============== */
 .mat-row:hover {
-  background-color: rgba(63, 81, 181, 0.05); /* Subtle hover on table rows */
+  background-color: rgba(63, 81, 181, 0.05);
+  /* Subtle hover on table rows */
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }

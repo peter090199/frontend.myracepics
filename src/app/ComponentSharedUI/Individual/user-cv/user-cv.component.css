@@ -4,16 +4,13 @@
 } */
 
 /* Base styles for all screens */
-mat-tab-group {
-  margin: 2px;
-}
+
 mat-card-header {
   display: flex;
   align-items: left;
   background-color: #f5f5f5;
   border-bottom: 1px solid #ddd;
 }
-
 
 mat-card-header mat-icon {
   font-size: 1.2rem;
@@ -22,14 +19,16 @@ mat-card-header mat-icon {
 }
 
 mat-card-content {
+  margin-top: 10px;
   padding: 16px;
-  font-family: Verdana,sans-serif;
+  font-family: Verdana, sans-serif;
   font-size: 1rem;
   line-height: 1.5;
 }
+
 mat-tab-group div {
-  padding: 2px;
-  font-family: Verdana, Geneva, Tahoma,sans-serif;
+  padding: 12px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   line-height: 1.6;
 }
 
@@ -91,11 +90,12 @@ mat-tab-group p {
   mat-tab-group p {
     font-size: 0.875rem;
   }
-  
-::ng-deep .mat-autocomplete-panel {
-  max-height: 300px; /* Adjust the height as needed */
-  overflow-y: auto;
-}
+
+  ::ng-deep .mat-autocomplete-panel {
+    max-height: 300px;
+    /* Adjust the height as needed */
+    overflow-y: auto;
+  }
 
 }
 
@@ -108,6 +108,7 @@ mat-form-field {
 .full-width {
   width: 100%;
 }
+
 .example-h2 {
   margin: 0 8px 16px;
 }
@@ -122,6 +123,7 @@ mat-form-field {
 .example-margin {
   margin: 8px;
 }
+
 .example-width {
   max-width: 180px;
   width: 100%;
@@ -132,13 +134,37 @@ mat-form-field {
   width: 100%;
 }
 
+.full-width-card {
+  width: 100%;
+  /* take up full container width */
+  background: #ffffff;
+  /* white background */
+  box-sizing: border-box;
+  /* include padding/border in width */
+  padding: 16px;
+  /* inner spacing */
+  margin: 8px 0;
+  /* space between cards */
+  border-radius: 8px;
+  /* smooth corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* subtle shadow */
+}
+
+/* Align action buttons to the end */
+.button-end {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+
 .mat-slider-vertical {
   height: 300px;
 }
 
-.mat-card + .mat-card {
-  margin-top: 8px;
-}
+
 
 .example-result-card h2 {
   margin: 0 8px;
@@ -176,6 +202,7 @@ mat-progress-bar {
   font-weight: bold;
 
 }
+
 .radio-group {
   display: flex;
   align-items: center;
@@ -195,7 +222,8 @@ mat-radio-button {
   align-items: center;
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin: auto;
+  max-height:95vh;
   /* display: flex;
   justify-content: center;
   align-items: center;
@@ -208,17 +236,20 @@ mat-radio-button {
   position: fixed; */
 
 }
+
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent background */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it appears on top */
+  z-index: 1000;
+  /* Ensure it appears on top */
 }
 
 /* Input styling */
@@ -250,11 +281,13 @@ mat-radio-button {
   border-radius: 50%;
   border: 2px solid #ccc;
 }
+
 .file-name {
   margin-top: 5px;
   color: #3f51b5;
   font-size: 14px;
 }
+
 .text-center {
   margin-top: 60px;
   margin: auto;
@@ -263,21 +296,38 @@ mat-radio-button {
   color: gray;
 }
 
-
-
 /* Responsive for smaller screens (mobile) */
 @media (max-width: 768px) {
   .profile-picture-preview {
-    max-width: 100px; /* Reduce size for mobile */
-    max-height: 100px; /* Reduce size for mobile */
+    width: 100%;        /* make it scale naturally */
+    max-width: 120px;   /* cap size on small screens */
+    height: auto;
+    max-height: 120px;
+    display: block;
+    margin: 0 auto;     /* center image */
+  }
+  .button-end {
+    flex-direction: column;   /* vertical stack */
+    align-items: stretch;     /* full width buttons */
+    margin: 0;
+    gap: 10px;
+  }
+  .full-width-card {
+    width: 100% !important;
+    margin: 8px 0;
+    padding: 12px; /* reduce padding on mobile */
+    border-radius: 6px;
   }
 }
+
 
 /* Responsive for larger screens (desktop) */
 @media (min-width: 1200px) {
   .profile-picture-preview {
-    max-width: 200px; /* Increase size for large screens */
-    max-height: 200px; /* Increase size for large screens */
+    max-width: 200px;
+    /* Increase size for large screens */
+    max-height: 200px;
+    /* Increase size for large screens */
   }
 }
 
@@ -316,7 +366,8 @@ mat-radio-button.mat-radio-checked {
 h2 {
   text-align: center;
   margin: 16px;
-  font-size: 24px; /* Scales for mobile and desktop */
+  font-size: 24px;
+  /* Scales for mobile and desktop */
 }
 
 mat-divider {
@@ -327,14 +378,16 @@ mat-divider {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap; /* Ensures wrapping on smaller screens */
+  flex-wrap: wrap;
+  /* Ensures wrapping on smaller screens */
 }
 
 .form-field {
   flex: 1;
   min-width: 120px;
 }
-button .button-field{
+
+button .button-field {
   width: 100px;
 }
 
@@ -420,6 +473,7 @@ textarea {
 .example-margin {
   margin: 8px;
 }
+
 .example-width {
   max-width: 180px;
   width: 100%;
@@ -434,7 +488,7 @@ textarea {
   height: 300px;
 }
 
-.mat-card + .mat-card {
+.mat-card+.mat-card {
   margin-top: 8px;
 }
 
@@ -461,9 +515,11 @@ textarea {
 .example-result-card .example-value-label {
   font-weight: 600;
 }
+
 /* General footer styling */
 .mat-footer {
-  background-color:none;/* Light grey background */
+  background-color: none;
+  /* Light grey background */
   padding: 10px;
   position: relative;
   bottom: 0;
@@ -479,7 +535,8 @@ textarea {
 
 }
 
-.footer-left, .footer-right {
+.footer-left,
+.footer-right {
   flex: 1;
 }
 
@@ -492,11 +549,13 @@ textarea {
 .footer-right {
   text-align: right;
 }
+
 .material-symbols-outlined {
   font-family: 'Verdana', sans-serif;
   font-weight: normal;
   font-style: normal;
-  font-size: 24px; /* Adjust size as needed */
+  font-size: 24px;
+  /* Adjust size as needed */
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -530,7 +589,8 @@ textarea {
     text-align: center;
   }
 
-  .footer-left, .footer-right {
+  .footer-left,
+  .footer-right {
     text-align: center;
     margin-bottom: 10px;
   }
@@ -545,42 +605,54 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  justify-content: flex-start; /* Center-align cards */
-  margin: 0px; /* Add spacing around the container */
+  justify-content: flex-start;
+  /* Center-align cards */
+  margin: 0px;
+  /* Add spacing around the container */
   width: 980px;
-  min-height: 250px; /* adjust as needed */
+  min-height: 250px;
+  /* adjust as needed */
   padding: 16px;
 }
 
 .mat-card-border {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Align items to the top-left */
-  background-color: #f5f5f5; /* Light gray background */
-  border-radius: 8px; /* Optional: rounded corners */
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+  justify-content: flex-start;
+  /* Align items to the top-left */
+  background-color: #f5f5f5;
+  /* Light gray background */
+  border-radius: 8px;
+  /* Optional: rounded corners */
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  /* Optional: subtle shadow */
   margin-top: 10px;
   width: 100%;
   margin-bottom: 10px;
-
 }
+
 /* Make the mat-tab-header sticky at the top of the page */
 mat-tab {
   position: fixed;
   top: 0;
-  z-index: 10; /* Ensure it's above the content */
-  background-color: white; /* Optional: set a background color */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: add shadow */
+  z-index: 10;
+  /* Ensure it's above the content */
+  background-color: white;
+  /* Optional: set a background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Optional: add shadow */
 }
 
 /* Optional: Adjust the content to ensure it has enough padding or margin below the tab header */
 mat-tab-body {
-  padding-top: 56px; /* Add margin to avoid content being hidden behind the sticky tab header */
+  padding-top: 56px;
+  /* Add margin to avoid content being hidden behind the sticky tab header */
 }
 
 
 .container-card:hover {
-  transform: scale(1.02); /* Subtle zoom effect on hover */
+  transform: scale(1.02);
+  /* Subtle zoom effect on hover */
 }
 
 mat-card-content h3 {
@@ -596,32 +668,210 @@ mat-card-content p {
 
 
 @media (min-width: 768px) {
+
   /* Tablet styles */
   .education-container {
-    justify-content: space-between; /* Space cards evenly */
+    justify-content: space-between;
+    /* Space cards evenly */
   }
 
   .container-card {
-    width: calc(50% - 16px); /* Two cards per row */
+    width: calc(50% - 16px);
+    /* Two cards per row */
   }
 }
 
 @media (min-width: 1024px) {
+
   /* Desktop styles */
   .education-container {
     gap: 24px;
   }
 
   .container-card {
-    width: calc(33.333% - 24px); /* Three cards per row */
+    width: calc(33.333% - 24px);
+    /* Three cards per row */
   }
 }
 
 
 
+/* ================== Mobile Styles (≤768px) ================== */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-field {
+    width: 100%;
+  }
+
+  .button-gap {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  div[formArrayName] {
+    gap: 10px;
+  }
+
+  div[formGroupName] {
+    flex-direction: column;
+  }
+
+  div[formGroupName] mat-form-field {
+    width: 100%;
+  }
+
+  mat-icon-button {
+    align-self: flex-start;
+  }
+
+  textarea {
+    width: 100%;
+  }
+
+  .stepper-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    width: 100%;
+    margin: 5px;
+    overflow-y: auto;
+      background-color: #fff;
+  }
+
+  mat-slide-toggle {
+    margin-left: auto;
+    margin-top: 40px;
+  }
+
+  mat-horizontal-stepper {
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 500px;
+  }
+
+  .form-container {
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+  }
+}
+
+
+/* Container for cards */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(580px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+
+.profile-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Center items by default */
+  background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748));
+  font-family: Verdana, sans-serif;
+  height: auto;
+  padding: 10px;
+}
+
+.slide-left {
+  display: inline-block;
+  animation: slideLeft 0.6s ease-out;
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+.profile-toolbar mat-icon {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile-title {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .profile-toolbar mat-icon {
+    font-size: 18px;
+    /* slightly smaller on mobile */
+    margin: 0px;
+  }
+
+  .profile-title {
+    font-size: 16px;
+    /* smaller text for mobile */
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .profile-toolbar {
+    padding: 0px;
+    /* reduce padding for small screens */
+  }
+
+}
+
+
+.spacer {
+  margin: auto;
+  /* balance layout for center text */
+}
 
 
 
+/* Card title */
+mat-card-title {
+  font-size: 14px;
+  font-weight: 590;
+  color: #333;
+
+}
+
+/* Subtitle */
+mat-card-subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Actions */
+mat-card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
 
 
 
@@ -643,7 +893,7 @@ mat-card-content p {
 
 
 /* Responsive Mobile Adjustments */
-  /* .@media (max-width: 768px) {
+/* .@media (max-width: 768px) {
 form-row {
     flex-direction: column;
     gap: 15px;

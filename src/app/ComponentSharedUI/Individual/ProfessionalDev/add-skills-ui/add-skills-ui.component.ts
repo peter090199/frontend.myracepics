@@ -64,6 +64,7 @@ export class AddSkillsUIComponent {
       next: (res) => {
         if (res.success == true) {
           this.skillsCtrl = res.data;
+          console.log(this.skillsCtrl)
         } else {
           this.alert.toastrWarning(res.message);
         }

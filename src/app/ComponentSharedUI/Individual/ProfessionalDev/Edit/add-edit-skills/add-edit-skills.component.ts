@@ -1,5 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 
 @Component({
@@ -35,14 +36,20 @@ export class AddEditSkillsComponent implements OnInit {
     "Full Stack Developer"
   ];
   filteredSkills: string[] = [];
+  skills: string[] = []; // final list of selected skills
 
   constructor(
     public dialogRef: MatDialogRef<AddEditSkillsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,private alert:NotificationsService
-  ) {}
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+    private alert: NotificationsService,
+    private cvServices: CurriculumVitaeService
+  ) {
+    if (!this.data) {
+      this.data = { skill: '' };
+    }
+  }
 
   ngOnInit(): void {
-    // Initialize the filteredSkills with allSkills
     this.filteredSkills = this.allSkills;
   }
 
@@ -52,16 +59,61 @@ export class AddEditSkillsComponent implements OnInit {
       skill.toLowerCase().includes(filterValue)
     );
   }
-  
+
   onSkillSelected(event: any): void {
     if (event.option && event.option.value) {
-      this.data.skills = event.option.value; // Update the selected skill
+      const selectedSkill = event.option.value;
+      if (!this.skills.includes(selectedSkill)) {
+        this.skills.push(selectedSkill); // add unique skill to list
+      }
+      this.data.skill = ''; // reset input field
     }
   }
-  
 
-  save(): void {
-    this.alert.toastrSuccess("Successfuly Updated.")
-    this.dialogRef.close(this.data); // Close the dialog and return the data
+  removeSkill(index: number): void {
+    this.skills.splice(index, 1);
   }
+
+  updateSkill(): void {
+    const payload = {
+      skills: this.data.skills   // make sure this.data has { id, skills }
+    };
+
+    //console.log('Payload sending to backend:',this.data.id," ", payload);
+
+    this.cvServices.updateSkills(this.data.id, payload).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.alert.toastrSuccess(res.message);
+          this.dialogRef.close(true);
+        } else {
+          this.alert.toastrError(res.message);
+        }
+      },
+      error: (err) => {
+        console.error('Error saving skills:', err);
+        this.alert.toastrError('Failed to save skills.');
+      }
+    });
+  }
+
+  // updateSkillsxx(): void {
+  //   console.log('Payload sending to backend:', this.data);
+  //   // return;
+  //   this.cvServices.updateSkills(this.data).subscribe({
+
+  //     next: (res) => {
+  //       if (res.success) {
+  //         this.alert.toastrSuccess(res.message);
+  //         this.dialogRef.close(true);
+  //       } else {
+  //         this.alert.toastrError(res.message);
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Error saving skills:', err);
+  //       this.alert.toastrError('Failed to save skills.');
+  //     }
+  //   });
+  // }
 }
