@@ -21,7 +21,7 @@
         </div>
       </div>
       <br>
-      <h1>{{ profiles.company}} <small style="color: rgb(24, 24, 24);">{{ profiles.current_location
+      <h1>{{ profiles.fullname}} <small style="color: rgb(24, 24, 24);">{{ profiles.current_location
           }}</small></h1>
       <p>761 followers · 369 following</p>
       <div class="button-gap">
@@ -96,7 +96,8 @@
     <div class="company-header">
       <img class="company-logo" [src]="profiles.logo || 'assets/default-logo.png'" alt="Company Logo">
       <div class="company-info">
-        <h2>{{ profiles.companyname }}</h2>
+        <h1>{{ profiles.fullname }} <small style="color: rgb(24, 24, 24);">{{ profiles.profession
+          }}</small></h1>
         <p>{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
         <a [href]="profiles.companywebsite" target="_blank" rel="noopener noreferrer">
           {{ profiles.companywebsite }}

@@ -262,7 +262,7 @@ export class PrintCVComponent implements OnInit {
     private toolBoxService: ToolBoxService,
     private router: Router,
     private dialogRef: MatDialogRef<PrintCVComponent>
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getCVData();
@@ -272,10 +272,13 @@ export class PrintCVComponent implements OnInit {
     this.cvService.getProfileCV().subscribe(
       (response) => {
         if (response?.success && Array.isArray(response.message)) {
-          this.cvData = response.message; // only one CV
+          this.cvData = response.message;
           this.code = this.cvData.code;
           localStorage.setItem('Headers', JSON.stringify(this.cvData));
           localStorage.setItem('Transaction', 'items');
+
+          // ✅ Auto print once CV is loaded
+          setTimeout(() => this.printData(), 500);
         } else {
           this.error = 'Invalid response format.';
           this.loadFromLocalStorage();
@@ -285,9 +288,13 @@ export class PrintCVComponent implements OnInit {
         this.error = 'Error fetching CV data.';
         console.error('Error fetching CV data:', error);
         this.loadFromLocalStorage();
+
+        // ✅ Auto print even if loaded from local storage
+        setTimeout(() => this.printData(), 500);
       }
     );
   }
+
 
   loadFromLocalStorage(): void {
     const savedData = localStorage.getItem('Headers');
@@ -321,22 +328,19 @@ export class PrintCVComponent implements OnInit {
           <title>Print CV</title>
           <style>
             @media print {
-              body { font-family: Arial, sans-serif; padding: 20px; }
+              body { font-family: verdana; padding: 10px; }
               .cv-header { text-align: center; margin-bottom: 20px; }
-              .cv-section h2 { 
-                font-size: 18px; 
-                font-weight: 600; 
-                border-bottom: 1px solid #ccc; 
-                margin-top: 16px; 
-                padding-bottom: 4px;
-              }
-              .header { display: flex; justify-content: space-between; align-items: flex-start; }
-              .header img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; }
+              .header { display: flex; justify-content: space-between; align-items: flex-start;margin-bottom:0px }
+              .header img { width: 150px;max-height: 420px; object-fit: cover; border-radius: 8px; }
               .header-content { flex: 1; margin-right: 20px; }
-              .data-item { display: flex; margin-bottom: 2px; font-size: 14px; }
+              .data-item { display: flex; margin-bottom: 12px; font-size: 14px; }
               .label { width: 180px; font-weight: bold; color: #666; }
               .value { flex: 1; }
-            }
+              .cv-section h2 { font-size: 20px;font-weight: 600;margin-top: 20px; margin-bottom: 10px;padding-bottom: 4px;border-bottom: 2px solid #ccc; color: #444;font-style: italic; }
+              .cv-section ul.cv-item li { margin-bottom: 4px;    font-family: Verdana;}
+              .cv-item {margin-bottom: 4px; line-height: 1.4; }
+              .cv-item p.cv-item li { font-family: Verdana; font-size: 14px;margin-bottom: 4px;}
+             }
           </style>
         </head>
         <body>
@@ -345,11 +349,13 @@ export class PrintCVComponent implements OnInit {
       </html>
     `);
     doc.close();
-
     iframe.contentWindow?.focus();
     iframe.contentWindow?.print();
 
-    setTimeout(() => document.body.removeChild(iframe), 1000);
+    // ✅ Remove iframe after printing
+    iframe.contentWindow?.addEventListener('afterprint', () => {
+      document.body.removeChild(iframe);
+    });
   }
 
   proceed(): void {

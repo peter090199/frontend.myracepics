@@ -126,11 +126,14 @@
         </button>
 
         <mat-menu #profileMenu="matMenu">
-          <button mat-menu-item [routerLink]="['/profile', user.code]">
+          <button mat-menu-item *ngIf="user.role_code === 'DEF-USERS'" [routerLink]="['/profile', user.code]">
             <mat-icon>person</mat-icon>
-            My Profile 
+            My Profile
           </button>
-
+          <button mat-menu-item *ngIf="user.role_code === 'DEF-CLIENT'" [routerLink]="['/company_profile', user.code]">
+            <mat-icon>person</mat-icon>
+            Client Profile
+          </button>
           <button mat-menu-item [routerLink]="['/settings']">
             <mat-icon>settings</mat-icon>
             Settings

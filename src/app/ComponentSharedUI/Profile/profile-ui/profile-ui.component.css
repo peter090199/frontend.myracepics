@@ -1,9 +1,11 @@
 .avatar-container {
   position: relative;
   display: inline-block;
-  width: 50px; /* Adjust as needed */
+  width: 50px;
+  /* Adjust as needed */
   height: 50px;
 }
+
 .post-item img {
   width: 100%;
   height: 400px;
@@ -11,15 +13,20 @@
   border-radius: 5px;
   margin-bottom: 10px;
 }
+
 .card {
   width: 100vw;
-  max-height: 100%; /* Allow the card to use the full height of its container */
+  max-height: 100%;
+  /* Allow the card to use the full height of its container */
   overflow: hidden;
 }
+
 .post-box-container {
   width: 100%;
-  max-width: 600px; /* Limit the width for large screens */
-  margin: 10px auto; /* Center align */
+  max-width: 600px;
+  /* Limit the width for large screens */
+  margin: 10px auto;
+  /* Center align */
   padding: 22px;
   box-sizing: border-box;
   background-color: #ffffff;
@@ -27,6 +34,28 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   height: auto;
+}
+
+/* Initial hidden state */
+.mat-card2 {
+  width: 100%;
+  max-width: 900px; /* Limit width on large screens */
+  margin:20px auto; /* Center the card */
+  padding: 22px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  
+  overflow: hidden; /* Avoid content overflow */
+  height: auto; /* Card height adapts to content */
+  min-height: 150px; /* Optional: ensure some minimum height */
+}
+
+/* Simple hover effect */
+.mat-card2:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 mat-card-footer {
@@ -40,21 +69,28 @@ mat-card-footer {
 
 mat-card-footer {
   display: flex;
-  justify-content: space-around; /* Even spacing like FB */
+  justify-content: space-around;
+  /* Even spacing like FB */
   align-items: center;
   padding: 8px 0;
-  border-top: 1px solid #ddd; /* Divider line like FB */
-  position: relative; /* Not fixed, so it auto-adjusts */
+  border-top: 1px solid #ddd;
+  /* Divider line like FB */
+  position: relative;
+  /* Not fixed, so it auto-adjusts */
   width: 100%;
-  margin-top: auto; /* Push to bottom after content */
+  margin-top: auto;
+  /* Push to bottom after content */
 }
 
 mat-card-footer button {
-  flex: 1; /* Equal button width */
+  flex: 1;
+  /* Equal button width */
   justify-content: center;
-  text-transform: none; /* Normal case text */
+  text-transform: none;
+  /* Normal case text */
   font-weight: 500;
-  color: #65676b; /* FB gray */
+  color: #65676b;
+  /* FB gray */
 }
 
 mat-card-footer button mat-icon {
@@ -83,9 +119,11 @@ mat-card-footer button mat-icon {
   flex-direction: column;
   margin-bottom: 20px;
 }
+
 .status-icon {
   position: absolute;
-  font-size: 20px; /* Adjust size as needed */
+  font-size: 20px;
+  /* Adjust size as needed */
   border-radius: 50%;
   background-color: white;
   padding: 2px;
@@ -93,11 +131,13 @@ mat-card-footer button mat-icon {
 }
 
 .online {
-  color: #4CAF50; /* Green for online */
+  color: #4CAF50;
+  /* Green for online */
 }
 
 .offline {
-  color: #bbb; /* Gray for offline */
+  color: #bbb;
+  /* Gray for offline */
 }
 
 .cover-photo {
@@ -108,12 +148,14 @@ mat-card-footer button mat-icon {
 }
 
 .cover-photo-img {
-  max-width:1220px;
+  max-width: 1220px;
   width: 1220px;
   height: 400px;
   max-height: 400px;
-  border-radius: 10px; /* Smooth corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  border-radius: 10px;
+  /* Smooth corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Subtle shadow */
 }
 
 .edit-cover-btn {
@@ -126,9 +168,11 @@ mat-card-footer button mat-icon {
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }
-h2{
+
+h2 {
   margin: 2px;
 }
+
 .edit-cover-btn:hover {
   background-color: rgba(0, 0, 0, 0.8);
   cursor: pointer;
@@ -147,7 +191,8 @@ h2{
   background-color: white;
   color: black;
   border: 1px solid #ccc;
-  padding: 5px 10px; /* Add padding */
+  padding: 5px 10px;
+  /* Add padding */
   border-radius: 4px;
   cursor: pointer;
 }
@@ -155,20 +200,25 @@ h2{
 .edit-profile-btn:hover {
   background-color: #f0f0f0;
 }
+
 .profile-info {
   display: flex;
-  align-items: flex-start; /* Align to the left */
-  justify-content: flex-start; /* Justify to the left */
+  align-items: flex-start;
+  /* Align to the left */
+  justify-content: flex-start;
+  /* Justify to the left */
   flex-direction: column;
   position: relative;
-  margin-top: -60px; /* Adjust to overlap cover photo */
+  margin-top: -60px;
+  /* Adjust to overlap cover photo */
   margin-left: 20px;
 }
 
 
 .profile-picture {
   position: relative;
-  width: 180px; /* Adjust for Facebook-like size */
+  width: 180px;
+  /* Adjust for Facebook-like size */
   height: 180px;
 }
 
@@ -178,7 +228,8 @@ h2{
   height: 100%;
   border-radius: 50%;
   overflow: hidden;
-  border: 5px solid #fff; /* White border like Facebook */
+  border: 5px solid #fff;
+  /* White border like Facebook */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -187,8 +238,10 @@ h2{
   position: absolute;
   bottom: 20px;
   right: 20px;
-  font-size: 20px; /* Slightly larger icon */
-  color: #4caf50; /* Green for online */
+  font-size: 20px;
+  /* Slightly larger icon */
+  color: #4caf50;
+  /* Green for online */
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
@@ -203,18 +256,25 @@ h2{
   text-align: center;
   margin-top: -90px;
   margin-left: 30px;
-  min-height: 150px; /* Minimum height */
-  max-height: 500px; /* Maximum height */
-  min-width: 200px; /* Minimum width */
-  max-width: 400px; /* Maximum width */
-  width: 100%; /* Ensure it takes up full width within its container */
-  box-sizing: border-box; /* Ensures padding and borders don't affect the width/height calculation */
+  min-height: 150px;
+  /* Minimum height */
+  max-height: 500px;
+  /* Maximum height */
+  min-width: 200px;
+  /* Minimum width */
+  max-width: 400px;
+  /* Maximum width */
+  width: 100%;
+  /* Ensure it takes up full width within its container */
+  box-sizing: border-box;
+  /* Ensures padding and borders don't affect the width/height calculation */
 }
 
 .profile-details h1 {
   font-size: 24px;
 
 }
+
 .profile-details p {
   font-size: 16px;
 }
@@ -228,26 +288,28 @@ h2{
   margin-top: 10px;
   background-color: #4267b2;
   color: white;
-  padding: 5px 15px; /* Add padding for better clickability */
+  padding: 5px 15px;
+  /* Add padding for better clickability */
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  
+
 }
 
 .profile-details .edit-btn:hover {
-  background-color: #365899; /* Darker shade on hover */
+  background-color: #365899;
+  /* Darker shade on hover */
 }
 
 
 /* General styling for the container */
 .container {
   height: 100vh;
-  overflow-y: auto; /* Use 'auto' instead of 'hidden' for usability */
-  margin:  auto; /* Centering the container if needed */
-  width: 100%; /* Ensures responsiveness */
-  scrollbar-width: thin; /* Makes scrollbar less intrusive */
-  scrollbar-color: transparent transparent; /* Hides scrollbar for Firefox */
+  overflow-y: auto;
+  margin: 0px auto;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 /* Hides scrollbar for Webkit browsers (Chrome, Safari) */
@@ -266,6 +328,7 @@ h2{
   margin: 0px;
   width: 100%;
   padding: 10px;
+  margin-bottom: 20px;
 }
 
 .card {
@@ -300,7 +363,8 @@ a {
   color: black;
 }
 
-button:hover, a:hover {
+button:hover,
+a:hover {
   opacity: 0.7;
 }
 
@@ -321,19 +385,27 @@ mat-list-item {
   font-size: 1rem;
   margin: 0;
 }
+
 /* Styling for all tab labels */
 mat-tab-label {
-  font-size: 1.2rem; /* Default font size for tab labels */
-  font-weight: bold; /* Make the text bold */
-  margin-top: 45px; /* Horizontal margin to space out the tabs */
-  padding: 10px 0; /* Vertical padding for better spacing */
-  color: #333; /* Default text color */
+  font-size: 1.2rem;
+  /* Default font size for tab labels */
+  font-weight: bold;
+  /* Make the text bold */
+  margin-top: 45px;
+  /* Horizontal margin to space out the tabs */
+  padding: 10px 0;
+  /* Vertical padding for better spacing */
+  color: #333;
+  /* Default text color */
 }
 
 /* Optional: Add hover effect for tab labels */
 mat-tab-label:hover {
-  color: #00796b; /* Change text color on hover */
-  cursor: pointer; /* Change cursor to pointer when hovering */
+  color: #00796b;
+  /* Change text color on hover */
+  cursor: pointer;
+  /* Change cursor to pointer when hovering */
 }
 
 /* Specific adjustments for individual tabs */
@@ -372,13 +444,15 @@ mat-tab[label="Work Experience"] .mat-tab-label {
 /* Responsive design for tablets and mobile */
 @media (max-width: 1024px) {
   mat-tab-label {
-    font-size: 1rem; /* Slightly smaller font size for tablets */
+    font-size: 1rem;
+    /* Slightly smaller font size for tablets */
   }
 }
 
 @media (max-width: 767px) {
   mat-tab-label {
-    font-size: 0.9rem; /* Even smaller font size for mobile */
+    font-size: 0.9rem;
+    /* Even smaller font size for mobile */
   }
 }
 
@@ -387,11 +461,12 @@ mat-tab[label="Work Experience"] .mat-tab-label {
   .tabs-container {
     padding: 0px;
   }
+
   .tabs-container {
     overflow: auto;
     margin: 0px;
   }
-  
+
   .tab-content {
     padding: 0px;
   }
@@ -411,17 +486,20 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     padding: 0px;
 
   }
+
   .tabs-container {
     overflow: auto;
     margin: 0px;
   }
+
   .profile-details {
     margin: 0px;
   }
-  
+
   .profile-details h1 {
     margin: 0px;
   }
+
   .profile-details p {
     margin: 0px;
   }
@@ -430,17 +508,19 @@ mat-tab[label="Work Experience"] .mat-tab-label {
     padding: 0px;
 
   }
-  .edit-btn{
+
+  .edit-btn {
     margin-right: 0px;
     width: 60%;
   }
+
   h2 {
     font-size: 1.15rem;
     padding: 5px;
-   
+
   }
 
- 
+
 
   mat-list-item {
     font-size: 0.9rem;
@@ -450,70 +530,76 @@ mat-tab[label="Work Experience"] .mat-tab-label {
   }
 
 
-  
+
 }
 
 
 
-@media (max-width: 768px) { /* Adjust breakpoint as needed */
+@media (max-width: 768px) {
+
+  /* Adjust breakpoint as needed */
   .tabs-container {
     width: 100%;
   }
 
-  
+
 }
 
-.tabs-container{
+.tabs-container {
   min-height: 600px;
   max-height: 90vh;
   overflow-y: auto;
 }
 
-.mat-tab{
-  display: block !important;  /* Override default flex behavior */
+.mat-tab {
+  display: block !important;
+  /* Override default flex behavior */
   width: 100%;
   background-color: #f5f5f5;
 }
 
-@media (max-width: 600px) {
-  mat-card {
-    display: flex;
-    flex-direction: column;
-  }
-  .tab-content {
-    padding: 40px;
-    flex-direction: column;
-
-  }
-  .tabs-container {
-    margin: 0px;
-  }
-  
- 
-  
-}
-  
-
 .see-more {
-  font-size: 14px;  /* Adjust the font size */
-  color: blue;       /* Set color */
-  cursor: pointer;   /* Show pointer on hover */
+  font-size: 14px;
+  /* Adjust the font size */
+  color: blue;
+  /* Set color */
+  cursor: pointer;
+  /* Show pointer on hover */
   text-decoration: none;
 }
 
 .see-more:hover {
-  color: darkblue;   /* Change color on hover */
+  color: darkblue;
+  /* Change color on hover */
   text-decoration: underline;
 }
+
 .skeleton {
   background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 6px;
 }
+
 @keyframes shimmer {
-  100% { background-position: -200% 0; }
+  100% {
+    background-position: -200% 0;
+  }
 }
-.skeleton-text { height: 14px; margin: 6px 0; }
-.skeleton-avatar { height: 60px; width: 60px; border-radius: 50%; }
-.skeleton-img { width: 100%; height: 180px; border-radius: 8px; }
+
+.skeleton-text {
+  height: 14px;
+  margin: 6px 0;
+}
+
+.skeleton-avatar {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+}
+
+.skeleton-img {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+}

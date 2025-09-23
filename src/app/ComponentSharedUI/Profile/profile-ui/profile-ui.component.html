@@ -1,8 +1,8 @@
 <div class="container">
 
+  <!-- Cover Photo -->
   <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
-    <img src="
-        https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
+    <img src="https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
       alt="Cover Photo" class="cover-photo-img" />
     <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button>
   </div>
@@ -11,7 +11,7 @@
     <div class="skeleton skeleton-img" style="height:200px;width:100%;border-radius:0;"></div>
   </ng-template>
 
-
+  <!-- Profile Details -->
   <div *ngIf="!isloading; else profileSkeleton" class="profile-details">
     <div class="profile-info" *ngIf="profiles">
       <div class="profile-picture">
@@ -21,34 +21,25 @@
         </div>
       </div>
       <br>
-      <h1>{{ profiles.fname }} {{ profiles.lname }} <small style="color: rgb(24, 24, 24);">{{ profiles.profession
-          }}</small></h1>
+      <h1>{{ profiles.fname }} {{ profiles.lname }}
+        <small style="color: rgb(24, 24, 24);">{{ profiles.profession }}</small>
+      </h1>
       <p>761 followers · 369 following</p>
       <div class="button-gap">
         <button *ngIf="profiles?.btnCurriculum === 1" mat-flat-button (click)="UserCV()" color="primary">New Curriculum
           Vitae</button>
-
         <button *ngIf="profiles?.btnCurriculum === 1" mat-raised-button (click)="uploadPic()">
           <mat-icon>cloud_upload</mat-icon> Upload
         </button>
 
         <button mat-flat-button [color]="
-    followStatus === 'accepted'
-      ? 'accent'
-      : followStatus === 'pending'
-      ? 'warn'
-      : 'primary'
-  " *ngIf="currentUserCode !== this.code" (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)">
-          <!-- Icons -->
-          <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">
-            person_add
-          </mat-icon>
-          <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">
-            hourglass_top
-          </mat-icon>
+          followStatus === 'accepted' ? 'accent' :
+          followStatus === 'pending' ? 'warn' : 'primary'" *ngIf="currentUserCode !== this.code"
+          (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)">
+          <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
+          <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
           <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>
 
-          <!-- Text -->
           <ng-container [ngSwitch]="followStatus">
             <span *ngSwitchCase="'none'">Connect</span>
             <span *ngSwitchCase="'pending'">Pending</span>
@@ -56,10 +47,7 @@
             <span *ngSwitchCase="'cancelled'">Connect</span>
           </ng-container>
         </button>
-
-
       </div>
-
     </div>
   </div>
 
@@ -71,10 +59,11 @@
     </div>
   </ng-template>
 
-
+  <!-- Tabs -->
   <mat-tab-group class="tabs-container">
-    <mat-tab label="Posts">
 
+    <!-- Posts Tab -->
+    <mat-tab label="Posts">
       <div *ngIf="isloading">
         <mat-card class="post-box-container">
           <mat-card-header>
@@ -87,30 +76,24 @@
         </mat-card>
       </div>
 
-      <!-- Post Display: Loop over posts -->
       <div *ngIf="!isloading">
         <div *ngFor="let post of posts">
           <mat-card class="post-box-container" *ngIf="profiles">
-            <!-- User Profile Section -->
             <mat-card-header>
               <div mat-card-avatar class="avatar">
                 <img [src]="profiles?.photo_pic || 'assets/default.png'" alt="Profile Picture">
               </div>
               <mat-card-title>{{ post.Fullname }}</mat-card-title>
               <p class="post-privacy">
-                <mat-icon>
-                  {{ post.status === 1 ? 'public' : 'lock' }}
-                </mat-icon>
+                <mat-icon>{{ post.status === 1 ? 'public' : 'lock' }}</mat-icon>
                 {{ post.status === 1 ? 'Public' : 'Private' }}
               </p>
-
               <mat-card-subtitle>
                 <span class="followers">{{ followers }} followers</span> •
                 <span class="active-hours">Active {{ activeHours }} ago</span>
               </mat-card-subtitle>
             </mat-card-header>
 
-            <!-- Post Content -->
             <div class="linkedin-post">
               <div *ngIf="post">
                 <p class="content-display">
@@ -121,43 +104,28 @@
                 </p>
               </div>
 
-              <!-- Image Gallery -->
-              <div class="fb-gallery" [ngClass]="{ 'single': (post.images?.length + post.videos?.length) === 1,
-                  'multi': (post.images?.length + post.videos?.length) > 1 }">
-
-                <!-- Loop over IMAGES -->
+              <div class="fb-gallery"
+                [ngClass]="{ 'single': (post.images?.length + post.videos?.length) === 1, 'multi': (post.images?.length + post.videos?.length) > 1 }">
                 <div class="gallery-item" *ngFor="let image of post.images?.slice(0, maxImages); let i = index"
                   [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || i === 0 }"
                   (click)="openModal(post.images)">
-
                   <img [src]="image.path_url" alt="Gallery image" />
-
-                  <!-- Show overlay if more than maxImages -->
                   <div class="overlay" *ngIf="i === (maxImages - 1) && post.images?.length > maxImages">
                     +{{ post.images.length - maxImages }}
                   </div>
                 </div>
 
-                <!-- Loop over VIDEOS -->
                 <div class="gallery-item" *ngFor="let video of post.videos?.slice(0, maxImages); let j = index"
                   [ngClass]="{ 'large': (post.images?.length + post.videos?.length) === 1 || j === 0 }"
                   (click)="openModal(post.videos)">
-
                   <video controls [src]="video.path_url"></video>
-
-                  <!-- Show overlay if more than maxImages -->
                   <div class="overlay" *ngIf="j === (maxImages - 1) && post.videos?.length > maxImages">
                     +{{ post.videos.length - maxImages }}
                   </div>
                 </div>
-
               </div>
-
-
-
             </div>
 
-            <!-- Interaction Buttons -->
             <mat-card-actions class="interaction-buttons">
               <div class="like-button-wrapper" (mouseenter)="showReactions = true">
                 <button mat-button color="primary">
@@ -181,291 +149,160 @@
               <button mat-button><mat-icon>repeat</mat-icon> Repost</button>
               <button mat-button><mat-icon>send</mat-icon> Send</button>
             </mat-card-actions>
+
           </mat-card>
-
-          <!-- Comments section per post -->
-          <div class="post-box-footer" *ngIf="post.showComments">
-            <div class="comment-input-bar">
-              <div class="form-row">
-                <mat-form-field class="form-field full-width" appearance="standard">
-                  <input matInput placeholder="Write a comment..." [(ngModel)]="post.newComment"
-                    (keyup.enter)="addComment(post)">
-                </mat-form-field>
-
-
-                <button mat-icon-button color="primary" (click)="addComment(post)"
-                  [disabled]="!post.newComment?.trim() || post.isSubmitting">
-                  <mat-icon>comment</mat-icon>
-                </button>
-
-                <mat-progress-bar *ngIf="post.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
-              </div>
-            </div>
-
-            <mat-card-footer *ngIf="post.comments">
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title> Comments ({{ post.comments.length }}) </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <div class="comments-container">
-                  <div *ngFor="let comment of post.comments" class="comment">
-                    <img [src]="comment.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar">
-                    <div class="comment-content">
-                      <strong>{{ comment.fullname }}</strong>
-                      <p>{{ comment.comment }}</p>
-                      <small>{{ comment.date_comment }}</small>
-
-                      <div class="comment-actions">
-                        <button mat-button (click)="likeComment(comment)">Like</button>
-                        <span>{{ comment.likes || 0 }} Like{{ comment.likes === 1 ? '' : 's' }}</span>
-                        <button mat-button (click)="comment.showReply = !comment.showReply">Reply</button>
-                      </div>
-
-                      <div *ngIf="comment.showReply" class="reply-input">
-                        <mat-form-field class="form-field" appearance="standard">
-                          <input matInput placeholder="Write a reply..." [(ngModel)]="comment.newReply"
-                            [disabled]="comment.isSubmitting" (keyup.enter)="addReply(comment)">
-                        </mat-form-field>
-
-                        <button mat-icon-button color="primary" (click)="addReply(comment)"
-                          [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
-                          <mat-icon>send</mat-icon>
-                        </button>
-
-                      </div>
-                      <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate"
-                        color="primary"></mat-progress-bar>
-
-                      <div class="replies" *ngIf="comment.replies?.length">
-                        <div *ngFor="let reply of comment.replies" class="comment reply">
-                          <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User"
-                            class="comment-avatar">
-                          <div class="comment-content">
-                            <strong>{{ reply.fullname }}</strong>
-                            <p>{{ reply.comment }}</p>
-                            <small>{{ reply.date_comment }}</small>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Load More Button -->
-                <div class="load-more" *ngIf="post.comments?.length > post.visibleComments">
-                  <button mat-button color="accent" (click)="loadMoreComments(post)">
-                    Load More Comments
-                  </button>
-                </div>
-
-              </mat-expansion-panel>
-            </mat-card-footer>
-          </div>
-
         </div>
       </div>
     </mat-tab>
 
+    <!-- Basic Information Tab -->
     <mat-tab label="Basic Information">
       <div class="tab-content">
-        <h2>Basic Information</h2>
-        <mat-divider></mat-divider>
-
         <mat-card-content>
-          <!-- Display static information -->
-          <mat-list>
-            <mat-list-item *ngIf="profiles">
-              <span>Full Name: {{ profiles.fname }} {{ profiles.lname }}</span>
-            </mat-list-item>
-            <!-- <mat-list-item>
-              <span>First Name: {{ users.fname }}</span>
-            </mat-list-item>
-            <mat-list-item>
-              <span>Last Name: {{ users.lname }}</span>
-            </mat-list-item> -->
-            <mat-list-item *ngIf="profiles">
-              <span>Contact No: {{ profiles.contact_no }}</span>
-            </mat-list-item>
-            <mat-list-item *ngIf="profiles">
-              <span>Email: {{ profiles.email }}</span>
-            </mat-list-item>
-
-            <!-- Display conditional fields -->
-            <mat-list-item *ngIf="profiles?.profession">
-              <span>Profession: {{ profiles.profession }}</span>
-            </mat-list-item>
-            <mat-list-item *ngIf="profiles?.date_birth">
-              <span>Date of Birth: {{ profiles.date_birth }}</span>
-            </mat-list-item>
-            <mat-list-item *ngIf="profiles?.companywebsite">
-              <span>Company Website: {{ profiles.companywebsite }}</span>
-            </mat-list-item>
-          </mat-list>
-          <!-- Language Section -->
-
-          <section class="cv-section" *ngIf="profiles?.lines?.language?.length">
-            <h2>Language</h2>
+          <mat-card class="mat-card2" *ngIf="profiles; else noProfile">
             <mat-list>
-              <mat-list-item *ngFor="let language of profiles.lines.language">
-                {{ language.language }}
-              </mat-list-item>
+              <mat-list-item *ngIf="profiles.fname || profiles.lname">Full Name: {{ profiles.fname }} {{ profiles.lname
+                }}</mat-list-item>
+              <mat-list-item *ngIf="profiles.contact_no">Contact No: {{ profiles.contact_no }}</mat-list-item>
+              <mat-list-item *ngIf="profiles.email">Email: {{ profiles.email }}</mat-list-item>
+              <mat-list-item *ngIf="profiles.profession">Profession: {{ profiles.profession }}</mat-list-item>
+              <mat-list-item *ngIf="profiles.date_birth">Date of Birth: {{ profiles.date_birth }}</mat-list-item>
+              <mat-list-item *ngIf="profiles.companywebsite">Company Website: {{ profiles.companywebsite
+                }}</mat-list-item>
             </mat-list>
-          </section>
-        </mat-card-content>
+          </mat-card>
 
+          <mat-card class="mat-card2" *ngIf="profiles?.lines?.language?.length; else noData">
+            <h2>Languages</h2>
+            <mat-list>
+              <mat-list-item *ngFor="let language of profiles.lines.language">{{ language.language }}</mat-list-item>
+            </mat-list>
+          </mat-card>
+
+          <ng-template #noProfile>
+            <mat-card class="mat-card2">
+              <p class="no-data">No profile data available.</p>
+            </mat-card>
+          </ng-template>
+
+          <ng-template #noData>
+            <p class="no-data">No data available.</p>
+          </ng-template>
+
+        </mat-card-content>
       </div>
     </mat-tab>
 
-
+    <!-- Education Tab -->
     <mat-tab label="Education">
       <div class="tab-content">
-        <h2>Education</h2>
-        <mat-divider></mat-divider>
-
         <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.education?.length > 0">
-            <mat-list *ngFor="let education of profiles.lines.education">
-
-              <mat-list-item>
-                <span>Highest Education: {{ education.highest_education }}</span>
-              </mat-list-item>
-
-              <mat-list-item>
-                <span>School Name: {{ education.school_name }}</span>
-              </mat-list-item>
-
-              <mat-list-item>
-                <span>Start Month: {{ education.start_month }}</span>
-              </mat-list-item>
-
-              <mat-list-item>
-                <span>Start Year: {{ education.start_year }}</span>
-              </mat-list-item>
-
-              <mat-list-item>
-                <span>End Month: {{ education.end_month }}</span>
-              </mat-list-item>
-
-              <mat-list-item>
-                <span>End Year: {{ education.end_year }}</span>
-              </mat-list-item>
-            </mat-list>
+          <section class="cv-section" *ngIf="profiles?.lines?.education?.length > 0; else noData">
+            <div *ngFor="let education of profiles.lines.education">
+              <mat-card class="mat-card2">
+                <mat-list>
+                  <mat-list-item>Highest Education: {{ education.highest_education }}</mat-list-item>
+                  <mat-list-item>School Name: {{ education.school_name }}</mat-list-item>
+                  <mat-list-item>Start Month: {{ education.start_month }}</mat-list-item>
+                  <mat-list-item>Start Year: {{ education.start_year }}</mat-list-item>
+                  <mat-list-item>End Month: {{ education.end_month }}</mat-list-item>
+                  <mat-list-item>End Year: {{ education.end_year }}</mat-list-item>
+                </mat-list>
+              </mat-card>
+            </div>
           </section>
+
+          <!-- No data template -->
+          <ng-template #noData>
+            <mat-card class="mat-card2">
+              <p class="no-data">No data available.</p>
+            </mat-card>
+          </ng-template>
+
         </mat-card-content>
-
-
       </div>
     </mat-tab>
 
+    <!-- Skills Tab -->
     <mat-tab label="Skills">
-      <h2>Skills</h2>
-      <mat-divider></mat-divider>
-
       <div class="tab-content">
-        <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.skills?.length > 0">
+        <mat-card-content class="mat-card2">
+          <section *ngIf="profiles?.lines?.skills?.length > 0; else noData">
             <mat-list>
-              <mat-list-item *ngFor="let skill of profiles.lines.skills">
-                {{ skill.skills }}
-              </mat-list-item>
+              <mat-list-item *ngFor="let skill of profiles.lines.skills">{{ skill.skills }}</mat-list-item>
             </mat-list>
           </section>
         </mat-card-content>
       </div>
-
     </mat-tab>
 
+    <!-- Seminar Tab -->
     <mat-tab label="Seminar">
-      <h2>Seminar</h2>
-      <mat-divider></mat-divider>
-
       <div class="tab-content">
-        <section class="cv-section" *ngIf="profiles?.lines?.seminar?.length > 0">
-          <mat-list *ngFor="let seminar of profiles.lines.seminar">
-            <mat-list-item>
-              <span>Seminar Title: {{ seminar.seminar_title }}</span>
-            </mat-list-item>
-
-            <mat-list-item>
-              <span>Seminar Provider: {{ seminar.seminar_provider }}</span>
-            </mat-list-item>
-
-            <mat-list-item>
-              <span>Date Completed: {{ seminar.date_completed }}</span>
-            </mat-list-item>
-
-          </mat-list>
-        </section>
-
+        <mat-card class="mat-card2">
+          <section class="cv-section" *ngIf="profiles?.lines?.seminar?.length > 0; else noData">
+            <mat-list *ngFor="let seminar of profiles.lines.seminar">
+              <mat-list-item>Seminar Title: {{ seminar.seminar_title }}</mat-list-item>
+              <mat-list-item>Seminar Provider: {{ seminar.seminar_provider }}</mat-list-item>
+              <mat-list-item>Date Completed: {{ seminar.date_completed }}</mat-list-item>
+            </mat-list>
+          </section>
+        </mat-card>
       </div>
     </mat-tab>
 
+    <!-- Trainings Tab -->
     <mat-tab label="Trainings">
-      <h2>Trainings</h2>
-      <mat-divider></mat-divider>
-
       <div class="tab-content">
         <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.training?.length > 0">
-            <mat-list *ngFor="let training of profiles.lines.training">
-              <mat-list-item>Training Title: {{ training.training_title }} </mat-list-item>
-              <mat-list-item>Training Provider: {{ training.training_provider }}</mat-list-item>
-              <mat-list-item>Date Completed: {{ training.date_completed }}</mat-list-item>
-            </mat-list>
-          </section>
+          <mat-card class="mat-card2">
+            <section class="cv-section" *ngIf="profiles?.lines?.training?.length > 0; else noData">
+              <mat-list *ngFor="let training of profiles.lines.training">
+                <mat-list-item>Training Title: {{ training.training_title }}</mat-list-item>
+                <mat-list-item>Training Provider: {{ training.training_provider }}</mat-list-item>
+                <mat-list-item>Date Completed: {{ training.date_completed }}</mat-list-item>
+              </mat-list>
+            </section>
+          </mat-card>
         </mat-card-content>
       </div>
     </mat-tab>
 
+    <!-- Certificates Tab -->
     <mat-tab label="Certificates">
-      <h2>Certificates</h2>
-      <mat-divider></mat-divider>
-
       <div class="tab-content">
         <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.certificate?.length > 0">
-            <mat-list *ngFor="let certificates of profiles.lines.certificate">
-              <mat-list-item>Training Title: {{ certificates.certificate_title }} </mat-list-item>
-              <mat-list-item>Training Provider: {{ certificates.certificate_provider }}</mat-list-item>
-              <mat-list-item>Date Completed: {{ certificates.date_completed }}</mat-list-item>
-            </mat-list>
-          </section>
+          <mat-card class="mat-card2">
+            <section class="cv-section" *ngIf="profiles?.lines?.certificate?.length > 0; else noData">
+              <mat-list *ngFor="let certificates of profiles.lines.certificate">
+                <mat-list-item>Certificate Title: {{ certificates.certificate_title }}</mat-list-item>
+                <mat-list-item>Certificate Provider: {{ certificates.certificate_provider }}</mat-list-item>
+                <mat-list-item>Date Completed: {{ certificates.date_completed }}</mat-list-item>
+              </mat-list>
+            </section>
+          </mat-card>
         </mat-card-content>
       </div>
     </mat-tab>
 
+    <!-- Work Experience Tab -->
     <mat-tab label="Work Experience">
-      <h2>Work Experience</h2>
-      <mat-divider></mat-divider>
-
       <div class="tab-content">
         <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.employment?.length > 0">
-            <mat-list *ngFor="let job of profiles.lines.employment">
-              <mat-list-item>Company Name: {{ job.company_name }} </mat-list-item>
-              <mat-list-item>Position: {{ job.position }}</mat-list-item>
-              <mat-list-item>Description: {{ job.job_description }}</mat-list-item>
-              <mat-list-item>Date Completed: {{ job.date_completed }}</mat-list-item>
-            </mat-list>
-          </section>
+          <mat-card class="mat-card2">
+            <section class="cv-section" *ngIf="profiles?.lines?.employment?.length > 0; else noData">
+              <mat-list *ngFor="let job of profiles.lines.employment">
+                <mat-list-item>Company Name: {{ job.company_name }}</mat-list-item>
+                <mat-list-item>Position: {{ job.position }}</mat-list-item>
+                <mat-list-item>Description: {{ job.job_description }}</mat-list-item>
+                <mat-list-item>Date Completed: {{ job.date_completed }}</mat-list-item>
+              </mat-list>
+            </section>
+          </mat-card>
         </mat-card-content>
       </div>
     </mat-tab>
+
   </mat-tab-group>
 
-
 </div>
-
-<!-- 
-  <div class="tab-footer">
-    
-    <div class="footer-links">
-      <a>&copy; 2025 Your Company. All rights reserved.</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Help</a>
-    </div>
-  </div>
-   -->

@@ -1,25 +1,17 @@
-<!-- <div class="button-end">
-  <button mat-raised-button color="warn" (click)="printData()">
-    <mat-icon>print</mat-icon> Print CV
-  </button>
-  <button mat-raised-button color="primary" (click)="proceed()">
-    Proceed..
-  </button>
-  <button mat-raised-button color="warn" [mat-dialog-close]="true">
-    Cancel
-  </button>
-</div> -->
-
 <!-- Print Header -->
 <mat-toolbar color="primary" class="print-header">
   <span>Curriculum Vitae</span>
+
   <span class="spacer"></span>
   <button mat-icon-button (click)="printData()">
     <mat-icon>print</mat-icon>
   </button>
-</mat-toolbar>
 
-<!-- Print Content -->
+  <!-- Close Button (Material Design) -->
+  <button mat-icon-button color="warn" aria-label="Close" mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
 <div id="print-content" class="print-content">
 
   <header class="cv-header">
@@ -78,7 +70,7 @@
       <!-- Languages -->
       <section class="cv-section" *ngIf="cv.lines.language?.length">
         <h2>Languages</h2>
-        <ul>
+        <ul class="=cv-item">
           <li *ngFor="let lang of cv.lines.language">{{ lang.language }}</li>
         </ul>
       </section>
@@ -106,7 +98,7 @@
       <!-- Skills -->
       <section class="cv-section" *ngIf="cv.lines.skills?.length">
         <h2>Skills</h2>
-        <ul>
+        <ul class="cv-item">
           <li *ngFor="let skill of cv.lines.skills">{{ skill.skills }}</li>
         </ul>
       </section>
@@ -135,7 +127,9 @@
       <!-- Summary -->
       <section class="cv-section" *ngIf="cv.summary">
         <h2>Summary</h2>
-        <p>{{ cv.summary }}</p>
+        <div class="cv-item">
+          <p>{{ cv.summary }}</p>
+        </div>
       </section>
 
     </div>

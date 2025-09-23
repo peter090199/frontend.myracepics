@@ -80,12 +80,15 @@
   align-items: flex-start; /* Top alignment */
   margin-right: auto;
 }
-
 .header img {
-  width: 150px;
-  height: 150px;
+  width: 150px;       /* keeps width fixed */
+  max-height: 420px;  /* optional: limit the max height */
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: cover;  /* ensures the image covers the box without distortion */
+}
+
+.white-icon {
+  color: white; /* makes the icon white */
 }
 
 .header-content {
@@ -151,11 +154,60 @@
     display: none !important;
   }
 
-  img {
-    max-width: 100%;
-    height: auto;
-  }
 
+.img {
+  width: 150px;       /* keeps width fixed */
+  max-height: 420px;  /* optional: limit the max height */
+  border-radius: 8px;
+  object-fit: cover;  /* ensures the image covers the box without distortion */
+}
 
 }
 
+/* === Logo Styling === */
+.cv-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-img {
+  max-width: 140px;   /* Adjust size */
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px; /* Optional: rounded edges */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Subtle shadow */
+}
+
+/* === Loading Bar Styling === */
+.loading-container {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.custom-progress-bar {
+  width: 70%;          /* Centered smaller bar */
+  height: 10px;        /* Thicker */
+  border-radius: 5px;
+  margin: 0 auto 10px auto;
+  overflow: hidden;
+}
+
+.loading-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+  font-style: italic;
+}
+
+/* Error styling */
+.error-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-top: 5px;
+}
