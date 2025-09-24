@@ -83,7 +83,24 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     { reaction: 'Clap', emoji: '👏' }
   ];
 
+ @ViewChild('middleColumn') middleColumn!: ElementRef;
+  showScrollTop = false;
 
+  // Detect scroll in middle column
+  onScroll(event: Event) {
+    const element = event.target as HTMLElement;
+    this.showScrollTop = element.scrollTop > 200; // show after 200px
+  }
+
+  // Smooth scroll to top
+  scrollToTop() {
+    if (this.middleColumn) {
+      this.middleColumn.nativeElement.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
 
   constructor(private router: Router, private profile: ProfileService, private photo: CurriculumVitaeService,
     private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
@@ -131,37 +148,6 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
   private scrollTimeout: any;
   private hideTimeout: any;
   private lastScrollTop2 = 0;
-
-  onScroll(event: Event): void {
-    const el = event.target as HTMLElement;
-    const currentScroll = el.scrollTop;
-
-    clearTimeout(this.scrollTimeout);
-    clearTimeout(this.hideTimeout);
-
-    // Show button if idle after 1 second
-    // this.scrollTimeout = setTimeout(() => {
-    //   if (el.scrollTop === this.lastScrollTop2) {
-    //     this.ngZone.run(() => this.isScrollIdle = true);
-    //   }
-    // }, 1000);
-
-    // Hide after 2 minutes of no scroll activity
-    this.hideTimeout = setTimeout(() => {
-      this.ngZone.run(() => this.isScrollIdle = false);
-    }, 120000); // 2 minutes
-
-    this.lastScrollTop2 = currentScroll;
-  }
-
-  scrollToTop(element: HTMLElement): void {
-    element.scrollTo({ top: 0, behavior: 'smooth' });
-    this.loadUserPost();
-
-    // Hide refresh button manually
-    clearTimeout(this.hideTimeout);
-    this.ngZone.run(() => this.isScrollIdle = false);
-  }
 
 
   closeModal(): void {

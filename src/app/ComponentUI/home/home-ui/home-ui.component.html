@@ -24,15 +24,11 @@
     </ng-container>
 
     <!-- Actual Profile Card -->
-    <mat-card class="post-box-container" *ngIf="!isLoading && !isMobile">
+    <mat-card class="left-column" *ngIf="!isLoading && !isMobile">
       <div class="profile-avatar">
         <div class="avatar-container">
-          <img
-            *ngIf="profile_pic; else defaultAvatar"
-            [src]="profile_pic.photo_pic"
-            alt="Profile Picture"
-            class="profile-pic"
-          />
+          <img *ngIf="profile_pic; else defaultAvatar" [src]="profile_pic.photo_pic" alt="Profile Picture"
+            class="profile-pic" />
           <ng-template #defaultAvatar>
             <img src="assets/default-avatar.png" alt="Default Avatar" class="profile-pic" />
           </ng-template>
@@ -87,13 +83,7 @@
     <!-- Post Input -->
     <div class="post-top-container" *ngIf="!isLoading">
       <div class="input-section">
-        <input
-          type="text"
-          placeholder="Create your post?"
-          class="post-input"
-          readonly
-          (click)="createPost()"
-        />
+        <input type="text" placeholder="Create your post?" class="post-input" readonly (click)="createPost()" />
       </div>
       <div class="actions-section">
         <button class="action-btn live-video"><span class="icon">🎥</span> Photo</button>
@@ -162,15 +152,9 @@
 
       <!-- Images -->
       <mat-card-content class="post-images" *ngIf="post.images.length > 0">
-        <div
-          class="fb-gallery"
-          [ngClass]="{ single: post.images.length === 1, multi: post.images.length > 1 }"
-        >
-          <div
-            class="gallery-item"
-            *ngFor="let image of post.images.slice(0, maxImages); let i = index"
-            (click)="openModal(post.images)"
-          >
+        <div class="fb-gallery" [ngClass]="{ single: post.images.length === 1, multi: post.images.length > 1 }">
+          <div class="gallery-item" *ngFor="let image of post.images.slice(0, maxImages); let i = index"
+            (click)="openModal(post.images)">
             <img [src]="image.path_url" alt="Gallery image" />
             <div class="overlay" *ngIf="i === maxImages - 1 && post.images.length > maxImages">
               +{{ post.images.length - maxImages }}
@@ -180,14 +164,9 @@
       </mat-card-content>
 
       <!-- Videos -->
-      <div
-        class="video-gallery"
-        *ngFor="let video of post.videos?.slice(0, maxImages); let j = index"
-        [ngClass]="{
+      <div class="video-gallery" *ngFor="let video of post.videos?.slice(0, maxImages); let j = index" [ngClass]="{
           large: (post.images?.length + post.videos?.length) === 1 || j === 0
-        }"
-        (click)="openModal(post.videos)"
-      >
+        }" (click)="openModal(post.videos)">
         <video controls [src]="video.path_url" width="100%" height="auto">
           Your browser does not support the video tag.
         </video>
@@ -200,16 +179,12 @@
       <!-- Reaction Summary -->
       <div class="reactions-summary" *ngIf="totalReactionsCount > 0">
         <ng-container *ngFor="let reaction of reactionList; let i = index">
-          <span
-            class="emoji"
-            [ngStyle]="{
+          <span class="emoji" [ngStyle]="{
               'z-index': 10 - i,
               'left.px': i * 12,
               position: 'relative',
               'font-size': '18px'
-            }"
-            [title]="reaction.reaction + ': ' + reaction.count"
-          >
+            }" [title]="reaction.reaction + ': ' + reaction.count">
             {{ reactionEmojiMap[reaction.reaction] || '❓' }}
           </span>
         </ng-container>
@@ -225,24 +200,17 @@
           <button mat-button (mouseenter)="togglePopup(post.posts_uuid, true)">
             <mat-icon>
               {{
-                (postReactions[post.posts_uuid] &&
-                  postReactions[post.posts_uuid].hoveredReaction?.emoji) || 'thumb_up'
+              (postReactions[post.posts_uuid] &&
+              postReactions[post.posts_uuid].hoveredReaction?.emoji) || 'thumb_up'
               }}
             </mat-icon>
             Like
           </button>
-          <div
-            class="reactions-popup"
-            *ngIf="postReactions[post.posts_uuid]?.showPopup"
-            (mouseleave)="togglePopup(post.posts_uuid, false)"
-          >
-            <div
-              class="reaction"
-              *ngFor="let react of reactions"
+          <div class="reactions-popup" *ngIf="postReactions[post.posts_uuid]?.showPopup"
+            (mouseleave)="togglePopup(post.posts_uuid, false)">
+            <div class="reaction" *ngFor="let react of reactions"
               (mouseenter)="setHoveredReaction(post.posts_uuid, react)"
-              (mouseleave)="setHoveredReaction(post.posts_uuid, null)"
-              (click)="selectReaction(post.posts_uuid, react)"
-            >
+              (mouseleave)="setHoveredReaction(post.posts_uuid, null)" (click)="selectReaction(post.posts_uuid, react)">
               <span>{{ react.emoji }}</span>
             </div>
           </div>
@@ -294,11 +262,7 @@
       <!-- User Suggestions -->
       <div *ngIf="!isLoading && users && users.length > 0; else noData">
         <div *ngFor="let user of users" class="client-item">
-          <img
-            [src]="user.photo_pic || 'assets/default-avatar.png'"
-            alt="{{ user.fullname }}"
-            class="client-photo"
-          />
+          <img [src]="user.photo_pic || 'assets/default-avatar.png'" alt="{{ user.fullname }}" class="client-photo" />
 
           <div class="client-info">
             <h3>
@@ -309,7 +273,7 @@
             <p>{{ user.profession }}</p>
           </div>
 
-          <div class="client-action">
+          <!-- <div class="client-action">
             <button
               mat-flat-button
               [color]="
@@ -334,7 +298,31 @@
                 <span *ngSwitchCase="'accepted'">Connected</span>
               </ng-container>
             </button>
+          </div> -->
+
+          <div class="client-action">
+            <button mat-flat-button [color]="
+      user.follow_status === 'accepted'
+        ? 'accent'
+        : user.follow_status === 'pending'
+        ? 'warn'
+        : 'primary'
+    " *ngIf="currentUserCode !== user.code"
+              (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)">
+              <!-- Icons -->
+              <mat-icon *ngIf="user.follow_status === 'not_following'">person_add</mat-icon>
+              <mat-icon *ngIf="user.follow_status === 'pending'" class="hourglass-animated">
+                hourglass_top
+              </mat-icon>
+              <mat-icon *ngIf="user.follow_status === 'accepted'">check_circle</mat-icon>
+
+              <!-- Labels -->
+              <span class="btn-label" *ngIf="user.follow_status === 'not_following'">Connect</span>
+              <span class="btn-label" *ngIf="user.follow_status === 'pending'">Pending</span>
+              <span class="btn-label" *ngIf="user.follow_status === 'accepted'">Connected</span>
+            </button>
           </div>
+
         </div>
       </div>
 
@@ -345,4 +333,8 @@
     </mat-card-content>
     <div class="spacer-top"></div>
   </div>
+
+   <button class="scroll-to-top" *ngIf="showScrollTop" (click)="scrollToTop()">
+    <mat-icon>arrow_upward</mat-icon>
+  </button>
 </div>

@@ -106,6 +106,16 @@ nav {
   height: auto;        /* let body handle the scroll */
   margin-top:10px;
 }
+.client-action .mat-flat-button {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between icon and label */
+}
+
+.client-action .btn-label {
+  font-weight: 500;
+  font-size: 14px;
+}
 
 
 /* Responsive: Tablet */
@@ -285,16 +295,33 @@ mat-card-footer button mat-icon { margin-right: 6px; }
 .right-column {
   position: fixed;
   top: 64px;
-  right: 0;
-  margin-top: 20px;
+  right: 20px;            
   width: 380px;
   height: 70vh;
   overflow-y: auto;
+  margin-top: 20px;
   padding: 1rem;
   background: #fff;
   border-left: 1px solid #dddfe2;
   box-shadow: -2px 0 5px rgba(0,0,0,0.08);
+  border-radius: 12px 0 0 12px;
 }
+
+.left-column {
+  position: fixed;
+  top: 64px;
+  left: 20px;            
+  width: 350px;
+  height: 50vh;
+  overflow-y: auto;
+  margin-top: 20px;
+  padding: 1rem;
+  background: #fff;
+  border-left: 1px solid #dddfe2;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.08);
+  border-radius: 12px;
+}
+
 
 /* User list */
 .client-item {
@@ -314,11 +341,17 @@ mat-card-footer button mat-icon { margin-right: 6px; }
   border-radius: 20px;
   text-transform: none;
   line-height: 1.4;
-  min-width: unset;
   display: flex;
   align-items: center;
   gap: 4px;
+  justify-content: center;
+  width: 120px;
 }
+
+.client-action .btn-label {
+  white-space: nowrap; /* prevent wrapping */
+}
+
 
 @media (max-width: 768px) {
   .left-sidebar, .right-column { display: none; }
@@ -447,3 +480,27 @@ mat-card-footer button mat-icon { margin-right: 6px; }
   flex-shrink: 0;
 }
 
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #1976d2; /* primary blue */
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(89, 48, 48, 0.2);
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 999;
+}
+
+.scroll-to-top:hover {
+  background: #1565c0;
+  transform: translateY(-2px);
+}
