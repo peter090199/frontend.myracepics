@@ -99,6 +99,8 @@ import { CompanyProfileUIComponent } from './ComponentSharedUI/Jobs/company-prof
 import { PostFeedsComponent } from './ComponentUI/Feeds/post-feeds/post-feeds.component';
 import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.component';
 import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
+import { SubmenuComponent } from './ComponentUI/system/submenu/submenu.component';
+import { SubmenuUIComponent } from './ComponentUI/system/submenu-ui/submenu-ui.component';
 
 
 // Loader function for TranslateHttpLoader
@@ -191,6 +193,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     PostFeedsComponent,
     ApplyJobComponent,
     ListAppliedJobsComponent,
+    SubmenuComponent,
+    SubmenuUIComponent,
     
   ],
   imports: [

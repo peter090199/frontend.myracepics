@@ -1,1 +1,74 @@
-<p>menu-ui works!</p>
+<button mat-icon-button class="close-button" (click)="onClose()">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+
+<h2 mat-dialog-title>{{ btnSave }} Menu</h2>
+<mat-divider></mat-divider>
+
+<form [formGroup]="menuForm" class="form-container" (ngSubmit)="onSubmit()">
+  <mat-card-content>
+    <!-- Menu Fields -->
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Desc Code</mat-label>
+      <input matInput placeholder="Enter Desc Code" formControlName="desc_code" required>
+      <mat-error *ngIf="menuForm.get('desc_code')?.hasError('required')">
+        Desc Code is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Enter Menu Description" formControlName="description" required>
+      <mat-error *ngIf="menuForm.get('description')?.hasError('required')">
+        Description is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Icon</mat-label>
+      <input matInput placeholder="Enter Icon" formControlName="icon" required>
+      <mat-error *ngIf="menuForm.get('icon')?.hasError('required')">
+        Icon is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Class</mat-label>
+      <input matInput placeholder="Enter Class" formControlName="class" required>
+      <mat-error *ngIf="menuForm.get('class')?.hasError('required')">
+        Class is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Routes</mat-label>
+      <input matInput placeholder="Enter Routes" formControlName="routes" required>
+      <mat-error *ngIf="menuForm.get('routes')?.hasError('required')">
+        Routes is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Sort Order</mat-label>
+      <input matInput type="number" placeholder="Enter Sort Order" formControlName="sort" required>
+      <mat-error *ngIf="menuForm.get('sort')?.hasError('required')">
+        Sort Order is required
+      </mat-error>
+      <mat-error *ngIf="menuForm.get('sort')?.hasError('pattern')">
+        Sort Order must be a number
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status" required>
+        <mat-option value="A">Active</mat-option>
+        <mat-option value="I">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card-content>
+
+  <mat-card-footer class="button-end">
+    <button type="submit" mat-raised-button color="primary">{{ btnSave }}</button>
+  </mat-card-footer>
+</form>

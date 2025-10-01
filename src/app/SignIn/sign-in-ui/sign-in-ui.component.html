@@ -1,4 +1,4 @@
-<!-- <div class="main-background">
+<div class="main-background">
 
     <div class="login-container">
 
@@ -82,8 +82,11 @@
 
     
 
-</div> -->
+</div>
 
+
+
+<!-- 
 
 <div class="main-background">
 
@@ -91,7 +94,6 @@
 
     <mat-card class="mat-card" style="border-radius: 10px; max-width: 450px; margin: auto;">
 
-      <!-- Left Logo Panel (optional for larger screens) -->
       <div class="left-panel">
         <div class="logo-container">
           <img src="assets/images/logo2.png" alt="logo" class="logo" />
@@ -99,16 +101,12 @@
         </div>
       </div>
 
-      <!-- Loading Progress Bar -->
       <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 
-      <!-- Title -->
       <h2 style="text-align: center; margin-bottom: 20px;">Sign in</h2>
 
-      <!-- Login Form -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-        <!-- Email -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Email</mat-label>
           <mat-icon matPrefix>email</mat-icon>
@@ -117,7 +115,6 @@
           <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Enter a valid email.</mat-error>
         </mat-form-field>
 
-        <!-- Password -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Password</mat-label>
           <mat-icon matPrefix>lock</mat-icon>
@@ -132,7 +129,6 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Sign In Button -->
         <button mat-raised-button color="primary" class="signin-button full-width"
           [disabled]="isLoading || !loginForm.valid" type="submit">
           Sign in
@@ -140,20 +136,17 @@
 
       </form>
 
-      <!-- OR Divider -->
       <div style="text-align:center; margin: 15px 0; font-size: 14px; color: #65676b;">
         ── OR ──
       </div>
 
-      <!-- Google Sign-In -->
       <div class="google-signin-container" style="text-align:center;">
-        <button mat-raised-button color="warn"
+        <button mat-raised-button color="warn" (click)="signInWithGoogle()"
           style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <mat-icon svgIcon="google"></mat-icon> Sign in with Google
+            <mat-icon svgIcon="google"></mat-icon> Sign in with Google
         </button>
       </div>
 
-      <!-- Links -->
       <div class="links" style="text-align:center; margin-top: 20px; font-size: 14px;">
         <a routerLink="/signUpUI">Don't have an account? Sign up</a><br>
         <a routerLink="/forgetpassword">Forgot Password?</a><br><br>
@@ -164,7 +157,6 @@
 
   </div>
 
-  <!-- Overlay Spinner while loading -->
   <div *ngIf="isLoading" class="overlay">
     <div class="spinner-container">
       <div class="spinner-wrapper">
@@ -174,4 +166,4 @@
     </div>
   </div>
 
-</div>
+</div> -->

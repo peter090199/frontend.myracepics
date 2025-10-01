@@ -7,6 +7,7 @@ import { SecurityRolesService } from 'src/app/services/Security/security-roles.s
 import { firstValueFrom } from 'rxjs';
 import { SecurityRolesUIComponent } from 'src/app/ComponentSharedUI/system/security-roles-ui/security-roles-ui.component';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { MenuService } from 'src/app/services/MasterAdmin/menu.service';
 
 @Component({
   selector: 'app-users',
@@ -17,79 +18,78 @@ export class UsersComponent implements OnInit {
   searchKey: string = '';
   placeHolder: string = 'Search';
   isLoading: boolean = false;
-  displayedColumns: string[] = ['id', 'rolecode', 'description', 'created_by', 'updated_by','actions'];
+  displayedColumns: string[] = ['id', 'rolecode', 'description', 'created_by', 'updated_by', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
-  roles: any[] = [];
-  pageSizeOptions   : number[] = [5, 10, 25, 100];
+  menus: any[] = [];
+  pageSizeOptions: number[] = [5, 10, 25, 100];
   success: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor( public dialog: MatDialog,
-    private notificationsService:NotificationsService
-  ) {}
+  constructor(public dialog: MatDialog, private menuServices: MenuService,
+    private notificationsService: NotificationsService
+  ) { }
 
   ngOnInit(): void {
-    this.getRoles();
+  //  this.getMenus();
   }
 
 
 
-  applyFilter(){
+  applyFilter() {
     this.dataSource.filter = this.searchKey.trim().toLocaleLowerCase();
   }
-  clearSearch(){
+  clearSearch() {
     this.searchKey = "";
     this.applyFilter();
   }
 
 
- onClickNew(): void {
-  // const dialogConfig = new MatDialogConfig();
-  // dialogConfig.disableClose = true;
-  // dialogConfig.autoFocus = true;
-  // dialogConfig.width = '400px';
+  onClickNew(): void {
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.disableClose = true;
+    // dialogConfig.autoFocus = true;
+    // dialogConfig.width = '400px';
 
-  // const dialogRef = this.dialog.open(RoleUIComponent, dialogConfig);
-  // dialogRef.afterClosed().subscribe(result => {
-  //   if (result) {
-  //     this.getRoles(); // Refresh the table after dialog closure
-  //   }
-  // });
-}
+    // const dialogRef = this.dialog.open(RoleUIComponent, dialogConfig);
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     this.getRoles(); // Refresh the table after dialog closure
+    //   }
+    // });
+  }
 
-async getRoles(): Promise<void> {
- 
-  // try {
-  //   this.isLoading = true;
-  //     const response = await firstValueFrom(this.role.getRoles());
-  //     if (response.success)
-  //     {
-  //       this.isLoading = true;
-  //       this.success = true;
-  //       this.roles = response.message;
-  //        // Assign the fetched data
-  //       this.dataSource.data = this.roles;
-  //     } 
-  //     else
-  //     {
-  //       console.error('Data roles unsuccessful');
-  //       this.success = false;
-  //       this.getRoles();
-  //     }
-  //     this.dataSource.paginator = this.paginator;
-  //     this.dataSource.sort = this.sort;
+  async getMenus(): Promise<void> {
 
-  // } catch (error) {
-  //   console.error('Error fetching roles data:', error);
-  // } finally {
-  //   this.isLoading = false;
-  // }
-}
+    try {
+      this.isLoading = true;
+      const res = await firstValueFrom(this.menuServices.getMenu());
+      if (res.success == true) {
+        this.isLoading = res.success;
+        this.success = res.success;
+        this.menus = res.data;
+        console.log(this.menus)
+        this.dataSource.data = this.menus;
+      }
+     if (res.success == false) {
+        this.isLoading = res.success;
+        this.success = res.success;
+        this.notificationsService.toastrError(res.message);
+      }
+    
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+
+    } catch (error) {
+      console.error('Error fetching roles data:', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
 
-delete(role:any):void{
+  delete(role: any): void {
 
     // this.notificationsService.popupWarning(role.rolecode," "+"Are you sure to delete this role?").then((result) => {
     //   if (result.value) 
@@ -117,22 +117,22 @@ delete(role:any):void{
 
 
     // });
-  
-}
+
+  }
 
 
-edit(element: any): void {
-  // const dialogRef = this.dialog.open(RoleUIComponent, {
-  //   width: '400px',
-  //   data: element || null
-  // });
+  edit(element: any): void {
+    // const dialogRef = this.dialog.open(RoleUIComponent, {
+    //   width: '400px',
+    //   data: element || null
+    // });
 
-  // dialogRef.afterClosed().subscribe(result => {
-  //   if (result) {
-  //     this.getRoles();
-  //   }
-  // });
-}
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     this.getRoles();
+    //   }
+    // });
+  }
 
 
 }

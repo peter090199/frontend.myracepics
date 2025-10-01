@@ -2062,5 +2062,25 @@ mat-list-item .job-details .skeleton-line {
   .page-container { grid-template-columns: 1fr; gap: 10px; }
 }
 
+.containe-fluid {
+  max-height: 500px; /* adjust to your layout */
+  overflow-y: auto;
+}
+.table-container {
+  max-height: 700px;   /* set your max height */
+  overflow-y: auto;    /* vertical scroll */
+  overflow-x: hidden;  /* optional: prevent horizontal scroll */
+}
 
+mat-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fff; /* match table background */
+}
 
+/* Selected row highlight */
+mat-row.selected {
+  background-color: #f5f5f5;
+  color: #000;               /* optional: change text color */
+}

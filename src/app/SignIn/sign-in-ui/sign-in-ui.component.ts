@@ -32,13 +32,13 @@
 //     this.initializeForm();
 //     this.fetchProfilePicture();
 //   }
-  
+
 //   fetchProfilePicture(): void {
 //     this.userServices.getDataCV().subscribe(
 //       (res) => {
 //         if (res && res.message) {
 //           this.user = res.message;
-  
+
 //           // Store the 'code' in local storage
 //           if (this.user.code) {
 //             localStorage.setItem('code', this.user.code);
@@ -52,7 +52,7 @@
 //       }
 //     );
 //   }
-  
+
 
 //   refreshHomePage() {
 //     this.router.navigate(['/homepage']).then(() => {
@@ -106,9 +106,9 @@
 //   onSubmit(): void {
 //     if (this.loginForm.valid) {
 //       this.isLoading = true;
-  
+
 //       const { email, password } = this.loginForm.value;
-  
+
 //       setTimeout(() => {
 //         this.sigInService.signin(email, password).subscribe({
 //           next: (res) => {
@@ -150,7 +150,7 @@
 //     }
 //   }
 
-  
+
 
 
 // }
@@ -158,9 +158,10 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { SigInService } from 'src/app/services/signIn/sig-in.service';
+import { GoogleAuthService } from 'src/app/services/google/google-auth.service';
 
 @Component({
   selector: 'app-sign-in-ui',
@@ -176,23 +177,34 @@ export class SignInUIComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private sigInService: SigInService,
-    private notificationService: NotificationsService
-  ) {}
+    private notificationService: NotificationsService,
+    private googleAuth: GoogleAuthService,
+    private route: ActivatedRoute,
+
+  ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const token = params['token'];
+      if (token) {
+        localStorage.setItem('auth_token', token);
+        this.router.navigate(['/dashboard']);
+      }
+    });
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required,
         Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/)
         // Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$')
-      //  Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/)
+        //  Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/)
       ]]
     });
   }
   togglePasswordVisibility() {
-        this.passwordVisible = !this.passwordVisible;
-      }
+    this.passwordVisible = !this.passwordVisible;
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) return;
@@ -206,17 +218,15 @@ export class SignInUIComponent implements OnInit {
         if (res.success == true) {
           sessionStorage.setItem('token', res.token);
           localStorage.setItem("chatmessages", "true");
-          if(res.message == 0)
-          {
-           // this.router.navigateByUrl("profile/705");
-           // this.router.navigate(['/profile', this]);
+          if (res.message == 0) {
+            // this.router.navigateByUrl("profile/705");
+            // this.router.navigate(['/profile', this]);
             this.router.navigateByUrl("/home")
             // this.router.navigateByUrl("/home").then(() => {
             //   window.location.reload(); // Only if absolutely necessary
             // });
           }
-           if(res.message == 1)
-          {
+          if (res.message == 1) {
             this.router.navigateByUrl("/user-cv")
           }
 
@@ -233,4 +243,9 @@ export class SignInUIComponent implements OnInit {
       }
     });
   }
+
+  signInWithGoogle() {
+    this.googleAuth.loginWithGoogle();
+  }
+
 }

@@ -6,7 +6,7 @@ import { _url } from 'src/global-variables';
 @Injectable({
   providedIn: 'root'
 })
-export class SecurityRolesService {
+export class MenuService {
 
   constructor(private http: HttpClient) { }
 
@@ -26,9 +26,15 @@ export class SecurityRolesService {
     return new HttpParams().set('desc_code', 'top_navigation');
   }
 
-  getSecurityRoles(): Observable<any> {
+  saveMenu(menu: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.get(`${_url}security`, { headers }).pipe(
+    return this.http.post<any>(`${_url}saveMenu`, menu, { headers });
+  }
+
+
+  getMenu(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getAllModules`, { headers }).pipe(
       catchError(error => this.handleAuthError(error))
     );
   }
@@ -75,9 +81,14 @@ export class SecurityRolesService {
     return this.http.delete(`${_url}${endpoint}`, { headers });
   }
 
+  deleteMenu(transNo: number): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.delete<any>(`${_url}deleteMenu/${transNo}`, { headers });
+  }
+
   submitData(formData: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post(`${_url}security`,formData, { headers });
+    return this.http.post(`${_url}security`, formData, { headers });
   }
 
 }
