@@ -1,3 +1,13 @@
+// import { Injectable } from '@angular/core';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class UserServicesService {
+
+//   constructor() { }
+// }
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
@@ -6,7 +16,7 @@ import { _url } from 'src/global-variables';
 @Injectable({
   providedIn: 'root'
 })
-export class SubMenuService {
+export class UserServicesService   {
   RequiredRefresh: any;
   constructor(private http: HttpClient) { }
   private getAuthToken(): string {
@@ -22,9 +32,9 @@ export class SubMenuService {
   private createParams(): HttpParams {
     return new HttpParams().set('desc_code', 'top_navigation');
   }
-  getSubMenu(transNo: any): Observable<any> {
+  getUsers(): Observable<any> {
     const headers = this.createHeaders(); 
-    return this.http.get<any>(`${_url}getSubmenuByTransNo/${transNo}`, { headers });
+    return this.http.get<any>(`${_url}getUsers`, { headers });
   }
 
   saveSubmenu(data: any): Observable<any> {
@@ -33,7 +43,7 @@ export class SubMenuService {
   }
   updateSubmenu(id: number, data: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.put(`${_url}updateSubmenuById/${id}`, data, { headers });
+    return this.http.put(`${_url}updatesubmenu/${id}`, data, { headers });
   }
   postData(role: any): Observable<any> {
     const headers = this.createHeaders();

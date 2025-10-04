@@ -1,18 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-
-// @Component({
-//   selector: 'app-submenu',
-//   templateUrl: './submenu.component.html',
-//   styleUrls: ['./submenu.component.css']
-// })
-// export class SubmenuComponent implements OnInit {
-
-//   constructor() { }
-
-//   ngOnInit(): void {
-//   }
-
-// }
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -22,6 +7,7 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { firstValueFrom } from 'rxjs';
 import { SubMenuService } from 'src/app/services/MasterAdmin/sub-menu.service';
 import { SubmenuUIComponent } from '../submenu-ui/submenu-ui.component';
+import { EditsubmenuUIComponent } from '../editsubmenu-ui/editsubmenu-ui.component';
 
 @Component({
   selector: 'app-submenu',
@@ -126,12 +112,15 @@ export class SubmenuComponent implements OnInit {
   }
 
 
-  edit(data: any): void {
-    const dialogRef = this.dialog.open(SubmenuUIComponent, {
+  edit(submenu: any): void {
+    const dialogRef = this.dialog.open(EditsubmenuUIComponent, {
       width: '600px',
-      data: data
+      data: submenu
     });
 
+      console.log(submenu)
+     // return;
+      
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.getSubMenus();

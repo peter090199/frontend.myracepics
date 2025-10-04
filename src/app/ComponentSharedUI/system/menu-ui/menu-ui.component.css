@@ -1,11 +1,11 @@
 .form-container{
     display: flex;
     flex-direction: column;
-    height: 510px; /* Make sure the card takes the full available height */
+    height: 500px; /* Make sure the card takes the full available height */
   }
   
   mat-card-content {
-    margin-top: 10px;
+    margin-top: 5px;
     flex-grow: 1; /* Allow content to grow to fill remaining space */
     overflow-y: auto; /* Enable scrolling for overflow content */
     max-height: 500px; /* Set a maximum height if needed */

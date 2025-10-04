@@ -1,138 +1,138 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { SecurityRolesService } from 'src/app/services/Security/security-roles.service';// assuming you have a service for API calls
+import { MatTableDataSource } from '@angular/material/table';
 import { firstValueFrom } from 'rxjs';
-import { SecurityRolesUIComponent } from 'src/app/ComponentSharedUI/system/security-roles-ui/security-roles-ui.component';
+import { UsersUIComponent } from 'src/app/ComponentSharedUI/system/users-ui/users-ui.component';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import { MenuService } from 'src/app/services/MasterAdmin/menu.service';
+import { UserServicesService } from 'src/app/services/MasterAdmin/user-services.service';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, AfterViewInit {
   searchKey: string = '';
   placeHolder: string = 'Search';
-  isLoading: boolean = false;
-  displayedColumns: string[] = ['id', 'rolecode', 'description', 'created_by', 'updated_by', 'actions'];
+
+  displayedColumns: string[] = [
+    'id', 'fullname', 'email', 'contactno', 'company', 'status', 'is_online', 'role_code', 'actions'
+  ];
   dataSource = new MatTableDataSource<any>([]);
-  menus: any[] = [];
-  pageSizeOptions: number[] = [5, 10, 25, 100];
-  success: boolean = false;
+  isLoading = false;
+
+  selectedRole: string = ''; // store selected role
+  roleCodes: string[] = ['DEF-MASTERADMIN', 'DEF-USERS', 'DEF-CLIENT'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(public dialog: MatDialog, private menuServices: MenuService,
-    private notificationsService: NotificationsService
+  constructor(
+    private userServices: UserServicesService,
+    private notificationsService: NotificationsService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-  //  this.getMenus();
+    this.getUsers();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
 
+    // Custom filter predicate for search + role
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const { search, role } = JSON.parse(filter);
 
-  applyFilter() {
-    this.dataSource.filter = this.searchKey.trim().toLocaleLowerCase();
+      const matchesSearch =
+        data.fullname.toLowerCase().includes(search) ||
+        data.email.toLowerCase().includes(search) ||
+        data.contactno.toLowerCase().includes(search);
+
+      const matchesRole = role ? data.role_code === role : true;
+
+      return matchesSearch && matchesRole;
+    };
   }
-  clearSearch() {
-    this.searchKey = "";
+
+  applyFilter(): void {
+    const filterValue = JSON.stringify({
+      search: this.searchKey.trim().toLowerCase(),
+      role: this.selectedRole
+    });
+
+    this.dataSource.filter = filterValue;
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  clearSearch(): void {
+    this.searchKey = '';
+    this.selectedRole = '';
     this.applyFilter();
   }
 
-
-  onClickNew(): void {
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.disableClose = true;
-    // dialogConfig.autoFocus = true;
-    // dialogConfig.width = '400px';
-
-    // const dialogRef = this.dialog.open(RoleUIComponent, dialogConfig);
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.getRoles(); // Refresh the table after dialog closure
-    //   }
-    // });
-  }
-
-  async getMenus(): Promise<void> {
-
+  /** Fetch users from API */
+  async getUsers(): Promise<void> {
     try {
       this.isLoading = true;
-      const res = await firstValueFrom(this.menuServices.getMenu());
-      if (res.success == true) {
-        this.isLoading = res.success;
-        this.success = res.success;
-        this.menus = res.data;
-        console.log(this.menus)
-        this.dataSource.data = this.menus;
-      }
-     if (res.success == false) {
-        this.isLoading = res.success;
-        this.success = res.success;
-        this.notificationsService.toastrError(res.message);
-      }
-    
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      const res = await firstValueFrom(this.userServices.getUsers());
 
+      if (res.success) {
+        this.dataSource.data = res.data;
+        this.applyFilter(); // Apply filter after data load
+      } else {
+        this.notificationsService.toastrError(res.message || 'Failed to fetch users');
+      }
     } catch (error) {
-      console.error('Error fetching roles data:', error);
+      console.error('Error fetching users:', error);
+      this.notificationsService.toastrError('Something went wrong while fetching users');
     } finally {
       this.isLoading = false;
     }
   }
 
+  /** Open dialog to create/edit user */
+  newSubmodule(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = {}; // pass any initial data if needed
 
-  delete(role: any): void {
+    const dialogRef = this.dialog.open(UsersUIComponent, dialogConfig);
 
-    // this.notificationsService.popupWarning(role.rolecode," "+"Are you sure to delete this role?").then((result) => {
-    //   if (result.value) 
-    //   {
-    //     this.role.deleteData(role.id).subscribe({
-    //         next:(res)=>{
-    //           if(res.success === true)
-    //             {
-    //               this.notificationsService.toastrSuccess(res.message);
-    //               this.isLoading = false;
-    //             }
-    //             else{
-    //               this.notificationsService.toastrError(res.message);
-    //               this.isLoading = false;
-    //             }
-    //             this.getRoles();
-    //         },
-    //         error:(error)=>{
-    //           this.notificationsService.toastrError(error.error);
-    //           this.isLoading = false;
-    //         }
-
-    //     });
-    //   }
-
-
-    // });
-
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getUsers(); // Refresh table after dialog closes
+      }
+    });
   }
 
+  /** Edit user */
+  editUser(user: any): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = { user }; // pass selected user to dialog
 
-  edit(element: any): void {
-    // const dialogRef = this.dialog.open(RoleUIComponent, {
-    //   width: '400px',
-    //   data: element || null
-    // });
+    const dialogRef = this.dialog.open(UsersUIComponent, dialogConfig);
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.getRoles();
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getUsers(); // Refresh table after edit
+      }
+    });
   }
 
-
+  /** Refresh table */
+  viewUsers(): void {
+    this.getUsers();
+  }
 }

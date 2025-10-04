@@ -81,8 +81,7 @@ export class SecurityRolesComponent implements OnInit {
 
   edit(element: any): void {
     const dialogRef = this.dialog.open(SecurityRolesUIComponent, {
-      width: '400px',
-      maxHeight: '90vh',
+      width: '600px',
       data: element
     });
 

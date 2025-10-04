@@ -2,20 +2,8 @@
   <!-- Search & Refresh -->
   <div class="search-div">
     <mat-form-field appearance="standard" floatLabel="never">
-      <input
-        matInput
-        [(ngModel)]="searchKey"
-        [placeholder]="placeHolder"
-        (keyup)="applyFilter()"
-        autocomplete="off"
-      />
-      <button
-        mat-icon-button
-        matSuffix
-        aria-label="Clear"
-        *ngIf="searchKey"
-        (click)="clearSearch()"
-      >
+      <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()" autocomplete="off" />
+      <button mat-icon-button matSuffix aria-label="Clear" *ngIf="searchKey" (click)="clearSearch()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
@@ -62,7 +50,7 @@
       <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <button mat-icon-button color="primary" (click)="edit(element)">
-          <mat-icon>edit</mat-icon>
+          <mat-icon>security</mat-icon>
         </button>
       </mat-cell>
     </ng-container>
@@ -88,11 +76,6 @@
   </mat-progress-bar>
 
   <!-- Paginator -->
-  <mat-paginator
-    class="mat-paginator-sticky"
-    [pageSize]="10"
-    [pageSizeOptions]="pageSizeOptions"
-    showFirstLastButtons
-  >
+  <mat-paginator class="mat-paginator-sticky" [pageSize]="10" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons>
   </mat-paginator>
 </section>

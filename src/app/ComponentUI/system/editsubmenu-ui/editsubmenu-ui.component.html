@@ -1,0 +1,62 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+
+<h2 mat-dialog-title>{{btnSave}} Submenu for TransNo: {{ transNo }}</h2>
+<mat-divider></mat-divider>
+<mat-card-content>
+
+  <form [formGroup]="submenuForm" (ngSubmit)="saveSubmenus()">
+
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="form-field">
+        <mat-label>Submenu Description</mat-label>
+        <input matInput formControlName="description" placeholder="Description" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Route</mat-label>
+        <input matInput formControlName="routes" placeholder="Route" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Class</mat-label>
+        <input matInput formControlName="class" placeholder="Class" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Sort Order</mat-label>
+        <input matInput type="number" formControlName="sort" placeholder="Sort Order" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="A">Active</mat-option>
+          <mat-option value="I">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="full-width">
+        <mat-label>Icon</mat-label>
+        <input matInput formControlName="icon" placeholder="Icon" />
+      </mat-form-field>
+    </div>
+
+    <div class="button-end">
+      <button mat-raised-button color="accent" type="submit">
+        {{btnSave}}
+      </button>
+    </div>
+  </form>
+</mat-card-content>

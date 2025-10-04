@@ -33,6 +33,7 @@ export class SubmenuUIComponent implements OnInit {
     private fb: FormBuilder,
     private submenuService: SubMenuService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public submenu: any,
     private alert: NotificationsService,
     public dialogRef: MatDialogRef<SubmenuUIComponent>,
   ) {
@@ -40,16 +41,6 @@ export class SubmenuUIComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-      if (this.data) {
-        this.btnSave = "Update";
-        //this.roleForm.controls['empID'].disable();
-        //  this.GetItemFormData();
-
-    }
-
-
-    // Initialize the form with transNo
     this.submenuForm = this.fb.group({
       transNo: [this.transNo, Validators.required], // Ensure transNo is part of the form
       lines: this.fb.array([this.createSubmenu()]) // Initialize with one submenu entry

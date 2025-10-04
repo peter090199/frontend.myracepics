@@ -4,13 +4,25 @@
 
 <h2 mat-dialog-title>{{ btnSave }} Menu</h2>
 <mat-divider></mat-divider>
+<mat-card-content>
+  <form [formGroup]="menuForm" class="form-container">
 
-<form [formGroup]="menuForm" class="form-container" (ngSubmit)="onSubmit()">
-  <mat-card-content>
     <!-- Menu Fields -->
-    <mat-form-field appearance="standard" class="full-width">
+    <!-- <mat-form-field appearance="standard" class="full-width">
       <mat-label>Desc Code</mat-label>
       <input matInput placeholder="Enter Desc Code" formControlName="desc_code" required>
+      <mat-error *ngIf="menuForm.get('desc_code')?.hasError('required')">
+        Desc Code is required
+      </mat-error>
+    </mat-form-field> -->
+
+    <mat-form-field appearance="standard" class="full-width">
+      <mat-label>Desc Code</mat-label>
+      <mat-select formControlName="desc_code" required>
+        <mat-option *ngFor="let option of descCodeOptions" [value]="option.value">
+          {{ option.viewValue }}
+        </mat-option>
+      </mat-select>
       <mat-error *ngIf="menuForm.get('desc_code')?.hasError('required')">
         Desc Code is required
       </mat-error>
@@ -66,9 +78,13 @@
         <mat-option value="I">Inactive</mat-option>
       </mat-select>
     </mat-form-field>
-  </mat-card-content>
 
-  <mat-card-footer class="button-end">
-    <button type="submit" mat-raised-button color="primary">{{ btnSave }}</button>
-  </mat-card-footer>
-</form>
+
+  </form>
+</mat-card-content>
+<div class="button-end">
+  <button mat-raised-button color="primary" (click)="onSubmit()">{{ btnSave }}</button>
+</div>
+<!-- <mat-card-footer class="button-end">
+  <button type="submit" mat-raised-button color="primary" (click)="onSubmit()">{{ btnSave }}</button>
+</mat-card-footer> -->

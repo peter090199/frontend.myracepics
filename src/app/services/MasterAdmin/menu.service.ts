@@ -30,7 +30,10 @@ export class MenuService {
     const headers = this.createHeaders();
     return this.http.post<any>(`${_url}saveMenu`, menu, { headers });
   }
-
+  updatemenu(id:number, data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put(`${_url}updateMenuById/${id}`, data, { headers });
+  }
 
   getMenu(): Observable<any> {
     const headers = this.createHeaders();

@@ -101,6 +101,8 @@ import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.
 import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
 import { SubmenuComponent } from './ComponentUI/system/submenu/submenu.component';
 import { SubmenuUIComponent } from './ComponentUI/system/submenu-ui/submenu-ui.component';
+import { EditsubmenuUIComponent } from './ComponentUI/system/editsubmenu-ui/editsubmenu-ui.component';
+import { UsersUIComponent } from './ComponentSharedUI/system/users-ui/users-ui.component';
 
 
 // Loader function for TranslateHttpLoader
@@ -195,6 +197,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ListAppliedJobsComponent,
     SubmenuComponent,
     SubmenuUIComponent,
+    EditsubmenuUIComponent,
+    UsersUIComponent,
     
   ],
   imports: [
