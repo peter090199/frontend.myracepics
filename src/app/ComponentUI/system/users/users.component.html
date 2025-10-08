@@ -13,7 +13,7 @@
       <mat-icon>add_circle</mat-icon> View
     </button>
     
-    <mat-form-field appearance="standard" class="w-20">
+    <mat-form-field class="w-20" floatLabel="never" appearance="standard">
       <mat-label>Filter Role</mat-label>
       <mat-select [(value)]="selectedRole" (selectionChange)="applyFilter()">
         <mat-option value="">All Roles</mat-option>

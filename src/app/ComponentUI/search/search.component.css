@@ -1,6 +1,8 @@
 .search-wrapper {
   max-width: 500px;
   margin: auto;
+  width: 450px;
+  margin-left: 10px;
 }
 .fullname-style {
   color: black;

@@ -94,7 +94,7 @@
 
     <!-- Skeleton Posts -->
     <ng-container *ngIf="isLoading">
-      <mat-card class="post-box-container" *ngFor="let item of skeletonPosts">
+      <mat-card *ngFor="let item of skeletonPosts">
         <mat-card-header>
           <div class="skeleton-avatar"></div>
           <div class="skeleton-line short"></div>
@@ -151,7 +151,7 @@
       </mat-card-content>
 
       <!-- Images -->
-      <mat-card-content class="post-images" *ngIf="post.images.length > 0">
+      <div class="post-images" *ngIf="post.images.length > 0">
         <div class="fb-gallery" [ngClass]="{ single: post.images.length === 1, multi: post.images.length > 1 }">
           <div class="gallery-item" *ngFor="let image of post.images.slice(0, maxImages); let i = index"
             (click)="openModal(post.images)">
@@ -161,7 +161,7 @@
             </div>
           </div>
         </div>
-      </mat-card-content>
+      </div>
 
       <!-- Videos -->
       <div class="video-gallery" *ngFor="let video of post.videos?.slice(0, maxImages); let j = index" [ngClass]="{
@@ -176,50 +176,69 @@
         </div>
       </div>
 
-      <!-- Reaction Summary -->
-      <div class="reactions-summary" *ngIf="totalReactionsCount > 0">
-        <ng-container *ngFor="let reaction of reactionList; let i = index">
-          <span class="emoji" [ngStyle]="{
-              'z-index': 10 - i,
-              'left.px': i * 12,
-              position: 'relative',
-              'font-size': '18px'
-            }" [title]="reaction.reaction + ': ' + reaction.count">
-            {{ reactionEmojiMap[reaction.reaction] || '❓' }}
-          </span>
-        </ng-container>
-        <a *ngIf="totalReactionsCount > 0" class="reaction-count-text">
-          You and {{ totalReactionsCount - 1 }} others
+      <div class="reactions-summary"
+        *ngIf="postReactions[post.id]?.reactions?.length || postReactions[post.id]?.totalCount">
+        <div class="emoji-stack" style="position: relative; height: 24px;">
+          <ng-container *ngFor="let reaction of postReactions[post.id].reactions; let i = index">
+            <span class="emoji-item" [ngStyle]="{
+                'position': 'absolute',
+                'z-index': postReactions[post.id].reactions.length - i,
+                'left.px': i * 15
+              }">
+              {{ reaction.emoji }}
+            </span>
+          </ng-container>
+        </div>
+
+        <a *ngIf="postReactions[post.id]?.totalCount" class="reaction-count-text"
+          (mouseenter)="showHoverNames(post.id, $event)" (mouseleave)="hideHoverNames()"
+          (click)="openReactionsModal(post.id)"
+          [ngStyle]="{'margin-left.px': 17 * postReactions[post.id].totalCount, 'cursor': 'pointer'}">
+          {{ postReactions[post.id].totalCount }}
         </a>
+
+        <!-- Tooltip -->
+        <div *ngIf="hoverVisible && hoveredPostId === post.id" class="reaction-tooltip"
+          [ngStyle]="{'top.px': hoverPosition.y, 'left.px': hoverPosition.x}">
+
+          <div *ngFor="let reaction of hoveredReactions2">
+            <div *ngFor="let person of reaction.person" class="reaction-user">
+              <span>{{ person.fullname }}</span>
+            </div>
+             <div *ngIf="reaction.person.length > 11" class="reaction-more">
+                  +{{ reaction.person.length - 11 }} more
+                </div>
+          </div>
+        </div>
       </div>
 
       <!-- Footer -->
-      <mat-card-footer>
-        <!-- Like -->
-        <div class="footer-btn like-button-wrapper" (mouseenter)="showReactionsFor = post.posts_uuid">
-          <button mat-button (mouseenter)="togglePopup(post.posts_uuid, true)">
-            <mat-icon>
-              {{
-              (postReactions[post.posts_uuid] &&
-              postReactions[post.posts_uuid].hoveredReaction?.emoji) || 'thumb_up'
-              }}
-            </mat-icon>
-            Like
+      <mat-card-footer style="margin-bottom: 7px;">
+        <div class="footer-btn like-button-wrapper" (mouseenter)="showReaction(post.id)"
+          (mouseleave)="hideReaction(post.id)">
+
+          <button mat-button>
+            <mat-icon>{{ getReactionEmoji(post.id) }}</mat-icon>
+            {{ getReactionLabel(post.id) }}
           </button>
-          <div class="reactions-popup" *ngIf="postReactions[post.posts_uuid]?.showPopup"
-            (mouseleave)="togglePopup(post.posts_uuid, false)">
-            <div class="reaction" *ngFor="let react of reactions"
-              (mouseenter)="setHoveredReaction(post.posts_uuid, react)"
-              (mouseleave)="setHoveredReaction(post.posts_uuid, null)" (click)="selectReaction(post.posts_uuid, react)">
+
+          <div class="reactions-popup" *ngIf="isPopupVisible[post.id]">
+            <div class="reaction" *ngFor="let react of reaction" (mouseenter)="hoveredReactions[post.id] = react"
+              (mouseleave)="hoveredReactions[post.id] = null" (click)="selectReactions(post.id, react)">
               <span>{{ react.emoji }}</span>
             </div>
           </div>
+
         </div>
+
 
         <!-- Comment -->
         <div class="footer-btn">
           <button mat-button (click)="openModal(post.images)">
             <mat-icon>chat</mat-icon> Comment
+          </button>
+          <button mat-button *ngIf="post.videos && post.videos.length > 0" (click)="openModal(post.videos)">
+            <mat-icon>videocam</mat-icon> Videos
           </button>
         </div>
 
@@ -301,13 +320,12 @@
           </div> -->
 
           <div class="client-action">
-            <button mat-flat-button [color]="
-      user.follow_status === 'accepted'
-        ? 'accent'
-        : user.follow_status === 'pending'
-        ? 'warn'
-        : 'primary'
-    " *ngIf="currentUserCode !== user.code"
+            <button mat-flat-button [color]="user.follow_status === 'accepted'
+              ? 'accent'
+              : user.follow_status === 'pending'
+              ? 'warn'
+              : 'primary'
+          " *ngIf="currentUserCode !== user.code"
               (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)">
               <!-- Icons -->
               <mat-icon *ngIf="user.follow_status === 'not_following'">person_add</mat-icon>
@@ -334,7 +352,7 @@
     <div class="spacer-top"></div>
   </div>
 
-   <button class="scroll-to-top" *ngIf="showScrollTop" (click)="scrollToTop()">
+  <button class="scroll-to-top" *ngIf="showScrollTop" (click)="scrollToTop()">
     <mat-icon>arrow_upward</mat-icon>
   </button>
 </div>

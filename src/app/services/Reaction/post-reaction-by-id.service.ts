@@ -6,7 +6,7 @@ import { _url } from 'src/global-variables';
 @Injectable({
   providedIn: 'root'
 })
-export class ReactionEmojiService {
+export class PostReactionByIdService {
 
   constructor(private http: HttpClient) { }
 
@@ -26,24 +26,19 @@ export class ReactionEmojiService {
     return new HttpParams().set('desc_code', 'top_navigation');
   }
 
-  //react update
-  putReactionInvidual(post_uuidOrUuid: any, reaction: any): Observable<any> {
+  saveReaction(postId: number, reaction: string): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.put(`${_url}reaction/${post_uuidOrUuid}`, reaction, { headers });
+    const payload = { post_id: postId, reaction };
+    return this.http.post(`${_url}reactToPostById`, payload, { headers }).pipe(
+      catchError(error => this.handleAuthError(error)) // handle API errors
+    );
   }
 
-  //get react
-  getReactionPost_uuidOrUuid(post_uuidOrUuid: any): Observable<any> {
+  getReaction(postId: number): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.get(`${_url}reaction/${post_uuidOrUuid}`, { headers });
+    return this.http.get<any>(`${_url}getReactionByPostId/${postId}`, { headers });
   }
 
- getReactionByPostId(postId: number): Observable<any> {
-    const headers = this.createHeaders();
-    return this.http.get(`${_url}getReactionPost/${postId}`, { headers });
-  }
-  
-  
   private handleAuthError(error: any): Observable<any> {
     if (error.status === 401) {
       console.error('Unauthorized: Please log in.');

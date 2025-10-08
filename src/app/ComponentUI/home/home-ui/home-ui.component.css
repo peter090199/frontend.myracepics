@@ -504,3 +504,74 @@ mat-card-footer button mat-icon { margin-right: 6px; }
   background: #1565c0;
   transform: translateY(-2px);
 }
+
+
+
+/* reaction */
+.reactions-summary {
+  display: flex;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+.emoji-stack {
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.emoji-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 1px solid #fff;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 0 1px rgba(0,0,0,0.2);
+}
+
+.reaction-count-text {
+  margin-left: 8px; /* spacing between emoji stack and count */
+  font-size: 14px;
+  color: #65676b;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
+  /* hover react */
+.reaction-tooltip {
+  position: fixed;
+  background-color: #242526;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  max-width: 220px;
+  animation: fadeIn 0.15s ease-in-out;
+  transform: translateY(-8px); /* subtle lift */
+}
+
+.reaction-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 20px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #242526 transparent transparent transparent;
+}
+
+.reaction-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}

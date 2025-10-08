@@ -103,7 +103,8 @@ import { SubmenuComponent } from './ComponentUI/system/submenu/submenu.component
 import { SubmenuUIComponent } from './ComponentUI/system/submenu-ui/submenu-ui.component';
 import { EditsubmenuUIComponent } from './ComponentUI/system/editsubmenu-ui/editsubmenu-ui.component';
 import { UsersUIComponent } from './ComponentSharedUI/system/users-ui/users-ui.component';
-
+import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
+import { ReactionPostComponent } from './ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
 
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -199,7 +200,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SubmenuUIComponent,
     EditsubmenuUIComponent,
     UsersUIComponent,
-    
+    TopheaderComponent,
+    ReactionPostComponent
   ],
   imports: [
     BrowserModule,

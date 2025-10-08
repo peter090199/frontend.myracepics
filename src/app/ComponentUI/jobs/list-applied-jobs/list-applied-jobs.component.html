@@ -1,11 +1,14 @@
 <section class="section">
   <div class="search-div">
-    <mat-form-field class="w-40" appearance="standard" floatLabel="never">
+    <mat-form-field class="w-90" appearance="standard" >
       <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()" autocomplete="off" />
       <button *ngIf="searchKey" mat-icon-button matSuffix aria-label="Clear" (click)="clearSearch()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="getJobPosting()">View</button>
+
   </div>
 
 

@@ -293,3 +293,56 @@
 
 
 
+/* === Section Layout === */
+.section {
+  padding: 10;
+  margin: 10;
+  height: 90vh;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+.suggestions-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.suggestions-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.suggestion-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
+/* === Responsive (Mobile View) === */
+@media (max-width: 768px) {
+  /* Change layout to column */
+  .suggestions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .suggestion-card {
+    width: 320px;
+    max-width: 330px;
+  }
+
+  .suggestions-wrapper {
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  /* 👇 Make buttons full width on mobile */
+  .suggestion-card button[mat-flat-button],
+  .suggestion-card button[mat-button],
+  .suggestion-card button[mat-stroked-button] {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  /* Adjust gap for stacked Accept/Cancel buttons */
+  .button-gap {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+}

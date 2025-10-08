@@ -1,0 +1,14 @@
+<!-- app.component.html -->
+<mat-toolbar color="primary" class="navbar">
+  <span style="flex: 1 1 auto;">
+    <button mat-button routerLink="#home">Home</button>
+    <button mat-button routerLink="#news">News</button>
+    <button mat-button routerLink="#contact">Contact</button>
+  </span>
+</mat-toolbar>
+
+<div class="main">
+  <h1>Fixed Top Menu - Angular Material</h1>
+  <h2>Scroll this page to see the effect</h2>
+  <p *ngFor="let i of [].constructor(30)">Some text some text some text some text..</p>
+</div>

@@ -45,7 +45,7 @@ export class NetworkingComponent implements OnInit, OnChanges {
     private authService: AuthService,
     private alert: NotificationsService,
     private profile: ProfileService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadTabData(this.selectedTabIndex);
@@ -214,31 +214,31 @@ export class NetworkingComponent implements OnInit, OnChanges {
   }
 
 
-  
+
   ConnectInvites(code: any, requesterFname: string): void {
-  if (!code) {
-    this.alert.toastrWarning('⚠️ No user code provided for follow request.');
-    return;
-  }
-
-  const fullName = `${requesterFname}`;
-  const confirmMessage = `Accept follow request from ${fullName}?`;
-
-  this.alert.popupWarning(fullName, confirmMessage).then((result) => {
-    if (result.value) {
-      this.clientsService.acceptFollowRequest(code).subscribe({
-        next: () => {
-          this.alert.toastrSuccess(`You are now connected with ${fullName}.`);
-           this.getPendingFollowRequests();
-        },
-        error: (error: any) => {
-          this.alert.toastrError('❌ Failed to accept follow request.');
-          console.error('Error on follow request:', error);
-        }
-      });
+    if (!code) {
+      this.alert.toastrWarning('⚠️ No user code provided for follow request.');
+      return;
     }
-  });
-}
+
+    const fullName = `${requesterFname}`;
+    const confirmMessage = `Accept follow request from ${fullName}?`;
+
+    this.alert.popupWarning(fullName, confirmMessage).then((result) => {
+      if (result.value) {
+        this.clientsService.acceptFollowRequest(code).subscribe({
+          next: () => {
+            this.alert.toastrSuccess(`You are now connected with ${fullName}.`);
+            this.getPendingFollowRequests();
+          },
+          error: (error: any) => {
+            this.alert.toastrError('❌ Failed to accept follow request.');
+            console.error('Error on follow request:', error);
+          }
+        });
+      }
+    });
+  }
 
 
 

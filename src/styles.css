@@ -115,8 +115,11 @@ app-footer {
   overflow-y: auto;
   padding-right: 10px;
 }
+
 /* ============================= */
-html, body, div {
+html,
+body,
+div {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -125,14 +128,19 @@ html, body, div {
 
 /* Overall Layout */
 body {
-  /* background: linear-gradient(to right, rgba(11, 203, 174, 0.852), rgba(47, 44, 225, 0.748)); */
   font-family: Verdana;
   line-height: 1;
   margin: auto !important;
-  height: 100vh;
   background-color: #f4eeee;
+  overflow-y: hidden;
+  height: 100vh;
+}
+.section {
+  padding: 10;
+  margin: 10;
+  height: 90vh;
   overflow-y: auto;
-
+  max-height: 90vh;
 }
 .mat-header-cell {
   font-weight: 600;
@@ -140,9 +148,6 @@ body {
   padding: 12px;
 }
 
-.section {
-  padding: 16px;
-}
 
 .mat-footer-cell {
   text-align: center;
@@ -211,6 +216,7 @@ body {
 }
 
 @media (max-width: 768px) {
+
   .main-container,
   .content-body,
   .form-row {
@@ -842,37 +848,19 @@ h2 {
 .search-div {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 5px;
   flex-wrap: wrap;
   margin: 10px;
+ 
 }
 
 /* Make the mat-form-field adapt */
 .search-div .mat-form-field {
-  min-width: 220px;
-  /* never too small */
+  min-width: 120px;
+   width: 20%;
   max-width: 640px;
-  /* avoid getting too wide on very large screens */
-  width: clamp(220px, 40%, 420px);
-  /* preferred responsive width */
 }
 
-/* utility width class used in your HTML */
-.w-40 {
-  width: 40%;
-  min-width: 220px;
-}
-
-/* 20% width */
-.w-20 {
-  width: 20%;
-  min-width: 150px; /* optional: prevents it from getting too small */
-}
-
-/* Optional: adjust mat-select inside the form-field */
-.w-20 .mat-select {
-  width: 100%;
-}
 
 .content-scrollable {
   overflow: auto;
@@ -1175,6 +1163,7 @@ body {
 .post-images {
   display: flex;
   gap: 10px;
+  height: auto;
 }
 
 
@@ -1873,7 +1862,7 @@ video {
 
 .post-images img {
   width: 100%;
-  max-height: 300px;
+  height: auto;
   object-fit: cover;
   margin-bottom: 8px;
 }
@@ -2062,36 +2051,78 @@ mat-list-item .job-details .skeleton-line {
 /* ============================= */
 /* Responsive Adjustments */
 /* ============================= */
-@media (max-width: 1024px) { .content-body { padding: 20px; } }
-@media (max-width: 768px) { 
-  .content-body { padding: 15px; } 
-  .form-row { flex-direction: column; gap: 12px; } 
+@media (max-width: 1024px) {
+  .content-body {
+    padding: 20px;
+  }
 }
-@media (max-width: 480px) { 
-  .content-body { padding: 10px; } 
-  .half-width, .full-width { min-width: 100%; }
-  .page-container { grid-template-columns: 1fr; gap: 10px; }
+
+@media (max-width: 768px) {
+  .content-body {
+    padding: 15px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-body {
+    padding: 10px;
+  }
+
+  .half-width,
+  .full-width {
+    min-width: 100%;
+  }
+
+  .page-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 .containe-fluid {
-  max-height: 500px; /* adjust to your layout */
+  max-height: 500px;
+  /* adjust to your layout */
   overflow-y: auto;
 }
+
 .table-container {
-  max-height: 700px;   /* set your max height */
-  overflow-y: auto;    /* vertical scroll */
-  overflow-x: hidden;  /* optional: prevent horizontal scroll */
+  max-height: 700px;
+  /* set your max height */
+  overflow-y: auto;
+  /* vertical scroll */
+  overflow-x: hidden;
+  /* optional: prevent horizontal scroll */
 }
 
 mat-header-row {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: #fff; /* match table background */
+  background: #fff;
+  /* match table background */
 }
 
 /* Selected row highlight */
 mat-row.selected {
   background-color: #f5f5f5;
-  color: #000;               /* optional: change text color */
+  color: #000;
+  /* optional: change text color */
 }
+
+
+.client-action .mat-flat-button {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between icon and label */
+}
+
+.client-action .btn-label {
+  font-weight: 500;
+  font-size: 14px;
+}
+

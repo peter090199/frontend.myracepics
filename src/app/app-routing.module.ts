@@ -37,6 +37,7 @@ import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job
 import { CompanyProfileUIComponent } from './ComponentSharedUI/Jobs/company-profile-ui/company-profile-ui.component';
 import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.component';
 import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
+import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
 
 
 

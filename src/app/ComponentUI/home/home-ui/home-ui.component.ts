@@ -15,8 +15,15 @@ import { ImageModalComponent } from '../../Modal/image-modal/image-modal.compone
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
 import { ClientsService } from 'src/app/services/Networking/clients.service';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { PostReactionByIdService } from 'src/app/services/Reaction/post-reaction-by-id.service';
+import { ReactionPostComponent } from 'src/app/ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
+
+interface Reaction {
+  emoji: string;
+  label: string;
+}
 
 @Component({
   selector: 'app-home-ui',
@@ -62,6 +69,19 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     users: { code: number; fullname: string; photo_pic: string }[];
   }[] = [];
 
+  @Input() postId!: number;
+  react: any = [];
+  reactionEmojiMap2: any = {
+    Like: '👍',
+    Love: '❤️',
+    Care: '🤗',
+    Haha: '😂',
+    Wow: '😮',
+    Sad: '😢',
+    Angry: '😡'
+  };
+
+
   totalReactionsCount: number = 0;
   reactionEmojiMap: { [key: string]: string } = {
     Like: '👍',
@@ -71,6 +91,194 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     Sad: '😢',
     Angry: '😡',
   };
+
+
+  isPopupVisible: { [postId: number]: boolean } = {};
+
+  hoveredReactions: { [postId: number]: Reaction | null } = {};
+  userReactions: { [postId: number]: Reaction | null } = {};
+  reaction = [
+    { emoji: '👍', label: 'Like' },
+    { emoji: '❤️', label: 'Love' },
+    { emoji: '😂', label: 'Haha' },
+    { emoji: '😮', label: 'Wow' },
+    { emoji: '😢', label: 'Sad' },
+    { emoji: '😡', label: 'Angry' }
+  ];
+
+  reactions2: { [postId: number]: { emoji: string, label: string } | null } = {};
+
+  async selectReactions(postId: number, react: Reaction) {
+    this.userReactions[postId] = react;
+    this.isPopupVisible[postId] = false;
+    console.log(`Selected reaction for post ${postId}:`, react.label);
+
+    try {
+      const res: any = await firstValueFrom(
+        this.postReactionByIdService.saveReaction(postId, react.label)
+      );
+      if (res && res.success) {
+        console.log('Reaction saved successfully');
+      } else {
+        console.error('Failed to save reaction:', res?.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error('API error:', err);
+    }
+    this.loadReactions(postId);
+  }
+  showReaction(postId: number) {
+    this.isPopupVisible[postId] = true;
+  }
+
+  hideReaction(postId: number) {
+    this.isPopupVisible[postId] = false;
+    this.hoveredReactions[postId] = null;
+  }
+
+  getReactionEmoji(postId: number): string {
+    // Hovered emoji > user reaction emoji > default Facebook-like 👍
+    return this.hoveredReactions[postId]?.emoji
+      || this.userReactions[postId]?.emoji
+      || 'thumb_up'; // Material icon for default like
+  }
+
+  getReactionLabel(postId: number): string {
+    // Hovered label > user reaction label > default text "Like"
+    return this.hoveredReactions[postId]?.label
+      || this.userReactions[postId]?.label
+      || 'Like';
+  }
+
+
+  // Static example data
+postReactions2: any = {
+  69: {
+    reactions: [
+      {
+        reaction: "Haha",
+        count: 1,
+        person: [
+          { fullname: "PEDRO YORPO", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/702/cvphoto/8141e9a6-c4a1-4169-a137-d5c0db88d5ac/1754791900.jpg" }
+        ]
+      },
+      {
+        reaction: "Wow",
+        count: 1,
+        person: [
+          { fullname: "PEDRO YORPO", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/701/cvphoto/fc74056c-283b-4883-b8c9-ca7bd6d4f2ac/1754795955.jpg" }
+        ]
+      },
+      {
+        reaction: "Love",
+        count: 1,
+        person: [
+          { fullname: "ELIZABETH PUNAY", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/703/cvphoto/6552206e-1ae2-4dca-8011-0dc5cc468b08/1755613959.webp" }
+        ]
+      },
+       {
+        reaction: "Haha",
+        count: 1,
+        person: [
+          { fullname: "ELIZ", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/703/cvphoto/6552206e-1ae2-4dca-8011-0dc5cc468b08/1755613959.webp" }
+        ]
+      }
+    ],
+    totalCount: 3
+  }
+};
+
+hoverVisible = false;
+hoveredPostId: number | null = null;
+hoveredReactions2: any[] = [];
+hoverPosition = { x: 0, y: 0 };
+
+showHoverNames(postId: number, event: MouseEvent) {
+  this.hoveredPostId = postId;
+  this.hoverVisible = true;
+  this.hoveredReactions2 = this.postReactions[postId]?.reactions || [];
+  this.hoverPosition = {
+    x: event.clientX - 50,
+    y: event.clientY - 100
+  };
+}
+
+hideHoverNames() {
+  this.hoverVisible = false;
+  this.hoveredPostId = null;
+}
+
+
+
+// Tooltip generator
+getStaticTooltip(postId: number): string {
+  console.log(postId)
+  const post = this.postReactions[postId];
+  if (!post || !post.reactions?.length) return 'No reactions yet';
+
+  const names: string[] = [];
+  post.reactions.forEach((r: any) => {
+    r.person.forEach((p: any) => {
+      if (p.fullname && !names.includes(p.fullname)) names.push(p.fullname);
+    });
+  });
+
+  if (names.length <= 3) return names.join(', ');
+  return `${names.slice(0, 3).join(', ')}, and ${names.length - 3} others`;
+}
+
+  // Load reaction from backend
+  // loadReaction(postId: number) {
+  //   this.postReactionByIdService.getReaction(postId).subscribe({
+  //     next: (res) => {
+  //       if (res.success && res.reaction) {
+  //         const match = this.reaction.find(r => r.label.toLowerCase() === res.reaction.toLowerCase());
+  //         this.userReactions[postId] = match || null;
+  //         this.hoveredReactions2 = res.reaction;
+  //       } else {
+  //         this.userReactions[postId] = null;
+  //       }
+  //     },
+  //     error: (err) => console.error('Error loading reaction:', err)
+  //   });
+
+
+  // }
+
+loadReaction(postId: number) {
+  this.postReactionByIdService.getReaction(postId).subscribe({
+    next: (res) => {
+      if (res.success) {
+        // Set current user's reaction
+        if (res.reaction) {
+          const match = this.reaction.find(r => r.label.toLowerCase() === res.reaction.toLowerCase());
+          this.userReactions[postId] = match || null;
+        } else {
+          this.userReactions[postId] = null;
+        }
+
+        // Set all reactions (for hover)
+        if (res.reactions && res.totalCount) {
+          this.postReactions2[postId] = {
+            reactions: res.reactions,
+            totalCount: res.totalCount
+          };
+        } else {
+          this.postReactions2[postId] = { reactions: [], totalCount: 0 };
+        }
+      }
+    },
+    error: (err) => console.error('Error loading reaction:', err)
+  });
+}
+
+
+postTooltips: { [postId: number]: string } = {};
+
+
+
+
+
   //react emoji
   showReactions = false;
   reactions: any[] = [
@@ -83,7 +291,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     { reaction: 'Clap', emoji: '👏' }
   ];
 
- @ViewChild('middleColumn') middleColumn!: ElementRef;
+  @ViewChild('middleColumn') middleColumn!: ElementRef;
   showScrollTop = false;
 
   // Detect scroll in middle column
@@ -106,7 +314,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog, private route: ActivatedRoute, private postDataservices: PostUploadImagesService,
     private authService: AuthService, private alert: NotificationsService, private comment: CommentService,
     private ngZone: NgZone, private reactionService: ReactionEmojiService, private clientsService: ClientsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer, private postReactionByIdService: PostReactionByIdService, private reactionsServices: ReactionEmojiService
   ) {
     this.getPeopleRecentActivity();
   }
@@ -131,10 +339,10 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
   openModal(data: any[]): void {
     const dialogRef = this.dialog.open(ImageModalComponent, {
       data: data,
-      width: '80%',
-      maxWidth: '80vw',
-      height: 'auto',
-      minHeight: '60vh',
+      width: '1200px',
+      // maxWidth: '80vw',
+      // height: 'auto',
+      // minHeight: '60vh',
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -142,6 +350,17 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     });
 
   }
+
+  openReactionsModal(postId:number): void {
+    this.dialog.open(ReactionPostComponent, {
+      data: postId,
+      width: '100%',
+      maxWidth: '600px',
+      panelClass: 'centered-modal',
+    });
+
+  }
+
 
 
   isScrollIdle = false;
@@ -191,7 +410,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
 
 
   onResize() {
-    this.isMobile = window.innerWidth <= 768; // or your breakpoint for mobile
+    this.isMobile = window.innerWidth <= 768;
   }
 
 
@@ -202,8 +421,6 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.currentUserCode = this.authService.getAuthCode();
-    console.log('testcode ', this.currentUserCode)
-
     const url = window.location.href;
     const codesplit = url.split('/').pop();
     this.code = codesplit;
@@ -218,6 +435,56 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
       error: (err) => console.error(err)
     });
     this.subscriptions.push(sub);
+
+
+
+  }
+  @Input() reactionsData: any;
+  // Get total reactions count
+  get totalReactions(): number {
+    return this.reactionsData?.react?.reduce((sum: number, r: any) => sum + r.count, 0) || 0;
+  }
+
+  // Display tooltip text
+  getTooltipText(reaction: any) {
+    return reaction.person.map((p: any) => p.fullname).join(', ');
+  }
+
+
+  postReactions: {
+    [postId: number]: { reactions: any[], totalCount: number }
+  } = {};
+
+  // Load reactions for a single post
+  loadReactions(postId: number): void {
+    if (!postId) return;
+
+    this.reactionService.getReactionByPostId(postId).subscribe({
+      next: (res: any) => {
+        if (res && res.react && Array.isArray(res.react)) {
+          const mappedReactions = res.react.map((r: any) => ({
+            ...r,
+            emoji: this.reactionEmojiMap2[r.reaction] || 'thumb' // fallback emoji
+          }));
+
+          const total = mappedReactions.reduce((sum: number, r: any) => sum + (r.count || 0), 0);
+
+          this.postReactions[postId] = {
+            reactions: mappedReactions,
+            totalCount: total
+          };
+          this.totalReactionsCount = total;
+        } else {
+          this.postReactions[postId] = { reactions: [], totalCount: 0 };
+          this.totalReactionsCount = 0;
+        }
+      },
+      error: (err) => {
+        console.error(`Error fetching reactions for post ${postId}:`, err);
+        this.postReactions[postId] = { reactions: [], totalCount: 0 };
+        this.totalReactionsCount = 0;
+      }
+    });
   }
 
   private subscriptions: Subscription[] = [];
@@ -247,7 +514,6 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     this.authService.getProfilecode().subscribe({
       next: (res) => {
         if (res.success) {
-          // this.usercode = res.message[0].code;
           this.loadUserPost();
         }
       },
@@ -409,6 +675,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     return `${diffInHours} hours ago`;
   }
 
+
   loadUserPost(): void {
     this.isLoading = true;
 
@@ -420,6 +687,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
             expanded: false, // for caption see more/less
             images: post.images || [],
             videos: post.videos || []
+
           }));
           this.posts.forEach(post => {
             if (post.images && post.images.length > 0) {
@@ -427,6 +695,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
                 image.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com/' + image.path_url.replace(/\\/g, '');
               });
             }
+
           });
           // Fix video URLs
           this.posts.forEach(post => {
@@ -436,6 +705,12 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
               });
             }
           });
+          this.posts.forEach(post => {
+            this.loadReaction(post.id);
+          });
+
+          this.loadAllPostReactions();
+
         }
 
         this.isLoading = false;
@@ -448,14 +723,15 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
   }
 
 
-  // onScroll() {
-  //   const scrollElement = this.scrollContainer.nativeElement;
-  //   if (scrollElement.scrollHeight - scrollElement.scrollTop === scrollElement.clientHeight) {
-  //     if (!this.isLoading) {
-  //      // this.loadPosts(); // Load more posts when scrolled to the bottom
-  //     }
-  //   }
-  // }
+  // Load reactions for all posts in the array
+  loadAllPostReactions(): void {
+    if (!this.posts || this.posts.length === 0) return;
+
+    this.posts.forEach(post => {
+      this.loadReactions(post.id);
+    });
+  }
+
 
 
   startAutoScroll(): void {
@@ -489,7 +765,8 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
 
   lastScrollTop: number = 0;
   isScrollingDown: boolean = false;
-  @HostListener('window:scroll', [])
+  @HostListener('window:resize', ['$event'])
+
   onWindowScroll() {
     const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
     if (currentScroll > this.lastScrollTop) {
@@ -568,6 +845,9 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
       this.singleImage = null; // Clear if previously set
       this.multipleImages = currentPost.images || [];
     }
+
+
+
   }
 
 
@@ -643,14 +923,6 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
         });
         post.newComment = '';
         post.isSubmitting = false;
-
-        //  post.comments.push(res.data);
-        //   console.log("comment:", post.comments)
-        //   this.alert.toastrSuccess(res.message);
-        //   post.newComment = '';
-        //   post.isSubmitting = false;
-
-
       },
       error: (err) => {
         this.alert.toastPopUpError("Comment failed:")
@@ -764,40 +1036,6 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
     // this.commentService.updateReply(reply.id, reply.comment).subscribe(...)
   }
 
-  postReactions: {
-    [postId: string]: {
-      selectedReaction: { emoji: string } | null;
-      hoveredReaction: { emoji: string } | null;
-      showPopup: boolean;
-    };
-  } = {};
-
-
-  initPostReaction(post_uuidOrUuid: any) {
-    if (!this.postReactions[post_uuidOrUuid]) {
-      this.postReactions[post_uuidOrUuid] = {
-        selectedReaction: null,
-        hoveredReaction: null,
-        showPopup: false,
-      };
-    }
-  }
-
-  togglePopup(post_uuidOrUuid: any, show: boolean) {
-    this.initPostReaction(post_uuidOrUuid);
-    this.postReactions[post_uuidOrUuid].showPopup = show;
-  }
-
-  //react 
-  selectReaction(post_uuidOrUuid: any, react: any) {
-    console.log("react", post_uuidOrUuid, " ", react.reaction)
-
-    this.initPostReaction(post_uuidOrUuid);
-    this.selectedReaction = react;
-    this.hoveredReaction = null;
-    this.showReactions = false;
-    this.saveReactionToDatabase(post_uuidOrUuid, react.reaction);
-  }
 
   //save react
   saveReactionToDatabase(post_uuidOrUuid: any, reaction: string): void {
@@ -823,11 +1061,11 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
 
 
 
-  setHoveredReaction(postId: string, reaction: any | null) {
+  // setHoveredReaction(postId: string, reaction: any | null) {
 
-    this.initPostReaction(postId);
-    this.postReactions[postId].hoveredReaction = reaction;
-  }
+  //   this.initPostReaction(postId);
+  //   this.postReactions[postId].hoveredReaction = reaction;
+  // }
 
   reactionsMap: any = [];
   getReactionPost_uuidOrUuid(post_uuidOrUind: any): void {
@@ -961,6 +1199,27 @@ export class HomeUIComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+
+
+tooltipVisible = false;
+tooltipPosition = { x: 0, y: 0 };
+
+showReactionTooltip(postId: number, event: MouseEvent) {
+  const reactionData = this.postReactions[postId];
+  if (reactionData && reactionData.reactions) {
+    this.hoveredReactions2 = reactionData.reactions;
+    this.tooltipVisible = true;
+    this.tooltipPosition = {
+      x: event.pageX + 10,
+      y: event.pageY + 10
+    };
+  }
+}
+
+hideReactionTooltip() {
+  this.tooltipVisible = false;
+}
 
 
 

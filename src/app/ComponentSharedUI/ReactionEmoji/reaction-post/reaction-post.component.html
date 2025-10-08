@@ -1,0 +1,124 @@
+<!-- Skeleton Loader
+<div *ngIf="isLoading" class="skeleton-loader">
+  <div *ngFor="let i of [1,2,3,4,5]" class="skeleton-item">
+    <div class="skeleton-avatar"></div>
+    <div class="skeleton-lines">
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line long"></div>
+    </div>
+    <div class="skeleton-button"></div>
+  </div>
+</div>
+
+<mat-tab-group *ngIf="!isLoading">
+  <mat-tab [label]="'All ' + totalCount">
+    <mat-list>
+      <mat-list-item *ngFor="let person of allPersons">
+        <img matListAvatar [src]="person.photo_pic" alt="{{person.fullname}}" />
+        <h4 matLine>{{ person.fullname }}</h4>
+        <button mat-button color="primary">Connect</button>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+
+  <mat-tab *ngFor="let reactionGroup of react" [label]="reactionLabel(reactionGroup)">
+    <mat-list>
+      <mat-list-item *ngFor="let person of reactionGroup.person">
+        <img matListAvatar [src]="person.photo_pic" alt="{{person.fullname}}" />
+        <h4 matLine>{{ person.fullname }}</h4>
+
+        <div class="client-action">
+          <button mat-flat-button
+            [color]="users.follow_status === 'accepted'? 'accent': users.follow_status === 'pending'? 'warn': 'primary'"
+            *ngIf="currentUserCode !== users.code"
+            (click)="AddConnect(users.code, users.fullname, users.follow_status, users.id)">
+            <mat-icon *ngIf="users.follow_status === 'not_following'">person_add</mat-icon>
+            <mat-icon *ngIf="users.follow_status === 'pending'" class="hourglass-animated">
+              hourglass_top
+            </mat-icon>
+            <mat-icon *ngIf="users.follow_status === 'accepted'">check_circle</mat-icon>
+
+            <span class="btn-label" *ngIf="users.follow_status === 'not_following'">Connect</span>
+            <span class="btn-label" *ngIf="users.follow_status === 'pending'">Pending</span>
+            <span class="btn-label" *ngIf="users.follow_status === 'accepted'">Connected</span>
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+</mat-tab-group> -->
+
+
+<!-- Skeleton Loader -->
+<div *ngIf="isLoading" class="skeleton-loader">
+  <div *ngFor="let i of skeletonRows" class="skeleton-item">
+    <div class="skeleton-avatar"></div>
+    <div class="skeleton-lines">
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line long"></div>
+    </div>
+    <div class="skeleton-button"></div>
+  </div>
+</div>
+
+<!-- Tabs (Loaded Content) -->
+<mat-tab-group *ngIf="!isLoading">
+
+  <!-- All Reactions Tab -->
+  <mat-tab [label]="'All ' + totalCount">
+    <mat-list>
+      <mat-list-item *ngFor="let person of allPersons">
+        <img matListAvatar [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname" />
+        <h4 matLine>{{ person.fullname }}</h4>
+
+        <div class="client-action">
+          <button
+            mat-flat-button
+            [color]="person.follow_status === 'accepted' ? 'accent' : person.follow_status === 'pending' ? 'warn' : 'primary'"
+            *ngIf="currentUserCode !== person.code"
+            (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+            
+            <!-- Icons -->
+            <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
+            <mat-icon *ngIf="person.follow_status === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
+            <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
+
+            <!-- Labels -->
+            <span class="btn-label" *ngIf="person.follow_status === 'not_following'">Connect</span>
+            <span class="btn-label" *ngIf="person.follow_status === 'pending'">Pending</span>
+            <span class="btn-label" *ngIf="person.follow_status === 'accepted'">Connected</span>
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+
+  <!-- Individual Reaction Tabs -->
+  <mat-tab *ngFor="let reactionGroup of react" [label]="reactionLabel(reactionGroup)">
+    <mat-list>
+      <mat-list-item *ngFor="let person of reactionGroup.person">
+        <img matListAvatar [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname" />
+        <h4 matLine>{{ person.fullname }}</h4>
+
+        <div class="client-action">
+          <button
+            mat-flat-button
+            [color]="person.follow_status === 'accepted' ? 'accent' : person.follow_status === 'pending' ? 'warn' : 'primary'"
+            *ngIf="currentUserCode !== person.code"
+            (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+            
+            <!-- Icons -->
+            <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
+            <mat-icon *ngIf="person.follow_status === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
+            <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
+
+            <!-- Labels -->
+            <span class="btn-label" *ngIf="person.follow_status === 'not_following'">Connect</span>
+            <span class="btn-label" *ngIf="person.follow_status === 'pending'">Pending</span>
+            <span class="btn-label" *ngIf="person.follow_status === 'accepted'">Connected</span>
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+</mat-tab-group> 

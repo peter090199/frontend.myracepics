@@ -83,8 +83,7 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
 
       if (res.success) {
         const jobs = res.data || [];
-
-        // ✅ split data per status
+          // ✅ split data per status
         this.dataSourceApply.data = jobs.filter((j: any) => j.applied_status === 'applied_active');
         this.dataSourceOngoing.data = jobs.filter((j: any) => j.applied_status === 'ongoing');
         this.dataSourceFinished.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'finished');

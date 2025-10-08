@@ -221,7 +221,7 @@ export class SignInUIComponent implements OnInit {
           if (res.message == 0) {
             // this.router.navigateByUrl("profile/705");
             // this.router.navigate(['/profile', this]);
-            this.router.navigateByUrl("/home")
+                this.router.navigateByUrl("/home")
             // this.router.navigateByUrl("/home").then(() => {
             //   window.location.reload(); // Only if absolutely necessary
             // });
