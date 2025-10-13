@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {  RouterModule, Routes } from '@angular/router';
 import { UserhomepageComponent } from './Users/userhomepage/userhomepage.component';
 import { SignInUIComponent } from './SignIn/sign-in-ui/sign-in-ui.component';
 import { SignUpUIComponent } from './SignUp/sign-up-ui/sign-up-ui.component';
@@ -37,9 +37,6 @@ import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job
 import { CompanyProfileUIComponent } from './ComponentSharedUI/Jobs/company-profile-ui/company-profile-ui.component';
 import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.component';
 import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
-import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
-
-
 
 const routes: Routes = [
   // Public routes
@@ -107,7 +104,137 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+
+
+// import { NgModule, APP_INITIALIZER } from '@angular/core';
+// import { RouterModule, Router, Routes, Route } from '@angular/router';
+// import { AuthGuard } from './AuthGuard/auth.guard';
+// import { PageNotFoundComponentComponent } from './PageError/page-not-found-component/page-not-found-component.component';
+// import { NavigationService, NavRoute } from './navigation.service';
+// import { firstValueFrom } from 'rxjs';
+// import { ActivationUIComponent } from './ComponentSharedUI/Activation/activation-ui/activation-ui.component';
+// import { CurriculumVitaeUIComponent } from './ComponentSharedUI/Individual/curriculum-vitae-ui/curriculum-vitae-ui.component';
+// import { PrintCVComponent } from './ComponentSharedUI/Individual/print-cv/print-cv.component';
+// import { UploadProfileComponent } from './ComponentSharedUI/Individual/upload-profile/upload-profile.component';
+// import { UserCVComponent } from './ComponentSharedUI/Individual/user-cv/user-cv.component';
+// import { ForgotPasswordUIComponent } from './ComponentSharedUI/forgot-password-ui/forgot-password-ui.component';
+// import { ResetPasswordUIComponent } from './ComponentSharedUI/reset-password-ui/reset-password-ui.component';
+// import { SignInUIComponent } from './SignIn/sign-in-ui/sign-in-ui.component';
+// import { ClientUIComponent } from './SignUp/client-ui/client-ui.component';
+// import { SignUpUIComponent } from './SignUp/sign-up-ui/sign-up-ui.component';
+// import { UserhomepageComponent } from './Users/userhomepage/userhomepage.component';
+// import { ChatUIComponent } from './chat-ui/chat-ui.component';
+// import { LayoutComponent } from './layout/layout.component';
+// import { TopNavigationComponent } from './Navigation/top-navigation/top-navigation.component';
+// // Static public routes
+// const staticRoutes: Routes = [
+//   { path: '', redirectTo: '/homepage', pathMatch: 'full' }, // Default redirect
+//   { path: 'homepage', component: UserhomepageComponent },
+//   { path: 'signUpUI', component: SignUpUIComponent },
+//   { path: 'clientsignup', component: ClientUIComponent },
+//   { path: 'signInUI', component: SignInUIComponent },
+//   { path: 'signInUI/:email', component: SignInUIComponent },
+//   { path: 'forgetpassword', component: ForgotPasswordUIComponent },
+//   { path: 'reset-password/:email/:token', component: ResetPasswordUIComponent },
+//   { path: 'activation/:email', component: ActivationUIComponent },
+//   { path: 'layout', component: LayoutComponent },
+//   { path: 'curriculum-vitae', component: CurriculumVitaeUIComponent, canActivate: [AuthGuard] },
+//   { path: 'user-cv', component: UserCVComponent },
+//   { path: 'upload-cv', component: UploadProfileComponent, canActivate: [AuthGuard] },
+//   { path: 'print-cv', component: PrintCVComponent, canActivate: [AuthGuard] },
+//   { path: 'socket', component: ChatUIComponent },
+
+// ];
+
+// // Nested TopNavigation and print routes
+// const nestedRoutes: Routes = [
+//   {
+//     path: '',
+//     canActivate: [AuthGuard],
+//     children: [
+//       { path: 'profile/:code', loadChildren: () => import('./ComponentSharedUI/Profile/profile-ui/profile-ui.component').then(m => m.ProfileUIComponent) },
+//       { path: 'profile', loadChildren: () => import('./ComponentSharedUI/Profile/profile-ui/profile-ui.component').then(m => m.ProfileUIComponent) },
+//       { path: 'home', loadChildren: () => import('./ComponentUI/home/home-ui/home-ui.component').then(m => m.HomeUIComponent) },
+//       { path: 'message', loadChildren: () => import('./ComponentUI/messages/messages.component').then(m => m.MessagesComponent) },
+//       { path: 'network', loadChildren: () => import('./ComponentUI/networking/networking.component').then(m => m.NetworkingComponent) },
+//       { path: 'settings', loadChildren: () => import('./ComponentUI/profile/settings/settings.component').then(m => m.SettingsComponent) },
+//       { path: 'search', loadChildren: () => import('./ComponentUI/search/user-list/user-list.component').then(m => m.UserListComponent) },
+//       { path: 'security', loadChildren: () => import('./ComponentUI/system/security-roles/security-roles.component').then(m => m.SecurityRolesComponent) },
+//       { path: 'user', loadChildren: () => import('./ComponentUI/system/users/users.component').then(m => m.UsersComponent) },
+//       { path: 'menu', loadChildren: () => import('./ComponentUI/system/menu/menu.component').then(m => m.MenuComponent) },
+//       { path: 'role', loadChildren: () => import('./ComponentUI/system/role/role.component').then(m => m.RoleComponent) },
+//       { path: 'job_posting', loadChildren: () => import('./ComponentUI/job-posting/job-posting.component').then(m => m.JobPostingComponent) },
+//       { path: 'jobs', loadChildren: () => import('./ComponentUI/jobs/jobs.component').then(m => m.JobsComponent) },
+//       { path: 'recommended-jobs/:transNo', loadChildren: () => import('./ComponentUI/jobs-profile/jobs-profile.component').then(m => m.JobsProfileComponent) },
+//       { path: 'posting-job', loadChildren: () => import('./ComponentSharedUI/posting-job/posting-job.component').then(m => m.PostingJobComponent) },
+//       { path: 'company_profile/:code', loadChildren: () => import('./ComponentSharedUI/Jobs/company-profile-ui/company-profile-ui.component').then(m => m.CompanyProfileUIComponent) },
+//       { path: 'apply-job/:transNo', loadChildren: () => import('./ComponentSharedUI/Jobs/apply-job/apply-job.component').then(m => m.ApplyJobComponent) },
+//       { path: 'applied-jobs', loadChildren: () => import('./ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component').then(m => m.ListAppliedJobsComponent) }
+//     ]
+//   },
+//   {
+//     path: 'print',
+//     loadChildren: () => import('./print-layout/print/print.component').then(m => m.PrintComponent),
+//     children: [
+//       { path: 'printreceipts', loadChildren: () => import('./print-layout/print-receipts/print-receipts.component').then(m => m.PrintReceiptsComponent) },
+//       { path: 'printreceipt', loadChildren: () => import('./print-layout/print-receipt/print-receipt.component').then(m => m.PrintReceiptComponent) },
+//       { path: 'printcv', loadChildren: () => import('./ComponentSharedUI/Individual/print-cv/print-cv.component').then(m => m.PrintCVComponent) }
+//     ]
+//   },
+//   { path: '**', component: PageNotFoundComponentComponent }
+// ];
+
+// // APP_INITIALIZER for dynamic routes from API
+// export function initializeRoutes(navService: NavigationService, router: Router) {
+//   return async () => {
+//     try {
+//       const routesFromApi: NavRoute[] = await firstValueFrom(navService.getNavigation()) || [];
+//       const dynamicRoutes: Routes = routesFromApi.map(route => mapRoute(route));
+
+//       const finalRoutes: Routes = [
+//         ...staticRoutes,
+//         ...nestedRoutes,
+//         ...dynamicRoutes
+//       ];
+
+//       router.resetConfig(finalRoutes);
+//       console.log('Routes initialized:', finalRoutes);
+//     } catch (error) {
+//       console.error('Failed to load dynamic routes', error);
+//     }
+//   };
+// }
+
+
+// // Map NavRoute to Angular Route
+// function mapRoute(route: NavRoute): Route {
+//   return {
+//     path: route.path,
+//     children: route.children ? route.children.map(child => mapRoute(child)) : undefined
+//     // no canActivate here
+//   };
+// }
+
+
+// @NgModule({
+//   imports: [
+//     RouterModule.forRoot(staticRoutes, { onSameUrlNavigation: 'reload' })
+//   ],
+//   exports: [RouterModule],
+//   providers: [
+//     {
+//       provide: APP_INITIALIZER,
+//       useFactory: initializeRoutes,
+//       deps: [NavigationService, Router],
+//       multi: true
+//     }
+//   ]
+// })
+// export class AppRoutingModule {}
+
+

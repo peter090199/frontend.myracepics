@@ -132,7 +132,7 @@ body {
   line-height: 1;
   margin: auto !important;
   background-color: #f4eeee;
-  overflow-y: hidden;
+  overflow-y: auto;
   height: 100vh;
 }
 .section {
@@ -861,7 +861,10 @@ h2 {
   max-width: 640px;
 }
 
+.footer-btn{
+  padding: 2px;
 
+}
 .content-scrollable {
   overflow: auto;
   max-height: calc(100vh - 100px);

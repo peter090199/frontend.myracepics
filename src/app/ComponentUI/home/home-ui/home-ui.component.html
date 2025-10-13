@@ -5,19 +5,19 @@
     <ng-container *ngIf="isLoading">
       <mat-card class="post-box-container">
 
-        <mat-card-title class="skeleton-line short"></mat-card-title>
-        <mat-card-subtitle class="skeleton-line shorter"></mat-card-subtitle>
-        <mat-card-title class="skeleton-line short"></mat-card-title>
-        <mat-card-subtitle class="skeleton-line shorter"></mat-card-subtitle>
+        <mat-card-title class="skeleton-line medium"></mat-card-title>
+        <mat-card-subtitle class="skeleton-line medium"></mat-card-subtitle>
+        <mat-card-title class="skeleton-line medium"></mat-card-title>
+        <mat-card-subtitle class="skeleton-line medium"></mat-card-subtitle>
 
         <mat-card-content class="scrollable-content">
           <div class="button-gap">
-            <div class="skeleton-btn small"></div>
-            <div class="skeleton-btn small"></div>
+            <div class="skeleton-btn medium"></div>
+            <div class="skeleton-btn medium"></div>
           </div>
           <div class="button-gap">
-            <div class="skeleton-btn small"></div>
-            <div class="skeleton-btn small"></div>
+            <div class="skeleton-btn medium"></div>
+            <div class="skeleton-btn medium"></div>
           </div>
         </mat-card-content>
       </mat-card>
@@ -30,7 +30,7 @@
           <img *ngIf="profile_pic; else defaultAvatar" [src]="profile_pic.photo_pic" alt="Profile Picture"
             class="profile-pic" />
           <ng-template #defaultAvatar>
-            <img src="assets/default-avatar.png" alt="Default Avatar" class="profile-pic" />
+            <img src="assets/images/default.png" alt="Default Avatar" class="profile-pic" />
           </ng-template>
 
           <div class="edit-overlay" (click)="uploadPic()">
@@ -79,7 +79,7 @@
   </div>
 
   <!-- Middle Column -->
-  <div class="middle-column" (scroll)="onScroll($event)" #middleColumn>
+  <div class="middle-column">
     <!-- Post Input -->
     <div class="post-top-container" *ngIf="!isLoading">
       <div class="input-section">
@@ -92,33 +92,23 @@
       </div>
     </div>
 
-    <!-- Skeleton Posts -->
     <ng-container *ngIf="isLoading">
-      <mat-card *ngFor="let item of skeletonPosts">
-        <mat-card-header>
-          <div class="skeleton-avatar"></div>
-          <div class="skeleton-line short"></div>
-          <div class="skeleton-line shorter"></div>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="skeleton-line"></div>
+      <mat-card *ngFor="let item of skeletonPosts" class="skeleton-post"
+        style="width:600px; height:200px; margin-bottom:20px; background:#ddd; border-radius:8px">
+        <mat-card-header class="skeleton-avatar"></mat-card-header>
+        <div class="skeleton-info">
           <div class="skeleton-line medium"></div>
-          <div class="skeleton-line short"></div>
-        </mat-card-content>
-        <mat-card-content class="skeleton-image"></mat-card-content>
-        <mat-card-footer class="skeleton-footer">
-          <div class="skeleton-btn small"></div>
-          <div class="skeleton-btn small"></div>
-          <div class="skeleton-btn small"></div>
-        </mat-card-footer>
+          <div class="skeleton-line medium"></div>
+        </div>
+        <div class="skeleton-btn medium"></div>
       </mat-card>
     </ng-container>
 
     <!-- Posts -->
-    <mat-card *ngFor="let post of posts" class="post-box-container">
+    <mat-card *ngFor="let post of posts; trackBy: trackByPostId" class="post-box-container" (scroll)="onScroll($event)">
       <mat-card-header>
         <div mat-card-avatar class="avatar">
-          <img [src]="post.profile_pic || 'assets/default.png'" alt="Avatar" />
+          <img [src]="post.profile_pic || 'assets/images/default.png'" alt="Avatar" />
         </div>
         <mat-card-title>
           <a class="user-name">{{ post.Fullname }}</a>
@@ -139,13 +129,13 @@
         </mat-menu>
       </mat-card-header>
       <br><br>
-      <mat-card-content>
-        <div class="content-wrapper" [class.expanded]="post.expanded">
+      <mat-card-content class="content-wrapper" [class.expanded]="post.expanded">
+        <div>
           <p class="content-display">
-            {{ post.expanded ? post.caption : (post.caption | slice:0:400) + '...' }}
+            {{ post.expanded ? post.caption : (post.caption | slice:0:800) + '...' }}
           </p>
         </div>
-        <a *ngIf="post.caption.length > 400" (click)="post.expanded = !post.expanded" class="see-more">
+        <a *ngIf="post.caption.length > 900" (click)="post.expanded = !post.expanded" class="see-more">
           {{ post.expanded ? 'See Less' : 'See More' }}
         </a>
       </mat-card-content>
@@ -205,15 +195,15 @@
             <div *ngFor="let person of reaction.person" class="reaction-user">
               <span>{{ person.fullname }}</span>
             </div>
-             <div *ngIf="reaction.person.length > 11" class="reaction-more">
-                  +{{ reaction.person.length - 11 }} more
-                </div>
+            <div *ngIf="reaction.person.length > 11" class="reaction-more">
+              +{{ reaction.person.length - 11 }} more
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Footer -->
-      <mat-card-footer style="margin-bottom: 7px;">
+      <mat-card-footer style="font-size: 9px;padding: 2pt;">
         <div class="footer-btn like-button-wrapper" (mouseenter)="showReaction(post.id)"
           (mouseleave)="hideReaction(post.id)">
 
@@ -257,6 +247,12 @@
         </div>
       </mat-card-footer>
     </mat-card>
+
+    <button mat-fab color="primary" *ngIf="showScrollTop" (click)="scrollToTop()" class="scroll-to-top">
+      <mat-icon>arrow_upward</mat-icon>
+    </button>
+
+
   </div>
 
   <!-- Right Sidebar -->
@@ -276,12 +272,13 @@
           </div>
           <div class="skeleton-btn small"></div>
         </div>
+
       </ng-container>
 
       <!-- User Suggestions -->
       <div *ngIf="!isLoading && users && users.length > 0; else noData">
         <div *ngFor="let user of users" class="client-item">
-          <img [src]="user.photo_pic || 'assets/default-avatar.png'" alt="{{ user.fullname }}" class="client-photo" />
+          <img [src]="user.photo_pic || 'assets/images/default.png'" alt="{{ user.fullname }}" class="client-photo" />
 
           <div class="client-info">
             <h3>
@@ -350,9 +347,8 @@
       </ng-template>
     </mat-card-content>
     <div class="spacer-top"></div>
-  </div>
 
-  <button class="scroll-to-top" *ngIf="showScrollTop" (click)="scrollToTop()">
-    <mat-icon>arrow_upward</mat-icon>
-  </button>
-</div>
+
+
+
+  </div>

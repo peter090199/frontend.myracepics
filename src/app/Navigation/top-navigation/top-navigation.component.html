@@ -1,5 +1,4 @@
-<mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
-
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 <div class="app-container">
   <mat-toolbar class="header">
 
@@ -55,7 +54,7 @@
 
       <div *ngIf="isSearchOpen" class="search-overlay">
         <div *ngIf="isMobile">
-          <app-search></app-search>
+          <!-- <app-search></app-search> -->
         </div>
         <button mat-icon-button class="close-btn" (click)="toggleSearch()">
           <mat-icon>close</mat-icon>
@@ -145,6 +144,7 @@
         </mat-menu>
       </div>
     </nav>
+
   </mat-toolbar>
 
   <!-- Sidebar for mobile -->

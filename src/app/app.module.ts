@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MaterialModule } from 'src/Material/Material.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -105,11 +105,14 @@ import { EditsubmenuUIComponent } from './ComponentUI/system/editsubmenu-ui/edit
 import { UsersUIComponent } from './ComponentSharedUI/system/users-ui/users-ui.component';
 import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
 import { ReactionPostComponent } from './ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
-
+import { TNavigationService } from './services/TNavigation/tnavigation.service';
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+// export function preloadNavigationData(navService: TNavigationService) {
+//   return () => navService.getData().toPromise().then(() => true);
+// }
 
 @NgModule({
   declarations: [
@@ -201,7 +204,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     EditsubmenuUIComponent,
     UsersUIComponent,
     TopheaderComponent,
-    ReactionPostComponent
+    ReactionPostComponent,
   ],
   imports: [
     BrowserModule,
@@ -220,15 +223,17 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient]
       }
      }),
-// ServiceWorkerModule.register('ngsw-worker.js', {
-//   enabled: environment.production,
-//   // Register the ServiceWorker as soon as the application is stable
-//   // or after 30 seconds (whichever comes first).
-//   registrationStrategy: 'registerWhenStable:30000'
-// })
-    
   ],
-  providers: [CookieService,DatePipe],
+  providers: [
+  CookieService,
+  DatePipe,
+  // {
+  //   // provide: APP_INITIALIZER,
+  //   // // useFactory: preloadNavigationData,
+  //   // deps: [TNavigationService],
+  //   // multi: true
+  // }
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
