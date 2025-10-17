@@ -1,15 +1,23 @@
 <div class="container">
 
-  <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
+  <!-- <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
     <img src="
         https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
       alt="Cover Photo" class="cover-photo-img" />
     <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button>
+  </div> -->
+  <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
+    <img 
+      [src]="profiles?.coverPhoto || 'assets/images/default-cover.jpg'" 
+      alt="Cover Photo" 
+      class="cover-photo-img" 
+    />
   </div>
 
   <ng-template #coverSkeleton>
     <div class="skeleton skeleton-img" style="height:200px;width:100%;border-radius:0;"></div>
   </ng-template>
+
 
 
   <div *ngIf="!isloading; else profileSkeleton" class="profile-details">
@@ -25,23 +33,10 @@
           }}</small></h1>
       <p>761 followers · 369 following</p>
       <div class="button-gap">
-        <!-- <button *ngIf="profiles?.btnCurriculum === 1" mat-flat-button (click)="UserCV()" color="primary">New Curriculum
-          Vitae</button> -->
 
-        <!-- <button *ngIf="profiles?.btnCurriculum === 1" mat-raised-button (click)="uploadPic()">
-          <mat-icon>cloud_upload</mat-icon> Upload
-        </button> -->
-        <!-- <button mat-flat-button color="warn" routerLink="/apply-job">
-          <mat-icon>work</mat-icon>
-          Apply Job
-        </button> -->
-
-        <button mat-flat-button [color]="
-                  followStatus === 'accepted'
-                    ? 'accent'
-                    : followStatus === 'pending'
-                    ? 'warn'
-                    : 'primary'" *ngIf="currentUserCode !== this.code"
+        <button class="follow-btn" mat-flat-button
+          [color]="followStatus === 'accepted'? 'accent': followStatus === 'pending'? 'warn' : 'primary'"
+          [disabled]="currentUserCode === companyId"
           (click)="AddFollow(profiles.code, followStatus, profiles.fname, profiles.lname)">
           <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
           <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
@@ -52,6 +47,9 @@
             <span *ngSwitchCase="'pending'">Pending</span>
             <span *ngSwitchCase="'accepted'">Followed</span>
           </ng-container>
+
+          <!-- Optional: show label if disabled -->
+          <span *ngIf="currentUserCode === companyId">(You)</span>
         </button>
 
 
@@ -70,57 +68,57 @@
 
 
   <mat-tab-group class="tabs-container">
-   <mat-tab label="Home">
+    <mat-tab label="Home">
 
-  <!-- Loading skeleton -->
-  <div *ngIf="isloading">
-    <mat-card class="post-box-container">
-      <mat-card-header>
-        <div class="skeleton skeleton-avatar"></div>
-        <div class="skeleton skeleton-text" style="width: 50%"></div>
-      </mat-card-header>
-      <div class="skeleton skeleton-img"></div>
-      <div class="skeleton skeleton-text"></div>
-      <div class="skeleton skeleton-text" style="width: 70%"></div>
-    </mat-card>
-  </div>
-
-  <!-- Company Profile Home -->
-  <mat-card class="post-box-container" *ngIf="profiles">
-    <!-- Cover Photo -->
-    <div class="cover-photo">
-      <img [src]="profiles.coverPhoto || 'assets/default-cover.jpg'" alt="Company Cover">
-    </div>
-
-    <!-- Logo + Basic Info -->
-    <div class="company-header">
-      <img class="company-logo" [src]="profiles.logo || 'assets/default-logo.png'" alt="Company Logo">
-      <div class="company-info">
-        <h1>{{ profiles.fullname }} <small style="color: rgb(24, 24, 24);">{{ profiles.profession
-          }}</small></h1>
-        <p>{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
-        <a [href]="profiles.companywebsite" target="_blank" rel="noopener noreferrer">
-          {{ profiles.companywebsite }}
-        </a>
+      <!-- Loading skeleton -->
+      <div *ngIf="isloading">
+        <mat-card class="post-box-container">
+          <mat-card-header>
+            <div class="skeleton skeleton-avatar"></div>
+            <div class="skeleton skeleton-text" style="width: 50%"></div>
+          </mat-card-header>
+          <div class="skeleton skeleton-img"></div>
+          <div class="skeleton skeleton-text"></div>
+          <div class="skeleton skeleton-text" style="width: 70%"></div>
+        </mat-card>
       </div>
-    </div>
 
-    <!-- About Section -->
-    <mat-divider></mat-divider>
-    <div class="about-section">
-      <h3>About</h3>
-      <p>{{ profiles.about || 'No company description available.' }}</p>
-    </div>
+      <!-- Company Profile Home -->
+      <mat-card class="post-box-container" *ngIf="profiles">
+        <!-- Cover Photo -->
+        <div class="cover-photo">
+          <img [src]="profiles.coverPhoto || 'assets/default-cover.jpg'" alt="Company Cover">
+        </div>
 
-    <!-- Location -->
-    <mat-divider></mat-divider>
-    <div class="location-section">
-      <h3>Headquarters</h3>
-      <p>{{ profiles.current_location || 'Location not provided' }}</p>
-    </div>
-  </mat-card>
+        <!-- Logo + Basic Info -->
+        <div class="company-header">
+          <img class="company-logo" [src]="profiles.logo || 'assets/default-logo.png'" alt="Company Logo">
+          <div class="company-info">
+            <h1>{{ profiles.fullname }} <small style="color: rgb(24, 24, 24);">{{ profiles.profession
+                }}</small></h1>
+            <p>{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
+            <a [href]="profiles.companywebsite" target="_blank" rel="noopener noreferrer">
+              {{ profiles.companywebsite }}
+            </a>
+          </div>
+        </div>
 
-</mat-tab>
+        <!-- About Section -->
+        <mat-divider></mat-divider>
+        <div class="about-section">
+          <h3>About</h3>
+          <p>{{ profiles.about || 'No company description available.' }}</p>
+        </div>
+
+        <!-- Location -->
+        <mat-divider></mat-divider>
+        <div class="location-section">
+          <h3>Headquarters</h3>
+          <p>{{ profiles.current_location || 'Location not provided' }}</p>
+        </div>
+      </mat-card>
+
+    </mat-tab>
 
     <mat-tab label="Post">
 
@@ -172,7 +170,7 @@
 
               <!-- Image Gallery -->
               <div class="fb-gallery" [ngClass]="{ 'single': (post.images?.length + post.videos?.length) === 1,
-                  'multi': (post.images?.length + post.videos?.length) > 1 }">
+                'multi': (post.images?.length + post.videos?.length) > 1 }">
 
                 <!-- Loop over IMAGES -->
                 <div class="gallery-item" *ngFor="let image of post.images?.slice(0, maxImages); let i = index"
@@ -319,9 +317,6 @@
 
     <mat-tab label="About">
       <div class="tab-content">
-        <h2>About</h2>
-        <mat-divider></mat-divider>
-
         <mat-card-content class="post-box-container">
           <mat-list>
             <mat-list-item *ngIf="profiles">
@@ -365,9 +360,6 @@
 
     <mat-tab label="Jobs">
       <div class="tab-content">
-        <h2>Jobs</h2>
-        <mat-divider></mat-divider>
-
         <mat-card-content>
           <section class="cv-section" *ngIf="profiles?.lines?.education?.length > 0">
             <mat-list *ngFor="let education of profiles.lines.education">
@@ -404,9 +396,6 @@
     </mat-tab>
 
     <mat-tab label="People">
-      <h2>People</h2>
-      <mat-divider></mat-divider>
-
       <div class="tab-content">
         <mat-card-content>
           <section class="cv-section" *ngIf="profiles?.lines?.skills?.length > 0">
@@ -426,13 +415,13 @@
 </div>
 
 <!-- 
-  <div class="tab-footer">
-    
-    <div class="footer-links">
-      <a>&copy; 2025 Your Company. All rights reserved.</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Help</a>
-    </div>
-  </div>
-   -->
+<div class="tab-footer">
+
+<div class="footer-links">
+<a>&copy; 2025 Your Company. All rights reserved.</a>
+<a href="#">Privacy Policy</a>
+<a href="#">Terms of Service</a>
+<a href="#">Help</a>
+</div>
+</div>
+-->

@@ -1,23 +1,44 @@
-<mat-card class="profile-card mat-elevation-z6">
+<mat-card class="profile-card mat-elevation-z4">
   <!-- Loader -->
   <mat-card-footer *ngIf="isLoading">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </mat-card-footer>
 
-  <!-- Profile Header -->
-  <div class="profile-header">
-    <img
-      class="profile-avatar"
-      [src]="users?.profile_picture || 'assets/avatar.png'"
-      alt="Profile Picture"
-    />
-    <div class="profile-info">
-      <h2>{{ users?.fullname || 'User Name' }}</h2>
-      <p class="subtitle">{{ users?.profession || 'No profession' }}</p>
-      <small>{{ users?.role_code || 'No role' }}</small>
-    </div>
-  </div>
+  <!-- Cover Photo + Avatar + Edit Button -->
+  <div class="cover-photo-container">
+    <!-- Cover Photo -->
+    <img class="cover-photo-img" [src]="users?.coverPhoto || 'assets/default-cover.jpg'" alt="Cover Photo" />
 
+    <!-- Edit button (top-right, only visible if user owns profile) -->
+    <button mat-stroked-button color="primary" class="edit-cover-btn" (click)="coverInput.click()">
+      <mat-icon>edit</mat-icon>
+      Edit Cover Photo
+    </button>
+
+    <!-- Profile avatar & info overlay -->
+    <div class="profile-avatar-info">
+      <div class="profile-avatar-wrapper">
+        <img class="profile-avatar" [src]="users?.profile_picture || 'assets/avatar.png'" alt="Profile Picture" />
+
+        <!-- Edit icon overlay -->
+        <button mat-button color="primary" class="edit-avatar-btn" (click)="avatarInput.click()">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <!-- Hidden file input for avatar -->
+        <input type="file" #avatarInput accept="image/*" style="display: none" (change)="onAvatarSelected($event)" />
+      </div>
+
+      <div class="profile-info">
+        <h2>{{ users?.fullname || 'User Name' }}</h2>
+        <p class="subtitle">{{ users?.profession || 'No profession' }}</p>
+        <small>{{ users?.role_code || 'No role' }}</small>
+      </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" #coverInput accept="image/*" style="display: none" (change)="onCoverSelected($event)" />
+  </div>
   <mat-divider></mat-divider>
 
   <!-- Tabs for Profile Management -->
@@ -37,11 +58,7 @@
 
         <div class="profile-row">
           <mat-icon class="profile-icon">link</mat-icon>
-          <a
-            *ngIf="users?.companywebsite"
-            [href]="'https://' + users.companywebsite"
-            target="_blank"
-          >
+          <a *ngIf="users?.companywebsite" [href]="'https://' + users.companywebsite" target="_blank">
             {{ users.companywebsite }}
           </a>
           <span *ngIf="!users?.companywebsite">No website</span>
@@ -75,29 +92,29 @@
           <mat-icon class="profile-icon">visibility</mat-icon>
           <span>Account Visibility: {{ users?.visibility || 'Private' }}</span>
         </div>
-  
-      <mat-card-actions class="button-end">
-        <button mat-raised-button color="primary" (click)="editProfile()">
-          Edit Profile
-        </button>
-        <button mat-stroked-button color="accent" (click)="Changepassword()">
-          Change Password
-        </button>
-      </mat-card-actions>
-          </mat-card-content>
+
+        <mat-card-actions class="button-end">
+          <button mat-raised-button color="primary" (click)="editProfile()">
+            Edit Profile
+          </button>
+          <button mat-stroked-button color="accent" (click)="Changepassword()">
+            Change Password
+          </button>
+        </mat-card-actions>
+      </mat-card-content>
     </mat-tab>
 
     <!-- Activity -->
     <mat-tab label="Activity">
       <mat-card-content>
-         <div class="profile-row">
-        <p *ngIf="!users?.activity?.length">No recent activity.</p>
-        <ul *ngIf="users?.activity?.length">
-          <li *ngFor="let activity of users.activity">
-            <mat-icon class="profile-icon">history</mat-icon>
-            {{ activity }}
-          </li>
-        </ul>
+        <div class="profile-row">
+          <p *ngIf="!users?.activity?.length">No recent activity.</p>
+          <ul *ngIf="users?.activity?.length">
+            <li *ngFor="let activity of users.activity">
+              <mat-icon class="profile-icon">history</mat-icon>
+              {{ activity }}
+            </li>
+          </ul>
         </div>
       </mat-card-content>
     </mat-tab>

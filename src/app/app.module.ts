@@ -105,7 +105,7 @@ import { EditsubmenuUIComponent } from './ComponentUI/system/editsubmenu-ui/edit
 import { UsersUIComponent } from './ComponentSharedUI/system/users-ui/users-ui.component';
 import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
 import { ReactionPostComponent } from './ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
-import { TNavigationService } from './services/TNavigation/tnavigation.service';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 // Loader function for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -215,6 +215,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     MatSidenavModule,
     FormsModule,
+
     ToastrModule.forRoot(), // Correctly placed ToastrModule
     TranslateModule.forRoot({
       loader: {

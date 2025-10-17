@@ -304,18 +304,14 @@ desktopMenu: MatMenuPanel<any>;
       try {
         const response = await firstValueFrom(this.navigationService.getData());
         this.nav_module = response;
-        this.isLoading = false;
+        this.isLoading = true;
       } catch (error) {
         console.error('Error fetching modules:', error);
-        this.success = false;
+        this.isLoading = false;
       } finally {
         this.isLoading = false;
       }
     }
-    
-trackByLink(index: number, item: any): string {
-  return item.id || item.route || index.toString();
-}
 
 
 

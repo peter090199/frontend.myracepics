@@ -51,6 +51,7 @@ export class UserListComponent implements OnInit {
     { label: 'Experience level', options: ['Entry', 'Mid', 'Senior'], selected: '' },
     { label: 'Remote', options: ['On-site', 'Hybrid', 'Fully Remote'], selected: '' }
   ];
+filter: any;
 
   selectFilter(filter: any, value: string) {
     filter.selected = value; // Update selected value

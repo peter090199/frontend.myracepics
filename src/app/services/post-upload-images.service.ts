@@ -58,8 +58,19 @@ export class PostUploadImagesService {
     return this.http.post<any>(`${_url}savePost`, formData, { headers });
     }
 
+ /**
+   * Get posts (user + followed users) with pagination
+   * @param page current page number
+   * @param perPage posts per page (default 5)
+   */
 
-    getDataPostAddFollow(): Observable<any> {
+    getDataPostAddFollow(page: number = 1, perPage: number = 5): Observable<any> {
+      const headers = this.createHeaders();
+      const params = new HttpParams().set('page', page).set('per_page', perPage);
+      return this.http.get(`${_url}/posts/followed`, { headers, params });
+    }
+    
+    getDataPostAddFollowx(): Observable<any> {
       const headers = this.createHeaders();
      // const params = new HttpParams().set('code', code); // Set code as query param
       return this.http.get(`${_url}getPost`, { headers });

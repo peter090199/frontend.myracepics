@@ -5,6 +5,7 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ForgetPasswordService } from 'src/app/services/Password/Forget/forget-password.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password-ui',
@@ -22,7 +23,7 @@ export class ForgotPasswordUIComponent implements OnInit {
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
     private route: Router,
-    private forget: ForgetPasswordService
+    private forget: ForgetPasswordService,private auth:AuthService
   ) {}
 
   ngOnInit(): void {
@@ -31,6 +32,52 @@ export class ForgotPasswordUIComponent implements OnInit {
     });
   }
 
+   phone = '';
+  code = '';
+  resetToken = '';
+  password = '';
+  password_confirm = '';
+  step: 'enter-phone'|'enter-code'|'reset-password' = 'enter-phone';
+
+
+
+  // requestCode() {
+  //   this.auth.requestCode(this.phone).subscribe({
+  //     next: () => this.step = 'enter-code',
+  //     error: (e: { error: { message: any; }; }) => alert(e.error.message)
+  //   });
+  // }
+
+    requestCode() {
+      console.log(this.phone,this.code)
+    this.auth.verifyCode(this.phone,this.code).subscribe({
+      next: () => this.step = 'enter-code',
+      error: (e: { error: { message: any; }; }) => alert(e.error.message)
+    });
+  }
+
+verifyCode() {
+  this.auth.verifyCode(this.phone, this.code).subscribe({
+    next: (res: any) => {
+      if (res.message === 'Phone verified successfully') {
+        this.step = 'reset-password';
+      } else {
+        alert(res.message);
+      }
+    },
+    error: (e: any) => alert(e.error?.message || 'Verification failed')
+  });
+}
+
+
+
+  resetPassword() {
+    this.auth.resetPassword(this.phone, this.resetToken, this.password, this.password_confirm).subscribe({
+      next: () => alert('Password reset successful'),
+      error: (e: { error: { message: any; }; }) => alert(e.error.message)
+    });
+  }
+  
  progressValue: number = 0;
 intervalId: any;
 

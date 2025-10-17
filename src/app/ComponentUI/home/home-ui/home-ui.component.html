@@ -1,4 +1,15 @@
+
+    <button
+    *ngIf="newPostsAvailable"
+    class="refresh-btn"
+    (click)="refreshPosts()"
+  >
+    New posts available — click to refresh 🔄
+  </button>
+  
 <div class="content-body">
+  
+
   <!-- Left Sidebar -->
   <div class="left-sidebar">
     <!-- Skeleton Loader -->
@@ -58,7 +69,7 @@
       <mat-card-content class="scrollable-content">
         <!-- Buttons -->
         <div class="button-gap" *ngIf="showDefUserButtons">
-          <button mat-button class="list-label" [routerLink]="['/profile/', currentUserCode]">
+          <button mat-button class="list-label" [routerLink]="['/profile/', profiles.code]">
             <mat-icon>person</mat-icon> View Profile
           </button>
           <button mat-button class="list-label" (click)="printCV()">
@@ -67,7 +78,7 @@
         </div>
 
         <div class="button-gap" *ngIf="showClientOrAdminButtons">
-          <button mat-button class="list-label" [routerLink]="['/company_profile/', currentUserCode]">
+          <button mat-button class="list-label" [routerLink]="['/client_profile/', profiles.code]">
             <mat-icon>person</mat-icon> View Profile
           </button>
           <button mat-button class="list-label">
@@ -78,8 +89,20 @@
     </mat-card>
   </div>
 
+
+
   <!-- Middle Column -->
-  <div class="middle-column">
+  <div class="middle-column"  infiniteScroll
+  (scrolled)="onScroll2()">
+
+    <button
+    *ngIf="newPostsAvailable"
+    class="refresh-btn"
+    (click)="refreshPosts()"
+  >
+    New posts available — click to refresh 🔄
+  </button>
+
     <!-- Post Input -->
     <div class="post-top-container" *ngIf="!isLoading">
       <div class="input-section">
@@ -322,7 +345,7 @@
               : user.follow_status === 'pending'
               ? 'warn'
               : 'primary'
-          " *ngIf="currentUserCode !== user.code"
+              " *ngIf="currentUserCode !== user.code"
               (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)">
               <!-- Icons -->
               <mat-icon *ngIf="user.follow_status === 'not_following'">person_add</mat-icon>

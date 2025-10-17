@@ -1,126 +1,60 @@
-````<!--  
-    <div class="heading-container">
-      <h2 *ngIf="searchQuery">Search Results for "{{ searchQuery }}"</h2>
-   </div> -->
-
-
-
 <mat-toolbar class="toolbar">
-  <!-- <app-search *ngIf="isMobile"></app-search> -->
-  <button mat-button [matMenuTriggerFor]="jobsMenu" class="jobs-btn" *ngIf="!isMobile">
+  <button mat-button [matMenuTriggerFor]="jobsMenu" *ngIf="!isMobile">
     {{ selectedJob || 'Jobs' }} <mat-icon>arrow_drop_down</mat-icon>
   </button>
-
-  
-  <!-- Jobs Menu -->
-  <mat-menu #jobsMenu="matMenu" >
+  <mat-menu #jobsMenu="matMenu">
     <button mat-menu-item *ngFor="let job of jobCategories" (click)="selectJob(job)">
       {{ job }}
     </button>
   </mat-menu>
 
-  <div class="filter-container"  *ngIf="!isMobile">
-    <ng-container *ngFor="let filter of filters">
-      <!-- Mat Menu -->
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngFor="let item of filter.options" (click)="selectFilter(filter, item)">
-          {{ item }}
-        </button>
-      </mat-menu>
-  
-      <!-- Button with Dropdown -->
-      <button mat-button [matMenuTriggerFor]="menu" class="filter-chip">
-        {{ filter.selected || filter.label }} <mat-icon>arrow_drop_down</mat-icon>
-      </button>
-    </ng-container>
+<div class="filter-container" *ngIf="!isMobile"> <ng-container *ngFor="let filter of filters">
+   <!-- Mat Menu --> <mat-menu #menu="matMenu"> 
+    <button mat-menu-item *ngFor="let item of filter.options" (click)="selectFilter(filter, item)"> {{ item }} </button> 
+  </mat-menu> <!-- Button with Dropdown --> <button mat-button [matMenuTriggerFor]="menu" class="filter-chip"> 
+    {{ filter.selected || filter.label }} <mat-icon>arrow_drop_down</mat-icon> </button> </ng-container> </div>
 
-
-  </div>
-
-  <div class="menu-container">
-    <button mat-icon-button [matMenuTriggerFor]="mobileMenu" aria-label="Mobile Menu" *ngIf="isMobile">
-      <mat-icon class="vertical-icon">more_vert</mat-icon>
-    </button>
-  </div>
-    
-    <mat-menu #mobileMenu="matMenu">
-      <button mat-menu-item class="horizontal-menu-item">
-        <mat-icon>dialpad</mat-icon> <span>Redial</span>
-      </button>
-      <button mat-menu-item class="horizontal-menu-item" disabled>
-        <mat-icon>voicemail</mat-icon> <span>Check Voice Mail</span>
-      </button>
-      <button mat-menu-item class="horizontal-menu-item">
-        <mat-icon>notifications_off</mat-icon> <span>Disable alerts</span>
-      </button>
-    </mat-menu>
-    
-  
-
+  <button mat-icon-button [matMenuTriggerFor]="mobileMenu" *ngIf="isMobile">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #mobileMenu="matMenu">
+    <button mat-menu-item><mat-icon>dialpad</mat-icon>Redial</button>
+    <button mat-menu-item disabled><mat-icon>voicemail</mat-icon>Check Voicemail</button>
+    <button mat-menu-item><mat-icon>notifications_off</mat-icon>Disable Alerts</button>
+  </mat-menu>
 </mat-toolbar>
-  <div class="example-spacer"></div>
 
-  <div class="search-results">
-      <div *ngIf="onlineUsers.length === 0 && offlineUsers.length === 0" class="no-results">
-            No results found.
-      </div>
-    
-      <div *ngIf="onlineUsers.length > 0">
-          <div *ngFor="let user of onlineUsers" class="search-item">
-              <div class="user-card">
-                  <div class="profile-card">
-                      <div class="avatar-container">
-                          <img class="avatar" [src]="user.photo_pic || 'assets/images/default2.png'" alt="Profile"/>
-                          <mat-icon class="status-icon online">circle</mat-icon>
-                      </div>
-                      <div class="profile-info">
-                          <a class="user-name" [href]="'/profile/' + user.code">{{ user.fullname }}</a>
-                          <p class="role">{{ user.role || 'N/A' }}</p>
-                          <p class="location">{{ user.location || 'Unknown' }}</p>
-                          <div class="experience">
-                              <mat-icon>work</mat-icon>
-                              <span>Experience: {{ user.experience || 'N/A' }}</span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="user-info">
-                      <p class="user-skills">{{ user.skills || 'No skills listed' }}</p>
-                  </div>
-                  <div class="button-gap">
-                      <button mat-raised-button color="primary" routerLink="/connect">Connect</button>
-                      <button mat-stroked-button color="primary" [routerLink]="['/profile', user.code]">View Profile</button>
-                  </div>
-              </div>
+<div class="search-results">
+  <div *ngIf="!onlineUsers.length && !offlineUsers.length" class="no-results">No results found.</div>
+
+  <ng-container *ngFor="let group of [{ users: onlineUsers, status: 'online' }, { users: offlineUsers, status: 'offline' }]">
+    <div *ngFor="let user of group.users" class="user-card">
+      <div class="profile-card">
+        <div class="avatar-container">
+          <img class="avatar" [src]="user.photo_pic || 'assets/images/default2.png'" alt="Profile" />
+          <mat-icon class="status-icon" [ngClass]="group.status">circle</mat-icon>
+        </div>
+
+        <div class="profile-info">
+          <a [routerLink]="user.role_code === 'DEF-USERS' ? ['/profile', user.code] : ['/client_profile', user.code]"
+             class="custom-title">{{ user.fullname }}</a>
+          <p class="role">{{ user.role || 'N/A' }}</p>
+          <p class="location">{{ user.location || 'Unknown' }}</p>
+          <div class="experience">
+            <mat-icon>work</mat-icon>
+            <span>Experience: {{ user.experience || 'N/A' }}</span>
           </div>
+        </div>
       </div>
 
-      <div *ngIf="offlineUsers.length > 0">
-          <div *ngFor="let user of offlineUsers" class="search-item">
-              <div class="user-card">
-                  <div class="profile-card">
-                      <div class="avatar-container">
-                          <img class="avatar" [src]="user.photo_pic || 'assets/images/default2.png'" alt="Profile"/>
-                          <mat-icon class="status-icon offline">circle</mat-icon>
-                      </div>
-                      <div class="profile-info">
-                          <a class="user-name" [href]="'/profile/' + user.code">{{ user.fullname }}</a>
-                          <p class="role">{{ user.role || 'N/A' }}</p>
-                          <p class="location">{{ user.location || 'Unknown' }}</p>
-                          <div class="experience">
-                              <mat-icon>work</mat-icon>
-                              <span>Experience: {{ user.experience || 'N/A' }}</span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="user-info">
-                      <p class="user-skills">{{ user.skills || 'No skills listed' }}</p>
-                  </div>
-                  <div class="button-gap">
-                      <button mat-raised-button color="primary" routerLink="/connect">Connect</button>
-                      <button mat-stroked-button color="primary" [routerLink]="['/profile', user.code]">View Profile</button>
-                  </div>
-              </div>
-          </div>
+      <p class="user-skills">{{ user.skills || 'No skills listed' }}</p>
+      <div class="button-gap">
+        <button mat-raised-button color="primary" routerLink="/connect">Connect</button>
+        <button mat-stroked-button color="primary"
+          [routerLink]="user.role_code === 'DEF-USERS' ? ['/profile', user.code] : ['/client_profile', user.code]">
+          View Profile
+        </button>
       </div>
-  </div>
-
+    </div>
+  </ng-container>
+</div>

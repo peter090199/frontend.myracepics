@@ -108,13 +108,13 @@ export class CompanyProfileUIComponent implements OnInit {
   ngOnInit(): void {
     this.currentUserCode = this.authServiceCode.getAuthCode();
     this.companyId = this.route.snapshot.paramMap.get('code') || '';
-  
+
     this.route.paramMap.subscribe(params => {
-    const code = params.get('code');  
-    if (code) {
-      this.loadProfileCV(code);
-    }
-  });
+      const code = params.get('code');
+      if (code) {
+        this.loadProfileCV(code);
+      }
+    });
 
     this.loadUserPost();
     this.loadUserData();
@@ -126,7 +126,7 @@ export class CompanyProfileUIComponent implements OnInit {
 
   followId: number = 0;
   checkFollowStatus() {
-    this.clientServices.getPendingFollowStatus(this.code).subscribe((res: any) => {
+    this.clientServices.getPendingFollowStatus(this.currentUserCode).subscribe((res: any) => {
       this.followStatus = res.follow_status || 'none';
 
       if (res.data && res.data.length > 0) {
@@ -186,64 +186,64 @@ export class CompanyProfileUIComponent implements OnInit {
     return `${diffInHours} hours ago`;
   }
 
-loadUserPost(): void {
-  this.isloading = true; // start skeleton
+  loadUserPost(): void {
+    this.isloading = true; // start skeleton
 
-  this.postDataservices.getDataPost(this.companyId).subscribe({
-    next: (res) => {
-      if (res && res.success && Array.isArray(res.data)) {
-        this.posts = res.data.map((post: any) => {
-          // ✅ Fix image URLs
-          const images = (post.images || []).map((img: any) => ({
-            ...img,
-            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
-              img.path_url.replace(/\\/g, '')
-          }));
+    this.postDataservices.getDataPost(this.companyId).subscribe({
+      next: (res) => {
+        if (res && res.success && Array.isArray(res.data)) {
+          this.posts = res.data.map((post: any) => {
+            // ✅ Fix image URLs
+            const images = (post.images || []).map((img: any) => ({
+              ...img,
+              path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
+                img.path_url.replace(/\\/g, '')
+            }));
 
-          // ✅ Fix video URLs
-          const videos = (post.videos || []).map((vid: any) => ({
-            ...vid,
-            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
-              vid.path_url.replace(/\\/g, '')
-          }));
+            // ✅ Fix video URLs
+            const videos = (post.videos || []).map((vid: any) => ({
+              ...vid,
+              path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
+                vid.path_url.replace(/\\/g, '')
+            }));
 
-          // ✅ Fix comments & replies
-          const comments = (post.comments || []).map((comment: any) => ({
-            ...comment,
-            profile_pic: comment.profile_pic
-              ? comment.profile_pic.replace(/\\/g, '')
-              : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
-            replies: (comment.replies || []).map((reply: any) => ({
-              ...reply,
-              profile_pic: reply.profile_pic
-                ? reply.profile_pic.replace(/\\/g, '')
-                : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png'
-            }))
-          }));
+            // ✅ Fix comments & replies
+            const comments = (post.comments || []).map((comment: any) => ({
+              ...comment,
+              profile_pic: comment.profile_pic
+                ? comment.profile_pic.replace(/\\/g, '')
+                : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
+              replies: (comment.replies || []).map((reply: any) => ({
+                ...reply,
+                profile_pic: reply.profile_pic
+                  ? reply.profile_pic.replace(/\\/g, '')
+                  : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png'
+              }))
+            }));
 
-          return {
-            ...post,
-            fullname: post.fullname || post.Fullname || "Unknown User",
-            profile_pic: post.profile_pic
-              ? post.profile_pic.replace(/\\/g, '')
-              : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
-            images,
-            videos,
-            comments,
-            activeHours: this.getActiveHours(post.lastActive), // if backend sends lastActive
-            followers: post.followers || 0,
-            visibleComments: 3
-          };
-        });
+            return {
+              ...post,
+              fullname: post.fullname || post.Fullname || "Unknown User",
+              profile_pic: post.profile_pic
+                ? post.profile_pic.replace(/\\/g, '')
+                : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
+              images,
+              videos,
+              comments,
+              activeHours: this.getActiveHours(post.lastActive), // if backend sends lastActive
+              followers: post.followers || 0,
+              visibleComments: 3
+            };
+          });
+        }
+        this.isloading = false; // ✅ stop skeleton after success
+      },
+      error: (err) => {
+        console.error('Error fetching posts:', err);
+        this.isloading = false; // ✅ stop skeleton on error too
       }
-      this.isloading = false; // ✅ stop skeleton after success
-    },
-    error: (err) => {
-      console.error('Error fetching posts:', err);
-      this.isloading = false; // ✅ stop skeleton on error too
-    }
-  });
-}
+    });
+  }
 
 
 
@@ -314,7 +314,7 @@ loadUserPost(): void {
   }
 
   loadProfileCV(code: string) {
-    console.log("code: ",code)
+    console.log("code: ", code)
     this.profile.getCompanyProfile(code).subscribe({
       next: (res) => {
         if (res.success == true) {
@@ -494,6 +494,40 @@ loadUserPost(): void {
       }
     });
   }
+
+
+  onCoverSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    // Show preview instantly
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.profiles.coverPhoto = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    // Optional: upload to backend
+    const formData = new FormData();
+    formData.append('cover_photo', file);
+    formData.append('user_code', this.currentUserCode);
+
+    this.isloading = true;
+
+    // this.http.post('/api/upload-cover', formData).subscribe({
+    //   next: (res: any) => {
+    //     console.log('Cover photo updated successfully');
+    //     this.isloading = false;
+    //   },
+    //   error: (err) => {
+    //     console.error('Error uploading cover photo', err);
+    //     this.isloading = false;
+    //   },
+    // });
+  }
+
 
   // AddFollow(code: any, status: string, profilename:any,lname:any): void {
   //   if (!code) {

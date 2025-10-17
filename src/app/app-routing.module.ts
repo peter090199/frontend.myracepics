@@ -77,7 +77,7 @@ const routes: Routes = [
       { path: 'jobs', component: JobsComponent },
       { path: 'recommended-jobs/:transNo', component: JobsProfileComponent },
       { path: 'posting-job', component: PostingJobComponent },
-      { path: 'company_profile/:code', component: CompanyProfileUIComponent },
+      { path: 'client_profile/:code', component: CompanyProfileUIComponent },
       { path: 'apply-job/:transNo', component: ApplyJobComponent },
       { path: 'applied-jobs', component: ListAppliedJobsComponent },
 

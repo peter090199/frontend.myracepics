@@ -1,0 +1,24 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Ensure mod_rewrite is working in the root directory
+    RewriteBase /
+
+    # Redirect all non-file, non-directory requests to index.html
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /index.html [L]
+
+    # Browser caching for static assets
+    <IfModule mod_headers.c>
+        # Cache images, CSS, JavaScript for 1 month
+        <FilesMatch "\.(jpg|jpeg|png|gif|css|js|ico|webp|svg|woff|woff2)$">
+            Header set Cache-Control "max-age=2592000, public"
+        </FilesMatch>
+
+        # Cache HTML files for 1 day
+        <FilesMatch "\.html$">
+            Header set Cache-Control "max-age=86400, public"
+        </FilesMatch>
+    </IfModule>
+</IfModule>

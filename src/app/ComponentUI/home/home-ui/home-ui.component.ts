@@ -14,12 +14,13 @@ import { ImageModalComponent } from '../../Modal/image-modal/image-modal.compone
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
 import { ClientsService } from 'src/app/services/Networking/clients.service';
-import { Subscription, Subject, forkJoin } from 'rxjs';
+import { Subscription, Subject, forkJoin, interval } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PostReactionByIdService } from 'src/app/services/Reaction/post-reaction-by-id.service';
 import { ReactionPostComponent } from 'src/app/ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
 import { finalize, take } from 'rxjs/operators';
+import { EchoService } from 'src/app/services/echo.service';
 
 interface Reaction {
   emoji: string;
@@ -244,35 +245,78 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private postReactionByIdService: PostReactionByIdService,
     private reactionsServices: ReactionEmojiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private echo:EchoService
   ) {
     // optional eager call moved to ngOnInit flows
   }
-
+  subscription!: Subscription;
   private postsLoaded = false;
+  allLoaded = false;
+  perPage = 5;
   // ----------------------- LIFECYCLE -----------------------
   ngOnInit(): void {
+    // this.echo.channel('posts')
+    // .listen('NewPostCreated', () => this.newPostsAvailable = true);
+
+    
     this.currentUserCode = this.authService.getAuthCode();
     this.skeletonUsers = Array.from({ length: 5 });
     this.skeletonPosts = Array.from({ length: 5 });
 
- if (!this.postsLoaded) {
-    this.loadAllApisConcurrently();
-  //  this.loadAllPostReactions();
-    this.loadUserPost();
-    this.postsLoaded = true;
+    // Load all posts and related APIs once
+    if (!this.postsLoaded) {
+      this.loadAllApisConcurrently();
+      this.loadUserPost();
+      this.postsLoaded = true;
+    }
+     setInterval(() => this.checkForNewPosts(), 30000);
+    // // Auto-refresh posts every 10 seconds
+    // this.subscription = interval(10000).subscribe(() => {
+    //   this.loadUserPost();
+    // });
   }
-    // Load all APIs concurrently immediately
-   
-    // Listen for profile code changes (optional)
-    // const sub = this.authService.getProfilecode()
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: () => this.loadAllApisConcurrently(),
-    //     error: () => this.loadAllApisConcurrently()
-    //   });
 
-    // this.subscriptions.push(sub);
+  newPostsAvailable = false;
+
+checkForNewPosts(): void {
+  if (this.isLoading) return; // avoid overlap
+
+  this.postDataservices.getDataPostAddFollow(1, this.perPage).subscribe({
+    next: (res: any) => {
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        const latestServerPostId = res.data[0].id;
+        const latestLocalPostId = this.posts?.[0]?.id;
+
+        // Compare latest IDs
+        if (latestLocalPostId && latestServerPostId > latestLocalPostId) {
+          this.newPostsAvailable = true; // ✅ show popup button
+        }
+      }
+    },
+    error: (err) => console.error('Error checking new posts:', err),
+  });
+}
+
+
+  refreshPosts() {
+    this.page = 1;
+    this.loadUserPost(1, true);
+    this.newPostsAvailable = true;
+  }
+
+  // ⬇️ Infinite scroll
+  onScroll2(): void {
+    if (this.isLoading || this.allLoaded) return;
+
+    this.page++;
+    this.loadUserPost(this.page, true); // Append new posts at bottom
+  }
+
+
+  onScroll(event: Event) {
+    const element = event.target as HTMLElement;
+    this.showScrollTop = element.scrollTop > 200;
   }
 
   trackByPostId(index: number, post: any) {
@@ -284,7 +328,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
-     this.checkScroll();
+    this.checkScroll();
     const currentPost = this.posts?.[this.currentIndex];
     if (!currentPost) {
       return;
@@ -303,6 +347,9 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     // clear timers
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
     clearInterval(this.autoSlideInterval);
     clearInterval(this.scrollInterval);
     clearTimeout(this.scrollTimeout);
@@ -384,7 +431,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
               }
             });
-            
+
             this.posts.forEach((post) => this.loadReaction(post.id));
             // Load per-post reactions
             this.loadAllPostReactions();
@@ -730,17 +777,16 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     return `${diffInHours} hours ago`;
   }
 
-
-  loadUserPost(): void {
+  loadUserPost(page: number = 1, append: boolean = false): void {
     this.isLoading = true;
 
-    this.postDataservices.getDataPostAddFollow().subscribe({
+    this.postDataservices.getDataPostAddFollow(page, this.perPage).subscribe({
       next: (res: any) => {
         if (res?.success && Array.isArray(res.data)) {
-          this.posts = res.data.map((post: any) => {
-            const normalizeUrl = (path: string) =>
-              `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
+          const normalizeUrl = (path: string) =>
+            `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
 
+          const formattedPosts = res.data.map((post: any) => {
             const images = Array.isArray(post.images)
               ? post.images.map((img: any) => ({
                 ...img,
@@ -763,11 +809,19 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
             };
           });
 
-          // Load reactions per post
+          if (append) {
+            // Infinite scroll → add at bottom
+            this.posts = [...this.posts, ...formattedPosts];
+          } else {
+            // Normal load or refresh → replace/merge top
+            this.posts = formattedPosts;
+          }
+
+          // Load reactions for each post
           this.posts.forEach((post) => this.loadReaction(post.id));
         } else {
           console.warn('Unexpected response format:', res);
-          this.posts = [];
+          if (!append) this.posts = [];
         }
 
         this.isLoading = false;
@@ -778,6 +832,54 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     });
   }
+
+  // loadUserPost(): void {
+  //   this.isLoading = true;
+
+  //   this.postDataservices.getDataPostAddFollow().subscribe({
+  //     next: (res: any) => {
+  //       if (res?.success && Array.isArray(res.data)) {
+  //         this.posts = res.data.map((post: any) => {
+  //           const normalizeUrl = (path: string) =>
+  //             `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
+
+  //           const images = Array.isArray(post.images)
+  //             ? post.images.map((img: any) => ({
+  //               ...img,
+  //               path_url: normalizeUrl(img.path_url),
+  //             }))
+  //             : [];
+
+  //           const videos = Array.isArray(post.videos)
+  //             ? post.videos.map((vid: any) => ({
+  //               ...vid,
+  //               path_url: normalizeUrl(vid.path_url),
+  //             }))
+  //             : [];
+
+  //           return {
+  //             ...post,
+  //             expanded: false,
+  //             images,
+  //             videos,
+  //           };
+  //         });
+
+  //         // Load reactions per post
+  //         this.posts.forEach((post) => this.loadReaction(post.id));
+  //       } else {
+  //         console.warn('Unexpected response format:', res);
+  //         this.posts = [];
+  //       }
+
+  //       this.isLoading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching posts:', err);
+  //       this.isLoading = false;
+  //     },
+  //   });
+  // }
 
 
   // loadUserPost(): void {
@@ -855,17 +957,14 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showScrollTop = scrollY > 300; // Show button after 300px scroll
   }
 
-  onScroll(event: Event) {
-    const element = event.target as HTMLElement;
-    this.showScrollTop = element.scrollTop > 200;
-  }
+
 
   scrollToTop(): void {
     if (!this.feedContainer) return;
     this.feedContainer.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
- private checkScroll(): void {
+
+  private checkScroll(): void {
     const scrollTop = this.feedContainer?.nativeElement.scrollTop || 0;
     this.showScrollTop = scrollTop > 300; // show button after 300px
   }

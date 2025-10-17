@@ -16,18 +16,6 @@
   max-height: 100%; /* Allow the card to use the full height of its container */
   overflow: hidden;
 }
-.post-box-container {
-  width: 100%;
-  max-width: 600px; /* Limit the width for large screens */
-  margin: 10px auto; /* Center align */
-  padding: 22px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
-  height: auto;
-}
 
 mat-card-footer {
   display: flex;
@@ -37,6 +25,13 @@ mat-card-footer {
   border-top: 1px solid #eee;
   width: 100%;
 }
+
+.follow-btn[disabled] {
+  opacity: 1; /* keep full color */
+  cursor: not-allowed;
+  filter: brightness(0.9); /* slightly dimmed for visual feedback */
+}
+
 
 mat-card-footer {
   display: flex;

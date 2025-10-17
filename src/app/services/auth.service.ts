@@ -15,7 +15,7 @@ export class AuthService {
   }
 
   getAuthCode(): string {
-    return sessionStorage.getItem('code') || ''; 
+    return sessionStorage.getItem('code') || '';
   }
 
 
@@ -32,7 +32,7 @@ export class AuthService {
   }
 
 
-  
+
   getData(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}user`, { headers });
@@ -41,6 +41,24 @@ export class AuthService {
   getProfilecode(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}user/profile`, { headers });
+  }
+
+  requestCode(phone: string): Observable<any> {
+    return this.http.post(`${_url}password/request-code`, { phone });
+  }
+
+  // auth.service.ts
+  sendCode(phone: string) {
+    return this.http.post(`${_url}phone/send-code`, { phone });
+  }
+
+  verifyCode(phone: string, code: string) {
+    return this.http.post(`${_url}phone/verify-code`, { phone, code });
+  }
+
+
+  resetPassword(phone: string, resetToken: string, password: string, password_confirmation: string): Observable<any> {
+    return this.http.post(`${_url}password/reset`, { phone, reset_token: resetToken, password, password_confirmation });
   }
 
 

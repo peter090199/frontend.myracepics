@@ -669,3 +669,52 @@ mat-card-footer {
   align-items: center;   /* vertical center */
   justify-content: center; 
 }
+
+
+.feed-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-card {
+  border-bottom: 1px solid #eee;
+  padding: 15px;
+}
+
+.loading,
+.end {
+  text-align: center;
+  padding: 10px;
+  color: #888;
+}
+
+
+
+
+.refresh-btn {
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  animation: fadeIn 0.5s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.refresh-btn:hover {
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
