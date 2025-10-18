@@ -23,8 +23,8 @@ export class ForgotPasswordUIComponent implements OnInit {
     private notificationsService: NotificationsService,
     private dialog: MatDialog,
     private route: Router,
-    private forget: ForgetPasswordService,private auth:AuthService
-  ) {}
+    private forget: ForgetPasswordService, private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -32,12 +32,12 @@ export class ForgotPasswordUIComponent implements OnInit {
     });
   }
 
-   phone = '';
+  phone = '';
   code = '';
   resetToken = '';
   password = '';
   password_confirm = '';
-  step: 'enter-phone'|'enter-code'|'reset-password' = 'enter-phone';
+  step: 'enter-phone' | 'enter-code' | 'reset-password' = 'enter-phone';
 
 
 
@@ -48,26 +48,26 @@ export class ForgotPasswordUIComponent implements OnInit {
   //   });
   // }
 
-    requestCode() {
-      console.log(this.phone,this.code)
-    this.auth.verifyCode(this.phone,this.code).subscribe({
+  requestCode() {
+    console.log(this.phone, this.code)
+    this.auth.verifyCode(this.phone, this.code).subscribe({
       next: () => this.step = 'enter-code',
       error: (e: { error: { message: any; }; }) => alert(e.error.message)
     });
   }
 
-verifyCode() {
-  this.auth.verifyCode(this.phone, this.code).subscribe({
-    next: (res: any) => {
-      if (res.message === 'Phone verified successfully') {
-        this.step = 'reset-password';
-      } else {
-        alert(res.message);
-      }
-    },
-    error: (e: any) => alert(e.error?.message || 'Verification failed')
-  });
-}
+  verifyCode() {
+    this.auth.verifyCode(this.phone, this.code).subscribe({
+      next: (res: any) => {
+        if (res.message === 'Phone verified successfully') {
+          this.step = 'reset-password';
+        } else {
+          alert(res.message);
+        }
+      },
+      error: (e: any) => alert(e.error?.message || 'Verification failed')
+    });
+  }
 
 
 
@@ -77,39 +77,39 @@ verifyCode() {
       error: (e: { error: { message: any; }; }) => alert(e.error.message)
     });
   }
-  
- progressValue: number = 0;
-intervalId: any;
 
-onSubmit() {
-  if (this.loginForm.valid) {
-    this.isLoading = true;
-    this.progressValue = 0;
+  progressValue: number = 0;
+  intervalId: any;
 
-    // Simulate loading progress
-    this.intervalId = setInterval(() => {
-      if (this.progressValue < 100) {
-        this.progressValue += 10;
-      }
-    }, 200);
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.progressValue = 0;
 
-    const email = this.loginForm.get('email')?.value;
-    this.forget.forgotPassword(email).subscribe({
-      next: (res) => {
-        clearInterval(this.intervalId);
-        this.progressValue = 100;
-        this.notificationsService.toastrSuccess(res.message);
-        this.loginForm.reset();
-        setTimeout(() => this.isLoading = false, 500); // short delay to complete bar
-      },
-      error: (error) => {
-        clearInterval(this.intervalId);
-        this.progressValue = 0;
-        this.isLoading = false;
-        this.notificationsService.toastrError("Something went wrong.");
-      }
-    });
+      // Simulate loading progress
+      this.intervalId = setInterval(() => {
+        if (this.progressValue < 100) {
+          this.progressValue += 10;
+        }
+      }, 200);
+
+      const email = this.loginForm.get('email')?.value;
+      this.forget.forgotPassword(email).subscribe({
+        next: (res) => {
+          clearInterval(this.intervalId);
+          this.progressValue = 100;
+          this.notificationsService.toastrSuccess(res.message);
+          this.loginForm.reset();
+          setTimeout(() => this.isLoading = false, 500); // short delay to complete bar
+        },
+        error: (error) => {
+          clearInterval(this.intervalId);
+          this.progressValue = 0;
+          this.isLoading = false;
+          this.notificationsService.toastrError("Something went wrong.");
+        }
+      });
+    }
   }
-}
 
 }

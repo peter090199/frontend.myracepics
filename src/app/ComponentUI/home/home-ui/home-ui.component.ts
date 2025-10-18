@@ -270,7 +270,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loadUserPost();
       this.postsLoaded = true;
     }
-     setInterval(() => this.checkForNewPosts(), 30000);
+    //  setInterval(() => this.checkForNewPosts(), 30000);
     // // Auto-refresh posts every 10 seconds
     // this.subscription = interval(10000).subscribe(() => {
     //   this.loadUserPost();
@@ -282,7 +282,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
 checkForNewPosts(): void {
   if (this.isLoading) return; // avoid overlap
 
-  this.postDataservices.getDataPostAddFollow(1, this.perPage).subscribe({
+  this.postDataservices.getDataPostAddFollow().subscribe({
     next: (res: any) => {
       if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
         const latestServerPostId = res.data[0].id;
@@ -780,12 +780,11 @@ checkForNewPosts(): void {
   loadUserPost(page: number = 1, append: boolean = false): void {
     this.isLoading = true;
 
-    this.postDataservices.getDataPostAddFollow(page, this.perPage).subscribe({
+    this.postDataservices.getDataPostAddFollow().subscribe({
       next: (res: any) => {
         if (res?.success && Array.isArray(res.data)) {
           const normalizeUrl = (path: string) =>
             `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
-
           const formattedPosts = res.data.map((post: any) => {
             const images = Array.isArray(post.images)
               ? post.images.map((img: any) => ({

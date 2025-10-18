@@ -64,13 +64,13 @@ export class PostUploadImagesService {
    * @param perPage posts per page (default 5)
    */
 
-    getDataPostAddFollow(page: number = 1, perPage: number = 5): Observable<any> {
+    getDataPostAddFollowXX(page: number = 1, perPage: number = 5): Observable<any> {
       const headers = this.createHeaders();
       const params = new HttpParams().set('page', page).set('per_page', perPage);
       return this.http.get(`${_url}/posts/followed`, { headers, params });
     }
     
-    getDataPostAddFollowx(): Observable<any> {
+    getDataPostAddFollow(): Observable<any> {
       const headers = this.createHeaders();
      // const params = new HttpParams().set('code', code); // Set code as query param
       return this.http.get(`${_url}getPost`, { headers });

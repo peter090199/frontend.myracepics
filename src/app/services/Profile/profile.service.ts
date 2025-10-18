@@ -49,6 +49,13 @@ getCompanyProfile(code: any): Observable<any> {
 }
 
 
+ uploadCoverPhoto(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('coverphoto', file);
+
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}uploadCoverPhoto`, formData, { headers });
+  }
 
   getDataPost(code:any): Observable<any> {
     const headers = this.createHeaders();

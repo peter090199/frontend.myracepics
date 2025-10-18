@@ -2,9 +2,8 @@
 
   <!-- Cover Photo -->
   <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
-    <img src="https://as1.ftcdn.net/v2/jpg/02/14/53/92/1000_F_214539232_YnUrtuwUEt84gHuU0qG8l7OwZvH4rnPG.jpg"
-      alt="Cover Photo" class="cover-photo-img" />
-    <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button>
+    <img [src]="coverphoto?.coverphoto || 'assets/images/default-cover.png'" alt="Cover Photo" class="cover-photo-img" />
+    <!-- <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button> -->
   </div>
 
   <ng-template #coverSkeleton>

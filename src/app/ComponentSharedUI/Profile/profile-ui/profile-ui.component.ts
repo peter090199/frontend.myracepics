@@ -101,21 +101,22 @@ export class ProfileUIComponent implements OnInit {
   isloading: boolean = false;
   coverSkeleton = Array(3);
   profileSkeleton = Array(1);
+  coverphoto: any;
 
+  ngOnInit(): void {
+    this.currentUserCode = this.authServiceCode.getAuthCode();
 
-ngOnInit(): void {
-  this.currentUserCode = this.authServiceCode.getAuthCode();
+    const url = window.location.href;
+    const codesplit = url.split('/').pop();
+    this.code = codesplit;
 
-  const url = window.location.href;
-  const codesplit = url.split('/').pop();
-  this.code = codesplit;
+    this.loadUserPost();
+    this.loadUserData();
+    this.loadProfileCV();
+    this.loadProfileCoverPhoto();
 
-  this.loadUserPost();
-  this.loadUserData();
-  this.loadProfileCV();
-
-  this.checkFollowStatus(); 
-}
+    this.checkFollowStatus();
+  }
 
 
   followId: number = 0;
@@ -180,64 +181,64 @@ ngOnInit(): void {
     return `${diffInHours} hours ago`;
   }
 
-loadUserPost(): void {
-  this.isloading = true; // start skeleton
+  loadUserPost(): void {
+    this.isloading = true; // start skeleton
 
-  this.postDataservices.getDataPost(this.code).subscribe({
-    next: (res) => {
-      if (res && res.success && Array.isArray(res.data)) {
-        this.posts = res.data.map((post: any) => {
-          // ✅ Fix image URLs
-          const images = (post.images || []).map((img: any) => ({
-            ...img,
-            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
-              img.path_url.replace(/\\/g, '')
-          }));
+    this.postDataservices.getDataPost(this.code).subscribe({
+      next: (res) => {
+        if (res && res.success && Array.isArray(res.data)) {
+          this.posts = res.data.map((post: any) => {
+            // ✅ Fix image URLs
+            const images = (post.images || []).map((img: any) => ({
+              ...img,
+              path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
+                img.path_url.replace(/\\/g, '')
+            }));
 
-          // ✅ Fix video URLs
-          const videos = (post.videos || []).map((vid: any) => ({
-            ...vid,
-            path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
-              vid.path_url.replace(/\\/g, '')
-          }));
+            // ✅ Fix video URLs
+            const videos = (post.videos || []).map((vid: any) => ({
+              ...vid,
+              path_url: 'https://lightgreen-pigeon-122992.hostingersite.com/' +
+                vid.path_url.replace(/\\/g, '')
+            }));
 
-          // ✅ Fix comments & replies
-          const comments = (post.comments || []).map((comment: any) => ({
-            ...comment,
-            profile_pic: comment.profile_pic
-              ? comment.profile_pic.replace(/\\/g, '')
-              : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
-            replies: (comment.replies || []).map((reply: any) => ({
-              ...reply,
-              profile_pic: reply.profile_pic
-                ? reply.profile_pic.replace(/\\/g, '')
-                : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png'
-            }))
-          }));
+            // ✅ Fix comments & replies
+            const comments = (post.comments || []).map((comment: any) => ({
+              ...comment,
+              profile_pic: comment.profile_pic
+                ? comment.profile_pic.replace(/\\/g, '')
+                : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
+              replies: (comment.replies || []).map((reply: any) => ({
+                ...reply,
+                profile_pic: reply.profile_pic
+                  ? reply.profile_pic.replace(/\\/g, '')
+                  : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png'
+              }))
+            }));
 
-          return {
-            ...post,
-            fullname: post.fullname || post.Fullname || "Unknown User",
-            profile_pic: post.profile_pic
-              ? post.profile_pic.replace(/\\/g, '')
-              : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
-            images,
-            videos,
-            comments,
-            activeHours: this.getActiveHours(post.lastActive), // if backend sends lastActive
-            followers: post.followers || 0,
-            visibleComments: 3
-          };
-        });
+            return {
+              ...post,
+              fullname: post.fullname || post.Fullname || "Unknown User",
+              profile_pic: post.profile_pic
+                ? post.profile_pic.replace(/\\/g, '')
+                : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
+              images,
+              videos,
+              comments,
+              activeHours: this.getActiveHours(post.lastActive), // if backend sends lastActive
+              followers: post.followers || 0,
+              visibleComments: 3
+            };
+          });
+        }
+        this.isloading = false; // ✅ stop skeleton after success
+      },
+      error: (err) => {
+        console.error('Error fetching posts:', err);
+        this.isloading = false; // ✅ stop skeleton on error too
       }
-      this.isloading = false; // ✅ stop skeleton after success
-    },
-    error: (err) => {
-      console.error('Error fetching posts:', err);
-      this.isloading = false; // ✅ stop skeleton on error too
-    }
-  });
-}
+    });
+  }
 
 
 
@@ -305,6 +306,22 @@ loadUserPost(): void {
   }
   loadMoreComments(post: any): void {
     post.visibleComments += 3;
+  }
+
+  loadProfileCoverPhoto() {
+    this.profile.getCompanyProfile(this.code).subscribe({
+      next: (res) => {
+        if (res.success == true) {
+          this.coverphoto = res.message;
+
+        } else {
+          this.error = 'Failed to load profile data';
+        }
+      },
+      error: (err) => {
+        this.error = err.message || 'An error occurred while fetching profile data';
+      },
+    });
   }
 
   loadProfileCV() {
@@ -474,7 +491,7 @@ loadUserPost(): void {
             if (res.success === true || res.status === true) {
               this.alert.toastrSuccess(res.message || successAction);
               this.followStatus = res.follow_status || 'none';
-            //  this.checkFollowStatus();
+              //  this.checkFollowStatus();
             } else {
               this.alert.toastrError(res.message || 'Action failed.');
             }

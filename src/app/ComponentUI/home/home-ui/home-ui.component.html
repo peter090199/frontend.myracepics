@@ -1,12 +1,12 @@
 
-    <button
-    *ngIf="newPostsAvailable"
-    class="refresh-btn"
-    (click)="refreshPosts()"
-  >
-    New posts available — click to refresh 🔄
-  </button>
-  
+  <button
+  *ngIf="newPostsAvailable"
+  class="refresh-btn"
+  (click)="refreshPosts()"
+>
+  New posts available — click to refresh 🔄
+</button>
+
 <div class="content-body">
   
 
@@ -94,14 +94,6 @@
   <!-- Middle Column -->
   <div class="middle-column"  infiniteScroll
   (scrolled)="onScroll2()">
-
-    <button
-    *ngIf="newPostsAvailable"
-    class="refresh-btn"
-    (click)="refreshPosts()"
-  >
-    New posts available — click to refresh 🔄
-  </button>
 
     <!-- Post Input -->
     <div class="post-top-container" *ngIf="!isLoading">
