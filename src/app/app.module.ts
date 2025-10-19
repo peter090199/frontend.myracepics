@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MaterialModule } from 'src/Material/Material.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -48,7 +48,6 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { FeedComponent } from './layout/feed/feed.component';
 import { ProfileComponent } from './layout/profile/profile.component';
 import { TopbarComponent } from './layout/topbar/topbar.component';
-import { environment } from '../environments/environment';
 import { CurriculumVitaeUIComponent } from './ComponentSharedUI/Individual/curriculum-vitae-ui/curriculum-vitae-ui.component';
 import { ProfileUIComponent } from './ComponentSharedUI/Profile/profile-ui/profile-ui.component';
 import { UserCVComponent } from './ComponentSharedUI/Individual/user-cv/user-cv.component';
@@ -105,8 +104,8 @@ import { EditsubmenuUIComponent } from './ComponentUI/system/editsubmenu-ui/edit
 import { UsersUIComponent } from './ComponentSharedUI/system/users-ui/users-ui.component';
 import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
 import { ReactionPostComponent } from './ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-// Loader function for TranslateHttpLoader
+import { MatTabsModule } from '@angular/material/tabs';
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -215,6 +214,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     MatSidenavModule,
     FormsModule,
+    MatTabsModule,
 
     ToastrModule.forRoot(), // Correctly placed ToastrModule
     TranslateModule.forRoot({

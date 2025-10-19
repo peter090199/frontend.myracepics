@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileService } from 'src/app/services/Profile/profile.service';
@@ -11,24 +11,34 @@ import { AuthGuard } from 'src/app/AuthGuard/auth.guard';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClientsService } from 'src/app/services/Networking/clients.service';
 import { CurriculumVitaeService } from 'src/app/services/CV/curriculum-vitae.service';
+import { ReactionModalComponent } from '../../ReactEmoji/reaction-modal/reaction-modal.component';
+import { PostReactionByIdService } from 'src/app/services/Reaction/post-reaction-by-id.service';
+import { ReactionEmojiService } from 'src/app/services/Reaction/reaction-emoji.service';
+
+interface Reaction {
+  emoji: string;
+  label: string;
+}
 
 @Component({
   selector: 'app-company-profile-ui',
   templateUrl: './company-profile-ui.component.html',
   styleUrls: ['./company-profile-ui.component.css']
 })
+
+
 export class CompanyProfileUIComponent implements OnInit {
+
 
   users: any;
   profiles: any;
   userprofiles: any;
-  posts: any[] = [];
+  posts: any = [];
   followers: any;
 
   companyId!: string;
   currentUserCode: any;
   followId: number = 0;
-  followStatus: 'none' | 'pending' | 'accepted' | 'cancelled' = 'none';
 
   isloading = false;
   btnCurriculum = false;
@@ -36,6 +46,143 @@ export class CompanyProfileUIComponent implements OnInit {
   currentPage = 0;
   pageSize = 6;
   currentIndex = 0;
+  skeletonPosts: any[] = [];
+  showScrollTop = false;
+
+  postReactions: {
+    [postId: number]: { reactions: any[], totalCount: number }
+  } = {};
+
+  trackByPostId(index: number, post: any) {
+    return post.id;
+  }
+  onScroll(event: Event) {
+    const element = event.target as HTMLElement;
+    this.showScrollTop = element.scrollTop > 200;
+  }
+
+
+  hoverVisible = false;
+  hoveredPostId: number | null = null;
+  hoveredReactions2: any[] = [];
+  hoverPosition = { x: 0, y: 0 };
+  showHoverNames(postId: number, event: MouseEvent) {
+    this.hoveredPostId = postId;
+    this.hoverVisible = true;
+    this.hoveredReactions2 = this.postReactions[postId]?.reactions || [];
+    this.hoverPosition = {
+      x: event.clientX - 50,
+      y: event.clientY - 100
+    };
+  }
+
+  openReactionsModal(postId: number): void {
+    this.dialog.open(ReactionModalComponent, {
+      data: postId,
+      width: '100%',
+      maxWidth: '600px',
+      panelClass: 'centered-modal',
+    });
+  }
+
+  hideReaction(postId: number) {
+    this.isPopupVisible[postId] = false;
+    this.hoveredReactions[postId] = null;
+  }
+
+  getReactionEmoji(postId: number): string {
+    return this.hoveredReactions[postId]?.emoji
+      || this.userReactions[postId]?.emoji
+      || 'thumb_up';
+  }
+  getReactionLabel(postId: number): string {
+    return this.hoveredReactions[postId]?.label
+      || this.userReactions[postId]?.label
+      || 'Like';
+  }
+
+    reaction = [
+    { emoji: '👍', label: 'Like' },
+    { emoji: '❤️', label: 'Love' },
+    { emoji: '😂', label: 'Haha' },
+    { emoji: '😮', label: 'Wow' },
+    { emoji: '😢', label: 'Sad' },
+    { emoji: '😡', label: 'Angry' }
+  ];
+  totalReactionsCount: number = 0;
+  isPopupVisible: { [postId: number]: boolean } = {};
+  hoveredReactions: { [postId: number]: Reaction | null } = {};
+  userReactions: { [postId: number]: Reaction | null } = {};
+  @Input() postId!: number;
+  react: any = [];
+  reactionEmojiMap2: any = {
+    Like: '👍',
+    Love: '❤️',
+    Care: '🤗',
+    Haha: '😂',
+    Wow: '😮',
+    Sad: '😢',
+    Angry: '😡'
+  };
+
+  showReaction(postId: number) {
+    this.isPopupVisible[postId] = true;
+  }
+
+  async selectReactions(postId: number, react: Reaction) {
+    this.userReactions[postId] = react;
+    this.isPopupVisible[postId] = false;
+    console.log(`Selected reaction for post ${postId}:`, react.label);
+
+    try {
+      const res: any = await this.postReactionByIdService.saveReaction(postId, react.label).toPromise();
+      if (res && res.success) {
+        console.log('Reaction saved successfully');
+      } else {
+        console.error('Failed to save reaction:', res?.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error('API error:', err);
+    }
+    this.loadReactions(postId);
+  }
+  hideHoverNames() {
+    this.hoverVisible = false;
+    this.hoveredPostId = null;
+  }
+
+    // load reactions by reactionService (per-post)
+  loadReactions(postId: number): void {
+    if (!postId) return;
+
+    this.reactionService.getReactionByPostId(postId).subscribe({
+      next: (res: any) => {
+        if (res && res.react && Array.isArray(res.react)) {
+          const mappedReactions = res.react.map((r: any) => ({
+            ...r,
+            emoji: this.reactionEmojiMap2[r.reaction] || 'thumb'
+          }));
+
+          const total = mappedReactions.reduce((sum: number, r: any) => sum + (r.count || 0), 0);
+
+          this.postReactions[postId] = {
+            reactions: mappedReactions,
+            totalCount: total
+          };
+          this.totalReactionsCount = total;
+        } else {
+          this.postReactions[postId] = { reactions: [], totalCount: 0 };
+          this.totalReactionsCount = 0;
+        }
+      },
+      error: (err) => {
+        console.error(`Error fetching reactions for post ${postId}:`, err);
+        this.postReactions[postId] = { reactions: [], totalCount: 0 };
+        this.totalReactionsCount = 0;
+      }
+    });
+  }
+
 
   readonly maxImages = 3;
   readonly coverSkeleton = Array(3);
@@ -64,23 +211,26 @@ export class CompanyProfileUIComponent implements OnInit {
     private alert: NotificationsService,
     private clientService: ClientsService,
     private router: Router,
-    private cvService: CurriculumVitaeService
+    private cvService: CurriculumVitaeService,
+    private postReactionByIdService: PostReactionByIdService,
+    private reactionService: ReactionEmojiService,
   ) { }
 
+  ownCode: any;
   // 📍 Lifecycle
   ngOnInit(): void {
-    this.currentUserCode = this.authService.getAuthCode();
-    this.companyId = this.route.snapshot.paramMap.get('code') || '';
-
-    this.route.paramMap.subscribe(params => {
-      const code = params.get('code');
-      if (code) this.loadProfileCV(code);
-    });
-
+    this.ownCode = this.authService.getAuthCode();
+    // this.companyId = this.route.snapshot.paramMap.get('code') || '';
+    console.log(this.currentUserCode);
+    const url = window.location.href;
+    const codesplit = url.split('/').pop();
+    this.currentUserCode = codesplit;
+    this.loadProfileCV(this.currentUserCode);
     this.loadUserData();
     this.fetchProfilePicture();
     this.checkFollowStatus();
     this.loadUserPost();
+     this.loadReactions(this.postId);
   }
 
   // 🧩 Pagination
@@ -158,40 +308,60 @@ export class CompanyProfileUIComponent implements OnInit {
     });
   }
 
-  AddFollow(code: any, status: string, firstName: any, lastName: any): void {
-    if (!code) return this.alert.toastrWarning('⚠️ No user code provided.');
 
-    const fullname = `${firstName} ${lastName}`;
-    const messages = {
-      none: { confirm: 'Send a follow request?', success: 'Follow request sent.' },
-      pending: { confirm: 'Cancel your pending request?', success: 'Request canceled.' },
-      accepted: { confirm: 'Unfollow this user?', success: 'Unfollowed.' }
-    }[status];
+  followStatus: 'none' | 'pending' | 'accepted' | 'cancelled' = 'none';
+  AddFollow(code: any, status: string, profilename: any, lname: any): void {
+    if (!code) {
+      this.alert.toastrWarning('⚠️ No user code provided.');
+      return;
+    }
 
-    this.alert.popupWarning(fullname,"").then(result => {
-      if (!result.value) return;
+    const fullname = profilename + " " + lname;
 
-      const request$ = status === 'accepted'
-        ? this.profile.Unfollow(this.followId)
-        : this.profile.AddFollow(code);
+    let confirmMessage = '';
+    let successAction = '';
 
-      request$.subscribe({
-        next: (res: any) => {
-          if (res.success || res.status) {
-            this.alert.toastrSuccess(res.message);
-            this.followStatus = res.follow_status || 'none';
-            this.checkFollowStatus();
-          } else this.alert.toastrError(res.message || 'Action failed.');
-        },
-        error: (err) => this.alert.toastrError(err.error?.message || 'Something went wrong.')
-      });
+    if (status === 'none') {
+      confirmMessage = 'Send a follow request to this user?';
+      successAction = 'Follow request sent.';
+    } else if (status === 'pending') {
+      confirmMessage = 'Cancel your pending follow request?';
+      successAction = 'Follow request canceled.';
+    } else if (status === 'accepted') {
+      confirmMessage = 'Unfollow this user?';
+      successAction = 'Unfollowed successfully.';
+    }
+    console.log(this.followId)
+    this.alert.popupWarning(fullname, confirmMessage).then((result) => {
+      if (result.value) {
+        const request$ =
+          status === 'accepted'
+            ? this.profile.Unfollow(this.followId) // 👈 call different API for unfollow
+            : this.profile.AddFollow(code); // 👈 default follow/cancel
+
+        request$.subscribe({
+          next: (res: any) => {
+            if (res.success === true || res.status === true) {
+              this.alert.toastrSuccess(res.message || successAction);
+              this.followStatus = res.follow_status || 'none';
+              //  this.checkFollowStatus();
+            } else {
+              this.alert.toastrError(res.message || 'Action failed.');
+            }
+          },
+          error: (error: any) => {
+            this.alert.toastrError(error.error?.message || 'Something went wrong.');
+            console.error('❌ Follow error:', error);
+          }
+        });
+      }
     });
   }
 
   // 💬 Posts & Comments
   loadUserPost(): void {
     this.isloading = true;
-    this.postService.getDataPost(this.companyId).subscribe({
+    this.postService.getDataPost(this.currentUserCode).subscribe({
       next: (res) => {
         if (res?.success && Array.isArray(res.data)) {
           const baseUrl = 'https://lightgreen-pigeon-122992.hostingersite.com/';

@@ -95,20 +95,78 @@ mat-card-footer button mat-icon {
   color: #bbb; /* Gray for offline */
 }
 
-.cover-photo {
+.cover-photo-container {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  max-width: 1220px;
+  height: 350px; /* default desktop height */
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .cover-photo-img {
-  max-width:1220px;
-  width: 1220px;
-  height: 400px;
-  max-height: 400px;
-  border-radius: 10px; /* Smooth corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills container like Facebook cover */
+  object-position: center;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Optional subtle zoom on hover */
+.cover-photo-container:hover .cover-photo-img {
+  transform: scale(1.02);
+}
+
+/* Overlay for upload or edit button (like Facebook “Edit Cover Photo”) */
+.cover-photo-container .upload-container {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.cover-photo-container .upload-container:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* 📱 Tablet view */
+@media (max-width: 1024px) {
+  .cover-photo-container {
+    height: 280px;
+  }
+}
+
+/* 📱 Mobile view */
+@media (max-width: 768px) {
+  .cover-photo-container {
+    height: 200px;
+    border-radius: 0;
+  }
+
+  .cover-photo-container .upload-container {
+    bottom: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+/* 📱 Extra small phones */
+@media (max-width: 480px) {
+  .cover-photo-container {
+    height: 160px;
+  }
 }
 
 .edit-cover-btn {
@@ -188,10 +246,12 @@ h2{
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-
 .profile-details {
-  margin-top: -80px;
-  margin-bottom: 60px;
+  margin-top: -40px;
+  margin-bottom: 90px;
+  padding-top: 20px; /* adjust spacing from top */
+  position: relative; /* if you need to move it over the cover photo */
+  margin-left: 86px;
 }
 
 .profile-info {
@@ -545,4 +605,248 @@ mat-tab[label="Work Experience"] .mat-tab-label {
 
 .about-section, .location-section {
   padding: 16px;
+}
+
+
+/* Post container */
+.post-box-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 26px auto;
+  padding: 16px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  overflow: hidden;         /* prevent content overflow */
+  display: flex;
+  flex-direction: column;   /* stack inner elements vertically */
+  height: auto;             /* ensures automatic height */
+  min-height: 120px;        /* keeps consistent base height */
+}
+
+.post-box-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Text and reactions */
+.post-box-container .post-content {
+  word-wrap: break-word;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .post-box-container {
+    padding: 12px;
+    margin: 16px;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-box-container {
+    padding: 10px;
+    margin: 12px;
+    border-radius: 6px;
+  }
+}
+
+
+
+/* Feed Container */
+.feed-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+}
+
+/* Create Post Card */
+.create-post-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+.create-post-card .composer-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.create-post-card input {
+  width: 100%;
+  background: #f0f2f5;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* Post Card */
+.post-card {
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #050505;
+  cursor: pointer;
+}
+
+.post-time {
+  font-size: 12px;
+  color: #65676b;
+}
+
+/* Caption */
+.post-caption {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #050505;
+  white-space: pre-line;
+}
+
+.see-more {
+  color: #1877f2;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Images */
+.post-media {
+  margin-top: 10px;
+}
+
+.gallery {
+  display: grid;
+  gap: 4px;
+}
+
+.gallery.single {
+  grid-template-columns: 1fr;
+}
+
+.gallery.multi {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.gallery-item {
+  position: relative;
+  cursor: pointer;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+/* Reactions Summary */
+.reactions-summary {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  gap: 6px;
+}
+
+.emoji-stack {
+  position: relative;
+  height: 24px;
+}
+
+.emoji-item {
+  position: absolute;
+  font-size: 18px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.reaction-count {
+  font-size: 13px;
+  color: #65676b;
+  cursor: pointer;
+}
+
+/* Footer Buttons */
+.post-footer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+  padding-top: 6px;
+}
+
+.post-footer button {
+  flex: 1;
+  font-size: 14px;
+  color: #65676b;
+  text-transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feed-container {
+    padding: 0 8px;
+  }
+
+  .post-card,
+  .create-post-card {
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
 }

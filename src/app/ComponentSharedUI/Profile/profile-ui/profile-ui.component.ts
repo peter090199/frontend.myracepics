@@ -15,7 +15,7 @@ import { ClientsService } from 'src/app/services/Networking/clients.service';
 @Component({
   selector: 'app-profile-ui',
   templateUrl: './profile-ui.component.html',
-  styleUrls: ['./profile-ui.component.css']
+  styleUrls: ['./profile-ui.component.css'],
 })
 export class ProfileUIComponent implements OnInit {
 
@@ -115,13 +115,14 @@ export class ProfileUIComponent implements OnInit {
     this.loadProfileCV();
     this.loadProfileCoverPhoto();
 
-    this.checkFollowStatus();
+    this.checkFollowStatus(this.code);
   }
 
 
   followId: number = 0;
-  checkFollowStatus() {
-    this.clientServices.getPendingFollowStatus(this.code).subscribe((res: any) => {
+  checkFollowStatus(code:any) {
+    this.clientServices.getPendingFollowStatus(code).subscribe((res: any) => {
+    
       this.followStatus = res.follow_status || 'none';
 
       if (res.data && res.data.length > 0) {
@@ -130,6 +131,7 @@ export class ProfileUIComponent implements OnInit {
       } else {
         this.followId = 0;
       }
+
     });
   }
 
