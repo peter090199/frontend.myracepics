@@ -246,7 +246,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     private postReactionByIdService: PostReactionByIdService,
     private reactionsServices: ReactionEmojiService,
     private cdr: ChangeDetectorRef,
-    private echo:EchoService
+    private echo: EchoService
   ) {
     // optional eager call moved to ngOnInit flows
   }
@@ -259,9 +259,9 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.echo.channel('posts')
     // .listen('NewPostCreated', () => this.newPostsAvailable = true);
 
-    
+
     this.currentUserCode = this.authService.getAuthCode();
-    this.skeletonUsers = Array.from({ length: 5 });
+    this.skeletonUsers = Array.from({ length: 8 });
     this.skeletonPosts = Array.from({ length: 5 });
 
     // Load all posts and related APIs once
@@ -279,24 +279,24 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
 
   newPostsAvailable = false;
 
-checkForNewPosts(): void {
-  if (this.isLoading) return; // avoid overlap
+  checkForNewPosts(): void {
+    if (this.isLoading) return; // avoid overlap
 
-  this.postDataservices.getDataPostAddFollow().subscribe({
-    next: (res: any) => {
-      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
-        const latestServerPostId = res.data[0].id;
-        const latestLocalPostId = this.posts?.[0]?.id;
+    this.postDataservices.getDataPostAddFollow().subscribe({
+      next: (res: any) => {
+        if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+          const latestServerPostId = res.data[0].id;
+          const latestLocalPostId = this.posts?.[0]?.id;
 
-        // Compare latest IDs
-        if (latestLocalPostId && latestServerPostId > latestLocalPostId) {
-          this.newPostsAvailable = true; // ✅ show popup button
+          // Compare latest IDs
+          if (latestLocalPostId && latestServerPostId > latestLocalPostId) {
+            this.newPostsAvailable = true; // ✅ show popup button
+          }
         }
-      }
-    },
-    error: (err) => console.error('Error checking new posts:', err),
-  });
-}
+      },
+      error: (err) => console.error('Error checking new posts:', err),
+    });
+  }
 
 
   refreshPosts() {
@@ -326,7 +326,25 @@ checkForNewPosts(): void {
   //   return post.caption.length > 800 ? post.caption.slice(0, 800) + '...' : post.caption;
   // }
 
+  toggleReply(comment: any) {
+    comment.showReply = !comment.showReply;
+  }
+  
+  openPanels: { [key: number]: boolean } = {};
+  togglePanel(postId: number) {
+    this.openPanels[postId] = !this.openPanels[postId];
+  }
 
+  isPanelOpen(postId: number): boolean {
+    return !!this.openPanels[postId];
+  }
+
+  postComment(post: any) {
+    if (post.newComment?.trim()) {
+      post.comments.push({ user: 'You', text: post.newComment });
+      post.newComment = '';
+    }
+  }
   ngAfterViewInit(): void {
     this.checkScroll();
     const currentPost = this.posts?.[this.currentIndex];
@@ -1056,6 +1074,27 @@ checkForNewPosts(): void {
 
   likeComment(comment: any) {
     comment.likes = (comment.likes || 0) + 1;
+  }
+  commentText: string = '';
+
+  sendComment() {
+    if (this.commentText.trim()) {
+      console.log('Comment:', this.commentText);
+      this.commentText = '';
+    }
+  }
+  addReply2(postId: number, commentId: number) {
+    const post = this.posts.find(p => p.id === postId);
+    const comment = post?.comments.find((c: { id: number; }) => c.id === commentId);
+    if (comment && comment.newReply?.trim()) {
+      comment.replies.push({
+        userName: 'You',
+        userAvatar: 'assets/images/user-avatar.png',
+        text: comment.newReply
+      });
+      comment.newReply = '';
+      comment.showReply = false;
+    }
   }
 
   startEdit(reply: any) {

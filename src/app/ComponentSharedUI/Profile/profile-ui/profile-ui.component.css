@@ -1,10 +1,4 @@
-.avatar-container {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  /* Adjust as needed */
-  height: 50px;
-}
+
 
 .post-item img {
   width: 100%;
@@ -19,6 +13,36 @@
   max-height: 100%;
   /* Allow the card to use the full height of its container */
   overflow: hidden;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+
+
+.avatar-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid #fff; /* White border like Facebook */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  margin-left: 2px;
+}
+
+
+.profile-picture {
+  position: relative;
+  width: 180px; /* Adjust for Facebook-like size */
+  height: 180px;
 }
 
 .post-box-container {
@@ -204,14 +228,11 @@ h2 {
 .profile-info {
   display: flex;
   align-items: flex-start;
-  /* Align to the left */
   justify-content: flex-start;
-  /* Justify to the left */
   flex-direction: column;
   position: relative;
   margin-top: -60px;
-  /* Adjust to overlap cover photo */
-  margin-left: 20px;
+  margin-left: 120px;
 }
 
 
@@ -224,13 +245,37 @@ h2 {
 
 .avatar-container {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 140px; /* default desktop size */
+  height: 140px;
   border-radius: 50%;
   overflow: hidden;
-  border: 5px solid #fff;
-  /* White border like Facebook */
+  border: 4px solid #fff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+.avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+/* Hover zoom (like Facebook profile preview) */
+.avatar-container:hover img {
+  transform: scale(1.05);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .avatar-container {
+   margin-left: 0px;
+  }
 }
 
 
@@ -252,23 +297,6 @@ h2 {
   margin-bottom: 60px;
 }
 
-.profile-info {
-  text-align: center;
-  margin-top: -90px;
-  margin-left: 30px;
-  min-height: 150px;
-  /* Minimum height */
-  max-height: 500px;
-  /* Maximum height */
-  min-width: 200px;
-  /* Minimum width */
-  max-width: 400px;
-  /* Maximum width */
-  width: 100%;
-  /* Ensure it takes up full width within its container */
-  box-sizing: border-box;
-  /* Ensures padding and borders don't affect the width/height calculation */
-}
 
 .profile-details h1 {
   font-size: 24px;
