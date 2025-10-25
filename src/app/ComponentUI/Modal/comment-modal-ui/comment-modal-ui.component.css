@@ -32,7 +32,7 @@
   margin: 2px 0 0;
   font-size: 16px;
   color: #606770;
-  max-width: 680px;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,7 +69,7 @@
 
 /* Body */
 .modal-body {
-  max-height: 40vh; /* keep modal small and scrollable */
+  max-height: 65vh; /* keep modal small and scrollable */
   overflow-y: auto;
   padding: 16px;
   background: #fff;

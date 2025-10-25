@@ -22,6 +22,7 @@ import { ReactionPostComponent } from 'src/app/ComponentSharedUI/ReactionEmoji/r
 import { finalize, take } from 'rxjs/operators';
 import { EchoService } from 'src/app/services/echo.service';
 import { PusherService } from 'src/app/services/pusher.service';
+import { CommentModalUIComponent } from '../../Modal/comment-modal-ui/comment-modal-ui.component';
 interface Reaction {
   emoji: string;
   label: string;
@@ -765,6 +766,13 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
       error: (err) => console.error('Error loading reaction:', err)
+    });
+  }
+
+  openCommentModal(post: any): void {
+    this.dialog.open(CommentModalUIComponent, {
+      width: '800px',
+      data: post,
     });
   }
 
