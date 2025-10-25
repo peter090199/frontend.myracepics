@@ -105,6 +105,8 @@ import { UsersUIComponent } from './ComponentSharedUI/system/users-ui/users-ui.c
 import { TopheaderComponent } from './Users/userhomepage/topheader/topheader.component';
 import { ReactionPostComponent } from './ComponentSharedUI/ReactionEmoji/reaction-post/reaction-post.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { PrivatePostComponent } from './ComponentUI/Feeds/private-post/private-post.component';
+import { CommentModalUIComponent } from './ComponentUI/Modal/comment-modal-ui/comment-modal-ui.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -204,6 +206,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     UsersUIComponent,
     TopheaderComponent,
     ReactionPostComponent,
+    PrivatePostComponent,
+    CommentModalUIComponent,
   ],
   imports: [
     BrowserModule,

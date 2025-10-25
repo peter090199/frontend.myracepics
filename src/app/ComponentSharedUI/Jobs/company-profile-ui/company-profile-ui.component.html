@@ -94,7 +94,8 @@
 
     <!-- Post Tab -->
     <mat-tab label="Post">
-      <div class="feed-container" *ngIf="!isloading">
+      <app-private-post></app-private-post>
+      <!-- <div class="feed-container" *ngIf="!isloading">
         <div *ngFor="let post of posts; let i = index; trackBy: trackByPostId" class="post-card">
           <div class="post-header">
             <div mat-card-avatar class="avatar">
@@ -107,7 +108,6 @@
             </div>
           </div>
 
-          <!-- Caption -->
           <div class="post-caption">
             <p>{{ post.expanded ? post.caption : (post.caption | slice:0:800) + (post.caption.length > 800 ? '...' : '')
               }}</p>
@@ -116,7 +116,6 @@
             </a>
           </div>
 
-          <!-- Images -->
           <div *ngIf="post.images?.length > 0" class="post-media">
             <div class="gallery" [ngClass]="{ single: post.images.length === 1, multi: post.images.length > 1 }">
               <div class="gallery-item" *ngFor="let image of post.images.slice(0, maxImages); let j = index"
@@ -129,12 +128,10 @@
             </div>
           </div>
 
-          <!-- Videos -->
           <div *ngIf="post.videos?.length > 0" class="video-gallery">
             <video *ngFor="let video of post.videos.slice(0, maxImages)" controls [src]="video.path_url"></video>
           </div>
 
-          <!-- Reactions -->
           <div class="reactions-summary"
             *ngIf="postReactions[post.id]?.reactions?.length || postReactions[post.id]?.totalCount">
             <div class="emoji-stack" style="position: relative; height: 24px;">
@@ -170,7 +167,6 @@
             </div>
           </div>
 
-          <!-- Footer Buttons -->
         <div class="post-footer">
           <div class="footer-btn like-button-wrapper" (mouseenter)="showReaction(post.id)"
             (mouseleave)="hideReaction(post.id)">
@@ -203,7 +199,7 @@
         </div>
 
         </div>
-      </div>
+      </div> -->
     </mat-tab>
 
     <!-- Jobs Tab -->

@@ -10,6 +10,90 @@
   max-width: 1200px;
   margin: 0 auto;
   justify-content: center;
+}/* General section styling */
+.section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Left sidebar */
+.leftsidebar {
+  flex: 1 1 250px; /* Minimum width 250px, grows */
+  max-width: 300px;
+  min-width: 220px;
+}
+
+/* Main content */
+.main-content {
+  flex: 2 1 600px; /* Growable, min 600px */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Each job card inside main content */
+.sidebar {
+  width: 100%;
+}
+
+/* Job details */
+.job-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: 12px;
+}
+
+/* Buttons */
+.sidebar-actions button,
+.recent-header button {
+  width: 100%;
+  max-width: 200px;
+}
+
+/* Responsive tweaks for smaller devices */
+@media (max-width: 1024px) {
+  .section {
+    flex-direction: column;
+  }
+
+  .leftsidebar,
+  .main-content {
+    max-width: 100%;
+  }
+
+  .job-details {
+    margin-left: 8px;
+  }
+}
+
+/* Skeleton styling adjustments for mobile */
+.skeleton-line {
+  border-radius: 4px;
+}
+
+.skeleton-avatar,
+.skeleton-icon {
+  border-radius: 50%;
+}
+
+/* Minor spacing tweaks for very small screens */
+@media (max-width: 480px) {
+  .job-details a {
+    font-size: 12px;
+  }
+
+  .job-details span,
+  .job-details small {
+    font-size: 12px;
+  }
+
+  .sidebar-actions button {
+    max-width: 100%;
+  }
 }
 
 /* Sidebar styling */
@@ -137,7 +221,7 @@ mat-list-item:hover {
   font-weight: 600;
   color: #0a66c2;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 14px;
 
 }
 
@@ -230,4 +314,73 @@ mat-list-item div[mat-line]:first-child {
 mat-list-item div[mat-line]:last-child {
   font-size: 13px;
   color: #555;
+}
+
+
+
+/* Container for the button */
+.load-post-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+/* Button styling */
+.facebook-load-btn {
+  position: relative;
+  padding: 8px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #1877f2; /* Facebook blue */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+.facebook-load-btn:hover {
+  background-color: #165cdb;
+  transform: scale(1.05);
+}
+
+/* Disabled button state */
+.facebook-load-btn[disabled] {
+  background-color: #9bbcf9;
+  cursor: not-allowed;
+}
+
+/* Spinner container inside button */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+}
+
+/* Button text */
+.facebook-load-btn span {
+  display: inline-block;
+}
+
+/* Responsive: smaller screens */
+@media (max-width: 768px) {
+  .facebook-load-btn {
+    font-size: 14px;
+    padding: 6px 16px;
+    min-width: 150px;
+  }
+}
+
+/* Responsive: very small screens */
+@media (max-width: 480px) {
+  .facebook-load-btn {
+    font-size: 13px;
+    padding: 5px 12px;
+    min-width: 130px;
+  }
 }

@@ -805,3 +805,27 @@ mat-icon.logout-icon:hover {
     /* Full-width on mobile */
   }
 }
+
+.load-post-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.facebook-load-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;               /* space between spinner and text */
+  background-color: #e7f3ff; /* Facebook-like light blue */
+  color: #1877f2;         /* Facebook blue text */
+  font-weight: 500;
+  border-radius: 20px;    /* rounded pill shape */
+  text-transform: none;    /* keep text normal */
+  padding: 6px 16px;
+}
+
+.facebook-load-btn:disabled {
+  opacity: 0.8;
+}
+
+

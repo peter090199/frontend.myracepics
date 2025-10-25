@@ -76,7 +76,8 @@
       </div>
 
       <div *ngIf="!isloading">
-        <div *ngFor="let post of posts">
+        <app-private-post></app-private-post>
+        <!-- <div *ngFor="let post of posts">
           <mat-card class="post-box-container" *ngIf="profiles">
             <mat-card-header>
               <div mat-card-avatar class="avatar">
@@ -150,8 +151,8 @@
             </mat-card-actions>
 
           </mat-card>
-        </div>
-      </div>
+        </div>-->
+      </div> 
     </mat-tab>
 
     <!-- Basic Information Tab -->

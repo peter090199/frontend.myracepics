@@ -1,0 +1,126 @@
+<h2 mat-dialog-title class="modal-header">
+  <div class="header-left">
+    <img [src]="data.profile_pic || 'assets/images/default.png'" alt="Profile Picture" class="post-avatar" />
+
+    <div class="header-info">
+      <strong class="fullname">{{ data.fullname }}</strong>
+      <small class="post-time">{{ data.created_at | date: 'medium' }}</small>
+    </div>
+  </div>
+
+  <button mat-icon-button (click)="closeModal()" class="close-btn" aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+</h2>
+
+
+<!-- Comments -->
+<mat-dialog-content class="modal-body">
+  <p class="caption-preview">{{ data.caption }}</p>
+
+  <!-- ✅ Skeleton Loader -->
+  <div *ngIf="isLoading" class="skeleton-container">
+    <div class="skeleton-item" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-avatar shimmer"></div>
+      <div class="skeleton-lines">
+        <div class="skeleton-line short shimmer"></div>
+        <div class="skeleton-line long shimmer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Comments List -->
+  <div class="comment-list" *ngIf="!isLoading && displayedComments?.length; else noComments">
+    <div class="comment-item" *ngFor="let comment of displayedComments">
+      <img [src]="comment.profile_pic" class="comment-avatar" alt="User" />
+      <div class="comment-body">
+        <div class="comment-head">
+          <strong class="comment-name">{{ comment.fullname }}</strong>
+          <small class="comment-time">{{ comment.date_comment | date: 'medium' }}</small>
+        </div>
+
+        <p class="comment-text">{{ comment.comment }}</p>
+        <div class="comment-actions">
+          <button mat-button class="action-btn">Like</button>
+          <button mat-button class="action-btn" (click)="comment.showReply = !comment.showReply"> Reply </button>
+        </div>
+
+        <!-- ✅ Reply Input -->
+        <div *ngIf="comment.showReply" class="reply-input">
+          <mat-form-field class="form-field" appearance="outline">
+            <mat-label>Write a reply comment...</mat-label>
+            <input matInput placeholder="Reply..." [(ngModel)]="comment.newReply" [disabled]="comment.isSubmitting"
+              (keyup.enter)="addReply(comment)" />
+          </mat-form-field>
+
+          <button mat-icon-button color="primary" (click)="addReply(comment)"
+            [disabled]="!comment.newReply?.trim() || comment.isSubmitting">
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
+
+        <mat-progress-bar *ngIf="comment.isSubmitting" mode="indeterminate" color="primary"></mat-progress-bar>
+
+        <!-- ✅ Replies -->
+        <div class="replies" *ngIf="comment.replies?.length">
+          <div *ngFor="let reply of comment.replies" class="comment reply">
+            <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar" />
+            <div class="comment-content">
+              <strong>{{ reply.fullname }}</strong>
+              <button color="primary" *ngIf="currentUserCode == reply.code" mat-icon-button class="action-button"
+                (click)="replyeditComment(reply)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <p>{{ reply.comment }}</p>
+              <small>{{ reply.date_comment }}</small>
+
+              <!-- ✅ Reply Edit Mode -->
+              <div *ngIf="reply.isEditing">
+                <mat-form-field class="full-width" appearance="standard" class="full-width">
+                  <mat-label>Edit comment...</mat-label>
+                  <input matInput placeholder="Edit reply..." [(ngModel)]="reply.comment"
+                    (keyup.enter)="saveReplyEdit(reply, reply.id)" />
+                </mat-form-field>
+
+                <div class="reply-edit-actions">
+                  <button mat-icon-button color="primary" (click)="saveReplyEdit(reply, reply.id)">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="cancelReplyEdit(reply)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="cancelReplyEdit(reply)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load All Comments -->
+    <div class="load-more-comments" *ngIf="displayedComments.length < data.comments.length">
+      <button mat-stroked-button color="primary" (click)="loadAllComments()">
+        Load All Comments
+      </button>
+    </div>
+  </div>
+
+  <ng-template #noComments>
+    <p class="no-comments" *ngIf="!isLoading">No comments yet. Be the first to comment!</p>
+  </ng-template>
+</mat-dialog-content>
+
+<!-- Comment Input -->
+<mat-dialog-actions align="start" class="comment-input">
+  <mat-form-field appearance="outline" class="form-field">
+    <mat-label>Write a comment...</mat-label>
+    <input matInput [(ngModel)]="newComment" (keyup.enter)="addComment()" placeholder="Write a public comment..."
+      aria-label="Write a comment" />
+    <button mat-icon-button matSuffix color="primary" (click)="addComment()" aria-label="Send">
+      <mat-icon>send</mat-icon>
+    </button>
+  </mat-form-field>
+</mat-dialog-actions>

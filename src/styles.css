@@ -2325,3 +2325,22 @@ mat-row.selected {
     height: 40px;
   }
 }
+
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.fullname {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0582d5;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

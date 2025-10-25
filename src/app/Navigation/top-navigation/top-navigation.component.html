@@ -1,3 +1,27 @@
+<!-- 
+
+<div class="menu-bar">
+  <button
+    mat-button
+    *ngFor="let menu of nav_module"
+    (click)="refreshMenu(menu.icon)"
+  >
+    <mat-spinner 
+      *ngIf="menu.icon === 'home' && refreshingIcon === menu.icon" 
+      diameter="20">
+    </mat-spinner>
+    
+    <mat-icon *ngIf="!(menu.icon === 'home' && refreshingIcon === menu.icon)">
+      {{ menu.icon }}
+    </mat-icon>
+  </button>
+</div>
+
+
+ -->
+
+
+
 <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
 <div class="app-container">
   <mat-toolbar class="header">
@@ -27,7 +51,7 @@
 
         <!-- Regular Link -->
         <ng-template #regularLink>
-          <button mat-icon-button [routerLink]="[link.route]" 
+          <button mat-icon-button [routerLink]="[link.route]"
             *ngIf="link.description !== 'Notifications' && link.description !== 'Messaging' && link.description !== 'Profile'">
             <i class="{{ link.icon }}"></i>
           </button>
@@ -166,6 +190,12 @@
   </div>
 
   <!-- Main Content -->
+  <!-- <div class="load-post-container">
+    <button mat-raised-button class="facebook-load-btn" [disabled]="isLoading">
+      <mat-spinner *ngIf="isLoading" diameter="20" color="accent"></mat-spinner>
+      <span *ngIf="!isLoading">Load New Post</span>
+    </button>
+  </div> -->
   <div class="app-container">
     <router-outlet></router-outlet>
   </div>

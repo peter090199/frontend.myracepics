@@ -1,4 +1,4 @@
-<div class="jobs-container section">
+<!-- <div class="section">
   <mat-card class="leftsidebar">
     <h3>Apply to your saved job</h3>
 
@@ -17,7 +17,6 @@
     <mat-card class="sidebar">
       <h3>Top job picks for you</h3>
 
-      <!-- Skeleton while loading -->
       <ng-container *ngIf="isLoading; else jobsList">
         <mat-list>
           <div mat-subheader>Hiring Jobs</div>
@@ -73,13 +72,11 @@
         <button mat-button (click)="clearSearches()" [disabled]="isLoading">Clear</button>
       </div>
 
-      <!-- Skeleton -->
       <ng-container *ngIf="isLoading; else recentContent">
         <div class="skeleton skeleton-line w-40 h-5"></div>
         <div class="skeleton skeleton-line w-28 h-4 mt-6px"></div>
       </ng-container>
 
-      <!-- Real -->
       <ng-template #recentContent>
         <p>
           {{ recentSearch.term }} ·
@@ -88,5 +85,100 @@
         <small>Alert On · {{ recentSearch.location }}</small>
       </ng-template>
     </mat-card>
+  </div>
+</div> -->
+
+<div class="section">
+
+  <!-- Left Sidebar -->
+  <mat-card class="leftsidebar">
+    <h3>Apply to your saved job</h3>
+
+    <mat-nav-list>
+      <mat-list-item>Preferences</mat-list-item>
+      <mat-list-item>My jobs</mat-list-item>
+      <mat-list-item>My Career Insights</mat-list-item>
+    </mat-nav-list>
+
+    <div class="sidebar-actions">
+      <button mat-stroked-button>Manage job posts</button>
+    </div>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Top Job Picks -->
+    <mat-card class="sidebar">
+      <h3>Top job picks for you</h3>
+
+      <!-- Skeleton while loading -->
+      <ng-container *ngIf="isLoading; else jobsList">
+        <mat-list>
+          <div mat-subheader>Hiring Jobs</div>
+          <mat-list-item *ngFor="let _ of skeletonRows">
+            <div class="skeleton skeleton-avatar" matListAvatar aria-hidden="true"></div>
+            <div class="job-details w-full">
+              <div class="skeleton skeleton-line w-56"></div>
+              <div class="skeleton skeleton-line w-40 mt-6px"></div>
+              <div class="skeleton skeleton-line w-32 mt-6px"></div>
+            </div>
+            <button mat-icon-button disabled aria-hidden="true">
+              <div class="skeleton skeleton-icon"></div>
+            </button>
+          </mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
+        <mat-card-footer>
+          <mat-list-item>
+            <span class="skeleton skeleton-line w-24 h-5"></span>
+          </mat-list-item>
+        </mat-card-footer>
+      </ng-container>
+
+      <!-- Real Jobs List -->
+      <ng-template #jobsList>
+        <mat-list>
+          <div mat-subheader>Hiring Jobs</div>
+          <mat-list-item *ngFor="let job of jobs">
+            <img matListAvatar [src]="job.job_image" alt="Company Logo">
+            <div class="job-details">
+              <a [routerLink]="['/recommended-jobs', job.transNo]">{{ job.job_name }}</a>
+              <small>{{ job.job_position }} · {{ job.work_type }}</small>
+            </div>
+            <button mat-icon-button color="warn" (click)="removeJob(job)" matTooltip="Remove">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-list-item>
+        </mat-list>
+        <mat-card-footer>
+          <mat-list-item> <a routerLink="/#" class="show-all">Show all →</a></mat-list-item>
+        </mat-card-footer>
+      </ng-template>
+    </mat-card>
+
+    <!-- Recent Job Searches -->
+    <mat-card class="sidebar">
+      <div class="recent-header">
+        <h3>Recent job searches</h3>
+        <button mat-button (click)="clearSearches()" [disabled]="isLoading">Clear</button>
+      </div>
+
+      <!-- Skeleton -->
+      <ng-container *ngIf="isLoading; else recentContent">
+        <div class="skeleton skeleton-line w-40 h-5"></div>
+        <div class="skeleton skeleton-line w-28 h-4 mt-6px"></div>
+      </ng-container>
+
+      <!-- Real Content -->
+      <ng-template #recentContent>
+        <p>
+          {{ recentSearch.term }} ·
+          <span class="new">{{ recentSearch.count }} new</span>
+        </p>
+        <small>Alert On · {{ recentSearch.location }}</small>
+      </ng-template>
+    </mat-card>
+
   </div>
 </div>

@@ -14,6 +14,18 @@ nav {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+.video-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auto-video {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
 
 
 .content-body video,
@@ -1058,7 +1070,7 @@ mat-card-footer {
 
 @media (max-width: 480px) {
   .client-item {
-    padding: 10px;
+    padding: 0px;
   }
 
   .client-photo {
@@ -1271,4 +1283,59 @@ mat-card-footer {
   }
 }
 
+.load-post-container {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 60px;
+  z-index: 10;
+  margin: 10px 0;
+  animation: slideDown 0.4s ease-in-out;
+}
 
+.facebook-load-btn {
+  background-color: #1877f2;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 6px 18px;
+  text-transform: none;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.facebook-load-btn:hover {
+  background-color: #166fe5;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px;
+}
+
+.post-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for Facebook-like slide down */
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

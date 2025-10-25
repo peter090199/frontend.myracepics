@@ -83,8 +83,16 @@ desktopMenu: MatMenuPanel<any>;
   }
 
   user: any;
+  lastActionTime = Date.now();
+  inactivityCheck: any;
+  refreshingIcon: string | null = null;
 
   ngOnInit(): void {
+     this.inactivityCheck = setInterval(() => this.checkInactivity(), 30000);
+       setTimeout(() => {
+      this.isLoading = false;
+    }, 5000);
+    
     this.loadRealtimeCounts();
     this.fetchModules();
      this.loadUserData();
@@ -99,6 +107,42 @@ desktopMenu: MatMenuPanel<any>;
       };
   }
 
+  
+  
+  @HostListener('document:click')
+  @HostListener('document:mousemove')
+  @HostListener('document:keydown')
+  onUserAction(): void {
+    this.lastActionTime = Date.now();
+  }
+
+  checkInactivity(): void {
+    const now = Date.now();
+    const minutesInactive = (now - this.lastActionTime) / (1000 * 60);
+
+    if (minutesInactive >= 1) {
+      this.triggerRefresh();
+      this.lastActionTime = now; // reset after refresh
+    }
+  }
+
+  triggerRefresh(): void {
+    this.isLoading = true;
+
+    this.fetchModules(); // Example API reload
+    this.loadUserData();
+
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 3000);
+  }
+
+
+  ngOnDestroy(): void {
+    if (this.inactivityCheck) {
+      clearInterval(this.inactivityCheck);
+    }
+  }
   
   error:any;
  loadUserData() {
@@ -160,25 +204,7 @@ desktopMenu: MatMenuPanel<any>;
     this.chatDialogRef.afterClosed().subscribe(() => {
     });
   }
-  
-  openChatxxx(notif?: any) {
-    this.chatDialogRef = this.dialog.open(ChatPopupComponent, {
-      width: '500px',
-      position: { bottom: '80px', right: '20px' },
-      panelClass: 'custom-chat-popup',
-      data: notif
-    });
 
-    this.echoService.startPolling();
-    
-    this.countsSubscription = this.echoService.getCounts$().subscribe((counts) => {
-      console.log(counts);
-    });
-
-    // Stop polling and cleanup when dialog is closed
-    this.chatDialogRef.afterClosed().subscribe(() => {
-    });
-  }
 
   openChatxx() {
     this.dialog.open(ChatPopupComponent, {
@@ -312,6 +338,31 @@ desktopMenu: MatMenuPanel<any>;
         this.isLoading = false;
       }
     }
+
+refreshMenu(icon: string) {
+  if(icon === 'home') {
+    this.refreshingIcon = icon;
+
+    // Simulate refresh process
+    setTimeout(() => {
+      this.refreshingIcon = null;
+    }, 2000);
+  }
+
+  // handle other menu clicks normally
+}
+
+ async refreshMenux(icon: string): Promise<void> {
+    if (this.refreshingIcon === icon) return; // Prevent repeat clicks
+    this.refreshingIcon = icon;
+
+    // Simulate re-fetch (like Facebook refresh)
+    await this.fetchModules();
+
+    setTimeout(() => {
+      this.refreshingIcon = null;
+    }, 1000);
+  }
 
 
 

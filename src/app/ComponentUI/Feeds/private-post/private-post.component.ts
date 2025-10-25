@@ -1,3 +1,18 @@
+// import { Component, OnInit } from '@angular/core';
+
+// @Component({
+//   selector: 'app-private-post',
+//   templateUrl: './private-post.component.html',
+//   styleUrls: ['./private-post.component.css']
+// })
+// export class PrivatePostComponent implements OnInit {
+
+//   constructor() { }
+
+//   ngOnInit(): void {
+//   }
+
+// }
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Input, NgZone, AfterViewInit, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -28,11 +43,11 @@ interface Reaction {
 }
 
 @Component({
-  selector: 'app-home-ui',
-  templateUrl: './home-ui.component.html',
-  styleUrls: ['./home-ui.component.css']
+  selector: 'app-private-post',
+  templateUrl: './private-post.component.html',
+  styleUrls: ['./private-post.component.css']
 })
-export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PrivatePostComponent implements OnInit, AfterViewInit, OnDestroy {
   // Basic UI / data
   maxImages: number = 5;
   error: any;
@@ -260,6 +275,10 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnInit(): void {
+    const url = window.location.href;
+    const codesplit = url.split('/').pop();
+    this.code = codesplit;
+
     this.loadRealtimePosts();
 
 
@@ -421,7 +440,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-    setupAutoPlayOnScroll() {
+  setupAutoPlayOnScroll() {
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -432,7 +451,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
             this.videoElements.forEach((v) => v.nativeElement.pause());
 
             // Play the one that's visible
-            video.play().catch(() => {});
+            video.play().catch(() => { });
           } else {
             video.pause();
           }
@@ -477,9 +496,9 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
       profile: this.profile.getProfileByUserOnly(),
       cv: this.photo.getDataCV(),
       people: this.clientsService.getPeopleRecentActivity(),
-      posts: this.postDataservices.getDataPostAddFollow(),
       profileCode: this.authService.getProfilecode()
     };
+
 
     forkJoin(calls)
       .pipe(takeUntil(this.destroy$))
@@ -875,60 +894,62 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     return `${diffInHours} hours ago`;
   }
 
-  loadUserPost(page: number = 1, append: boolean = false): void {
-    this.isLoading = true;
 
-    this.postDataservices.getDataPostAddFollow().subscribe({
-      next: (res: any) => {
-        if (res?.success && Array.isArray(res.data)) {
-          const normalizeUrl = (path: string) =>
-            `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
-          const formattedPosts = res.data.map((post: any) => {
-            const images = Array.isArray(post.images)
-              ? post.images.map((img: any) => ({
+loadUserPost(page: number = 1, append: boolean = false): void {
+  this.isLoading = true;
+
+  this.postDataservices.getDataPost(this.code).subscribe({
+    next: (res) => {
+      if (res && res.success && Array.isArray(res.data)) {
+        const normalizeUrl = (path: string) =>
+          `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
+
+        const formattedPosts = res.data.map((post: any) => {
+          const images = Array.isArray(post.images)
+            ? post.images.map((img: any) => ({
                 ...img,
                 path_url: normalizeUrl(img.path_url),
               }))
-              : [];
+            : [];
 
-            const videos = Array.isArray(post.videos)
-              ? post.videos.map((vid: any) => ({
+          const videos = Array.isArray(post.videos)
+            ? post.videos.map((vid: any) => ({
                 ...vid,
                 path_url: normalizeUrl(vid.path_url),
               }))
-              : [];
+            : [];
 
-            return {
-              ...post,
-              expanded: false,
-              images,
-              videos,
-            };
-          });
+          return {
+            ...post,
+            fullname: post.fullname || post.Fullname || 'Unknown User',
+            profile_pic: post.profile_pic
+              ? normalizeUrl(post.profile_pic)
+              : 'https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png',
+            images,
+            videos,
+            expanded: false,
+          };
+        });
 
-          if (append) {
-            // Infinite scroll → add at bottom
-            this.posts = [...this.posts, ...formattedPosts];
-          } else {
-            // Normal load or refresh → replace/merge top
-            this.posts = formattedPosts;
-          }
+        // ✅ Merge posts properly
+        this.posts = append ? [...this.posts, ...formattedPosts] : formattedPosts;
 
-          // Load reactions for each post
-          this.posts.forEach((post) => this.loadReaction(post.id));
-        } else {
-          console.warn('Unexpected response format:', res);
-          if (!append) this.posts = [];
-        }
+        // ✅ Load reactions for each post
+        console.log(this.post.id)
+        this.posts.forEach((post) => this.loadReaction(post.id));
+      } else {
+        console.warn('Unexpected response format:', res);
+        if (!append) this.posts = [];
+      }
 
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching posts:', err);
-        this.isLoading = false;
-      },
-    });
-  }
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Error fetching posts:', err);
+      this.isLoading = false;
+    },
+  });
+}
 
   // loadUserPost(): void {
   //   this.isLoading = true;

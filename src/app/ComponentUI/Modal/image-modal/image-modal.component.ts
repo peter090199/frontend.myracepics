@@ -227,12 +227,6 @@ export class ImageModalComponent implements OnInit, AfterViewInit {
 
     this.comment.postCommentIndividual(this.post_uuidOrUind, data).subscribe({
       next: (res) => {
-        // this.comments.push({
-        //   comment: this.newComment,
-        //   likes: 0,
-        //   replies: [],
-        // });
-       // this.alert.toastrSuccess(res.message);
         this.getComment();
         this.newComment = '';
         this.isSubmitting = false;

@@ -1,0 +1,265 @@
+/* Container / header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  min-height: 64px;
+  box-sizing: border-box;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  border: 2px solid rgba(0,0,0,0.03);
+}
+
+.header-meta { line-height: 1; }
+.fullname { display:block; font-size: 14px; }
+.caption-preview {
+  margin: 2px 0 0;
+  font-size: 16px;
+  color: #606770;
+  max-width: 680px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Close button */
+.close-btn {
+  margin: 0;
+  color: rgb(235, 9, 9);
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.fullname {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0582d5;
+}
+
+.post-time {
+  font-size: 12px;
+  color: #65676b;
+}
+
+
+
+.close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Body */
+.modal-body {
+  max-height: 40vh; /* keep modal small and scrollable */
+  overflow-y: auto;
+  padding: 16px;
+  background: #fff;
+}
+
+/* custom slim scrollbar */
+.modal-body::-webkit-scrollbar { width: 8px; }
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.08);
+  border-radius: 8px;
+}
+.modal-body::-webkit-scrollbar-track { background: transparent; }
+
+/* Comments list */
+.comment-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 6px; }
+
+/* Single comment */
+.comment-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background .12s ease;
+}
+.comment-item:hover { background: rgba(0,0,0,0.02); }
+
+.comment-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.comment-body {
+  flex: 1;
+  min-width: 0; /* allow text truncation */
+}
+
+.comment-head {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom: 2px;
+}
+
+.comment-name {
+  font-size: 13px;
+  color: #050505;
+}
+
+.comment-time {
+  font-size: 12px;
+  color: #90949c;
+}
+
+/* text and actions */
+.comment-text {
+  margin: 4px 0 6px;
+  font-size: 14px;
+  color: #1d2129;
+  white-space: pre-wrap;
+}
+
+.comment-actions {
+  display:inline-flex;
+  gap:4px;
+}
+
+.action-btn {
+  min-width: 0;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #606770;
+  text-transform: none;
+}
+
+/* No comments placeholder */
+.no-comments {
+  color: #606770;
+  padding: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Input area (styled similar to Facebook) */
+.comment-input {
+  display: flex;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+}
+
+mat-form-field.w-full {
+  width: 100%;
+  margin: 0;
+}
+
+/* Make the material input look like Facebook's: rounded and compact */
+mat-form-field.w-full .mat-form-field-outline {
+  border-radius: 20px;
+}
+
+mat-form-field.w-full .mat-form-field-flex {
+  padding: 6px 8px;
+}
+
+mat-form-field.w-full input.mat-input-element {
+  padding: 10px 6px;
+  font-size: 14px;
+}
+
+/* Make send icon more like FB: slightly larger clickable area */
+mat-form-field.w-full button[mat-icon-button] {
+  transform: translateY(2px);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .caption-preview { margin: 2px; }
+  .modal-body { max-height: 60vh; padding: 10px; }
+  .modal-header { padding: 10px; }
+}
+
+
+.caption-preview {
+  margin: 0;
+  font-size: 15px;
+  color: #1d2129;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.skeleton-container {
+  padding: 1rem 0;
+}
+
+.skeleton-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-lines {
+  flex: 1;
+}
+
+.skeleton-line {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-line.long {
+  width: 90%;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(300%);
+  }
+}

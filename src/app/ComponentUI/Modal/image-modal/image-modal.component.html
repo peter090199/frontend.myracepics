@@ -104,7 +104,7 @@
             <!-- edit comment by usercode -->
             <button *ngIf="currentUserCode == comment.code"
                   mat-icon-button
-                  class="edit-button"
+                 class="action-button" color="primary"
                   (click)="editComment(comment)">
             <mat-icon>edit</mat-icon>
           </button>
@@ -154,9 +154,9 @@
                 <div class="comment-content">
                   <strong>{{ reply.fullname }}</strong>
                     <!-- reply edit comment by usercode -->
-                      <button *ngIf="currentUserCode == reply.code"
+                      <button *ngIf="currentUserCode == reply.code" color="primary"
                             mat-icon-button
-                            class="edit-button"
+                            class="action-button"
                             (click)="replyeditComment(reply)">
                       <mat-icon>edit</mat-icon>
                     </button>
