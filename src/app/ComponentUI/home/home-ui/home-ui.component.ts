@@ -422,7 +422,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-    setupAutoPlayOnScroll() {
+  setupAutoPlayOnScroll() {
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -433,7 +433,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
             this.videoElements.forEach((v) => v.nativeElement.pause());
 
             // Play the one that's visible
-            video.play().catch(() => {});
+            video.play().catch(() => { });
           } else {
             video.pause();
           }
@@ -1107,7 +1107,20 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     return `menu-${index}`;
   }
 
-  onEditPost() { /* implement if needed */ }
+  onEditPost(post:any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = post;
+    const dialogRef = this.dialog.open(PostUIComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadUserPost();
+    });
+  }
+
+
 
   onDelete(post: any): void {
     this.alert.popupWarning("", "Are you sure you want to delete this post?").then((result: any) => {

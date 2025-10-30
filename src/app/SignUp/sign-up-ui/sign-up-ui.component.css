@@ -27,7 +27,8 @@
   justify-content: center;
   align-items: center;
   min-height:100vh;
-  padding: 10px;
+  width: 100%;
+  padding: 2px;
 }
 /* Align mat-icon within mat-form-field */
 mat-form-field .mat-form-field-prefix mat-icon {
@@ -73,15 +74,15 @@ h1{
 
 /* Card styling with scrolling enabled */
 .register-card {
-  width: 100%;
-  max-width: 640px; /* Limits card width on larger screens */
-  padding: 30px;
+  width:800px;
+  max-width: 800px; /* Limits card width on larger screens */
+  padding: 10px;
   box-shadow: 3 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: auto; /* Enables vertical scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
   border-radius: 10px; 
   max-height: 810px;
   margin-bottom: 0px;
-  margin: 10px;
+  margin: 20px;
 }
 
 /* Custom scrollbar styling */
@@ -129,6 +130,25 @@ mat-form-field {
   width: 100%; /* Adjust the width for two columns */
 }
 
+/* Rotating spinner */
+.spinner-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+/* Spin animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade transition for text */
+.fade {
+  transition: opacity 0.3s ease-in-out;
+  opacity: 1;
+}
 
 
 /* Button styling */
@@ -138,13 +158,16 @@ mat-form-field {
 
 
 .agreement-section {
-  font-size: 0.9em;
-  color: #555;
   display: flex;
-  flex-direction: column;
-  gap: 10px; 
-  margin-bottom: 12px;
+  align-items: center;       /* Vertically center items */
+  justify-content: flex-start;
+  gap: 12px;                 /* Space between items */
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  margin: 15px;
 }
+
 
 .agreement-section a {
   color: #3f51b5; /* Angular Material theme color */

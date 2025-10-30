@@ -143,7 +143,6 @@
           <img [src]="post.profile_pic || 'assets/images/default.png'" alt="Profile Picture" class="post-avatar" />
 
           <div class="header-info">
-            <!-- <strong class="fullname">{{ post.fullname }}</strong> -->
             <div class="client-info">
               <h3 class="client-name">
                 <a [routerLink]="post.role_code === 'DEF-USERS'? ['/profile', post.code]: ['/client_profile', post.code]"
@@ -162,7 +161,7 @@
           </button>
 
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onEditPost()">Edit</button>
+            <button mat-menu-item (click)="onEditPost(post)">Edit</button>
             <button mat-menu-item (click)="onDelete(post)" [disabled]="isLoading">
               <ng-container *ngIf="!isLoading; else deletingTpl">Delete</ng-container>
               <ng-template #deletingTpl>

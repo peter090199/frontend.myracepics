@@ -66,6 +66,75 @@
         <div class="replies" *ngIf="comment.replies?.length">
           <div *ngFor="let reply of comment.replies" class="comment reply">
             <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar" />
+
+            <div class="comment-content">
+              <div class="comment-header">
+                <strong>{{ reply.fullname }}</strong>
+
+                <!-- ✏️ Edit Button (only for owner) -->
+                <button *ngIf="currentUserCode == reply.code" mat-icon-button color="primary" class="action-button"
+                  (click)="replyeditComment(reply)" aria-label="Edit reply">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+
+              <!-- 💬 Reply Text -->
+              <p class="reply-text">{{ reply.comment }}</p>
+              <small class="reply-date">{{ reply.date_comment }}</small>
+
+              <!-- ❤️ Actions -->
+              <div class="reply-actions">
+                <button mat-button class="action-link" (click)="likeReply(reply)">
+                  <mat-icon inline class="like-icon" [class.liked]="reply.likedByCurrentUser">
+                    favorite
+                  </mat-icon>
+                  <span>{{ reply.likeCount || 0 }}</span>
+                </button>
+
+                <button mat-button class="action-link" (click)="showReplyInput(reply)">
+                  Reply
+                </button>
+              </div>
+
+              <!-- ✍️ Reply Edit Mode -->
+              <div *ngIf="reply.isEditing" class="reply-edit-section">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Edit comment...</mat-label>
+                  <input matInput placeholder="Edit comment..." [(ngModel)]="reply.comment"
+                    (keyup.enter)="saveReplyEdit(reply, reply.id)" />
+                </mat-form-field>
+
+                <div class="reply-edit-actions">
+                  <button mat-icon-button color="primary" (click)="saveReplyEdit(reply, reply.id)">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="cancelReplyEdit(reply)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteReply(reply.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 🧾 Reply Input Box -->
+              <div *ngIf="reply.showReplyInput" class="nested-reply-box">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Write a reply...</mat-label>
+                  <input matInput [(ngModel)]="reply.newReply" (keyup.enter)="addComment()"
+                    placeholder="Write a public reply..." aria-label="Write a reply" />
+                  <button mat-icon-button matSuffix color="primary" (click)="sendNestedReply(reply)" aria-label="Send">
+                    <mat-icon>send</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="replies" *ngIf="comment.replies?.length">
+          <div *ngFor="let reply of comment.replies" class="comment reply">
+            <img [src]="reply.profile_pic || 'assets/images/default.png'" alt="User" class="comment-avatar" />
             <div class="comment-content">
               <strong>{{ reply.fullname }}</strong>
               <button color="primary" *ngIf="currentUserCode == reply.code" mat-icon-button class="action-button"
@@ -75,11 +144,10 @@
               <p>{{ reply.comment }}</p>
               <small>{{ reply.date_comment }}</small>
 
-              <!-- ✅ Reply Edit Mode -->
               <div *ngIf="reply.isEditing">
-                <mat-form-field class="full-width" appearance="standard" class="full-width">
+                <mat-form-field class="full-width" appearance="outline" class="full-width">
                   <mat-label>Edit comment...</mat-label>
-                  <input matInput placeholder="Edit reply..." [(ngModel)]="reply.comment"
+                  <input matInput placeholder="Input comment..." [(ngModel)]="reply.comment"
                     (keyup.enter)="saveReplyEdit(reply, reply.id)" />
                 </mat-form-field>
 
@@ -97,7 +165,9 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
+
+
       </div>
     </div>
 

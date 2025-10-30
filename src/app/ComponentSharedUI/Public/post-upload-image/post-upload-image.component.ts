@@ -99,8 +99,9 @@
 
 // }
 
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { inject } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PostUploadImagesService } from 'src/app/services/post-upload-images.service';
 
 @Component({
@@ -116,11 +117,26 @@ export class PostUploadImageComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PostUploadImageComponent>,
-    private imageUploadService: PostUploadImagesService
-  ) {}
+    private imageUploadService: PostUploadImagesService, @Inject(MAT_DIALOG_DATA) public data: any,
+  ) { }
 
   ngOnInit(): void {
-    this.slides = this.imageUploadService.getPreviewImages(); // No need for Observable if it's an array
+    console.log(this.data)
+    // Load images from dialog data if provided
+    // If data.images exists, map it to slides
+    if (this.data?.images && this.data.images.length > 0) {
+      this.slides = this.data.images.map((img: { path_url: any; path: any; posts: any; }) => ({
+        posts: img.path_url || img.path || img.posts, // pick the correct field
+        thumbnail: img.path_url || img.path || img.posts,
+        caption: this.data.caption || 'Uploaded Image'
+      }));
+    }
+    // Load any preview images from service
+    const previewImages = this.imageUploadService.getPreviewImages();
+    if (previewImages.length > 0) {
+      this.slides = [...this.slides, ...previewImages];
+    }
+    // this.slides = this.imageUploadService.getPreviewImages(); // No need for Observable if it's an array
   }
 
   changeSlide(n: number) {
@@ -135,9 +151,9 @@ export class PostUploadImageComponent implements OnInit {
     const files: FileList = event.target.files;
     if (files.length === 0) return;
     const newImages: { posts: string; thumbnail: string; caption: string }[] = [];
-      
+
     Array.from(files).forEach((file) => {
-     
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const imageSrc = e.target.result;
@@ -161,7 +177,7 @@ export class PostUploadImageComponent implements OnInit {
   }
 
 
-  
+
   onImagesUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
@@ -192,7 +208,7 @@ export class PostUploadImageComponent implements OnInit {
   removeImage(index: number) {
     this.slides.splice(index, 1); // Remove image from array
   }
-  
+
   closeDialog() {
     this.dialogRef.close();
     // Do not reset slides to persist data after closing

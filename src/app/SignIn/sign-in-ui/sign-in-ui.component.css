@@ -15,7 +15,9 @@
   padding: 20px;
 
 }
-
+.mat-card mat-icon {
+  color: #185291; /* Replace #007bff with any color you prefer */
+}
 .width2{
   margin-bottom: 20px;
 }

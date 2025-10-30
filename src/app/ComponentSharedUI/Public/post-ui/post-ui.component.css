@@ -22,18 +22,20 @@ mat-dialog-actions {
   padding-top: 10px;
 }
 textarea {
-  min-height: 100px; /* Default height */
-  max-height: 300px; /* Prevent excessive expansion */
+  min-height: 200px; /* Default height */
+  max-height: 400px; /* Prevent excessive expansion */
   overflow-y: auto; /* Show scrollbar when needed */
   resize: vertical; /* Allow user to resize vertically */
 }
-.form-container{
-  min-height: 500px;
-   max-height: 90vh;   /* adjust to your preference */
-  overflow-y: auto;   /* vertical scroll when content exceeds max-height */
-  padding: 20px;
+
+/* .form-container{
+  min-height: 600px;
+  max-height: 90vh;  
+  overflow-y: auto;  
   overflow-x: hidden;
-}
+  width: 100%;
+  margin: 10px;
+} */
 
 /* Close Button Alignment */
 .button-end {
@@ -250,4 +252,49 @@ video {
   flex-grow: 1;
   margin: 0 10px;
   cursor: pointer;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-around; /* evenly space icons */
+  padding: 8px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  flex-wrap: wrap; /* wrap icons on smaller screens */
+}
+
+.action-btn {
+  flex: 1 1 40%; /* 3 icons per row on small screens */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 70px;
+  padding: 5px 0;
+}
+
+/* Icon hover effect */
+.action-btn mat-icon {
+  font-size: 24px;
+  transition: color 0.2s;
+}
+
+.action-btn:hover mat-icon {
+  color: #1976d2; /* Angular Material primary color */
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .post-actions {
+    padding: 4px 0;
+  }
+
+  .action-btn {
+    min-width: 50px;
+    padding: 6px 0;
+  }
+
+  .action-btn mat-icon {
+    font-size: 20px;
+  }
 }

@@ -18,16 +18,19 @@ export class SignUpUIComponent implements OnInit {
   userForm: FormGroup;
   companyForm: FormGroup;
 
-  isloading:boolean = false;
-  passwordVisible:boolean = false;
-  
+  isloading: boolean = false;
+  passwordVisible: boolean = false;
+
   selectedOption: string | undefined;
   professions: { label: string, value: string }[] = [];
+  isLoadingIndividual: boolean = false;
+  isLoadingCompany: boolean = false;
+
 
   options = [
-    { value: 'I am over 18 years old'},
-    { value: 'I am below 18 years old'},
-  
+    { value: 'I am over 18 years old' },
+    { value: 'I am below 18 years old' },
+
   ];
 
   countryCodes = [
@@ -122,50 +125,50 @@ export class SignUpUIComponent implements OnInit {
     { code: '+996', country: 'Kyrgyzstan' },
     { code: '+998', country: 'Uzbekistan' },
     // Add additional codes as needed
-];
+  ];
 
 
-fadeIn: any;
+  fadeIn: any;
 
   constructor(private fb: FormBuilder,
-     private signupService:SignUpService,
-     private notifyService:NotificationsService,
-     private dialog: MatDialog,
-     private router:Router
-    ) {
-      this.countryCodes + this.contactno;
-    }
- contactno:any;
- togglePasswordVisibility() {
-  this.passwordVisible = !this.passwordVisible;
-}
-refreshHomePage() {
-  this.router.navigate(['/homepage']).then(() => {
-    window.location.reload();
-  });
-}
-
- // Custom domain validator
- comDomainValidator(control: AbstractControl): ValidationErrors | null {
-  const domainPattern = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,6}$/;
-  const endsWithCom = /\.com$/;
-
-  if (control.value && (!domainPattern.test(control.value) || !endsWithCom.test(control.value))) {
-    return { invalidDomain: true };
+    private signupService: SignUpService,
+    private notifyService: NotificationsService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {
+    this.countryCodes + this.contactno;
   }
-  return null;
-}
+  contactno: any;
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+  refreshHomePage() {
+    this.router.navigate(['/homepage']).then(() => {
+      window.location.reload();
+    });
+  }
 
-get companywebsite() {
-  return this.companyForm.get('companywebsite');
-}
+  // Custom domain validator
+  comDomainValidator(control: AbstractControl): ValidationErrors | null {
+    const domainPattern = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,6}$/;
+    const endsWithCom = /\.com$/;
+
+    if (control.value && (!domainPattern.test(control.value) || !endsWithCom.test(control.value))) {
+      return { invalidDomain: true };
+    }
+    return null;
+  }
+
+  get companywebsite() {
+    return this.companyForm.get('companywebsite');
+  }
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
       profession: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       countryCode: new FormControl('', Validators.required),
-      contactno: ['', [Validators.required,  Validators.pattern('^[0-9]+$')]],
+      contactno: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       fname: new FormControl('', Validators.required),
       lname: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -175,14 +178,14 @@ get companywebsite() {
       // age: new FormControl('', Validators.required),
       age: 1,
       statuscode: 0
-    }, 
-    { validator: this.passwordMatchValidator });
+    },
+      { validator: this.passwordMatchValidator });
 
     this.companyForm = this.fb.group({
       company: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       countryCode: new FormControl('', Validators.required),
-      contactno: ['', [Validators.required,  Validators.pattern('^[0-9]+$')]],
+      contactno: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       fname: new FormControl('', Validators.required),
       lname: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -193,8 +196,8 @@ get companywebsite() {
       companywebsite: ['', [Validators.required, this.comDomainValidator]],
       designation: new FormControl('', Validators.required),
       statuscode: 1
-    }, 
-    { validator: this.passwordMatchValidator2 });
+    },
+      { validator: this.passwordMatchValidator2 });
   }
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
@@ -214,7 +217,7 @@ get companywebsite() {
       maxWidth: '600px',
     });
   }
-  
+
   openModalPrivacy(title: string, content: string) {
     this.dialog.open(PrivacyComponent, {
       data: { title, content },
@@ -226,7 +229,7 @@ get companywebsite() {
   get isAgreementChecked(): boolean {
     return this.userForm.get('agreementTerms')?.value && this.userForm.get('agreementPrivacy')?.value;
   }
-  title:string="";
+  title: string = "";
   industries: string[] = [
     'Accounting/Audit/Tax Services',
     'Advertising/Public Relations/Marketing Services',
@@ -280,103 +283,107 @@ get companywebsite() {
     'Trading and Distribution',
     'Wholesale/Retail'
   ];
-  
 
-//status: string ="";
 
-  onSubmit():void {
+  //status: string ="";
+
+  onSubmitIndividual(): void {
+    if (this.userForm.invalid) return;
+    this.isLoadingIndividual = true;
+
+
     if (this.selectedOption === 'I am over 18 years old') {
 
       if (this.userForm.valid) {
-          const formData = this.userForm.getRawValue();
-          formData.contactno = `${formData.countryCode}${formData.contactno}`;
+        const formData = this.userForm.getRawValue();
+        formData.contactno = `${formData.countryCode}${formData.contactno}`;
 
-          //api => user and client 
-          //if(api && pdf sv)
-          // this.router.navigateByUrl("/curriculum-vitae");
+        //api => user and client 
+        //if(api && pdf sv)
+        // this.router.navigateByUrl("/curriculum-vitae");
 
-          //else{
-          //}
-          this.signupService.signup(formData).subscribe({
-                next: (res) => {
-                  if(res.success === true)
-                  {
-                    this.isloading = true;
-                    this.notifyService.toastPopUp(res.message);
-                    this.userForm.reset();
-                    this.router.navigateByUrl("/homepage");
-                    this.isloading = false;
-                  }
-                  else
-                  {
-                    this.isloading = false;
-                    this.notifyService.toastrInfo(res.message);
-                  }
-                },
-                error: (err) => {
-                  this.notifyService.toastrInfo(err.message);
-                },
-              });
+        //else{
+        //}
+        this.signupService.signup(formData).subscribe({
+          next: (res) => {
+            if (res.success === true) {
+              this.isloading = true;
+              this.isLoadingIndividual = false;
+              this.notifyService.toastPopUp(res.message);
+              this.userForm.reset();
+              this.router.navigateByUrl("/homepage");
+              this.isloading = false;
+            }
+            else {
+              this.isloading = false;
+              this.isLoadingIndividual = false;
+              this.notifyService.toastrInfo(res.message);
+            }
+          },
+          error: (err) => {
+            this.notifyService.toastrInfo(err.message);
+          },
+        });
 
-             }
-             else
-             {
-              this.notifyService.toastrWarning("Your below 18 years old!");
-              
-             }
+      }
+      else {
+        this.notifyService.toastrWarning("Your below 18 years old!");
 
-      
+      }
+
+
     } else if (this.selectedOption === 'I am below 18 years old') {
-      this.notifyService.toastrWarning( 'I am below 18 years old. You are not eligible!');
+      this.notifyService.toastrWarning('I am below 18 years old. You are not eligible!');
     } else {
       this.notifyService.toastrWarning('Unknown option selected.');
     }
 
-   }
+  }
 
-   //clients
-   onSubmit2():void {
+  //clients
+  onSubmitCompany(): void {
+    if (this.companyForm.invalid) return;
+    this.isLoadingCompany = true;
     // if (this.selectedOption === 'I am over 18 years old') {
-    
-      if (this.companyForm.valid) {
-          const formData = this.companyForm.getRawValue();
-          formData.contactno = `${formData.countryCode}${formData.contactno}`;
 
-          this.signupService.signup(formData).subscribe({
-                next: (res) => {
-                  if(res.success === true)
-                  {
-                    this.isloading = true;
-                    this.notifyService.toastPopUp(res.message);
-                    this.companyForm.reset();
-                    this.router.navigateByUrl("/homepage");
-                    this.isloading = false;
-                  }
-                  else
-                  {
-                    this.isloading = false;
-                    this.notifyService.toastrInfo(res.message);
-                  }
-                },
-                error: (err) => {
-                  this.notifyService.toastrInfo(err.message);
-                },
-              });
+    if (this.companyForm.valid) {
+      const formData = this.companyForm.getRawValue();
+      formData.contactno = `${formData.countryCode}${formData.contactno}`;
 
-             }
-             else
-             {
-              this.notifyService.toastrWarning("Your below 18 years old!");
-              
-             }
+      this.signupService.signup(formData).subscribe({
+        next: (res) => {
+          if (res.success === true) {
+            this.isloading = true;
+            this.isLoadingCompany = false;
+            this.notifyService.toastPopUp(res.message);
+            this.companyForm.reset();
+            this.router.navigateByUrl("/homepage");
+            this.isloading = false;
+          }
+          else {
+            this.isloading = false;
+            this.isLoadingCompany = false;
+            this.notifyService.toastrInfo(res.message);
+          }
+        },
+        error: (err) => {
+          this.notifyService.toastrInfo(err.message);
+        },
+      });
 
-      
     }
-    //  else if (this.selectedOption === 'I am below 18 years old') {
-    //   this.notifyService.toastrWarning( 'I am below 18 years old. You are not eligible!');
-    // } else {
-    //   this.notifyService.toastrWarning('Unknown option selected.');
-    // }
+    else {
+      this.notifyService.toastrWarning("Your below 18 years old!");
+
+    }
+
+
+  }
+  //  else if (this.selectedOption === 'I am below 18 years old') {
+  //   this.notifyService.toastrWarning( 'I am below 18 years old. You are not eligible!');
+  // } else {
+  //   this.notifyService.toastrWarning('Unknown option selected.');
+  // }
 
   // }
 }

@@ -1111,11 +1111,6 @@ mat-card-footer {
   border-bottom: 1px solid #eee;
 }
 
-button {
-  font-size: 14px;
-  color: #65676b;
-  text-transform: none;
-}
 
 
 .comment-section {
@@ -1272,11 +1267,7 @@ input {
   padding-left: 4px;
 }
 
-button {
-  color: #65676b;
-  width: 32px;
-  height: 32px;
-}
+
 
 mat-icon {
   font-size: 20px;

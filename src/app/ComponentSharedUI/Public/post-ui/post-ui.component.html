@@ -1,93 +1,88 @@
-<!-- Progress bar shown only while uploading -->
-<mat-progress-bar *ngIf="isUploading" mode="indeterminate" color="primary">
-</mat-progress-bar>
+<div class="spinner-overlay" *ngIf="isUploading">
+  <mat-progress-spinner color="primary" mode="indeterminate" diameter="50">
+  </mat-progress-spinner>
+</div>
 
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
 
-<form [formGroup]="postForm" class="form-container">
-  <div class="profile-info">
-    <div class="profile-name">
-      <img
-        [src]="getProfileImage(profiles?.photo_pic)"
-        alt="Profile Picture"
-        class="profile-img"
-      />
-      <mat-form-field appearance="standard" class="status-dropdown">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status" required>
-          <mat-option value="" disabled selected>Select Status</mat-option>
-          <mat-option *ngFor="let option of statusOptions" [value]="option.value">
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
+<div class="form-container">
+  <form [formGroup]="postForm">
+    <div class="profile-info">
+      <div class="profile-name">
+        <img [src]="getProfileImage(profiles?.photo_pic)" alt="Profile Picture" class="profile-img" />
+        <mat-form-field appearance="standard" class="status-dropdown">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status" required>
+            <mat-option value="" disabled selected>Select Status</mat-option>
+            <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <span class="post-status" *ngIf="profiles2">
+        Create Post to {{ getSelectedStatus() }} {{ profiles2.fname }}
+      </span>
+    </div>
+
+    <mat-dialog-content class="post-content">
+      <mat-form-field appearance="outline" class="full-width">
+        <textarea matInput placeholder="What do you want to talk about?" formControlName="caption" required></textarea>
+        <mat-error *ngIf="postForm.get('caption')?.hasError('required')">
+          Post is required.
+        </mat-error>
       </mat-form-field>
+
+      <div class="post-actions">
+        <!-- Images -->
+        <!-- <button mat-icon-button (click)="uploadImage(data.images)" *ngIf="data?.images?.length" class="action-btn">
+          <mat-icon>image</mat-icon>
+        </button> -->
+        <button mat-button class="action-btn" (click)="uploadImage2(data)">
+          <mat-icon>image</mat-icon>
+        </button>
+        <!-- Video -->
+        <input type="file" accept="video/mp4" #videoInput style="display: none" (change)="onVideoSelected($event)" />
+        <button mat-button class="action-btn" (click)="videoInput.click()">
+          <mat-icon>videocam</mat-icon>
+        </button>
+
+        <!-- Settings -->
+        <!-- <button mat-icon-button class="action-btn">
+          <mat-icon>settings</mat-icon>
+        </button> -->
+      </div>
+
+
+    </mat-dialog-content>
+
+    <div *ngIf="postForm">
+      <!-- Images -->
+      <!-- <div *ngIf="data?.images?.length">
+        <img *ngFor="let img of data.images" [src]="img.path_url" alt="Post Image" />
+      </div> -->
+
+      <!-- Videos
+      <div *ngIf="data?.videos?.length">
+        <video #videoPlayer width="100%" height="auto" controls preload="metadata" (play)="onPlay()" (pause)="onPause()"
+          (ended)="onPause()" (timeupdate)="updateProgress2(videoPlayer)">
+          <source [src]="data.videos[0]?.path_url" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div> -->
     </div>
 
-    <span class="post-status" *ngIf="profiles2">
-      Create Post to {{ getSelectedStatus() }} {{ profiles2.fname }}
-    </span>
-  </div>
 
-  <mat-dialog-content class="post-content">
-    <mat-form-field appearance="outline" class="full-width">
-      <textarea matInput placeholder="What do you want to talk about?" formControlName="caption" required></textarea>
-      <mat-error *ngIf="postForm.get('caption')?.hasError('required')">
-        Post is required.
-      </mat-error>
-    </mat-form-field>
-
-    <div class="form-row">
-      <button mat-icon-button (click)="uploadImage()" class="form-field">
-        <mat-icon>image</mat-icon>
-      </button>
-
-      <!-- Hidden File Input for Video -->
-      <input type="file" accept="video/mp4" #videoInput style="display: none"
-        (change)="onVideoSelected($event)" />
-
-      <!-- Trigger video input -->
-      <button mat-icon-button class="form-field" (click)="videoInput.click()">
-        <mat-icon>videocam</mat-icon>
-      </button>
-
-      <button mat-icon-button class="form-field">
-        <mat-icon>settings</mat-icon>
-      </button>
-    </div>
-  </mat-dialog-content>
-
-  <!-- Video preview -->
-  <div class="video-player-container" *ngIf="videoPreviewUrl">
-    <video #videoPlayer (timeupdate)="updateProgress(videoPlayer)" (pause)="onPause()"
-      (play)="onPlay()" (ended)="onPause()">
-      <source [src]="videoPreviewUrl" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-
-    <button class="overlay-btn" *ngIf="!isPlaying" (click)="toggleVideo(videoPlayer)">
-      <mat-icon>play_arrow</mat-icon>
-    </button>
-
-    <div class="controls">
-      <button (click)="toggleVideo(videoPlayer)">
-        <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
-      </button>
-
-      <input type="range" min="0" [max]="videoPlayer.duration || 0" [value]="currentTime"
-        (input)="seekVideo(videoPlayer, $event)" />
-
-      <span>{{ formatTime(currentTime) }} / {{ formatTime(videoPlayer.duration) }}</span>
-
-      <button (click)="toggleFullscreen(videoPlayer)">
-        <mat-icon>fullscreen</mat-icon>
-      </button>
-    </div>
-  </div>
+  </form>
 
 
-</form>
-  <mat-card-footer align="end">
-    <button mat-button (click)="closeDialog()">Cancel</button>
-    <button mat-flat-button color="primary" [disabled]="postForm.invalid || isUploading" (click)="postData()">
-      Post
-    </button>
-  </mat-card-footer>
+</div>
+<br>
+<div class="button-end">
+  <button mat-flat-button color="primary" [disabled]="postForm.invalid || isUploading" (click)="postData()">
+    {{btnSave}}
+  </button>
+</div>

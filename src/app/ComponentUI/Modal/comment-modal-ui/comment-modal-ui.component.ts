@@ -90,7 +90,7 @@ export class CommentModalUIComponent implements OnInit {
     });
   }
 
-  
+
   //edit comment
   editComment(comment: any) {
     comment.isEditing = true;
@@ -215,6 +215,55 @@ export class CommentModalUIComponent implements OnInit {
       }
     });
   }
+
+
+  likeReply(reply: any) {
+    reply.likedByCurrentUser = !reply.likedByCurrentUser;
+    reply.likeCount = reply.likeCount || 0;
+    reply.likeCount += reply.likedByCurrentUser ? 1 : -1;
+  }
+
+  showReplyInput(reply: any) {
+    reply.showReplyInput = !reply.showReplyInput;
+  }
+
+  sendNestedReply(parentReply: any) {
+    if (!parentReply.newReply?.trim()) return;
+
+    const newReply = {
+      id: Date.now(),
+      fullname: this.data.fullname,
+      profile_pic: this.data.profile_pic,
+      comment: parentReply.newReply,
+      date_comment: new Date().toLocaleString(),
+    };
+
+    parentReply.replies = parentReply.replies || [];
+    parentReply.replies.push(newReply);
+    parentReply.newReply = '';
+    parentReply.showReplyInput = false;
+  }
+deleteReply(replyId: number) {
+  const confirmDelete = confirm('Are you sure you want to delete this reply?');
+  if (!confirmDelete) return;
+
+  // Example logic — adjust based on your backend structure
+  // this.commentService.deleteReply(replyId).subscribe({
+  //   next: () => {
+  //     // Remove from UI instantly
+  //     this.comment.replies = this.comment.replies.filter(
+  //       (r: any) => r.id !== replyId
+  //     );
+  //     this.notificationService.showSuccess('Reply deleted successfully!');
+  //   },
+  //   error: (err) => {
+  //     console.error('Error deleting reply:', err);
+  //     this.notificationService.showError('Failed to delete reply.');
+  //   },
+  // });
+}
+
+
 
   /** Load all comments */
   loadAllComments(): void {
