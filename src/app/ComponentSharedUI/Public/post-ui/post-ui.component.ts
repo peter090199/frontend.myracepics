@@ -700,7 +700,7 @@ export class PostUIComponent implements OnInit {
     this.videoPaused = true;
   }
   /** 🔹 Upload image dialog */
-  uploadImage(images:any) {
+  uploadImage(images: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -708,7 +708,7 @@ export class PostUIComponent implements OnInit {
     dialogConfig.data = images;
     this.dialog.open(PostUploadImageComponent, dialogConfig);
   }
-  uploadImage2(data:any) {
+  uploadImage2(data: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -739,9 +739,21 @@ export class PostUIComponent implements OnInit {
       }
 
       if (this.data?.id) {
-
-
-
+        console.log(this.data.transNo);
+        this.imageUploadService.updatePostByTransNo(formData,this.data.transNo).subscribe({
+          next: (res) => {
+            this.isUploading = false; // hide progress bar
+            if (res.success == true) {
+              this.alert.toastrSuccess(res.message);
+              this.resetForm();
+            }
+          },
+          error: (error) => {
+            this.isUploading = false; // hide progress bar
+            console.error('Upload failed:', error);
+            this.alert.toastrWarning(error.error?.message || "Upload failed. Please try again.");
+          }
+        });
       }
       else {
         this.imageUploadService.uploadImages(formData).subscribe({

@@ -58,6 +58,13 @@ export class PostUploadImagesService {
     return this.http.post<any>(`${_url}savePost`, formData, { headers });
     }
 
+  updatePostByTransNo(formData: FormData, transNo: any): Observable<any> {
+    const headers = this.createHeaders();
+    formData.append('transNo', transNo);
+    return this.http.post<any>(`${_url}updatePostByTransNo/${transNo}`, formData, { headers });
+  }
+
+
  /**
    * Get posts (user + followed users) with pagination
    * @param page current page number
