@@ -1100,3 +1100,23 @@ mat-card-footer {
 }
 
 
+.client-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.client-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #050505;
+}
+
+.client-info p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #65676b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

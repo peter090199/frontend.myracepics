@@ -1,9 +1,8 @@
 <div class="container">
     <div class="page-header">
         <button mat-button color="primary" [routerLink]="['/recommended-jobs', transNo]">
-            Back
-            </button>
-
+              <mat-icon>arrow_back</mat-icon> Back 
+        </button>
         <h2> Apply Job</h2>
     </div>
 
@@ -89,9 +88,9 @@
                     <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
                     <button mat-raised-button color="accent" (click)="nextStep(stepper)">Next</button>
                     <!-- <button mat-raised-button color="accent" (click)="onCheckCountryCode()"
-                        [disabled]="!personalForm.valid">
-                        Next
-                    </button> -->
+[disabled]="!personalForm.valid">
+Next
+</button> -->
                 </div>
             </form>
         </mat-step>
@@ -118,50 +117,50 @@
         </mat-step>
 
         <!-- <mat-step>
-      <ng-template matStepLabel>Questions</ng-template>
+<ng-template matStepLabel>Questions</ng-template>
 
-      <div *ngFor="let q of questions; let i = index" class="form-row">
-        <mat-form-field appearance="standard" class="form-field">
-          <mat-label>{{ q.question_text }}</mat-label>
-          <textarea matInput rows="3" [(ngModel)]="q.answer"></textarea>
-        </mat-form-field>
-      </div>
+<div *ngFor="let q of questions; let i = index" class="form-row">
+<mat-form-field appearance="standard" class="form-field">
+<mat-label>{{ q.question_text }}</mat-label>
+<textarea matInput rows="3" [(ngModel)]="q.answer"></textarea>
+</mat-form-field>
+</div>
 
-      <div class="button-end">
-        <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
-        <button mat-raised-button color="accent" (click)="nextStep(stepper)">Next</button>
-      </div>
-    </mat-step> -->
+<div class="button-end">
+<button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+<button mat-raised-button color="accent" (click)="nextStep(stepper)">Next</button>
+</div>
+</mat-step> -->
 
         <!-- Step 5: Submit -->
         <!-- <mat-step [stepControl]="companyForm">
-            <form [formGroup]="companyForm">
-                <ng-template matStepLabel>Additional Info</ng-template>
+<form [formGroup]="companyForm">
+<ng-template matStepLabel>Additional Info</ng-template>
 
-                <div class="form-row">
-                    <mat-form-field class="form-field">
-                        <mat-label>Qualification</mat-label>
-                        <textarea matInput rows="3" formControlName="qualification" required></textarea>
-                    </mat-form-field>
-                </div>
+<div class="form-row">
+<mat-form-field class="form-field">
+<mat-label>Qualification</mat-label>
+<textarea matInput rows="3" formControlName="qualification" required></textarea>
+</mat-form-field>
+</div>
 
-                <div class="form-row">
-                    <mat-form-field class="form-field">
-                        <mat-label>Work Type</mat-label>
-                        <mat-select formControlName="work_type" required>
-                            <mat-option *ngFor="let wt of worktypes" [value]="wt">{{ wt }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+<div class="form-row">
+<mat-form-field class="form-field">
+<mat-label>Work Type</mat-label>
+<mat-select formControlName="work_type" required>
+<mat-option *ngFor="let wt of worktypes" [value]="wt">{{ wt }}</mat-option>
+</mat-select>
+</mat-form-field>
+</div>
 
-                <div class="button-end">
-                    <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
-                    <button mat-raised-button color="accent" (click)="onSubmit()"
-                        [disabled]="loading">
-                        {{ btnSave }}
-                    </button>
-                </div>
-            </form>
-        </mat-step> -->
+<div class="button-end">
+<button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+<button mat-raised-button color="accent" (click)="onSubmit()"
+[disabled]="loading">
+{{ btnSave }}
+</button>
+</div>
+</form>
+</mat-step> -->
     </mat-horizontal-stepper>
 </div>

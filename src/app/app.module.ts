@@ -107,6 +107,7 @@ import { ReactionPostComponent } from './ComponentSharedUI/ReactionEmoji/reactio
 import { MatTabsModule } from '@angular/material/tabs';
 import { PrivatePostComponent } from './ComponentUI/Feeds/private-post/private-post.component';
 import { CommentModalUIComponent } from './ComponentUI/Modal/comment-modal-ui/comment-modal-ui.component';
+import { SaveJobsComponent } from './ComponentUI/jobs/save-jobs/save-jobs.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -208,6 +209,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactionPostComponent,
     PrivatePostComponent,
     CommentModalUIComponent,
+    SaveJobsComponent,
   ],
   imports: [
     BrowserModule,

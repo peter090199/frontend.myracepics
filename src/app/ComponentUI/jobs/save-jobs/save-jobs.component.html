@@ -1,0 +1,33 @@
+<mat-card class="saved-jobs-card">
+  <h3>Saved Jobs</h3>
+
+  <div class="saved-jobs-list">
+    <div 
+      *ngFor="let job of savedJobs" 
+      class="saved-job-item"
+      [class.selected]="isSelected(job)"
+      (click)="onJobClick(job)">
+
+      <img [src]="job.job_image" alt="Company Logo" class="job-logo" />
+
+      <div class="job-details">
+        <span class="job-name">{{ job.job_name }}</span>
+        <small>{{ job.comp_name }} · {{ job.work_type }}</small>
+      </div>
+
+      <button mat-icon-button color="warn" class="button-gap" (click)="removeJob(job, $event)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+  <div class="saved-footer">
+    <span>{{ savedJobs.length }} {{ savedJobs.length === 1 ? 'job' : 'jobs' }} saved</span>
+  </div>
+</mat-card>
+
+<!-- Empty State -->
+<mat-card *ngIf="!savedJobs || savedJobs.length === 0">
+  <p>No saved jobs yet.</p>
+</mat-card>

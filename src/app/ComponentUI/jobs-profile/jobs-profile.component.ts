@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { JobListService } from 'src/app/services/Jobs/job-list.service';
 
@@ -24,8 +24,14 @@ export class JobsProfileComponent implements OnInit {
 
   constructor(
     private jobListServices: JobListService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute, private router: Router
+  ) { }
+
+
+
+  closeSidebar() {
+    this.selectedJob = null;
+  }
 
   async ngOnInit(): Promise<void> {
     await this.getJobPosting();
@@ -70,5 +76,43 @@ export class JobsProfileComponent implements OnInit {
 
   selectJob(job: any) {
     this.selectedJob = job;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.router.navigate(['/recommended-jobs', this.selectedJob.transNo]);
   }
+
+  goToJob(job: any) {
+    // Navigate programmatically
+    this.router.navigate(['/recommended-jobs', job.transNo]);
+
+    // Optional: select job to show sidebar
+    this.selectedJob = job;
+  }
+
+
+
+  savedJobs: any;
+  // Handle save/un-save or select job from child component
+  toggleSaveJob(job: any) {
+    if (!job) return;
+
+    // Remove job
+    if (job.remove) {
+      this.savedJobs = this.savedJobs.filter((j: { transNo: any; }) => j.transNo !== job.transNo);
+      if (this.selectedJob?.transNo === job.transNo) this.selectedJob = null;
+      return;
+    }
+
+    // Add job if not saved
+    const index = this.savedJobs.findIndex((j: { transNo: any; }) => j.transNo === job.transNo);
+    if (index === -1) {
+      this.savedJobs.push(job);
+      this.selectedJob = job; // Optional: select it
+    } else {
+      // Highlight existing saved job
+      this.selectedJob = job;
+    }
+  }
+
+
+
 }

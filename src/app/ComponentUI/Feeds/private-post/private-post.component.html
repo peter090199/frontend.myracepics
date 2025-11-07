@@ -25,13 +25,18 @@
   <div *ngFor="let post of posts; trackBy: trackByPostId" class="post-card feed-container">
 
     <!-- Post Header -->
-    <div class="post-header">
+    <div class="header-left" *ngIf="profiles">
       <div mat-card-avatar class="avatar">
-        <img [src]="post.profile_pic" alt="Avatar">
+        <img [src]="post.photo_pic" alt="Avatar">
       </div>
-      <mat-card-title>{{ post.fullname }}</mat-card-title>
-      <!-- <mat-card-subtitle>{{ post.activeHours }}</mat-card-subtitle> -->
-
+      <div class="header-info">
+        <div class="client-info">
+          <!-- <h3 class="client-name">
+          {{post.fullname}}
+          </h3> -->
+        </div>
+        <small class="post-time">{{ post.created_at | date: 'medium' }}</small>
+      </div>
 
       <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-btn" aria-label="Post Options">
         <mat-icon>more_horiz</mat-icon>

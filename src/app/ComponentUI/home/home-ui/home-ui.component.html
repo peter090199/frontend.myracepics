@@ -148,15 +148,13 @@
                 <a [routerLink]="post.role_code === 'DEF-USERS'? ['/profile', post.code]: ['/client_profile', post.code]"
                   class="custom-title"> {{ post.fullname }}</a>
               </h3>
-              <!-- <p class="client-profession">
-                {{ post.profession || 'No profession listed' }}
-              </p> -->
+          
             </div>
             <small class="post-time">{{ post.created_at | date: 'medium' }}</small>
           </div>
 
 
-          <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-btn" aria-label="Post Options">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Post Options">
             <mat-icon>more_horiz</mat-icon>
           </button>
 

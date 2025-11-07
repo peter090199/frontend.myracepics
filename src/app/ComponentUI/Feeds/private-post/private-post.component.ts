@@ -1433,6 +1433,7 @@ interface Reaction { emoji: string; label: string }
   styleUrls: ['./private-post.component.css']
 })
 export class PrivatePostComponent implements OnInit, AfterViewInit, OnDestroy {
+  error: string;
   deletePost(_t30: any) {
     throw new Error('Method not implemented.');
   }
@@ -1443,7 +1444,7 @@ export class PrivatePostComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // State
   posts: any[] = [];
-  profiles: any = null;
+  profiles: any;
   profile_pic: any = null;
   users: any[] = [];
   isLoading = false;
@@ -1474,7 +1475,7 @@ export class PrivatePostComponent implements OnInit, AfterViewInit, OnDestroy {
   private baseUrl = 'https://lightgreen-pigeon-122992.hostingersite.com/';
   private defaultProfile = `${this.baseUrl}storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png`;
   menu_: MatMenuPanel<any>;
-
+  code:any; 
 
   hoveredReactions: { [postId: number]: Reaction | null } = {};
 
@@ -1505,13 +1506,36 @@ export class PrivatePostComponent implements OnInit, AfterViewInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef,
     private postDataservices: PostUploadImagesService,
-  ) { }
+  ) {
+    const url = window.location.href;
+    const codesplit = url.split('/').pop();
+    this.code = codesplit;
+   }
 
   /* --------------------------- lifecycle --------------------------- */
   ngOnInit(): void {
     this.initRealtime();
     this.loadInitialData();
+    this.loadProfileCV();
   }
+
+  
+  loadProfileCV() {
+    this.profileService.getProfileByUser(this.code).subscribe({
+      next: (response) => {
+        if (response.success == true) {
+          this.profiles = response.message;
+
+        } else {
+          this.error = 'Failed to load profile data';
+        }
+      },
+      error: (err) => {
+        this.error = err.message || 'An error occurred while fetching profile data';
+      },
+    });
+  }
+
 
   ngAfterViewInit(): void {
     this.setupAutoPlayObserver();
