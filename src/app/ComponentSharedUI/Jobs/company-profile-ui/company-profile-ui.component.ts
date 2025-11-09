@@ -702,7 +702,6 @@ export class CompanyProfileUIComponent implements OnInit {
 
     this.loadProfileCV(this.currentUserCode);
     this.loadUserData();
-    this.fetchProfilePicture();
     this.checkFollowStatus();
     this.loadUserPost();
   }
@@ -711,7 +710,7 @@ export class CompanyProfileUIComponent implements OnInit {
   // 🧠 HELPERS
   // ===========================
   private normalizeUrl(path: string): string {
-    return `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
+    return `https://exploredition.com/${(path || '').replace(/\\/g, '')}`;
   }
 
   private defaultProfile(): string {
@@ -742,15 +741,15 @@ export class CompanyProfileUIComponent implements OnInit {
     });
   }
 
-  fetchProfilePicture(): void {
-    this.cvService.getDataCV().subscribe({
-      next: (res: any) => {
-        this.userprofiles = res?.message;
-        if (this.userprofiles?.code) sessionStorage.setItem('code', this.userprofiles.code);
-      },
-      error: err => console.error('Error fetching CV:', err)
-    });
-  }
+  // fetchProfilePicture(): void {
+  //   this.cvService.getDataCV().subscribe({
+  //     next: (res: any) => {
+  //       this.userprofiles = res?.message;
+  //       if (this.userprofiles?.code) sessionStorage.setItem('code', this.userprofiles.code);
+  //     },
+  //     error: err => console.error('Error fetching CV:', err)
+  //   });
+  // }
 
   checkFollowStatus(): void {
     this.clientService.getPendingFollowStatus(this.currentUserCode).subscribe((res: any) => {

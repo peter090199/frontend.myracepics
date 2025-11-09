@@ -55,32 +55,30 @@
         <button mat-stroked-button>Save</button>
       </div>
       <mat-divider></mat-divider>
-      <mat-card-content class="job-details-section">
+      <div class="job-details-section">
         <h4>About the Job</h4>
         <p class="job-description">{{ selectedJob.job_description }}</p>
         <h4>More About This Role</h4>
         <p class="job-description">{{ selectedJob.job_about }}</p>
 
-
         <mat-divider></mat-divider>
-
-        <div class="company-info">
-          <h4>About the client</h4>
-          <mat-card-content>
-            <div class="avatar-wrapper">
-              <img matListAvatar [src]="selectedJob.comp_logo" alt="Company Logo" />
-              <span class="status-dot" [ngClass]="selectedJob.is_online ? 'online' : 'offline'"></span>
+          <h4>About the recruiter</h4>
+          <div class="avatar-wrapper">
+            <!-- <img matListAvatar [src]="selectedJob.job_image" alt="Company Logo" class="company-logo" />
+            <span class="status-dot" [ngClass]="selectedJob.is_online ? 'online' : 'offline'"></span> -->
+            <div class="company-details">
+              <a [routerLink]="['/client_profile/', selectedJob.code]" class="custom-title">
+                {{ selectedJob.fullname }}
+              </a>
+              <button mat-raised-button color="primary" class="connect-btn">+ Connect</button>
             </div>
-            <a [routerLink]="['/client_profile/', selectedJob.code]" class="custom-title">{{ selectedJob.fullname}}</a>
-          </mat-card-content>
+          </div>
 
-          <button mat-raised-button color="primary">+ Connect</button>
-          <br /><br />
+          <div class="job-description-wrapper">
+            <a routerLink="/showMore" class="show-all">Show more →</a>
+          </div>
 
-          <span class="job-description">{{ selectedJob.comp_description }}</span>
-          <a routerLink="/showMore" class="show-all">Show more →</a>
         </div>
-      </mat-card-content>
     </ng-container>
 
     <ng-template #defaultSidebar>
@@ -88,7 +86,7 @@
     </ng-template>
   </mat-card>
 
-  <mat-card class="sidebar">
+  <mat-card class="savesidebar">
     <app-save-jobs>
     </app-save-jobs>
   </mat-card>

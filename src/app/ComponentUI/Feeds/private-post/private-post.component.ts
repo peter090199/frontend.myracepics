@@ -1472,7 +1472,7 @@ export class PrivatePostComponent implements OnInit, AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
 
   // constants
-  private baseUrl = 'https://lightgreen-pigeon-122992.hostingersite.com/';
+  private baseUrl = 'https://exploredition.com/';
   private defaultProfile = `${this.baseUrl}storage/app/public/uploads/DEFAULTPROFILE/DEFAULTPROFILE.png`;
   menu_: MatMenuPanel<any>;
   code:any; 

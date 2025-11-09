@@ -52,7 +52,7 @@ export class JobsProfileComponent implements OnInit {
         this.jobs = res.data.map((job: any) => ({
           ...job,
           job_image: job.job_image
-            ? `https://lightgreen-pigeon-122992.hostingersite.com${job.job_image}`
+            ? `https://exploredition.com${job.job_image}`
             : null
         }));
       }

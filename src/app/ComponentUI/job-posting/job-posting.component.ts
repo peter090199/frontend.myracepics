@@ -113,14 +113,14 @@ export class JobPostingComponent implements OnInit {
         this.success = true;
 
         // Prepend base URL if needed
-           this.jobPosting = res.jobs.map((job: any) => ({
+        this.jobPosting = res.jobs.map((job: any) => ({
           ...job,
           job_image: job.job_image
-            ? `https://lightgreen-pigeon-122992.hostingersite.com${job.job_image}`
+            ? `https://exploredition.com${job.job_image}`
             : null
         }));
 
-      this.dataSource.data = this.jobPosting;
+        this.dataSource.data = this.jobPosting;
       } else {
         this.success = false;
       }

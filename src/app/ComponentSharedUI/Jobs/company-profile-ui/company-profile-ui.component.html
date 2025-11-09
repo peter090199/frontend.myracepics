@@ -6,10 +6,10 @@
 
   <!-- Profile Info -->
   <div *ngIf="!isloading; else profileSkeleton" class="profile-details">
-    <div class="profile-info" *ngIf="userprofiles">
+    <div class="profile-info" *ngIf="profiles">
       <div class="profile-picture">
         <div class="avatar-container">
-          <img class="profile-img" [src]="userprofiles?.photo_pic || 'assets/images/default.png'" alt="Profile" />
+          <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default.png'" alt="Profile" />
           <mat-icon class="status-icon online">circle</mat-icon>
         </div>
       </div>

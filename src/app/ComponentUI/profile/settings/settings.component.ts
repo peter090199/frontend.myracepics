@@ -15,25 +15,7 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  users: any = {
-    fullname: '',
-    profile_picture: 'assets/avatar.png',
-    coverphoto: 'assets/default-cover.jpg',
-    profession: '',
-    email: '',
-    company: '',
-    industry: '',
-    contact_no: '',
-    current_location: '',
-    home_country: '',
-    date_birth: '',
-    companywebsite: '',
-    role_code: '',
-    visibility: '',
-    password_updated_at: '',
-    activity: []
-  };
-
+  users: any = [];
   isLoading: boolean = true;
   currentUserCode: string | null = null;
   profile_pic: any = null;
@@ -127,7 +109,7 @@ profileFields = [
 
     try {
       const res = await firstValueFrom(
-        this.http.post<any>('https://lightgreen-pigeon-122992.hostingersite.com/public/api/uploadCoverPhoto', formData, {
+        this.http.post<any>('https://exploredition.com/public/api/uploadCoverPhoto', formData, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('token')}` // if using auth
           }

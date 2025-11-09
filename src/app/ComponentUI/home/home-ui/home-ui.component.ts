@@ -108,41 +108,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
   reactions2: { [postId: number]: { emoji: string, label: string } | null } = {};
 
   // Static example data (kept for local testing)
-  postReactions2: any = {
-    69: {
-      reactions: [
-        {
-          reaction: "Haha",
-          count: 1,
-          person: [
-            { fullname: "PEDRO YORPO", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/702/cvphoto/8141e9a6-c4a1-4169-a137-d5c0db88d5ac/1754791900.jpg" }
-          ]
-        },
-        {
-          reaction: "Wow",
-          count: 1,
-          person: [
-            { fullname: "PEDRO YORPO", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/701/cvphoto/fc74056c-283b-4883-b8c9-ca7bd6d4f2ac/1754795955.jpg" }
-          ]
-        },
-        {
-          reaction: "Love",
-          count: 1,
-          person: [
-            { fullname: "ELIZABETH PUNAY", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/703/cvphoto/6552206e-1ae2-4dca-8011-0dc5cc468b08/1755613959.webp" }
-          ]
-        },
-        {
-          reaction: "Haha",
-          count: 1,
-          person: [
-            { fullname: "ELIZ", photo_pic: "https://lightgreen-pigeon-122992.hostingersite.com/storage/app/public/uploads/703/cvphoto/6552206e-1ae2-4dca-8011-0dc5cc468b08/1755613959.webp" }
-          ]
-        }
-      ],
-      totalCount: 3
-    }
-  };
+  postReactions2: any = [];
 
   // hover tooltip state
   hoverVisible = false;
@@ -521,12 +487,12 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
             this.posts.forEach(post => {
               if (post.images && post.images.length > 0) {
                 post.images.forEach((image: { path_url: string; }) => {
-                  image.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com/' + (image.path_url || '').replace(/\\/g, '');
+                  image.path_url = 'https://exploredition.com/' + (image.path_url || '').replace(/\\/g, '');
                 });
               }
               if (post.videos && post.videos.length > 0) {
                 post.videos.forEach((video: { path_url: string; }) => {
-                  video.path_url = 'https://lightgreen-pigeon-122992.hostingersite.com/' + (video.path_url || '').replace(/\\/g, '');
+                  video.path_url = 'https://exploredition.com/' + (video.path_url || '').replace(/\\/g, '');
                 });
               }
             });
@@ -890,7 +856,7 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (res: any) => {
         if (res?.success && Array.isArray(res.data)) {
           const normalizeUrl = (path: string) =>
-            `https://lightgreen-pigeon-122992.hostingersite.com/${(path || '').replace(/\\/g, '')}`;
+            `https://exploredition.com/${(path || '').replace(/\\/g, '')}`;
           const formattedPosts = res.data.map((post: any) => {
             const images = Array.isArray(post.images)
               ? post.images.map((img: any) => ({
