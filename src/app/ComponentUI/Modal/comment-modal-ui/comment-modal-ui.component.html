@@ -31,7 +31,7 @@
 
   <br>
   <!-- ✅ Comments List -->
-  <div class="comment-list" *ngIf="!isLoading && displayedComments?.length; else noComments">
+  <div class="comment-list" *ngIf="!isLoading && displayedComments.length; else noComments">
     <div class="comment-item" *ngFor="let comment of displayedComments">
       <img [src]="comment.profile_pic" class="comment-avatar" alt="User" />
       <div class="comment-body">

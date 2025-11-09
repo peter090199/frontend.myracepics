@@ -133,8 +133,6 @@
     </button>
   </div>
 
-
-
   <!-- 🟩 Feed Content -->
   <div *ngIf="!isLoading" (scroll)="onScroll($event)">
     <div *ngFor="let post of posts; trackBy: trackByPostId" class="post-card feed-container">
