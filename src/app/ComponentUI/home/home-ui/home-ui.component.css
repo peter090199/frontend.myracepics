@@ -123,6 +123,16 @@ nav {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.avatar-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .profile-pic {
   width: 100%;
   height: 100%;
@@ -204,14 +214,14 @@ nav {
 /* Middle Column (center feed) */
 .middle-column {
   flex: 1;
-  max-width: 600px;
+  max-width: 540px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 5px;
   overflow: visible;
   height: auto;
   margin-top: 10px;
   margin-bottom: 20vh;
-  width: 90%;
+  width: 80%;
 }
 
 .client-action .mat-flat-button {
@@ -524,6 +534,11 @@ mat-card-footer button mat-icon {
   gap: 4px;
   justify-content: center;
   width: 120px;
+}
+.profile-picture {
+  position: relative;
+  width: 180px; /* Adjust for Facebook-like size */
+  height: 180px;
 }
 
 .client-action .btn-label {
@@ -1309,4 +1324,80 @@ mat-icon {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 0; /* optional */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 45px;
+  height: 45px;
+}
+
+.post-avatar {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.post-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: #31c75a; /* green */
+  border: 2px solid #fff;
+  border-radius: 50%;
+}
+
+/* Tooltip */
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.avatar-wrapper:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }

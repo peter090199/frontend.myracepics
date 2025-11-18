@@ -4,69 +4,79 @@
     <!-- People & Company -->
     <mat-tab label="People & Company">
       <div class="tabs-container" (scroll)="onScroll($event)">
-        <h1 style="text-align: center;">Based on Profile</h1>
+        <mat-card class="header-gradient">
+          <div class="gradient-bar"></div>
+          <mat-card-title class="gradient-title">Based on Profile</mat-card-title>
+        </mat-card>
 
-        <!-- Skeleton Loader -->
-        <div *ngIf="isLoading; else profileList" class="skeleton-list">
-          <mat-card class="suggestion-card" *ngFor="let _ of skeletonRows">
-            <div class="skeleton skeleton-img"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-subtext"></div>
-            <div class="skeleton skeleton-button"></div>
-          </mat-card>
-        </div>
+        <div class="suggestions-wrapper">
+          <!-- Skeleton Loader -->
+          <div *ngIf="isLoading; else profileList" class="skeleton-list">
+            <mat-card class="suggestion-card" *ngFor="let _ of skeletonRows">
+              <div class="skeleton skeleton-img"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-subtext"></div>
+              <div class="skeleton skeleton-button"></div>
+            </mat-card>
+          </div>
 
-        <ng-template #profileList>
-          <p class="no-data" *ngIf="!people || people.length === 0">No data found</p>
+          <ng-template #profileList>
+            <p class="no-data" *ngIf="!people || people.length === 0">No data found</p>
 
-          <div class="carousel-container">
-            <div class="carousel-track">
-              <div class="suggestions">
-                <mat-card class="suggestion-card" *ngFor="let person of people">
-                  <button mat-icon-button class="close-button">
-                    <mat-icon>close</mat-icon>
-                  </button>
+            <div class="carousel-container">
+              <div class="carousel-track">
+                <div class="suggestions">
+                  <mat-card class="suggestion-card" *ngFor="let person of people">
+                    <button mat-icon-button class="close-button">
+                      <mat-icon>close</mat-icon>
+                    </button>
 
-                  <div class="profile-image-container">
-                    <a [routerLink]="['/profile', person.code]" class="profile-link" [attr.alt]="person.fullname">
-                      <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
-                        class="profile-image" />
+                    <div class="profile-image-container">
+                      <a [routerLink]="['/profile', person.code]" class="profile-link" [attr.alt]="person.fullname">
+                        <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
+                          class="profile-image" />
+                      </a>
+                    </div>
+
+                    <a [routerLink]="['/profile', person.code]" class="custom-title">
+                      {{ person.fullname }}
                     </a>
-                  </div>
 
-                  <a [routerLink]="['/profile', person.code]" class="custom-title">
-                    {{ person.fullname }}
-                  </a>
+                    <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+                    <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
 
-                  <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
-                  <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
+                    <!-- Connect Button -->
+                    <button mat-flat-button
+                      [color]="person.follow_status === 'accepted' ? 'accent' : person.follow_status === 'pending' ? 'warn' : 'primary'"
+                      *ngIf="currentUserCode !== person.code"
+                      (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+                      <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
+                      <mat-icon *ngIf="person.follow_status === 'pending'"
+                        class="hourglass-animated">hourglass_top</mat-icon>
+                      <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
 
-                  <!-- Connect Button -->
-                  <button mat-flat-button
-                    [color]="person.follow_status === 'accepted' ? 'accent' : person.follow_status === 'pending' ? 'warn' : 'primary'"
-                    *ngIf="currentUserCode !== person.code"
-                    (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
-                    <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
-                    <mat-icon *ngIf="person.follow_status === 'pending'"
-                      class="hourglass-animated">hourglass_top</mat-icon>
-                    <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
-
-                    <ng-container [ngSwitch]="person.follow_status">
-                      <span *ngSwitchCase="'not_following'">Connect</span>
-                      <span *ngSwitchCase="'pending'">Pending</span>
-                      <span *ngSwitchCase="'accepted'">Connected</span>
-                    </ng-container>
-                  </button>
-                </mat-card>
+                      <ng-container [ngSwitch]="person.follow_status">
+                        <span *ngSwitchCase="'not_following'">Connect</span>
+                        <span *ngSwitchCase="'pending'">Pending</span>
+                        <span *ngSwitchCase="'accepted'">Connected</span>
+                      </ng-container>
+                    </button>
+                  </mat-card>
+                </div>
               </div>
             </div>
-          </div>
-        </ng-template>
+          </ng-template>
+        </div>
+
 
         <!-- Recent Activity -->
-        <div class="suggestions-wrapper">
-          <h1 style="text-align: center;">Based on Recent Activity</h1>
+        <mat-card class="header-gradient">
+          <div class="gradient-bar"></div>
+          <mat-card-title class="gradient-title">Based on Recent Activity</mat-card-title>
+        </mat-card>
 
+
+        <div class="suggestions-wrapper">
           <!-- Skeleton Loader -->
           <div *ngIf="isLoading; else recentActivityList" class="skeleton-list">
             <mat-card class="suggestion-card" *ngFor="let _ of skeletonRows">
@@ -127,65 +137,154 @@
     </mat-tab>
 
     <!-- Connected Tab -->
+    <!-- <mat-tab label="Connected">
+      <mat-card class="header-gradient">
+
+        <mat-card-header>
+          <div mat-card-avatar class="header-avatar">
+            <mat-icon>groups</mat-icon>
+          </div>
+
+          <mat-card-title>Connected people will show here</mat-card-title>
+          <mat-card-subtitle>No connections yet</mat-card-subtitle>
+        </mat-card-header>
+
+      </mat-card>
+    </mat-tab> -->
+
     <mat-tab label="Connected">
-      <p class="no-data">Connected people will show here</p>
+      <div class="tabs-container" (scroll)="onScroll($event)">
+        <mat-card class="header-gradient">
+          <div class="gradient-bar"></div>
+          <mat-card-title class="gradient-title">Connected people will show here</mat-card-title>
+        </mat-card>
+
+
+        <div class="suggestions-wrapper">
+          <!-- Skeleton Loader -->
+          <div *ngIf="isLoading; else profileList" class="skeleton-list">
+            <mat-card class="suggestion-card" *ngFor="let _ of skeletonRows">
+              <div class="skeleton skeleton-img"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-subtext"></div>
+              <div class="skeleton skeleton-button"></div>
+            </mat-card>
+          </div>
+
+          <ng-template #profileList>
+            <p class="no-data" *ngIf="!people || people.length === 0">No data found</p>
+
+            <div class="carousel-container">
+              <div class="carousel-track">
+                <div class="suggestions">
+                  <mat-card class="suggestion-card" *ngFor="let person of people">
+                    <button mat-icon-button class="close-button">
+                      <mat-icon>close</mat-icon>
+                    </button>
+
+                    <div class="profile-image-container">
+                      <a [routerLink]="['/profile', person.code]" class="profile-link" [attr.alt]="person.fullname">
+                        <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
+                          class="profile-image" />
+                      </a>
+                    </div>
+
+                    <a [routerLink]="['/profile', person.code]" class="custom-title">
+                      {{ person.fullname }}
+                    </a>
+
+                    <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+                    <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
+
+                    <!-- Connect Button -->
+                    <button mat-flat-button
+                      [color]="person.follow_status === 'accepted' ? 'accent' : person.follow_status === 'pending' ? 'warn' : 'primary'"
+                      *ngIf="currentUserCode !== person.code"
+                      (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+                      <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
+                      <mat-icon *ngIf="person.follow_status === 'pending'"
+                        class="hourglass-animated">hourglass_top</mat-icon>
+                      <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
+
+                      <ng-container [ngSwitch]="person.follow_status">
+                        <span *ngSwitchCase="'not_following'">Connect</span>
+                        <span *ngSwitchCase="'pending'">Pending</span>
+                        <span *ngSwitchCase="'accepted'">Connected</span>
+                      </ng-container>
+                    </button>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+
+      </div>
     </mat-tab>
 
     <!-- Accept Invites Tab -->
     <mat-tab label="Accept Invites">
-      <h1 style="text-align: center;">Invites Request</h1>
-      <div class="suggestions">
-        <mat-card class="suggestion-card" *ngFor="let person of peopleInvites">
-          <button mat-icon-button class="close-button">
-            <mat-icon>close</mat-icon>
-          </button>
+      <div class="tabs-container" (scroll)="onScroll($event)">
 
-
-          <div class="profile-image-container">
-            <a [routerLink]="['/profile', person.follower_code]">
-              <img [src]="person.photo_pic" [alt]="person.fullname" class="profile-image" />
-            </a>
-          </div>
-
-
-          <a [routerLink]="['/profile', person.follower_code]" class="custom-title">
-            {{ person.fullname }}
-          </a>
-
-          <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
-          <p class="based-text">Based on your profile</p>
-          <div *ngIf="currentUserCode !== person.follower_code && person.follow_status === 'pending'"
-            class="button-gap">
-            <!-- Accept Button --> 
-            <button mat-button color="primary" (click)="ConnectInvites(person.follower_code,person.fullname)">
-              <mat-icon>check</mat-icon>
-              Accept
-            </button>
-
-            <!-- Cancel Button -->
-            <button mat-button color="warn" (click)="ConnectInvites(person.follower_code,person.fullname)">
-              <mat-icon>close</mat-icon>
-              Cancel
-            </button>
-          </div>
-
-          <!--         
-          <button 
-            mat-stroked-button 
-            color="primary" 
-            *ngIf="currentUserCode !== person.follower_code"
-            (click)="AddConnect(person.follower_code,person.fullname)">
-            
-            <mat-icon class="hourglass-animated">hourglass_top</mat-icon>
-            Accept Pending 
-              <mat-icon>check</mat-icon>Accept
-          </button> -->
-
-
+       <mat-card class="header-gradient">
+          <div class="gradient-bar"></div>
+          <mat-card-title class="gradient-title">Accept Invites</mat-card-title>
         </mat-card>
+
+        <!-- No Data -->
+        <p class="no-data" *ngIf="!peopleInvites || peopleInvites.length === 0">
+          No data found
+        </p>
+
+        <!-- People List -->
+        <div class="suggestions" *ngIf="peopleInvites && peopleInvites.length > 0">
+          <mat-card class="suggestion-card" *ngFor="let person of peopleInvites">
+
+            <!-- Close Button -->
+            <!-- <button mat-icon-button class="close-button">
+              <mat-icon>close</mat-icon>
+            </button> -->
+
+            <!-- Profile Image -->
+            <div class="profile-image-container">
+              <a [routerLink]="['/profile', person.follower_code]">
+                <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
+                  class="profile-image" />
+              </a>
+            </div>
+
+            <!-- Full Name -->
+            <a [routerLink]="['/profile', person.follower_code]" class="custom-title">
+              {{ person.fullname }}
+            </a>
+
+            <!-- Profession -->
+            <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+
+            <p class="based-text">Based on your profile</p>
+
+            <!-- Accept / Cancel Buttons -->
+            <div *ngIf="currentUserCode !== person.follower_code && person.follow_status === 'pending'"
+              class="button-gap">
+
+              <button mat-button color="primary" (click)="ConnectInvites(person.follower_code, person.fullname)">
+                <mat-icon>check</mat-icon>
+                Accept
+              </button>
+
+              <button mat-button color="warn" (click)="ConnectInvites(person.follower_code, person.fullname)">
+                <mat-icon>close</mat-icon>
+                Cancel
+              </button>
+            </div>
+
+          </mat-card>
+        </div>
 
       </div>
     </mat-tab>
+
 
   </mat-tab-group>
 </section>

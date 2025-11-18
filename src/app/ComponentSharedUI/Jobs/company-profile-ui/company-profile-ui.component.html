@@ -65,12 +65,8 @@
 
       <!-- Company Profile Home -->
       <mat-card class="post-box-container" *ngIf="profiles">
-        <div class="cover-photo">
-          <img [src]="profiles.coverPhoto || 'assets/images/default.png'" alt="Company Cover">
-        </div>
-
         <div class="company-header">
-          <img class="company-logo" [src]="profiles.logo || 'assets/images/default.png'" alt="Company Logo">
+          <img class="company-logo" [src]="profiles.photo_pic || 'assets/images/default.png'" alt="Company Logo">
           <div class="company-info">
             <h1>{{ profiles.fullname }} <small>{{ profiles.profession }}</small></h1>
             <p>{{ profiles.industry }} · {{ profiles.companysize }} employees</p>

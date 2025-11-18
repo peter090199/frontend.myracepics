@@ -327,6 +327,7 @@
   }
 
   .suggestions-wrapper {
+
     max-height: none;
     overflow-y: visible;
   }
@@ -346,3 +347,44 @@
     gap: 6px;
   }
 }
+
+.header-gradient {
+  padding: 10px;
+  position: relative;
+  text-align: center;
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Title inside the header (optional) */
+.header-gradient .gradient-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Mobile: Small screens */
+@media (max-width: 600px) {
+  .header-gradient {
+    padding: 25px 15px;
+    border-radius: 10px;
+  }
+
+  .header-gradient .gradient-title {
+    font-size: 18px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 400px) {
+  .header-gradient {
+    padding: 20px 10px;
+  }
+
+  .header-gradient .gradient-title {
+    font-size: 16px;
+  }
+}
+
