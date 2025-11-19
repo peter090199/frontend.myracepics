@@ -47,7 +47,7 @@
   </ng-template>
 
   <!-- Tabs -->
-  <mat-tab-group class="tabs-container">
+  <mat-tab-group>
 
     <!-- Home Tab -->
     <mat-tab label="Home">
@@ -64,170 +64,55 @@
       </div>
 
       <!-- Company Profile Home -->
-      <mat-card class="post-box-container" *ngIf="profiles">
+      <mat-card class="company-card" *ngIf="profiles">
         <div class="company-header">
           <img class="company-logo" [src]="profiles.photo_pic || 'assets/images/default.png'" alt="Company Logo">
           <div class="company-info">
-            <h1>{{ profiles.fullname }} <small>{{ profiles.profession }}</small></h1>
-            <p>{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
-            <a [href]="profiles.companywebsite" target="_blank">{{ profiles.companywebsite }}</a>
+            <h1>{{ profiles.fullname }}</h1>
+            <small>{{ profiles.profession }}</small>
+            <p class="company-meta">{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
+            <a class="company-website" [href]="profiles.companywebsite" target="_blank">{{ profiles.companywebsite
+              }}</a>
           </div>
         </div>
 
-        <mat-divider></mat-divider>
+        <!-- About Section -->
         <div class="about-section">
           <h3>About</h3>
           <p>{{ profiles.about || 'No company description available.' }}</p>
         </div>
 
         <mat-divider></mat-divider>
+
+        <!-- Location Section -->
         <div class="location-section">
           <h3>Headquarters</h3>
           <p>{{ profiles.current_location || 'Location not provided' }}</p>
         </div>
       </mat-card>
+
+      <app-images-and-videos></app-images-and-videos>
+      <app-images-and-videos></app-images-and-videos>
+
     </mat-tab>
 
     <!-- Post Tab -->
     <mat-tab label="Post">
       <app-private-post></app-private-post>
-      <!-- <div class="feed-container" *ngIf="!isloading">
-        <div *ngFor="let post of posts; let i = index; trackBy: trackByPostId" class="post-card">
-          <div class="post-header">
-            <div mat-card-avatar class="avatar">
-            <img [src]="post.profile_pic || 'assets/images/default.png'" alt="Avatar" />
-          </div>
-          
-            <div class="user-info">
-              <a class="user-name">{{ post.Fullname }}</a>
-              <span class="post-time">{{ post.created_at | date:'medium' }}</span>
-            </div>
-          </div>
-
-          <div class="post-caption">
-            <p>{{ post.expanded ? post.caption : (post.caption | slice:0:800) + (post.caption.length > 800 ? '...' : '')
-              }}</p>
-            <a *ngIf="post.caption.length > 900" (click)="post.expanded = !post.expanded" class="see-more">
-              {{ post.expanded ? 'See Less' : 'See More' }}
-            </a>
-          </div>
-
-          <div *ngIf="post.images?.length > 0" class="post-media">
-            <div class="gallery" [ngClass]="{ single: post.images.length === 1, multi: post.images.length > 1 }">
-              <div class="gallery-item" *ngFor="let image of post.images.slice(0, maxImages); let j = index"
-                (click)="openModal(post.images)">
-                <img [src]="image.path_url" alt="Post image" />
-                <div class="overlay" *ngIf="j === maxImages - 1 && post.images.length > maxImages">
-                  +{{ post.images.length - maxImages }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="post.videos?.length > 0" class="video-gallery">
-            <video *ngFor="let video of post.videos.slice(0, maxImages)" controls [src]="video.path_url"></video>
-          </div>
-
-          <div class="reactions-summary"
-            *ngIf="postReactions[post.id]?.reactions?.length || postReactions[post.id]?.totalCount">
-            <div class="emoji-stack" style="position: relative; height: 24px;">
-              <ng-container *ngFor="let reaction of postReactions[post.id].reactions; let i = index">
-                <span class="emoji-item" [ngStyle]="{
-                'position': 'absolute',
-                'z-index': postReactions[post.id].reactions.length - i,
-                'left.px': i * 15
-              }">
-                  {{ reaction.emoji }}
-                </span>
-              </ng-container>
-            </div>
-
-            <a *ngIf="postReactions[post.id]?.totalCount" class="reaction-count-text"
-              (mouseenter)="showHoverNames(post.id, $event)" (mouseleave)="hideHoverNames()"
-              (click)="openReactionsModal(post.id)"
-              [ngStyle]="{'margin-left.px': 17 * postReactions[post.id].totalCount, 'cursor': 'pointer'}">
-              {{ postReactions[post.id].totalCount }}
-            </a>
-
-            <div *ngIf="hoverVisible && hoveredPostId === post.id" class="reaction-tooltip"
-              [ngStyle]="{'top.px': hoverPosition.y, 'left.px': hoverPosition.x}">
-
-              <div *ngFor="let reaction of hoveredReactions2">
-                <div *ngFor="let person of reaction.person" class="reaction-user">
-                  <span>{{ person.fullname }}</span>
-                </div>
-                <div *ngIf="reaction.person.length > 11" class="reaction-more">
-                  +{{ reaction.person.length - 11 }} more
-                </div>
-              </div>
-            </div>
-          </div>
-
-        <div class="post-footer">
-          <div class="footer-btn like-button-wrapper" (mouseenter)="showReaction(post.id)"
-            (mouseleave)="hideReaction(post.id)">
-
-            <button mat-button>
-              <mat-icon>{{ getReactionEmoji(post.id) }}</mat-icon>
-              {{ getReactionLabel(post.id) }}
-            </button>
-
-            <div class="reactions-popup" *ngIf="isPopupVisible[post.id]">
-              <div class="reaction" *ngFor="let react of reaction" (mouseenter)="hoveredReactions[post.id] = react"
-                (mouseleave)="hoveredReactions[post.id] = null" (click)="selectReactions(post.id, react)">
-                <span>{{ react.emoji }}</span>
-              </div>
-            </div>
-
-          </div>
-
-          <button mat-button (click)="openModal(post.images)">
-            <mat-icon>chat_bubble_outline</mat-icon> Comment
-          </button>
-
-          <button mat-button>
-            <mat-icon>repeat</mat-icon> Share
-          </button>
-
-          <button mat-button>
-            <mat-icon>send</mat-icon> Send
-          </button>
-        </div>
-
-        </div>
-      </div> -->
     </mat-tab>
 
     <!-- Jobs Tab -->
     <mat-tab label="Jobs">
-      <div class="tab-content">
-        <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.education?.length > 0">
-            <mat-list *ngFor="let education of profiles.lines.education">
-              <mat-list-item>Highest Education: {{ education.highest_education }}</mat-list-item>
-              <mat-list-item>School Name: {{ education.school_name }}</mat-list-item>
-              <mat-list-item>Start Month: {{ education.start_month }}</mat-list-item>
-              <mat-list-item>Start Year: {{ education.start_year }}</mat-list-item>
-              <mat-list-item>End Month: {{ education.end_month }}</mat-list-item>
-              <mat-list-item>End Year: {{ education.end_year }}</mat-list-item>
-            </mat-list>
-          </section>
-        </mat-card-content>
-      </div>
+      <app-jobs-client></app-jobs-client>
+      <app-jobs-client></app-jobs-client>
+      <app-jobs-client></app-jobs-client>
     </mat-tab>
 
     <!-- People Tab -->
     <mat-tab label="People">
-      <div class="tab-content">
-        <mat-card-content>
-          <section class="cv-section" *ngIf="profiles?.lines?.skills?.length > 0">
-            <mat-list>
-              <mat-list-item *ngFor="let skill of profiles.lines.skills">{{ skill.skills }}</mat-list-item>
-            </mat-list>
-          </section>
-        </mat-card-content>
-      </div>
+      <app-people></app-people>
     </mat-tab>
+
 
   </mat-tab-group>
 </div>

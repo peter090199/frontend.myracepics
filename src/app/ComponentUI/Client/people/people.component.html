@@ -1,0 +1,21 @@
+<section class="connections-section" *ngIf="peopleList.length > 0">
+  <h3 class="section-title">People Connected</h3>
+
+  <div class="connections-grid">
+    <div class="connection-card" *ngFor="let person of peopleList">
+      <div class="avatar-container">
+        <img [src]="person.profilePic || 'assets/images/default.png'" alt="{{ person.fullName }}" class="avatar-img">
+        <!-- Online/Offline Dot -->
+        <span class="status-dot" [ngClass]="person.isConnected ? 'online' : 'offline'"></span>
+      </div>
+      <div class="connection-info">
+        <h4>{{ person.fullName }}</h4>
+        <p>{{ person.location }}</p>
+        <button mat-flat-button
+                color="{{ person.isConnected ? 'accent' : 'primary' }}">
+          {{ person.isConnected ? 'Connected' : 'Connect' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

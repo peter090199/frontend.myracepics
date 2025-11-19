@@ -2379,3 +2379,17 @@ mat-row.selected {
   transition: opacity 0.3s ease-in-out;
   opacity: 1;
 }
+
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 15px 0;
+  text-align: left;
+}
+.connections-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 15px;
+}

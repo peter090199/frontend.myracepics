@@ -108,6 +108,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { PrivatePostComponent } from './ComponentUI/Feeds/private-post/private-post.component';
 import { CommentModalUIComponent } from './ComponentUI/Modal/comment-modal-ui/comment-modal-ui.component';
 import { SaveJobsComponent } from './ComponentUI/jobs/save-jobs/save-jobs.component';
+import { ImagesAndVideosComponent } from './componentUI/Client/images-and-videos/images-and-videos.component';
+import { JobsClientComponent } from './componentUI/Client/jobs-client/jobs-client.component';
+import { PeopleComponent } from './componentUI/Client/people/people.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -210,6 +213,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     PrivatePostComponent,
     CommentModalUIComponent,
     SaveJobsComponent,
+    ImagesAndVideosComponent,
+    JobsClientComponent,
+    PeopleComponent,
   ],
   imports: [
     BrowserModule,

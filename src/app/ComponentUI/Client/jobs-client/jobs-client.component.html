@@ -1,0 +1,22 @@
+<section class="connections-section" *ngIf="jobsList.length > 0">
+  <h3 class="section-title">People Connected</h3>
+  <div class="job-grid">
+    <mat-card class="job-card" *ngFor="let job of jobsList">
+      <div class="job-header">
+        <img class="company-logo" [src]="'assets/images/logo2.png'" alt="Company Logo">
+        <div class="company-info">
+          <h4>{{ job.companyName }}</h4>
+          <p>{{ job.position }}</p>
+        </div>
+      </div>
+      <div class="job-details">
+        <p class="job-location"><mat-icon>location_on</mat-icon> {{ job.location }}</p>
+        <p class="job-type">{{ job.jobType }}</p>
+        <p class="job-posted">Posted {{ job.postedDate | date:'shortDate' }}</p>
+      </div>
+      <div class="job-footer">
+        <button mat-flat-button color="primary">Apply Now</button>
+      </div>
+    </mat-card>
+  </div>
+</section>

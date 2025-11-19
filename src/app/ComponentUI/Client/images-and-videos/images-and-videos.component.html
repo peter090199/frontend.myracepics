@@ -1,0 +1,21 @@
+<section class="container" *ngIf="mediaList.length > 0">
+    <h3 class="media-title">Photos & Videos</h3>
+    <div class="media-grid">
+        <div class="media-card" *ngFor="let item of mediaList" (click)="openMedia(item)">
+            <!-- IMAGE -->
+            <img *ngIf="item.type === 'image'" [src]="item.src" alt="media" class="media-img" />
+            <!-- VIDEO -->
+            <div class="video-wrapper" *ngIf="item.type === 'video'">
+                <video [poster]="item.poster" preload="metadata" muted class="video-thumb"></video>
+                <div class="play-btn">
+                    <mat-icon>play_circle</mat-icon>
+                </div>
+            </div>
+            <!-- CAPTION -->
+            <p class="media-caption" *ngIf="item.caption">
+                {{ item.caption }}
+            </p>
+        </div>
+    </div>
+
+</section>

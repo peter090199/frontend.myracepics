@@ -741,6 +741,7 @@ export class CompanyProfileUIComponent implements OnInit {
     });
   }
 
+
   // fetchProfilePicture(): void {
   //   this.cvService.getDataCV().subscribe({
   //     next: (res: any) => {
