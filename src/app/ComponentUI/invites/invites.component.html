@@ -1,0 +1,62 @@
+<div class="container" (scroll)="onScroll($event)">
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading; else invites" class="row">
+        <div class="col-xs-2" *ngFor="let _ of skeletonRows; let i = index">
+            <div class="suggestion-card">
+                <div class="skeleton skeleton-img" [attr.data-id]="i"></div>
+                <div class="skeleton skeleton-text" [attr.data-id]="i"></div>
+                <div class="skeleton skeleton-subtext" [attr.data-id]="i"></div>
+                <div class="skeleton skeleton-button" [attr.data-id]="i"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invites List -->
+    <ng-template #invites>
+        <p class="no-data" *ngIf="!peopleInvites || peopleInvites.length === 0">
+            No data found
+        </p>
+
+        <div class="row">
+            <div class="col-xs-2" *ngFor="let person of peopleInvites">
+                <div class="suggestion-card">
+                    <button mat-icon-button class="close-button">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <!-- Profile Image -->
+                    <div class="profile-image-container">
+                        <a [routerLink]="['/profile', person.user_code]" class="profile-link"
+                            [attr.alt]="person.fullname">
+                            <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
+                                class="profile-image" />
+                        </a>
+                    </div>
+
+                    <!-- Name & Role -->
+                    <ng-container *ngIf="person.user_code === 'DEF-USERS'; else companyLink">
+                        <a [routerLink]="['/profile', person.user_code]" class="custom-title">{{ person.fullname }}</a>
+                    </ng-container>
+                    <ng-template #companyLink>
+                        <a [routerLink]="['/client_profile', person.user_code]" class="custom-title">{{ person.fullname
+                            }}</a>
+                    </ng-template>
+
+                    <!-- Profession & Source -->
+                    <h6 class="text-muted text-center">{{ person.profession || '--' }}</h6>
+                    <p class="text-center small">Accept Invites?</p>
+
+                    <!-- Connect Button -->
+                    <div class="client-action text-center" *ngIf="currentUserCode !== person.user_code">
+                        <div *ngIf="currentUserCode !== person.follower_code && person.follow_status === 'pending'">
+                            <button mat-raised-button color="primary"
+                                (click)="ConnectInvites(person.follower_code, person.fullname)">
+                                <mat-icon>check</mat-icon> Accept
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>

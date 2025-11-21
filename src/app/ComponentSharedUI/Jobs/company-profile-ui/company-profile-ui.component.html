@@ -1,4 +1,5 @@
 <div class="section">
+
   <!-- Cover Photo -->
   <div class="cover-photo-container">
     <img [src]="profiles?.coverphoto" alt="Cover Photo" class="cover-photo-img" />
@@ -9,23 +10,41 @@
     <div class="profile-info" *ngIf="profiles">
       <div class="profile-picture">
         <div class="avatar-container">
-          <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default.png'" alt="Profile" />
+          <img class="profile-img"
+               [src]="profiles?.photo_pic || 'assets/images/default.png'"
+               alt="Profile" />
           <mat-icon class="status-icon online">circle</mat-icon>
         </div>
       </div>
-      <h1>{{ profiles.fullname }}
+
+      <h1>
+        {{ profiles.fullname }}
         <small>{{ profiles.current_location }}</small>
       </h1>
+
       <p>{{ profiles.followers }} followers · {{ profiles.following }} following</p>
 
       <div class="button-gap">
         <button mat-flat-button
-          [color]="followStatus === 'accepted' ? 'accent' : followStatus === 'pending' ? 'warn' : 'primary'"
-          *ngIf="currentUserCode !== ownCode"
-          (click)="AddFollow(currentUserCode, followStatus, profiles.fname, profiles.lname)">
-          <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
-          <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
-          <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>
+                *ngIf="currentUserCode !== ownCode"
+                [color]="
+                  followStatus === 'accepted'
+                    ? 'accent'
+                    : followStatus === 'pending'
+                    ? 'warn'
+                    : 'primary'
+                "
+                (click)="AddFollow(currentUserCode, followStatus, profiles.fname, profiles.lname)">
+          
+          <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">
+            person_add
+          </mat-icon>
+          <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">
+            hourglass_top
+          </mat-icon>
+          <mat-icon *ngIf="followStatus === 'accepted'">
+            check_circle
+          </mat-icon>
 
           <ng-container [ngSwitch]="followStatus">
             <span *ngSwitchCase="'none'">Connect</span>
@@ -38,6 +57,7 @@
     </div>
   </div>
 
+  <!-- Skeleton Loader -->
   <ng-template #profileSkeleton>
     <div class="profile-skeleton">
       <div class="skeleton skeleton-avatar"></div>
@@ -49,8 +69,10 @@
   <!-- Tabs -->
   <mat-tab-group>
 
-    <!-- Home Tab -->
+    <!-- HOME TAB -->
     <mat-tab label="Home">
+      
+      <!-- Home Skeleton Posts -->
       <div *ngIf="isloading">
         <mat-card class="post-box-container" *ngFor="let s of skeletonPosts">
           <mat-card-header>
@@ -62,17 +84,25 @@
           <div class="skeleton skeleton-text" style="width: 70%"></div>
         </mat-card>
       </div>
+      <section *ngIf="profiles" class="post-box-container">
 
-      <!-- Company Profile Home -->
-      <mat-card class="company-card" *ngIf="profiles">
+        <!-- Company Header -->
         <div class="company-header">
-          <img class="company-logo" [src]="profiles.photo_pic || 'assets/images/default.png'" alt="Company Logo">
+          <img class="company-logo"
+               [src]="profiles.photo_pic || 'assets/images/default.png'"
+               alt="Company Logo">
+
           <div class="company-info">
             <h1>{{ profiles.fullname }}</h1>
             <small>{{ profiles.profession }}</small>
-            <p class="company-meta">{{ profiles.industry }} · {{ profiles.companysize }} employees</p>
-            <a class="company-website" [href]="profiles.companywebsite" target="_blank">{{ profiles.companywebsite
-              }}</a>
+            <p class="company-meta">
+              {{ profiles.industry }} · {{ profiles.companysize }} employees
+            </p>
+            <a class="company-website"
+               [href]="profiles.companywebsite"
+               target="_blank">
+              {{ profiles.companywebsite }}
+            </a>
           </div>
         </div>
 
@@ -89,30 +119,26 @@
           <h3>Headquarters</h3>
           <p>{{ profiles.current_location || 'Location not provided' }}</p>
         </div>
-      </mat-card>
 
-      <app-images-and-videos></app-images-and-videos>
-      <app-images-and-videos></app-images-and-videos>
-
+      </section>
     </mat-tab>
 
-    <!-- Post Tab -->
+    <!-- POSTS TAB -->
     <mat-tab label="Post">
       <app-private-post></app-private-post>
     </mat-tab>
 
-    <!-- Jobs Tab -->
+    <!-- JOBS TAB -->
     <mat-tab label="Jobs">
       <app-jobs-client></app-jobs-client>
       <app-jobs-client></app-jobs-client>
       <app-jobs-client></app-jobs-client>
     </mat-tab>
 
-    <!-- People Tab -->
+    <!-- PEOPLE TAB -->
     <mat-tab label="People">
       <app-people></app-people>
     </mat-tab>
-
 
   </mat-tab-group>
 </div>

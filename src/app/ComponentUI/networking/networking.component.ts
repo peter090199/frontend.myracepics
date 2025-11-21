@@ -15,16 +15,49 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { ProfileService } from 'src/app/services/Profile/profile.service';
 import { AllSuggestionsModalComponent } from './all-suggestions-modal/all-suggestions-modal.component';
 
+
 @Component({
   selector: 'app-networking',
   templateUrl: './networking.component.html',
   styleUrls: ['./networking.component.css']
 })
 export class NetworkingComponent implements OnInit, OnChanges {
+   people = [
+    { name: 'Ana Santos', title: 'Frontend Developer', mutuals: 5, following: false },
+    { name: 'Mark Reyes', title: 'Project Manager', mutuals: 3, following: true },
+    { name: 'Liza Cruz', title: 'UI/UX Designer', mutuals: 8, following: false }
+  ];
+
+recruiters = [
+  { 
+    name: 'TechCorp HR', 
+    position: 'Talent Acquisition', 
+    location: 'Manila, Philippines', 
+    logo: 'assets/images/company1.png', 
+    following: false 
+  },
+  { 
+    name: 'DevSolutions HR', 
+    position: 'Recruiter', 
+    location: 'Cebu City, Philippines', 
+    logo: 'assets/images/company2.png', 
+    following: true 
+  }
+];
+
+  invites = [
+    { name: 'Jomar Valdez', title: 'Backend Dev', mutuals: 1 }
+  ];
+
+  toggleFollow(p: any) {
+    p.following = !p.following;
+  }
+
+
   @Input() active: boolean = false;
   @Output() loaded = new EventEmitter<void>();
 
-  people: any[] = [];
+  // people: any[] = [];
   peopleInvites: any[] = [];               // Suggestions (People you may know)
   peopleRecentActivity: any[] = []; // Recent Activity
   currentUserCode: string = '';
@@ -56,6 +89,14 @@ export class NetworkingComponent implements OnInit, OnChanges {
       this.loadTabData(this.selectedTabIndex);
     }
   }
+
+  loadTabData2(index: number): void {
+  if (index === 2) {
+    // Only loads when clicking Invites tab
+    this.getPendingFollowRequests();
+  }
+}
+
 
   /** ✅ Handle tab change */
   onTabChange(event: MatTabChangeEvent): void {
@@ -158,60 +199,60 @@ export class NetworkingComponent implements OnInit, OnChanges {
   }
 
   /** Follow / Unfollow / Cancel Request */
-  AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
-    if (!code) {
-      this.alert.toastrWarning('⚠️ No user code provided.');
-      return;
-    }
+  // AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
+  //   if (!code) {
+  //     this.alert.toastrWarning('⚠️ No user code provided.');
+  //     return;
+  //   }
 
-    let confirmMessage = '';
-    let successAction = '';
-    switch (follow_status) {
-      case 'not_following':
-        confirmMessage = 'Send a follow request to this user?';
-        successAction = 'Follow request sent.';
-        break;
-      case 'pending':
-        confirmMessage = 'Cancel your pending follow request?';
-        successAction = 'Follow request canceled.';
-        break;
-      case 'accepted':
-        confirmMessage = 'Unfollow this user?';
-        successAction = 'Unfollowed successfully.';
-        break;
-    }
+  //   let confirmMessage = '';
+  //   let successAction = '';
+  //   switch (follow_status) {
+  //     case 'not_following':
+  //       confirmMessage = 'Send a follow request to this user?';
+  //       successAction = 'Follow request sent.';
+  //       break;
+  //     case 'pending':
+  //       confirmMessage = 'Cancel your pending follow request?';
+  //       successAction = 'Follow request canceled.';
+  //       break;
+  //     case 'accepted':
+  //       confirmMessage = 'Unfollow this user?';
+  //       successAction = 'Unfollowed successfully.';
+  //       break;
+  //   }
 
-    this.alert.popupWarning(fullName, confirmMessage).then((result) => {
-      if (result.value) {
-        const action$ =
-          follow_status === 'accepted'
-            ? this.profile.Unfollow(id)
-            : this.profile.AddFollow(code);
+  //   this.alert.popupWarning(fullName, confirmMessage).then((result) => {
+  //     if (result.value) {
+  //       const action$ =
+  //         follow_status === 'accepted'
+  //           ? this.profile.Unfollow(id)
+  //           : this.profile.AddFollow(code);
 
-        action$.subscribe({
-          next: (res) => {
-            if (res.status === true || res.success === true) {
-              this.alert.toastrSuccess(successAction);
+  //       action$.subscribe({
+  //         next: (res) => {
+  //           if (res.status === true || res.success === true) {
+  //             this.alert.toastrSuccess(successAction);
 
-              // ✅ Update UI without reloading
-              this.peopleRecentActivity = this.peopleRecentActivity.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
-              );
-              this.people = this.people.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
-              );
-            } else {
-              this.alert.toastrError(res.message || 'Action failed.');
-            }
-          },
-          error: (err) => {
-            this.alert.toastrError(err.error?.message || 'Something went wrong.');
-            console.error(err);
-          }
-        });
-      }
-    });
-  }
+  //             // ✅ Update UI without reloading
+  //             this.peopleRecentActivity = this.peopleRecentActivity.map(p =>
+  //               p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+  //             );
+  //             this.people = this.people.map(p =>
+  //               p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+  //             );
+  //           } else {
+  //             this.alert.toastrError(res.message || 'Action failed.');
+  //           }
+  //         },
+  //         error: (err) => {
+  //           this.alert.toastrError(err.error?.message || 'Something went wrong.');
+  //           console.error(err);
+  //         }
+  //       });
+  //     }
+  //   });
+  //}
 
 
 

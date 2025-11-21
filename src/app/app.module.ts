@@ -108,9 +108,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { PrivatePostComponent } from './ComponentUI/Feeds/private-post/private-post.component';
 import { CommentModalUIComponent } from './ComponentUI/Modal/comment-modal-ui/comment-modal-ui.component';
 import { SaveJobsComponent } from './ComponentUI/jobs/save-jobs/save-jobs.component';
-import { ImagesAndVideosComponent } from './componentUI/Client/images-and-videos/images-and-videos.component';
-import { JobsClientComponent } from './componentUI/Client/jobs-client/jobs-client.component';
-import { PeopleComponent } from './componentUI/Client/people/people.component';
+import { ImagesAndVideosComponent } from './ComponentUI/Client/images-and-videos/images-and-videos.component';
+import { JobsClientComponent } from './ComponentUI/Client/jobs-client/jobs-client.component';
+import { PeopleComponent } from './ComponentUI/Client/people/people.component';
+import { ImagesComponent } from './ComponentUI/Client/images/images.component';
+import { UserAndRecruiterComponent } from './ComponentUI/user-and-recruiter/user-and-recruiter.component';
+import { BaseOnRecenActivityComponent } from './ComponentUI/base-on-recen-activity/base-on-recen-activity.component';
+import { InvitesComponent } from './ComponentUI/invites/invites.component';
+import { RecruitersComponent } from './ComponentUI/recruiters/recruiters.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -216,6 +221,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     ImagesAndVideosComponent,
     JobsClientComponent,
     PeopleComponent,
+    ImagesComponent,
+    UserAndRecruiterComponent,
+    BaseOnRecenActivityComponent,
+    InvitesComponent,
+    RecruitersComponent,
   ],
   imports: [
     BrowserModule,
