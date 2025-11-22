@@ -31,6 +31,7 @@
 /* ================= Card Design ================= */
 .suggestion-card {
   position: relative;
+  width: 180px;
   padding: 12px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -39,6 +40,44 @@
   align-items: center;
   background-color: #fff;
   transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 30px;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* default desktop 6 columns */
+  gap: 16px;
+  padding: 10px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+        gap: 12px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+        gap: 10px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* 1 column */
+        gap: 8px;
+    }
+    .suggestion-card{
+      margin: auto;
+      width: 260px;
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+   
 }
 
 .suggestion-card:hover {
@@ -52,6 +91,7 @@
   width: 70px;
   height: 70px;
   margin-bottom: 8px;
+  margin:40px;
 }
 
 .profile-image-container img {
@@ -125,4 +165,19 @@ mat-card-subtitle {
 .client-action .btn-label {
   white-space: nowrap;
   /* prevent wrapping */
+}
+
+.avatar-letter {
+  width: 70px;          /* FULL WIDTH */
+  height: 70px;
+  background-color: #3b5998;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 300;
+  text-transform: uppercase;
+  user-select: none;
+  margin: auto;
 }

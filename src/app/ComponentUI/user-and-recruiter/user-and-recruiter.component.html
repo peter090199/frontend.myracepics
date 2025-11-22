@@ -1,69 +1,69 @@
-<section (scroll)="onScroll($event)">
+<section class="section" (scroll)="onScroll($event)">
     <mat-card class="header-gradient">
         <div class="gradient-bar"></div>
         <mat-card-title class="gradient-title">Based on Profile</mat-card-title>
     </mat-card>
-    <div class="suggestions-wrapper">
-        <!-- Skeleton Loader -->
-        <div *ngIf="isLoading; else profileList" class="skeleton-list">
-            <mat-card class="suggestion-card" *ngFor="let _ of skeletonRows">
-                <div class="skeleton skeleton-img"></div>
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-subtext"></div>
-                <div class="skeleton skeleton-button"></div>
+    <!-- Skeleton Loader -->
+    <div *ngIf="isLoading; else profileList" class="skeleton-list">
+        <mat-card class="suggestion-card" *ngFor="let _ of skeletonRows">
+            <div class="skeleton skeleton-img"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-subtext"></div>
+            <div class="skeleton skeleton-button"></div>
+        </mat-card>
+    </div>
+    <ng-template #profileList>
+        <p class="no-data" *ngIf="!people || people.length === 0">No data found</p>
+        <div class="grid-container">
+            <mat-card class="suggestion-card" *ngFor="let person of people">
+                <button mat-icon-button class="close-button">
+                    <mat-icon>close</mat-icon>
+                </button>
+                <div class="profile-image-container">
+                    <a [routerLink]="['/profile', person.code]" class="profile-link">
+                        <img *ngIf="person.photo_pic" [src]="person.photo_pic"
+                            alt="{{ person.fullname?.split(' ')[0] }}" class="profile-image" />
+                        <div *ngIf="!person.photo_pic || person.photo_pic === ''" class="avatar-letter">
+                            {{ person.fullname?.charAt(0) | uppercase }}
+                        </div>
+                        <mat-icon class="status-dot" matTooltip="{{ person.is_online == 1 ? 'Active now' : 'Offline' }}"
+                            [ngClass]="person.is_online == 1 ? 'online' : 'offline'">
+                            circle
+                        </mat-icon>
+                    </a>
+                </div>
+
+                <a [routerLink]="['/profile', person.code]" class="custom-title">
+                    {{ person.fullname }}
+                </a>
+
+                <mat-card-subtitle>{{ person.profession || 'NA' }}</mat-card-subtitle>
+                <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
+
+                <!-- Connect Button -->
+                <div class="client-action" *ngIf="currentUserCode !== person.code">
+                    <button mat-flat-button [color]="
+                                person.follow_status === 'accepted' ? 'accent' :
+                                person.follow_status === 'pending' ? 'warn' :
+                                person.follow_status === 'connect_back' ? 'primary' :
+                                'primary'" class="connect-btn" [ngClass]="person.follow_status"
+                        (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+                        <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
+                        <mat-icon *ngIf="person.follow_status === 'pending'"
+                            class="hourglass-animated">hourglass_top</mat-icon>
+                        <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
+                        <mat-icon *ngIf="person.follow_status === 'connect_back'">autorenew</mat-icon>
+                        <span class="btn-label">
+                            {{
+                            person.follow_status === 'not_following' ? 'Connect' :
+                            person.follow_status === 'pending' ? 'Pending' :
+                            person.follow_status === 'accepted' ? 'Connected' :
+                            person.follow_status === 'connect_back' ? 'Connect Back' : ''
+                            }}
+                        </span>
+                    </button>
+                </div>
             </mat-card>
         </div>
-
-        <ng-template #profileList>
-            <p class="no-data" *ngIf="!people || people.length === 0">No data found</p>
-
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    <div class="suggestions">
-                        <mat-card class="suggestion-card" *ngFor="let person of people">
-                            <button mat-icon-button class="close-button">
-                                <mat-icon>close</mat-icon>
-                            </button>
-
-                            <div class="profile-image-container">
-                                <a [routerLink]="['/profile', person.code]" class="profile-link"
-                                    [attr.alt]="person.fullname">
-                                    <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
-                                        class="profile-image" />
-                                </a>
-                            </div>
-
-                            <a [routerLink]="['/profile', person.code]" class="custom-title">
-                                {{ person.fullname }}
-                            </a>
-
-                            <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
-                            <p class="based-text" *ngIf="person.source === 'suggested'">Suggested connection</p>
-
-                            <!-- Connect Button -->
-                            <button mat-flat-button  class="connect-btn"
-                                [color]="person.follow_status === 'accepted' ? 'accent' : person.follow_status === 'pending' ? 'warn' : 'primary'"
-                                *ngIf="currentUserCode !== person.code"
-                                (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
-                                <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
-                                <mat-icon *ngIf="person.follow_status === 'pending'"
-                                    class="hourglass-animated">hourglass_top</mat-icon>
-                                <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
-
-                                <ng-container [ngSwitch]="person.follow_status">
-                                    <span *ngSwitchCase="'not_following'">Connect</span>
-                                    <span *ngSwitchCase="'pending'">Pending</span>
-                                    <span *ngSwitchCase="'accepted'">Connected</span>
-                                </ng-container>
-                            </button>
-                        </mat-card>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
-    </div>
-
-
-    <!-- Recent Activity -->
-  
+    </ng-template>
 </section>

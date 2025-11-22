@@ -1,27 +1,28 @@
 .list-wrapper {
-  padding: 16px;
+  padding: 15px;
 }
+
 .grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(6, minmax(0, 1fr)); /* 6 columns minimum */
+  grid-template-columns: repeat(6, minmax(0, 1fr)); /* 6 columns default */
 }
 
 @media (max-width: 1440px) {
   .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 columns on smaller screens */
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 columns */
   }
 }
 
 @media (max-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 columns on tablets */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 columns */
   }
 }
 
 @media (max-width: 640px) {
   .grid {
-    grid-template-columns: repeat(1, minmax(0, 1fr)); /* 1 column on mobile */
+    grid-template-columns: 1fr; /* 1 column mobile */
   }
 }
 
@@ -31,6 +32,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .user-info {
@@ -68,6 +72,7 @@
 .invite-actions {
   display: flex;
   justify-content: space-between;
+  gap: 8px;
 }
 
 .company-name {
@@ -86,12 +91,11 @@
   padding: 30px 0;
 }
 
-
 .tab-wrapper {
   display: flex;
-  justify-content: center;      /* Horizontal center */
+  justify-content: center; /* Horizontal center */
   width: 100%;
-  padding: 16px;                /* Optional spacing around tabs */
+  padding: 16px;           /* spacing around tabs */
   box-sizing: border-box;
   overflow-y: auto;
   height: 90vh;
@@ -99,13 +103,20 @@
 
 mat-tab-group {
   width: 100%;
-  max-width: 1200px;            /* Limit the width on large screens */
-  margin: 0 auto;               /* Center horizontally */
+  max-width: 1300px;       /* Limit width on large screens */
+  margin: 10px auto;       /* Corrected syntax to center horizontally */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   mat-tab-group {
-    width: 100%;                /* Full width on small screens */
-    padding: 0 8px;             /* Optional side padding */
+    width: 95%;             /* Slightly smaller than full width */
+    padding: 0 12px;        /* Side padding */
+  }
+}
+
+@media (max-width: 640px) {
+  mat-tab-group {
+    width: 100%;            /* Full width on mobile */
+    padding: 0 8px;         /* Smaller side padding */
   }
 }

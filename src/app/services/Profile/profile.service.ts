@@ -78,8 +78,7 @@ getCompanyProfile(code: any): Observable<any> {
       catchError(error => this.handleAuthError(error))
     );
   }
-
-
+  
   //follow users
   AddFollow(code: any): Observable<any> {
     const headers = this.createHeaders();

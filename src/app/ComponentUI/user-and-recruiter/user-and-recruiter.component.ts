@@ -19,6 +19,8 @@ export class UserAndRecruiterComponent implements OnInit {
   peopleRecentActivity: any[] = [];
   currentUserCode: string = '';
   cnt: number = 0;
+  limit = 10;
+  page = 1;
 
 
   constructor(private clientsService: ClientsService, private authService: AuthService,
@@ -30,19 +32,56 @@ export class UserAndRecruiterComponent implements OnInit {
     this.loadTabData(0);
   }
 
-  
+
   loadTabData(index: number): void {
     if (index === 0) {
       this.getPeopleyoumayknow();
-    } 
+      this.getPeopleRecentActivity();
+    }
+    else {
+      this.getPeopleRecentActivity();
+    }
   }
-  
+
+
+  getPeopleRecentActivity(): void {
+    if (this.isLoading || !this.hasMoreData) return;
+
+    this.isLoading = true;
+    this.currentUserCode = this.authService.getAuthCode();
+    this.skeletonRows = Array.from({ length: this.limit }, (_, i) => i);
+
+    this.clientsService.getPeopleRecentActivity().subscribe({
+      next: (res) => {
+        this.skeletonRows = [];
+        const newData = (res.data || []).map((person: any) => ({
+          ...person,
+          follow_status: person.follow_status || 'not_following',
+          follow_id: person.follow_id || null,
+          role_code: person.role_code
+        }));
+
+        this.peopleRecentActivity.push(...newData);
+        this.page++;
+        this.hasMoreData = newData.length === this.limit;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading recent activity:', err);
+        this.alert.toastrError('❌ Failed to load recent activity.');
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+
   getPeopleyoumayknow(): void {
     this.currentUserCode = this.authService.getAuthCode();
 
     this.clientsService.getPeopleyoumayknow().subscribe({
       next: (res) => {
-        this.people = res.data || [];
+        this.people = res.data;
         this.cnt = res.count || 0;
       },
       error: (err) => {
@@ -52,7 +91,7 @@ export class UserAndRecruiterComponent implements OnInit {
     });
   }
 
-  AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
+   AddConnect(code: string, fullName: string, follow_status: string, id: number): void {
     if (!code) {
       this.alert.toastrWarning('⚠️ No user code provided.');
       return;
@@ -81,19 +120,20 @@ export class UserAndRecruiterComponent implements OnInit {
           follow_status === 'accepted'
             ? this.profile.Unfollow(id)
             : this.profile.AddFollow(code);
-
+         this.getPeopleRecentActivity();
         action$.subscribe({
           next: (res) => {
             if (res.status === true || res.success === true) {
-              this.alert.toastrSuccess(successAction);
+              this.alert.toastrSuccess(res.message);
 
-              // ✅ Update UI without reloading
+             // ✅ Update UI without reloading
               this.peopleRecentActivity = this.peopleRecentActivity.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+                p.code === code ? { ...p, follow_status: res.follow_status} : p
               );
               this.people = this.people.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+                p.code === code ? { ...p, follow_status: res.follow_status} : p
               );
+             
             } else {
               this.alert.toastrError(res.message || 'Action failed.');
             }
@@ -103,6 +143,8 @@ export class UserAndRecruiterComponent implements OnInit {
             console.error(err);
           }
         });
+
+
       }
     });
   }

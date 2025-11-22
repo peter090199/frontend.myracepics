@@ -136,12 +136,37 @@ body {
   height: 100vh;
 }
 .section {
-  padding: 10;
-  margin: 10;
-  height: 90vh;
+  padding: 30px; /* added px */
   overflow-y: auto;
-  max-height: 90vh;
+  overflow-x: hidden;
 }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .section {
+    padding: 8px;
+    margin: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 6px;
+    margin: 6px;
+    height: auto; /* allow height to grow with content */
+    max-height: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 4px;
+    margin: 4px;
+    height: auto;
+    max-height: none;
+  }
+}
+
 .mat-header-cell {
   font-weight: 600;
   background: #f5f5f5;
@@ -428,16 +453,20 @@ snack-bar-container.notification simple-snack-bar {
   height: 180px;
 }
 
-.avatar-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+.avatar-letter {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  overflow: hidden;
-  border: 5px solid #fff;
-  /* White border like Facebook */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: #4a6cf7; /* Facebook-style blue */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
+
 
 .page-container {
   display: grid;
@@ -783,26 +812,7 @@ p {
   right: 0;
   font-size: 16px;
   border-radius: 50%;
-  padding: 10px;
 }
-
-.online {
-  color: #28a745;
-  /* Green */
-}
-
-.offline {
-  color: #ccc;
-  /* Gray */
-}
-
-/* .online {
-  background: #ffffff; 
-}
-
-.offline {
-background: #ffffff; 
-} */
 
 
 
@@ -851,20 +861,21 @@ h2 {
   gap: 5px;
   flex-wrap: wrap;
   margin: 10px;
- 
+
 }
 
 /* Make the mat-form-field adapt */
 .search-div .mat-form-field {
   min-width: 120px;
-   width: 20%;
+  width: 20%;
   max-width: 640px;
 }
 
-.footer-btn{
+.footer-btn {
   padding: 2px;
 
 }
+
 .content-scrollable {
   overflow: auto;
   max-height: calc(100vh - 100px);
@@ -1768,6 +1779,8 @@ react emoji */
   overflow: hidden;
   margin-bottom: 20px;
   box-shadow: 0 0 0 2px #ccc;
+  margin: 10px;
+  position: relative;
 }
 
 .profile-image {
@@ -1775,6 +1788,27 @@ react emoji */
   height: 100%;
   object-fit: cover;
 }
+
+.status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50%;
+}
+
+/* Online: green */
+.online {
+  color: #4CAF50 !important;
+}
+
+/* Offline: gray */
+.offline {
+  color: #ff1c1c !important;
+}
+
 
 
 .read-only-input {
@@ -2121,7 +2155,8 @@ mat-row.selected {
 .client-action .mat-flat-button {
   display: flex;
   align-items: center;
-  gap: 6px; /* space between icon and label */
+  gap: 6px;
+  /* space between icon and label */
 }
 
 .client-action .btn-label {
@@ -2348,16 +2383,21 @@ mat-row.selected {
 
 
 .spinner-overlay {
-  position: fixed; /* Covers entire screen */
+  position: fixed;
+  /* Covers entire screen */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3); /* semi-transparent dark overlay */
+  background-color: rgba(0, 0, 0, 0.3);
+  /* semi-transparent dark overlay */
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
-  z-index: 1000;           /* above all other elements */
+  justify-content: center;
+  /* horizontal center */
+  align-items: center;
+  /* vertical center */
+  z-index: 1000;
+  /* above all other elements */
 }
 
 /* Optional: small spinner inside submit button */
@@ -2370,8 +2410,13 @@ mat-row.selected {
 
 /* Spin animation */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Fade transition for text */
@@ -2387,21 +2432,26 @@ mat-row.selected {
   margin: 15px 0;
   text-align: left;
 }
+
 .connections-section {
   width: 100%;
   max-width: 1200px;
   margin: 30px auto;
   padding: 0 15px;
 }
+
 .header-gradient {
   padding: 10px;
   position: relative;
-    padding: 12px 16px;
+  padding: 12px 16px;
   border-radius: 12px;
   text-align: center;
-  width: 100%;                /* Take full width of parent */
-  max-width: 1200px;          /* Limit width on large screens */
-  margin: 0 auto;             /* Center horizontally */
+  width: 100%;
+  /* Take full width of parent */
+  max-width: 1200px;
+  /* Limit width on large screens */
+  margin: 0 auto;
+  /* Center horizontally */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -2442,25 +2492,46 @@ mat-row.selected {
 
 /* Default border radius */
 .connect-btn {
-  border-radius: 12px; /* default */
+  border-radius: 12px;
+  /* default */
   transition: all 0.3s ease;
 }
 
 /* Unique radius per status */
 .connect-btn.not-following {
-  border-radius: 20px; /* rounded pill style */
+  border-radius: 20px;
+  /* rounded pill style */
 }
 
 .connect-btn.pending {
-  border-radius: 5px; /* slightly rounded */
+  border-radius: 5px;
+  /* slightly rounded */
 }
 
 .connect-btn.accepted {
-  border-radius: 0; /* square corners */
+  border-radius: 0;
+  /* square corners */
 }
 
 /* Optional hover effect */
 .connect-btn:hover {
   transform: scale(1.05);
 }
+
+button[mat-raised-button],
+button[mat-button],
+button[mat-flat-button],
+button[mat-stroked-button] {
+  border-radius: 30px !important;
+  padding-inline: 20px;
+}
+
+.close-button mat-icon {
+  color: #e53935 !important;
+  /* Material red */
+}
+
+
+
+
 

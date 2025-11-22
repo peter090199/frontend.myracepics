@@ -55,8 +55,8 @@ export class BaseOnRecenActivityComponent implements OnInit {
         this.skeletonRows = [];
         const newData = (res.data || []).map((person: any) => ({
           ...person,
-          follow_status: person.follow_status || 'not_following',
-          follow_id: person.follow_id || null,
+          follow_status: person.follow_status,
+          follow_id: person.id,
           role_code: person.role_code
         }));
 
@@ -104,19 +104,20 @@ export class BaseOnRecenActivityComponent implements OnInit {
           follow_status === 'accepted'
             ? this.profile.Unfollow(id)
             : this.profile.AddFollow(code);
-
+         this.getPeopleRecentActivity();
         action$.subscribe({
           next: (res) => {
             if (res.status === true || res.success === true) {
-              this.alert.toastrSuccess(successAction);
+              this.alert.toastrSuccess(res.message);
 
-              // ✅ Update UI without reloading
+             // ✅ Update UI without reloading
               this.peopleRecentActivity = this.peopleRecentActivity.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+                p.code === code ? { ...p, follow_status: res.follow_status} : p
               );
               this.people = this.people.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status || 'not_following' } : p
+                p.code === code ? { ...p, follow_status: res.follow_status} : p
               );
+             
             } else {
               this.alert.toastrError(res.message || 'Action failed.');
             }
@@ -127,7 +128,7 @@ export class BaseOnRecenActivityComponent implements OnInit {
           }
         });
 
-        this.getPeopleRecentActivity();
+
       }
     });
   }

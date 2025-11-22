@@ -1,11 +1,8 @@
 <div class="tab-wrapper">
-  <mat-tab-group mat-stretch-tabs>
-
-    <!-- GLOBAL LOADING SPINNER -->
+  <mat-tab-group >
     <div *ngIf="isLoading" class="spinner-wrapper">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
-
     <!-- PEOPLE TAB -->
     <mat-tab label="People">
       <ng-template matTabContent>
@@ -20,7 +17,7 @@
     </mat-tab>
 
     <!-- RECRUITERS TAB -->
-    <mat-tab label="Recruiters">
+    <!-- <mat-tab label="Recruiters">
       <ng-template matTabContent>
         <div class="list-wrapper">
           <div class="grid">
@@ -28,7 +25,7 @@
           </div>
         </div>
       </ng-template>
-    </mat-tab>
+    </mat-tab> -->
 
     <!-- INVITES TAB -->
     <mat-tab label="Invites">
@@ -40,8 +37,5 @@
         </div>
       </ng-template>
     </mat-tab>
-
-   
-
   </mat-tab-group>
 </div>
