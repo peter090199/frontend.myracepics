@@ -136,9 +136,11 @@ body {
   height: 100vh;
 }
 .section {
-  padding: 30px; /* added px */
+  padding: 10px; /* added px */
   overflow-y: auto;
   overflow-x: hidden;
+  height: 90vh;
+  width: 100%;
 }
 
 /* Responsive adjustments */

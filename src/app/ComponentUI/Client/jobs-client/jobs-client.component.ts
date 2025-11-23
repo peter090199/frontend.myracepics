@@ -1,12 +1,31 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { JobListService } from 'src/app/services/Jobs/job-list.service';
+import { environment } from 'src/environments/environment';
+
 interface Job {
-  companyName: string;
-  companyLogo?: string;
-  position: string;
+  job_id: number;
+  transNo: string;
+  code: number;
+  company: string;
+  role_code: string;
+  job_name: string;
   location: string;
-  jobType: string; // Full-time, Part-time, Remote, etc.
-  postedDate: Date;
-  applyUrl?: string;
+  benefits: string;
+  job_position: string;
+  job_description: string;
+  job_about: string;
+  qualification: string;
+  work_type: string;
+  job_image?: string;
+  fullname: string;
+  created_at: string;
+  updated_at: string;
+  recordstatus: string;
+  is_online: number;
+  // Add more fields if needed
 }
 
 @Component({
@@ -16,62 +35,79 @@ interface Job {
 })
 export class JobsClientComponent implements OnInit {
 
-  jobsList: Job[] = [];
+  jobs: Job[] = [];
+  isLoading: boolean = false;
+  selectedTabIndex: number = 2;
+  code:any;
+  currentUserCode:any;
 
-  constructor() { }
+
+
+  constructor(private jobService: JobListService,private route: ActivatedRoute,
+     private authServiceCode: AuthService,
+  ) { }
+  
+  getJobImageUrl(imagePath?: string): string {
+    if (!imagePath) return 'assets/images/default-job.png';
+    const publicPath = imagePath.replace(/^\/storage\/app\/public/, '/storage');
+    return publicPath;
+  }
+
 
   ngOnInit(): void {
-    this.loadJobs();
+    this.currentUserCode = this.authServiceCode.getAuthCode();
+    console.log( this.currentUserCode)
+    this.code = this.route.snapshot.paramMap.get('code') || window.location.href.split('/').pop() || '';
+    this.loadTabData(this.selectedTabIndex);
+    
   }
 
-  loadJobs() {
-    // Sample job data (replace with API call if needed)
-    this.jobsList = [
-      {
-        companyName: 'TechCorp Solutions',
-        companyLogo: 'assets/images/techcorp.png',
-        position: 'Frontend Developer',
-        location: 'Iloilo City, Philippines',
-        jobType: 'Full-time',
-        postedDate: new Date('2025-11-10'),
-        applyUrl: 'https://techcorp.com/apply/frontend'
-      },
-      {
-        companyName: 'DevSolutions Inc.',
-        companyLogo: 'assets/images/devsolutions.png',
-        position: 'Backend Developer',
-        location: 'Remote',
-        jobType: 'Remote',
-        postedDate: new Date('2025-11-12'),
-        applyUrl: 'https://devsolutions.com/careers/backend'
-      },
-      {
-        companyName: 'Startup Hub',
-        companyLogo: 'assets/images/startuphub.png',
-        position: 'UI/UX Designer',
-        location: 'Makati, Philippines',
-        jobType: 'Part-time',
-        postedDate: new Date('2025-11-15'),
-        applyUrl: 'https://startuphub.com/jobs/uiux'
-      },
-      {
-        companyName: 'GlobalTech',
-        companyLogo: 'assets/images/globaltech.png',
-        position: 'Full Stack Developer',
-        location: 'Cebu City, Philippines',
-        jobType: 'Full-time',
-        postedDate: new Date('2025-11-17'),
-        applyUrl: 'https://globaltech.com/apply/fullstack'
-      }
-    ];
-    // Sort by latest posted date
-    this.jobsList.sort((a, b) => b.postedDate.getTime() - a.postedDate.getTime());
-
-  }
-
-  openJobApply(job: Job) {
-    if (job.applyUrl) {
-      window.open(job.applyUrl, '_blank');
+  private loadTabData(index: number): void {
+    if (index === 2) {
+      this.getActiveJobsByCode();
     }
   }
+
+
+
+
+  async getActiveJobsByCode(): Promise<void> {
+    try {
+      this.isLoading = true;
+      const res = await firstValueFrom(this.jobService.getActiveJobsByCode(this.code));
+      if (res.success) {
+        this.isLoading = false;
+        this.jobs = res.data.map((job: any) => ({
+          ...job,
+          job_image: job.job_image
+            ? `https://exploredition.com${job.job_image}`
+            : null
+        }));
+
+      } else {
+        this.isLoading = false;
+      }
+
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+
+  openJobApply(job: Job): void {
+    if (job.work_type && job.work_type.toLowerCase() === 'remote') {
+      // Optional: handle remote jobs differently
+    }
+    if (job.job_image) {
+      // Optional: preview image
+    }
+    // Open application URL if available
+    const applyUrl = (job as any).applyUrl; // if backend provides
+    if (applyUrl) {
+      window.open(applyUrl, '_blank');
+    }
+  }
+
 }

@@ -157,11 +157,8 @@ section {
 /* Sticky header animation */
 .header.sticky {
   background: linear-gradient(to right, rgba(11, 203, 174, 1), rgba(47, 44, 225, 1));
-  /* Darken gradient when sticky */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  /* Add a subtle shadow when sticky */
   transform: scale(1.05);
-  /* Slightly enlarge the header */
 }
 
 /* Optional: Add animation for smooth header entrance */

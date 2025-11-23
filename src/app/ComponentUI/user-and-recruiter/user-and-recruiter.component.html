@@ -47,7 +47,7 @@
                                 person.follow_status === 'pending' ? 'warn' :
                                 person.follow_status === 'connect_back' ? 'primary' :
                                 'primary'" class="connect-btn" [ngClass]="person.follow_status"
-                        (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+                        (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)" [disabled]="person.follow_status === 'pending'">
                         <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
                         <mat-icon *ngIf="person.follow_status === 'pending'"
                             class="hourglass-animated">hourglass_top</mat-icon>

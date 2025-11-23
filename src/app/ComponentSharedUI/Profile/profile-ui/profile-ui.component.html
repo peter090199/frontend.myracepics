@@ -34,7 +34,7 @@
         <button mat-flat-button [color]="
           followStatus === 'accepted' ? 'accent' :
           followStatus === 'pending' ? 'warn' : 'primary'" *ngIf="currentUserCode !== this.code"
-          (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)">
+          (click)="AddFollow(code, followStatus, profiles.fname, profiles.lname)" [disabled]="followStatus === 'pending'">
           <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">person_add</mat-icon>
           <mat-icon *ngIf="followStatus === 'pending'" class="hourglass-animated">hourglass_top</mat-icon>
           <mat-icon *ngIf="followStatus === 'accepted'">check_circle</mat-icon>

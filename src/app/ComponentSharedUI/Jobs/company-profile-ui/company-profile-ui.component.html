@@ -10,9 +10,7 @@
     <div class="profile-info" *ngIf="profiles">
       <div class="profile-picture">
         <div class="avatar-container">
-          <img class="profile-img"
-               [src]="profiles?.photo_pic || 'assets/images/default.png'"
-               alt="Profile" />
+          <img class="profile-img" [src]="profiles?.photo_pic || 'assets/images/default.png'" alt="Profile" />
           <mat-icon class="status-icon online">circle</mat-icon>
         </div>
       </div>
@@ -25,17 +23,15 @@
       <p>{{ profiles.followers }} followers · {{ profiles.following }} following</p>
 
       <div class="button-gap">
-        <button mat-flat-button
-                *ngIf="currentUserCode !== ownCode"
-                [color]="
+        <button mat-flat-button *ngIf="currentUserCode !== ownCode" [color]="
                   followStatus === 'accepted'
                     ? 'accent'
                     : followStatus === 'pending'
                     ? 'warn'
                     : 'primary'
-                "
-                (click)="AddFollow(currentUserCode, followStatus, profiles.fname, profiles.lname)">
-          
+                " (click)="AddFollow(currentUserCode, followStatus, profiles.fname, profiles.lname)"
+          [disabled]="followStatus === 'pending'">
+
           <mat-icon *ngIf="followStatus === 'none' || followStatus === 'cancelled'">
             person_add
           </mat-icon>
@@ -71,7 +67,7 @@
 
     <!-- HOME TAB -->
     <mat-tab label="Home">
-      
+
       <!-- Home Skeleton Posts -->
       <div *ngIf="isloading">
         <mat-card class="post-box-container" *ngFor="let s of skeletonPosts">
@@ -88,9 +84,7 @@
 
         <!-- Company Header -->
         <div class="company-header">
-          <img class="company-logo"
-               [src]="profiles.photo_pic || 'assets/images/default.png'"
-               alt="Company Logo">
+          <img class="company-logo" [src]="profiles.photo_pic || 'assets/images/default.png'" alt="Company Logo">
 
           <div class="company-info">
             <h1>{{ profiles.fullname }}</h1>
@@ -98,9 +92,7 @@
             <p class="company-meta">
               {{ profiles.industry }} · {{ profiles.companysize }} employees
             </p>
-            <a class="company-website"
-               [href]="profiles.companywebsite"
-               target="_blank">
+            <a class="company-website" [href]="profiles.companywebsite" target="_blank">
               {{ profiles.companywebsite }}
             </a>
           </div>
@@ -130,8 +122,6 @@
 
     <!-- JOBS TAB -->
     <mat-tab label="Jobs">
-      <app-jobs-client></app-jobs-client>
-      <app-jobs-client></app-jobs-client>
       <app-jobs-client></app-jobs-client>
     </mat-tab>
 

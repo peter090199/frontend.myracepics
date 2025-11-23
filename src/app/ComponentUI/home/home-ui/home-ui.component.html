@@ -429,7 +429,7 @@
         <div class="client-action" *ngIf="currentUserCode !== user.code">
           <button mat-flat-button
             [color]=" user.follow_status === 'accepted' ? 'accent': user.follow_status === 'pending'? 'warn': 'primary'"
-            (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)">
+            (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)"  [disabled]="user.follow_status === 'pending'">
             <mat-icon *ngIf="user.follow_status === 'not_following'">
               person_add
             </mat-icon>

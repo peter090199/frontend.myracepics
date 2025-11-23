@@ -22,26 +22,25 @@
 
             <!-- Profile Image -->
             <div class="profile-image-container">
-                <a [routerLink]="['/profile', person.user_code]" class="profile-link" [attr.alt]="person.fullname">
-                    <img [src]="person.photo_pic || 'assets/default-avatar.png'" [alt]="person.fullname"
-                        class="profile-image" />
+                <a [routerLink]="['/profile', person.follower_code]" class="profile-link">
+                    <img *ngIf="person.photo_pic" [src]="person.photo_pic" alt="" />
+                    <div *ngIf="!person.photo_pic || person.photo_pic === ''" class="avatar-letter">
+                        {{ person.fullname?.charAt(0) | uppercase }}
+                    </div>
+                    <mat-icon class="status-dot" matTooltip="{{ person.is_online == 1 ? 'Active now' : 'Offline' }}"
+                        [ngClass]="person.is_online == 1 ? 'online' : 'offline'">
+                        circle
+                    </mat-icon>
                 </a>
             </div>
-
-            <!-- Name & Role -->
-            <ng-container *ngIf="person.user_code === 'DEF-USERS'; else companyLink">
-                <a [routerLink]="['/profile', person.user_code]" class="custom-title">{{ person.fullname }}</a>
+            <ng-container *ngIf="person.role_code === 'DEF-USERS'; else companyLink">
+                <a [routerLink]="['/profile', person.follower_code]" class="custom-title">{{ person.fullname }}</a>
             </ng-container>
-
             <ng-template #companyLink>
-                <a [routerLink]="['/client_profile', person.user_code]" class="custom-title">
-                    {{ person.fullname }}
-                </a>
+                <a [routerLink]="['/client_profile', person.follower_code]" class="custom-title">{{ person.fullname }}</a>
             </ng-template>
-
-            <h6 class="text-muted text-center">{{ person.profession || '--' }}</h6>
-
-            <div class="client-action text-center" *ngIf="currentUserCode !== person.user_code">
+            <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+            <div class="client-action" *ngIf="currentUserCode !== person.follower_code">
                 <div *ngIf="currentUserCode !== person.follower_code && person.follow_status === 'pending'">
                     <button mat-raised-button color="primary"
                         (click)="ConnectInvites(person.follower_code, person.fullname)">
@@ -49,6 +48,7 @@
                     </button>
                 </div>
             </div>
+            
         </mat-card>
     </div>
 </ng-template>

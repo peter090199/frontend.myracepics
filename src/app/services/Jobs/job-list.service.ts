@@ -57,6 +57,14 @@ export class JobListService {
     );
   }
 
+  
+  getActiveJobsByCode(code:any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getActiveJobsByCode/${code}`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+
   deleteJobPosting(id: number): Observable<any> {
     const headers = this.createHeaders();
     return this.http.delete<any>(`${_url}deleteJobPosting/${id}`, { headers });

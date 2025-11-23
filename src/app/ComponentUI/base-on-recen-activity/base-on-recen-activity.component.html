@@ -1,4 +1,4 @@
-<section class="section" (scroll)="onScroll($event)">
+<section class="section">
     <mat-card class="header-gradient">
         <div class="gradient-bar"></div>
         <mat-card-title class="gradient-title">Based on Recent Activity</mat-card-title>
@@ -24,9 +24,9 @@
                     <mat-icon>close</mat-icon>
                 </button>
                 <div class="profile-image-container">
-                    <a [routerLink]="['/profile', person.code]" class="profile-link">
+                    <a [routerLink]="['/profile', person.code]">
                         <img *ngIf="person.photo_pic" [src]="person.photo_pic" alt="" />
-                        <div *ngIf="!person.photo_pic || person.photo_pic === ''" class="avatar-letter">
+                        <div *ngIf="!person.photo_pic" class="avatar-letter">
                             {{ person.fullname?.charAt(0) | uppercase }}
                         </div>
                         <mat-icon class="status-dot" matTooltip="{{ person.is_online == 1 ? 'Active now' : 'Offline' }}"
@@ -41,7 +41,7 @@
                 <ng-template #companyLink>
                     <a [routerLink]="['/client_profile', person.code]" class="custom-title">{{ person.fullname }}</a>
                 </ng-template>
-                <mat-card-subtitle>{{ person.profession || '--' }}</mat-card-subtitle>
+                <mat-card-subtitle>{{ person.profession || 'NA' }}</mat-card-subtitle>
                 <p class="based-text">Based on your recent {{ person.source }}</p>
 
                 <div class="client-action" *ngIf="currentUserCode !== person.code">
@@ -50,17 +50,14 @@
                         person.follow_status === 'pending' ? 'warn' :
                         person.follow_status === 'connect_back' ? 'primary' :
                         'primary'" class="connect-btn" [ngClass]="person.follow_status"
-                        (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)">
+                        (click)="AddConnect(person.code, person.fullname, person.follow_status, person.id)" [disabled]="person.follow_status === 'pending'"> <!-- DISABLED HERE -->
 
-                        <!-- Icon based on status -->
+                        <!-- Icons -->
                         <mat-icon *ngIf="person.follow_status === 'not_following'">person_add</mat-icon>
                         <mat-icon *ngIf="person.follow_status === 'pending'"
                             class="hourglass-animated">hourglass_top</mat-icon>
                         <mat-icon *ngIf="person.follow_status === 'accepted'">check_circle</mat-icon>
-                        <mat-icon *ngIf="person.follow_status === 'connect_back'">autorenew</mat-icon>
-                        <!-- icon for connect back -->
 
-                        <!-- Button label -->
                         <span class="btn-label">
                             {{
                             person.follow_status === 'not_following' ? 'Connect' :

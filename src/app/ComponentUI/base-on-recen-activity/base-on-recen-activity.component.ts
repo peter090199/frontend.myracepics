@@ -34,14 +34,60 @@ export class BaseOnRecenActivityComponent implements OnInit {
   private loadTabData(index: number): void {
     if (index === 0) {
       this.getPeopleRecentActivity();
+     
     }
   }
-  onScroll(event: any): void {
-    const { scrollTop, scrollHeight, clientHeight } = event.target;
-    if (scrollTop + clientHeight >= scrollHeight - 100 && !this.isLoading && this.hasMoreData) {
-      this.getPeopleRecentActivity();
-    }
-  }
+  // onScroll(event: any): void {
+  //   const { scrollTop, scrollHeight, clientHeight } = event.target;
+  //   if (scrollTop + clientHeight >= scrollHeight - 100 && !this.isLoading && this.hasMoreData) {
+  //     this.getPeopleRecentActivity();
+  //     this.getPendingFollowRequests();
+  //   }
+  // }
+
+
+
+// Fetch pending follow requests
+// peopleInvites: any = [];
+// followerCode: any;
+// isLoading2:boolean = false;
+// getPendingFollowRequests(): void {
+//   if (this.isLoading2) return;
+//   this.isLoading2 = true;
+
+//   this.clientsService.getPendingFollowRequests().subscribe({
+//     next: (res) => {
+
+//       if (!res.data || res.data.length === 0) {
+//         this.hasMoreData = false;
+//       }
+
+//       // Append data
+//       this.peopleInvites = [
+//         ...this.peopleInvites,
+//         ...res.data.map((item: any) => ({
+//           ...item,
+//           follower_code: item.follower_code ?? null   // ensure always exists
+//         }))
+//       ];
+
+//       // Check if any follower_code exists in all loaded items
+//       this.followerCode = this.peopleInvites.some(
+//         (p: any) => p.follower_code !== null && p.follower_code !== ''
+//       );
+
+//       console.log("Follower Code Exists:", this.followerCode);
+
+//       this.isLoading2 = false;
+//     },
+
+//     error: (err) => {
+//       console.error('Error loading pending follow requests:', err);
+//       this.isLoading2 = false;
+//     }
+//   });
+// }
+
 
   getPeopleRecentActivity(): void {
     if (this.isLoading || !this.hasMoreData) return;
@@ -104,20 +150,20 @@ export class BaseOnRecenActivityComponent implements OnInit {
           follow_status === 'accepted'
             ? this.profile.Unfollow(id)
             : this.profile.AddFollow(code);
-         this.getPeopleRecentActivity();
+        this.getPeopleRecentActivity();
         action$.subscribe({
           next: (res) => {
             if (res.status === true || res.success === true) {
               this.alert.toastrSuccess(res.message);
 
-             // ✅ Update UI without reloading
+              // ✅ Update UI without reloading
               this.peopleRecentActivity = this.peopleRecentActivity.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status} : p
+                p.code === code ? { ...p, follow_status: res.follow_status } : p
               );
               this.people = this.people.map(p =>
-                p.code === code ? { ...p, follow_status: res.follow_status} : p
+                p.code === code ? { ...p, follow_status: res.follow_status } : p
               );
-             
+
             } else {
               this.alert.toastrError(res.message || 'Action failed.');
             }
