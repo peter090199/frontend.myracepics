@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { JobListService } from 'src/app/services/Jobs/job-list.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-jobs-profile',
@@ -24,16 +25,60 @@ export class JobsProfileComponent implements OnInit {
 
   constructor(
     private jobListServices: JobListService,
-    private route: ActivatedRoute, private router: Router
+    private route: ActivatedRoute, private router: Router,
+    private authService: AuthService
   ) { }
 
+  saved = false;
 
+  toggleHeart() {
+    this.saved = !this.saved;
+  }
+  getStatusIcon(status: string | undefined): string {
+    switch (status) {
+      case 'default': return 'send';
+      case 'applied_active': return 'hourglass_top';         // user applied and active
+      case 'review': return 'hourglass_top';        // under review
+      case 'reject': return 'close';                // rejected
+      case 'approved': return 'check_circle';       // approved
+      default: return 'send';                       // not applied / default
+    }
+  }
+
+  getStatusText(status: string | undefined): string {
+    switch (status) {
+      case 'applied_active': return 'Pending';
+      case 'review': return 'Under Review';
+      case 'reject': return 'Rejected';
+      case 'approved': return 'Approved';
+      default: return 'Apply Now';                  // not applied / default
+    }
+  }
+
+
+  getStatusColor(status: string | undefined): string {
+    switch (status) {
+      case 'default': return '#3071e0ff';
+      case 'applied_active': return '#ec4a04ff';        // blue
+      case 'review': return '#ffb300';        // yellow / amber
+      case 'reject': return '#d32f2f';        // red
+      case 'approved': return '#388e3c';      // green
+      default: return '#1976d2';              // default blue
+    }
+  }
 
   closeSidebar() {
     this.selectedJob = null;
   }
 
+  currentUserCode: any;
   async ngOnInit(): Promise<void> {
+    const ownCode = this.authService.getAuthCode(); // get logged-in user
+    if (ownCode) {
+      this.currentUserCode = ownCode;
+      console.log(this.currentUserCode);
+    }
+
     await this.getJobPosting();
 
     // ✅ After jobs are loaded, check the route param
@@ -42,6 +87,12 @@ export class JobsProfileComponent implements OnInit {
       this.selectedJob = this.jobs.find(job => job.transNo == transNo) || null;
     }
   }
+
+  getButtonStatus(job: any): string {
+    if (!job) return 'default';
+    return job.code === this.currentUserCode ? 'default' : job.applied_status;
+  }
+
 
   async getJobPosting(): Promise<void> {
     try {

@@ -34,12 +34,15 @@ export class AppliedStatusService {
     };
   }
 
-
-  updateAppliedStatus(transNo: any, data: any) {
+  updateAppliedStatus(transNo: any, status: string) {
     const headers = this.createHeaders();
-    return this.http.put(`${_url}updateAppliedStatus/${transNo}`, data, { headers })
-      .pipe(catchError(this.handleError('updateAppliedStatus')));
+    return this.http.post(
+      `${_url}updateAppliedStatus/${transNo}`,
+      { status: status }, 
+      { headers }
+    );
   }
+
 
 
 }

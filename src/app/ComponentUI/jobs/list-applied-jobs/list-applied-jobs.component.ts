@@ -23,11 +23,14 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   isLoadingApply = false;
   isLoadingOngoing = false;
   isLoadingFinished = false;
+  isLoadingReject = false;
 
   displayedColumns: string[] = [];
   dataSourceApply = new MatTableDataSource<any>([]);
   dataSourceOngoing = new MatTableDataSource<any>([]);
   dataSourceFinished = new MatTableDataSource<any>([]);
+  dataSourceReject = new MatTableDataSource<any>([]);
+
 
   pageSizeOptions: number[] = [5, 10, 25, 100];
   success = false;
@@ -35,17 +38,19 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   @ViewChild('paginatorApply') paginatorApply!: MatPaginator;
   @ViewChild('paginatorOngoing') paginatorOngoing!: MatPaginator;
   @ViewChild('paginatorFinished') paginatorFinished!: MatPaginator;
+  @ViewChild('paginatorFinished') paginatorReject!: MatPaginator;
 
   @ViewChild('sortApply') sortApply!: MatSort;
   @ViewChild('sortOngoing') sortOngoing!: MatSort;
   @ViewChild('sortFinished') sortFinished!: MatSort;
+  @ViewChild('sortReject') sortReject!: MatSort;
 
   constructor(
     private jobServices: AppiedListJobService,
     private router: Router,
     public dialog: MatDialog,
     private notificationsService: NotificationsService,
-    private appliedService:AppliedStatusService
+    private appliedService: AppliedStatusService
   ) { }
 
   columnDefs = [
@@ -72,6 +77,9 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
 
     this.dataSourceFinished.paginator = this.paginatorFinished;
     this.dataSourceFinished.sort = this.sortFinished;
+
+    this.dataSourceReject.paginator = this.paginatorReject;
+    this.dataSourceReject.sort = this.sortReject;
   }
 
   async getJobPosting(): Promise<void> {
@@ -80,30 +88,34 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
       this.isLoadingApply = true;
       this.isLoadingOngoing = true;
       this.isLoadingFinished = true;
+      this.isLoadingReject = true;
 
       const res = await firstValueFrom(this.jobServices.getAppliedJob());
 
       if (res.success) {
         const jobs = res.data || [];
-        // ✅ split data per status
         this.dataSourceApply.data = jobs.filter((j: any) => j.applied_status === 'applied_active');
-        this.dataSourceOngoing.data = jobs.filter((j: any) => j.applied_status === 'ongoing');
-        this.dataSourceFinished.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'finished');
+        this.dataSourceOngoing.data = jobs.filter((j: any) => j.applied_status === 'review');
+        this.dataSourceFinished.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'approved');
+        this.dataSourceReject.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'reject');
       } else {
         this.dataSourceApply.data = [];
         this.dataSourceOngoing.data = [];
         this.dataSourceFinished.data = [];
+        this.dataSourceReject.data = [];
       }
     } catch (error) {
       console.error('Error fetching jobs:', error);
       this.dataSourceApply.data = [];
       this.dataSourceOngoing.data = [];
       this.dataSourceFinished.data = [];
+      this.dataSourceReject.data = [];
     } finally {
       // ✅ stop loading individually
       this.isLoadingApply = false;
       this.isLoadingOngoing = false;
       this.isLoadingFinished = false;
+      this.isLoadingReject = false;
     }
   }
 
@@ -140,22 +152,51 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
     console.log(job.transNo)
   }
 
-  
-  markOngoing(job: any) {
+  // markStatus(job: any, status: string) {
+  //   if (!job || !job.transNo) {
+  //     this.notificationsService.toastrError("Missing transNo.!");
+  //     return;
+  //   }
+
+  //   this.appliedService.updateAppliedStatus(job.transNo, status)
+  //     .subscribe({
+  //       next: (res: any) => {
+  //         if (res.success) {
+  //           this.notificationsService.toastrInfo(res.message);
+  //         } else {
+  //           this.notificationsService.toastrError(res.message);
+  //         }
+  //         this.getJobPosting();
+  //       },
+  //       error: () => {
+  //         this.notificationsService.toastrError("Failed to update status.");
+  //       }
+  //     });
+  // }
+
+  markStatus(job: any, status: string): void {
     if (!job || !job.transNo) {
-        this.notificationsService.toastrError("Missing transNo.!");
+      this.notificationsService.toastrError("Missing transNo!");
       return;
     }
-    this.appliedService.updateAppliedStatus(job.transNo, { status: 'Ongoing' })
-      .subscribe({
-        next: (res) => {
-          console.log("Status updated:", res);
-          this.notificationsService.toastrSuccess("Marked as Ongoing!");
-          this.getJobPosting();
-        },
-        error: (err) => {
-          console.error("Failed to update:", err);
-          this.notificationsService.toastrError("Failed to update status.");
+
+    this.notificationsService
+      .popupWarning(job.transNo, `Are you sure you want to mark this job as "${status}"?`)
+      .then((result) => {
+        if (result.value) {
+          this.appliedService.updateAppliedStatus(job.transNo, status).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.notificationsService.toastrInfo(res.message);
+              } else {
+                this.notificationsService.toastrError(res.message);
+              }
+              this.getJobPosting();
+            },
+            error: () => {
+              this.notificationsService.toastrError("Failed to update status.");
+            },
+          });
         }
       });
   }

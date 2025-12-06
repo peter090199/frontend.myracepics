@@ -2,6 +2,7 @@
   <div class="search-div">
     <mat-form-field class="w-90" appearance="standard">
       <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()" autocomplete="off" />
+
       <button *ngIf="searchKey" mat-icon-button matSuffix aria-label="Clear" (click)="clearSearch()">
         <mat-icon>close</mat-icon>
       </button>
@@ -11,11 +12,16 @@
   </div>
 
   <mat-tab-group>
-    <!-- List Applied Job Tab -->
-    <mat-tab label="List Applied Job">
+
+    <!-- ===================== TAB 1: APPLIED ===================== -->
+    <mat-tab label="Applied Active">
       <mat-table [dataSource]="dataSourceApply" matSort class="mat-elevation-z4">
+
         <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.header }}</mat-header-cell>
+
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ col.header }}
+          </mat-header-cell>
 
           <mat-cell *matCellDef="let job">
             <ng-container [ngSwitch]="col.columnDef">
@@ -37,124 +43,212 @@
 
             </ng-container>
 
-            <!-- Actions Column -->
+            <!-- ACTION BUTTONS -->
             <ng-container *ngIf="col.columnDef === 'actions'">
-              <button mat-icon-button color="warn" matTooltip="Delete" (click)="deleteJob(job)">
-                <mat-icon>delete</mat-icon>
+              <button mat-icon-button color="primary" matTooltip="Mark as Review" (click)="markStatus(job, 'review')">
+                <mat-icon>hourglass_top</mat-icon>
               </button>
-              <button mat-icon-button color="primary" matTooltip="Mark as Ongoing" (click)="markOngoing(job)">
-               <mat-icon>autorenew</mat-icon>
+              <button mat-icon-button color="warn" matTooltip="Mark as Rejected" (click)="markStatus(job, 'reject')">
+                <mat-icon>cancel</mat-icon>
               </button>
-              <!-- <button mat-icon-button color="accent" matTooltip="Mark as Finished" (click)="markFinished(job)">
-                <mat-icon>check_circle</mat-icon>
-              </button> -->
-           
             </ng-container>
 
           </mat-cell>
         </ng-container>
 
-        <!-- No Data Row -->
+        <!-- No data -->
         <ng-container matColumnDef="noData">
           <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">
             No data available
           </mat-footer-cell>
         </ng-container>
 
-        <!-- Table Rows -->
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-        <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{ hide: dataSourceApply.data.length > 0 }"></mat-footer-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceApply.data.length > 0 }"></mat-footer-row>
+
       </mat-table>
 
       <mat-progress-bar *ngIf="isLoadingApply" mode="indeterminate" color="primary"></mat-progress-bar>
-      <mat-paginator #paginatorApply [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <mat-paginator #paginatorApply [pageSize]="5" [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
     </mat-tab>
 
-    <!-- Ongoing Feedback Tab -->
-    <mat-tab label="Ongoing Feedback">
+    <!-- ===================== TAB 2: ONGOING ===================== -->
+    <mat-tab label="Review Feedback">
       <mat-table [dataSource]="dataSourceOngoing" matSort class="mat-elevation-z4">
+
         <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.header }}</mat-header-cell>
+
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ col.header }}
+          </mat-header-cell>
 
           <mat-cell *matCellDef="let job">
             <ng-container [ngSwitch]="col.columnDef">
+
               <ng-container *ngSwitchCase="'job_name'">
                 <a [routerLink]="['/recommended-jobs', job.transNo]">{{ job.job_name }}</a>
               </ng-container>
+
               <ng-container *ngSwitchCase="'fullname'">
                 <a [routerLink]="['/profile', job.code]">{{ job.fullname }}</a>
               </ng-container>
+
               <ng-container *ngSwitchDefault>
                 {{ col.cell(job) }}
               </ng-container>
+
             </ng-container>
 
+            <!-- ACTIONS -->
             <ng-container *ngIf="col.columnDef === 'actions'">
-              <button mat-icon-button color="warn" matTooltip="Delete" (click)="deleteJob(job)">
-                <mat-icon>delete</mat-icon>
+
+              <!-- Mark as Approved -->
+              <button mat-icon-button color="accent" matTooltip="Mark as Approved"
+                (click)="markStatus(job, 'approved')">
+                <mat-icon>check_circle</mat-icon>
               </button>
+
+              <button mat-icon-button color="warn" matTooltip="Mark as Rejected" (click)="markStatus(job, 'reject')">
+                <mat-icon>cancel</mat-icon>
+              </button>
+
+
+              <!-- Back to Applied Active -->
+              <!-- <button mat-icon-button color="accent" matTooltip="Mark as Applied Active"
+                (click)="markStatus(job, 'applied_active')">
+                <mat-icon>autorenew</mat-icon>
+              </button> -->
+
             </ng-container>
+
           </mat-cell>
         </ng-container>
 
-        <!-- No Data -->
+        <!-- No data -->
         <ng-container matColumnDef="noData">
-          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">
-            No data available
-          </mat-footer-cell>
+          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">No data
+            available</mat-footer-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-        <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{ hide: dataSourceOngoing.data.length > 0 }"></mat-footer-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceOngoing.data.length > 0 }"></mat-footer-row>
+
       </mat-table>
 
       <mat-progress-bar *ngIf="isLoadingOngoing" mode="indeterminate" color="primary"></mat-progress-bar>
-      <mat-paginator #paginatorOngoing [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <mat-paginator #paginatorOngoing [pageSize]="5" [pageSizeOptions]="[5,10,20]"
+        showFirstLastButtons></mat-paginator>
     </mat-tab>
 
-    <!-- Finish Feedback Tab -->
-    <mat-tab label="Finish Feedback">
+    <!-- ===================== TAB 3: FINISHED ===================== -->
+    <mat-tab label="Approved Feedback">
       <mat-table [dataSource]="dataSourceFinished" matSort class="mat-elevation-z4">
+
         <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
+
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.header }}</mat-header-cell>
 
           <mat-cell *matCellDef="let job">
             <ng-container [ngSwitch]="col.columnDef">
+
               <ng-container *ngSwitchCase="'job_name'">
                 <a [routerLink]="['/recommended-jobs', job.transNo]">{{ job.job_name }}</a>
               </ng-container>
+
               <ng-container *ngSwitchCase="'fullname'">
                 <a [routerLink]="['/profile', job.code]">{{ job.fullname }}</a>
               </ng-container>
-              <ng-container *ngSwitchDefault>
-                {{ col.cell(job) }}
-              </ng-container>
+
+              <ng-container *ngSwitchDefault>{{ col.cell(job) }}</ng-container>
+
             </ng-container>
 
+            <!-- Delete Only -->
             <ng-container *ngIf="col.columnDef === 'actions'">
-              <button mat-icon-button color="warn" matTooltip="Delete" (click)="deleteJob(job)">
-                <mat-icon>delete</mat-icon>
+              <button mat-icon-button color="primary" matTooltip="Mark as Active"
+                (click)="markStatus(job, 'applied_active')">
+                <mat-icon>check_circle</mat-icon>
               </button>
+
+
             </ng-container>
+
           </mat-cell>
         </ng-container>
 
         <!-- No Data -->
         <ng-container matColumnDef="noData">
-          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">
-            No data available
-          </mat-footer-cell>
+          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">No data
+            available</mat-footer-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-        <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{ hide: dataSourceFinished.data.length > 0 }"></mat-footer-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceFinished.data.length > 0 }"></mat-footer-row>
       </mat-table>
 
       <mat-progress-bar *ngIf="isLoadingFinished" mode="indeterminate" color="primary"></mat-progress-bar>
-      <mat-paginator #paginatorFinished [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <mat-paginator #paginatorFinished [pageSize]="5" [pageSizeOptions]="[5,10,20]"
+        showFirstLastButtons></mat-paginator>
+
     </mat-tab>
+
+
+    <mat-tab label="Reject Feedback">
+      <mat-table [dataSource]="dataSourceReject" matSort class="mat-elevation-z4">
+
+        <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.columnDef">
+
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.header }}</mat-header-cell>
+
+          <mat-cell *matCellDef="let job">
+            <ng-container [ngSwitch]="col.columnDef">
+
+              <ng-container *ngSwitchCase="'job_name'">
+                <a [routerLink]="['/recommended-jobs', job.transNo]">{{ job.job_name }}</a>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'fullname'">
+                <a [routerLink]="['/profile', job.code]">{{ job.fullname }}</a>
+              </ng-container>
+
+              <ng-container *ngSwitchDefault>{{ col.cell(job) }}</ng-container>
+
+            </ng-container>
+
+            <!-- Delete Only -->
+            <ng-container *ngIf="col.columnDef === 'actions'">
+              <button mat-icon-button color="accent" matTooltip="Back to Applied Active"
+                (click)="markStatus(job, 'applied_active')">
+                <mat-icon>autorenew</mat-icon>
+              </button>
+            </ng-container>
+
+          </mat-cell>
+        </ng-container>
+
+        <!-- No Data -->
+        <ng-container matColumnDef="noData">
+          <mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length" class="text-center">No data
+            available</mat-footer-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-footer-row *matFooterRowDef="['noData']"
+          [ngClass]="{ hide: dataSourceFinished.data.length > 0 }"></mat-footer-row>
+      </mat-table>
+
+      <mat-progress-bar *ngIf="isLoadingFinished" mode="indeterminate" color="primary"></mat-progress-bar>
+      <mat-paginator #paginatorFinished [pageSize]="5" [pageSizeOptions]="[5,10,20]"
+        showFirstLastButtons></mat-paginator>
+
+    </mat-tab>
+
   </mat-tab-group>
 </section>

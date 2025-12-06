@@ -1,14 +1,13 @@
 <div class="jobs-container">
 
-  <!-- Sidebar: Top job picks -->
+  <!-- LEFT SIDEBAR (LIST OF JOBS) -->
   <mat-card class="sidebar">
     <button mat-button [routerLink]="['/jobs']">
       <mat-icon>arrow_back</mat-icon>
-      Back to Jobs
+      Back to Job
     </button>
 
     <h3>Top job picks for you</h3>
-
     <ng-container *ngIf="isLoading; else jobsList">
       <mat-list>
         <div mat-subheader>Hiring Jobs</div>
@@ -29,7 +28,9 @@
       <div class="jobs-list">
         <div class="subheader">Hiring Jobs</div>
         <div class="job-item" *ngFor="let job of jobs" (click)="selectJob(job)">
+
           <img [src]="job.job_image" alt="Company Logo" class="job-logo" />
+
           <div class="job-details">
             <span class="job-name">{{ job.job_name }}</span>
             <small>{{ job.comp_name }} · {{ job.work_type }}</small>
@@ -37,20 +38,18 @@
         </div>
       </div>
     </ng-template>
+
   </mat-card>
 
-  <!-- Overlay for mobile sidebar -->
   <div class="sidebar-overlay" [class.active]="selectedJob" (click)="closeSidebar()"></div>
 
-  <!-- Job Details Sidebar -->
+  <!-- JOB DETAILS SIDEBAR (RIGHT) -->
   <mat-card class="leftsidebar" [class.active]="selectedJob">
+    <button class="responsive-back-btn" mat-button [routerLink]="['/jobs']">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
     <ng-container *ngIf="selectedJob; else defaultSidebar">
-
-      <!-- Mobile Back Button -->
-      <button mat-icon-button class="back-btn" (click)="closeSidebar()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-
       <div class="job-header">
         <img [src]="selectedJob.job_image" alt="Company Logo" class="company-logo" />
         <div>
@@ -61,9 +60,21 @@
       </div>
 
       <div class="sidebar-actions sticky-actions">
-        <button mat-flat-button color="primary" [routerLink]="['/apply-job', selectedJob.transNo]">Apply Now</button>
-        <button mat-stroked-button>Save</button>
+        <button mat-raised-button
+          [ngStyle]="{'background-color': getStatusColor(getButtonStatus(selectedJob)), 'color': 'white'}"
+          [disabled]="getButtonStatus(selectedJob) === 'applied_active'"
+          [routerLink]="getButtonStatus(selectedJob) === 'default' ? ['/apply-job', selectedJob.transNo] : null">
+          <mat-icon>{{ getStatusIcon(getButtonStatus(selectedJob)) }}</mat-icon>
+          {{ getStatusText(getButtonStatus(selectedJob)) }}
+        </button>
+
+
+        <!-- Save Heart Button -->
+        <button mat-stroked-button color="warn" (click)="toggleHeart()">
+          <mat-icon>{{ saved ? 'favorite' : 'favorite_border' }}</mat-icon>Save
+        </button>
       </div>
+
 
       <mat-divider></mat-divider>
 
@@ -89,16 +100,17 @@
         <div class="job-description-wrapper">
           <a routerLink="/showMore" class="show-all">Show more →</a>
         </div>
-      </div>
 
+      </div>
     </ng-container>
 
     <ng-template #defaultSidebar>
       <p>Please select a job to see the details.</p>
     </ng-template>
+
   </mat-card>
 
-  <!-- Saved Jobs Sidebar -->
+  <!-- RIGHT SAVE SIDEBAR -->
   <mat-card class="savesidebar">
     <app-save-jobs></app-save-jobs>
   </mat-card>
