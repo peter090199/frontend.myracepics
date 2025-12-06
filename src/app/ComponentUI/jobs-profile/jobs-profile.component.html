@@ -1,11 +1,14 @@
 <div class="jobs-container">
+
+  <!-- Sidebar: Top job picks -->
   <mat-card class="sidebar">
     <button mat-button [routerLink]="['/jobs']">
       <mat-icon>arrow_back</mat-icon>
-      Back to Job
+      Back to Jobs
     </button>
 
     <h3>Top job picks for you</h3>
+
     <ng-container *ngIf="isLoading; else jobsList">
       <mat-list>
         <div mat-subheader>Hiring Jobs</div>
@@ -26,9 +29,7 @@
       <div class="jobs-list">
         <div class="subheader">Hiring Jobs</div>
         <div class="job-item" *ngFor="let job of jobs" (click)="selectJob(job)">
-
           <img [src]="job.job_image" alt="Company Logo" class="job-logo" />
-
           <div class="job-details">
             <span class="job-name">{{ job.job_name }}</span>
             <small>{{ job.comp_name }} · {{ job.work_type }}</small>
@@ -36,12 +37,20 @@
         </div>
       </div>
     </ng-template>
-
   </mat-card>
 
+  <!-- Overlay for mobile sidebar -->
   <div class="sidebar-overlay" [class.active]="selectedJob" (click)="closeSidebar()"></div>
+
+  <!-- Job Details Sidebar -->
   <mat-card class="leftsidebar" [class.active]="selectedJob">
     <ng-container *ngIf="selectedJob; else defaultSidebar">
+
+      <!-- Mobile Back Button -->
+      <button mat-icon-button class="back-btn" (click)="closeSidebar()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
       <div class="job-header">
         <img [src]="selectedJob.job_image" alt="Company Logo" class="company-logo" />
         <div>
@@ -50,35 +59,38 @@
           <p class="job-meta">{{ selectedJob.location }} · Posted {{ selectedJob.created_at }}</p>
         </div>
       </div>
+
       <div class="sidebar-actions sticky-actions">
         <button mat-flat-button color="primary" [routerLink]="['/apply-job', selectedJob.transNo]">Apply Now</button>
         <button mat-stroked-button>Save</button>
       </div>
+
       <mat-divider></mat-divider>
+
       <div class="job-details-section">
         <h4>About the Job</h4>
         <p class="job-description">{{ selectedJob.job_description }}</p>
+
         <h4>More About This Role</h4>
         <p class="job-description">{{ selectedJob.job_about }}</p>
 
         <mat-divider></mat-divider>
-          <h4>About the recruiter</h4>
-          <div class="avatar-wrapper">
-            <!-- <img matListAvatar [src]="selectedJob.job_image" alt="Company Logo" class="company-logo" />
-            <span class="status-dot" [ngClass]="selectedJob.is_online ? 'online' : 'offline'"></span> -->
-            <div class="company-details">
-              <a [routerLink]="['/client_profile/', selectedJob.code]" class="custom-title">
-                {{ selectedJob.fullname }}
-              </a>
-              <button mat-raised-button color="primary" class="connect-btn">+ Connect</button>
-            </div>
-          </div>
 
-          <div class="job-description-wrapper">
-            <a routerLink="/showMore" class="show-all">Show more →</a>
+        <h4>About the recruiter</h4>
+        <div class="avatar-wrapper">
+          <div class="company-details">
+            <a [routerLink]="['/client_profile/', selectedJob.code]" class="custom-title">
+              {{ selectedJob.fullname }}
+            </a>
+            <button mat-raised-button color="primary" class="connect-btn">+ Connect</button>
           </div>
-
         </div>
+
+        <div class="job-description-wrapper">
+          <a routerLink="/showMore" class="show-all">Show more →</a>
+        </div>
+      </div>
+
     </ng-container>
 
     <ng-template #defaultSidebar>
@@ -86,9 +98,9 @@
     </ng-template>
   </mat-card>
 
+  <!-- Saved Jobs Sidebar -->
   <mat-card class="savesidebar">
-    <app-save-jobs>
-    </app-save-jobs>
+    <app-save-jobs></app-save-jobs>
   </mat-card>
 
 </div>

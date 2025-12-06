@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { _url } from 'src/global-variables';
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 
 
 @Injectable({
@@ -52,8 +53,15 @@ export class JobPostingService {
 
   saveJobPosting(payload: FormData): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post<any>(`${_url}saveJobPosting`, payload, { headers });
+    return this.http.post<any>(`${_url}job-posting`, payload, { headers });
   }
+
+  /** Update existing job posting by transNo */
+  updateJobPosting(payload: FormData, transNo: string): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.put<any>(`${_url}job-posting/${transNo}`, payload, { headers });
+  }
+
 
   getJobPosting(): Observable<any> {
     const headers = this.createHeaders();
@@ -62,23 +70,10 @@ export class JobPostingService {
     );
   }
 
-  deleteJobPosting(id: number): Observable<any> {
+  deleteJobPosting(transNo: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.delete<any>(`${_url}deleteJobPosting/${id}`, { headers });
+    return this.http.delete<any>(`${_url}deleteJobPosting/${transNo}`, { headers });
   }
-
-  
-
-
-
-
-
-
-
- 
-
-
-
 
 
 

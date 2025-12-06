@@ -175,14 +175,38 @@
             </button>
 
             <mat-menu #menu="matMenu">
-              <button mat-menu-item >View Profile</button>
-              <button mat-menu-item (click)="onEditPost(post)" *ngIf="profiles.code == post.code">Edit</button>
-              <button mat-menu-item (click)="onDelete(post)" [disabled]="isLoading" *ngIf="profiles.code == post.code">
-                <ng-container *ngIf="!isLoading; else deletingTpl">Delete</ng-container>
-                <ng-template #deletingTpl>
+              <!-- Share -->
+              <button mat-menu-item *ngIf="profiles.code != post.code" [disabled]="isLoading">
+                <mat-icon>repeat</mat-icon>
+                <span>Share</span>
+
+                <ng-template>
                   <mat-progress-spinner diameter="20" mode="indeterminate" color="warn"></mat-progress-spinner>
                 </ng-template>
               </button>
+
+              <!-- Send -->
+              <button mat-menu-item *ngIf="profiles.code != post.code">
+                <mat-icon>send</mat-icon>
+                <span>Send</span>
+              </button>
+
+              <!-- Edit -->
+              <button mat-menu-item *ngIf="profiles.code == post.code" (click)="onEditPost(post)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+
+              <!-- Delete -->
+              <button mat-menu-item *ngIf="profiles.code == post.code" (click)="onDelete(post)" [disabled]="isLoading">
+                <mat-icon *ngIf="!isLoading; else loadingDelete">delete</mat-icon>
+                <span *ngIf="!isLoading; else loadingDelete">Delete</span>
+
+                <ng-template #loadingDelete>
+                  <mat-progress-spinner diameter="20" mode="indeterminate" color="warn"></mat-progress-spinner>
+                </ng-template>
+              </button>
+
             </mat-menu>
           </div>
 
@@ -275,14 +299,14 @@
           <button mat-button (click)="openModal(post.images)">
             <mat-icon>chat_bubble_outline</mat-icon> Comment
           </button>
-
+          <!-- 
           <button mat-button>
             <mat-icon>repeat</mat-icon> Share
           </button>
 
           <button mat-button>
             <mat-icon>send</mat-icon> Send
-          </button>
+          </button> -->
         </div>
 
         <div class="post-footer" *ngIf="post.videos?.length">
@@ -306,14 +330,14 @@
           <button mat-button (click)="openModal(post.videos)">
             <mat-icon>chat_bubble_outline</mat-icon> Comment
           </button>
-
+          <!-- 
           <button mat-button>
             <mat-icon>repeat</mat-icon> Share
           </button>
 
           <button mat-button>
             <mat-icon>send</mat-icon> Send
-          </button>
+          </button> -->
         </div>
 
 
@@ -347,14 +371,13 @@
 
 
           <!-- Share Button -->
-          <button mat-button>
+          <!-- <button mat-button>
             <mat-icon>repeat</mat-icon> Share
           </button>
 
-          <!-- Send Button -->
           <button mat-button>
             <mat-icon>send</mat-icon> Send
-          </button>
+          </button> -->
         </div>
 
         <mat-accordion>
@@ -429,7 +452,8 @@
         <div class="client-action" *ngIf="currentUserCode !== user.code">
           <button mat-flat-button
             [color]=" user.follow_status === 'accepted' ? 'accent': user.follow_status === 'pending'? 'warn': 'primary'"
-            (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)"  [disabled]="user.follow_status === 'pending'">
+            (click)="AddConnect(user.code, user.fullname, user.follow_status, user.id)"
+            [disabled]="user.follow_status === 'pending'">
             <mat-icon *ngIf="user.follow_status === 'not_following'">
               person_add
             </mat-icon>

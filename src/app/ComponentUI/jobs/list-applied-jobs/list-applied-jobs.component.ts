@@ -8,6 +8,7 @@ import { JobPostingUIComponent } from 'src/app/ComponentSharedUI/job-posting-ui/
 import { AppiedListJobService } from '../../../services/Jobs/appied-list-job.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { Router } from '@angular/router';
+import { AppliedStatusService } from 'src/app/services/NotificationsApp/applied-status.service';
 
 @Component({
   selector: 'app-list-applied-jobs',
@@ -43,12 +44,13 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
     private jobServices: AppiedListJobService,
     private router: Router,
     public dialog: MatDialog,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private appliedService:AppliedStatusService
   ) { }
 
   columnDefs = [
-    { columnDef: 'applied_id', header: 'ID', cell: (job: any) => `${job.applied_id}` },
-    { columnDef: 'fullname', header: 'Fullname', cell: (job: any) => `${job.fullname}` },
+    { columnDef: 'transNo', header: 'TransNo', cell: (job: any) => `${job.transNo}` },
+    { columnDef: 'fullname', header: 'Fullname', cell: (job: any) => job },
     { columnDef: 'job_name', header: 'Job Name', cell: (job: any) => `${job.job_name}` },
     { columnDef: 'email', header: 'Email', cell: (job: any) => `${job.email}` },
     { columnDef: 'phone_number', header: 'Phone', cell: (job: any) => `+${job.country_code} ${job.phone_number}` },
@@ -83,7 +85,7 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
 
       if (res.success) {
         const jobs = res.data || [];
-          // ✅ split data per status
+        // ✅ split data per status
         this.dataSourceApply.data = jobs.filter((j: any) => j.applied_status === 'applied_active');
         this.dataSourceOngoing.data = jobs.filter((j: any) => j.applied_status === 'ongoing');
         this.dataSourceFinished.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'finished');
@@ -134,5 +136,34 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   }
 
 
+  deleteJob(job: any) {
+    console.log(job.transNo)
+  }
+
+  
+  markOngoing(job: any) {
+    if (!job || !job.transNo) {
+        this.notificationsService.toastrError("Missing transNo.!");
+      return;
+    }
+    this.appliedService.updateAppliedStatus(job.transNo, { status: 'Ongoing' })
+      .subscribe({
+        next: (res) => {
+          console.log("Status updated:", res);
+          this.notificationsService.toastrSuccess("Marked as Ongoing!");
+          this.getJobPosting();
+        },
+        error: (err) => {
+          console.error("Failed to update:", err);
+          this.notificationsService.toastrError("Failed to update status.");
+        }
+      });
+  }
+
+
+
+  markFinished(job: any) {
+    console.log(job.transNo)
+  }
 
 }

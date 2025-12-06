@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h2>{{ data?.job_name }}</h2>
+  <button mat-icon-button color="warn" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div class="company-box">
+  <img [src]="data?.job_image" class="job-image" alt="Job Image" />
+
+  <div class="company-info">
+    <h3>{{ data?.company }}</h3>
+    <p class="role">{{ data?.job_position }}</p>
+    <span class="badge" [ngClass]="data?.work_type.toLowerCase()">{{ data?.work_type }}</span>
+  </div>
+</div>
+<mat-divider></mat-divider>
+<div class="content-wrapper">
+  <div class="section-card">
+    <mat-card-title>Job Information</mat-card-title>
+    <mat-card-content>
+      <p><strong>Location:</strong> {{ data?.location }}</p>
+      <p><strong>Code:</strong> {{ data?.code }}</p>
+      <p><strong>Transaction No:</strong> {{ data?.transNo }}</p>
+      <p><strong>Posted By:</strong> {{ data?.fullname }}</p>
+      <p><strong>Status:</strong> {{ data?.recordstatus }}</p>
+    </mat-card-content>
+  </div>
+
+  <div class="section-card">
+    <mat-card-title>About the Company</mat-card-title>
+    <mat-card-content>
+      <p>{{ data?.job_about }}</p>
+    </mat-card-content>
+  </div>
+
+  <div class="section-card">
+    <mat-card-title>Job Description</mat-card-title>
+    <mat-card-content>
+      <p>{{ data?.job_description }}</p>
+    </mat-card-content>
+  </div>
+
+  <div class="section-card">
+    <mat-card-title>Qualifications</mat-card-title>
+    <mat-card-content>
+      <ul>
+        <li *ngFor="let q of data?.qualification?.split('\r\n')">
+          {{ q }}
+        </li>
+      </ul>
+    </mat-card-content>
+  </div>
+
+  <div class="section-card">
+    <mat-card-title>Benefits</mat-card-title>
+    <mat-card-content>
+      <ul>
+        <li *ngFor="let b of data?.benefits?.split('\r\n')">
+          {{ b }}
+        </li>
+      </ul>
+    </mat-card-content>
+  </div>
+
+   <div class="section-card">
+    <mat-card-title>Job Questions</mat-card-title>
+    <mat-card-content>
+      <ul>
+        <li *ngFor="let q of data?.questions">
+          {{ q.question_text}}
+        </li>
+      </ul>
+    </mat-card-content>
+  </div>
+
+</div>
+
+<!-- <mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="closeDialog()">Close</button>
+</mat-dialog-actions> -->

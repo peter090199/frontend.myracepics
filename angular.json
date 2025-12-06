@@ -28,32 +28,18 @@
               "src/manifest.webmanifest"
             ],
             "styles": [
-              "src/custom-theme.scss", 
+              "src/custom-theme.scss",
               "src/styles.css",
               "src/print.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/sweetalert2/dist/sweetalert2.min.css"
             ],
             "scripts": [
-               "node_modules/pusher-js/dist/web/pusher.min.js"
+              "node_modules/pusher-js/dist/web/pusher.min.js"
             ],
             "allowedCommonJsDependencies": [
-              "canvg",
-              "raf",
-              "core-js/modules/es.array.index-of.js",
-              "core-js/modules/es.array.iterator.js",
-              "core-js/modules/es.array.reduce.js",
-              "core-js/modules/es.array.reverse.js",
-              "core-js/modules/es.promise.js",
-              "core-js/modules/es.regexp.to-string.js",
-              "core-js/modules/es.string.ends-with.js",
-              "core-js/modules/es.string.includes.js",
-              "core-js/modules/es.string.match.js",
-              "core-js/modules/es.string.replace.js",
-              "core-js/modules/es.string.split.js",
-              "core-js/modules/es.string.starts-with.js",
-              "core-js/modules/es.string.trim.js",
-              "core-js/modules/web.dom-collections.iterator.js"
+              "nsfwjs",
+              "@tensorflow/tfjs"
             ]
           },
           "configurations": {
@@ -66,8 +52,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "100kb",
-                  "maximumError": "100kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ],
               "fileReplacements": [
@@ -76,7 +62,11 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "buildOptimizer": true,
+              "sourceMap": false,
+              "extractLicenses": true
             },
             "development": {
               "buildOptimizer": false,
@@ -86,9 +76,7 @@
               "sourceMap": true,
               "namedChunks": true
             }
-            
           },
-          
           "defaultConfiguration": "production"
         },
         "serve": {

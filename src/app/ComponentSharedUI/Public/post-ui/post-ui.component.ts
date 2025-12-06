@@ -558,6 +558,8 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { PostUploadVideosComponent } from '../post-upload-videos/post-upload-videos.component';
+import { SightengineWorkflowService } from 'src/app/services/DetectorAI/sightengine-workflow.service';
 
 
 @Component({
@@ -570,6 +572,7 @@ export class PostUIComponent implements OnInit {
   profiles: any;
   profiles2: any = [];
   uploadedImages: File[] = [];
+  uploadedVideos: File[] = [];
   selectedVideoFile: File | null = null;
   videoPreviewUrl: SafeUrl | null = null;
   imagePreviewUrl: string | null = null;
@@ -599,7 +602,7 @@ export class PostUIComponent implements OnInit {
     private alert: NotificationsService,
     private sanitizer: DomSanitizer,
     private imageUploadService: PostUploadImagesService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: any, private sightService: SightengineWorkflowService
   ) { }
 
   ngOnInit(): void {
@@ -672,7 +675,19 @@ export class PostUIComponent implements OnInit {
   onPlay() {
     this.isPlaying = true;
   }
+
+  onVideoSelectedxx(videos: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '600px';
+    dialogConfig.data = videos;
+    this.dialog.open(PostUploadVideosComponent, dialogConfig);
+  }
+
+
   /** 🔹 Handle video selection */
+  videoWarning: string = '';
   onVideoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -692,9 +707,78 @@ export class PostUIComponent implements OnInit {
     }
 
     this.selectedVideoFile = file;
+
+    // Create preview URL
     const blobUrl = URL.createObjectURL(file);
     this.videoPreviewUrl = this.sanitizer.bypassSecurityTrustUrl(blobUrl);
+
+    // Reset any old warning
+    this.videoWarning = '';
+
+    // 👉 Check video using your API
+    this.sightService.checkVideos(file).subscribe(
+      res => {
+        console.log('Sightengine response:', res);
+
+        if (res.summary.action === 'reject') {
+          const reasons = res.summary.reject_reason
+            .map((r: any) => r.text)
+            .join(', ');
+
+          this.videoWarning = `⚠️ Rejected! (${res.summary.reject_prob}) – ${reasons}`;
+        } else {
+          this.videoWarning = '';
+        }
+      },
+      err => {
+        console.error('Error checking video:', err);
+        this.videoWarning = '⚠️ Error scanning video.';
+      }
+    );
   }
+
+  // onVideoSelected(event: Event): void {
+  //   const input = event.target as HTMLInputElement;
+  //   const file = input.files?.[0];
+  //   if (!file) return;
+
+  //   const maxSizeMB = 50;
+  //   if (file.size > maxSizeMB * 1024 * 1024) {
+  //     alert(`Video too large. Max ${maxSizeMB}MB.`);
+  //     input.value = '';
+  //     return;
+  //   }
+
+  //   if (!file.type.startsWith('video/')) {
+  //     alert('Please select a valid video file.');
+  //     input.value = '';
+  //     return;
+  //   }
+
+  //   this.selectedVideoFile = file;
+  //   const blobUrl = URL.createObjectURL(file);
+  //   this.videoPreviewUrl = this.sanitizer.bypassSecurityTrustUrl(blobUrl);
+
+  //    this.sightService.checkImage(file).subscribe(
+  //       res => {
+  //         console.log('Sightengine response:', res);
+
+  //         if (res.summary.action === 'reject') {
+  //           const reasons = res.summary.reject_reason
+  //             .map((r: any) => r.text)
+  //             .join(', ');
+
+  //           slide.warning = `⚠️ Rejected! (${res.summary.reject_prob}) – ${reasons}`;
+  //         } else {
+  //           slide.warning = '';
+  //         }
+  //       },
+  //       err => console.error('Error checking image:', err)
+  //     );
+
+  // }
+
+
   onPause() {
     this.isPlaying = false;
     this.videoPaused = true;
@@ -704,16 +788,16 @@ export class PostUIComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '700px';
+    dialogConfig.width = '600px';
     dialogConfig.data = images;
     this.dialog.open(PostUploadImageComponent, dialogConfig);
   }
-  uploadImage2(data: any) {
+  uploadImage2(images: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '700px';
-    dialogConfig.data = data;
+    dialogConfig.width = '600px';
+    dialogConfig.data = images;
     this.dialog.open(PostUploadImageComponent, dialogConfig);
   }
 
@@ -740,7 +824,7 @@ export class PostUIComponent implements OnInit {
 
       if (this.data?.id) {
         console.log(this.data.transNo);
-        this.imageUploadService.updatePostByTransNo(formData,this.data.transNo).subscribe({
+        this.imageUploadService.updatePostByTransNo(formData, this.data.transNo).subscribe({
           next: (res) => {
             this.isUploading = false; // hide progress bar
             if (res.success == true) {

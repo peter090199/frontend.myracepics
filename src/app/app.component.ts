@@ -177,6 +177,9 @@ import { filter } from 'rxjs/operators';
   ]
 })
 export class AppComponent implements OnInit {
+  title(title: any) {
+    throw new Error('Method not implemented.');
+  }
 
   isLoggedIn = false;
   showChatButton = true;
@@ -250,8 +253,8 @@ export class AppComponent implements OnInit {
 
   openChat() {
     this.dialog.open(ChatPopupComponent, {
-      width: '450px',
-      position: { bottom: '20px', right: '20px' },
+      width: '400px',
+      position: { bottom: '20px', right: '5px' },
       panelClass: 'custom-chat-popup'
     });
   }

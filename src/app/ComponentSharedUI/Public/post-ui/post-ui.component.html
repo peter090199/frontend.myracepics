@@ -38,17 +38,26 @@
 
       <div class="post-actions">
         <!-- Images -->
-        <!-- <button mat-icon-button (click)="uploadImage(data.images)" *ngIf="data?.images?.length" class="action-btn">
+        <!-- <button mat-icon-button (click)="uploadImage2(data.images)"  class="action-btn">
           <mat-icon>image</mat-icon>
         </button> -->
-        <button mat-button class="action-btn" (click)="uploadImage2(data)">
+        <button mat-button class="action-btn" (click)="uploadImage2(uploadedImages)">
           <mat-icon>image</mat-icon>
         </button>
         <!-- Video -->
+        <!-- <button mat-button class="action-btn" (click)="onVideoSelected(data)">
+          <mat-icon>videocam</mat-icon>
+        </button> -->
+
+
+
         <input type="file" accept="video/mp4" #videoInput style="display: none" (change)="onVideoSelected($event)" />
         <button mat-button class="action-btn" (click)="videoInput.click()">
           <mat-icon>videocam</mat-icon>
         </button>
+        <div *ngIf="videoWarning" class="warning-box">
+          {{ videoWarning }}
+        </div>
 
         <!-- Settings -->
         <!-- <button mat-icon-button class="action-btn">

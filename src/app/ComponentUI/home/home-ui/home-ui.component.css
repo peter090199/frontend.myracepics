@@ -476,7 +476,7 @@ mat-card-footer button mat-icon {
   position: fixed;
   top: 64px;
   right: 20px;
-  width: 380px;
+  width: 400px;
   height: 90vh;
   overflow-y: auto;
   margin-top: 20px;
@@ -534,6 +534,8 @@ mat-card-footer button mat-icon {
   gap: 4px;
   justify-content: center;
   width: 120px;
+  display: flex;
+  flex-direction: column;
 }
 .profile-picture {
   position: relative;

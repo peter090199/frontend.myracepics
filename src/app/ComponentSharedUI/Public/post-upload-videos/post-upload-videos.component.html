@@ -1,0 +1,69 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+
+<h2 mat-dialog-title>{{ btnSave }} Upload Videos</h2>
+<mat-divider></mat-divider>
+
+<!-- MAIN UPLOAD BUTTON -->
+<button mat-button class="action-btn" (click)="videoInput.click()">
+    <mat-icon>videocam</mat-icon>
+</button>
+
+<input #videoInput type="file" multiple accept="video/*" (change)="onVideoSelected($event)" hidden />
+
+<div class="slideshow-container" *ngIf="videos.length > 0">
+
+    <div *ngFor="let video of videos; let i = index">
+        <div class="mySlides" *ngIf="currentIndex === i">
+
+            <div class="numbertext">{{ i + 1 }} / {{ videos.length }}</div>
+
+            <video class="slide-video" [src]="video.url" controls>
+            </video>
+
+            <div *ngIf="video.warning" class="warning-text">
+                {{ video.warning }}
+            </div>
+
+            <!-- DELETE BUTTON FOR CURRENT VIDEO -->
+            <button mat-mini-fab color="warn" class="delete-current" (click)="removeVideo(i)">
+                <mat-icon>delete</mat-icon>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- PREV / NEXT -->
+    <a class="prev" (click)="changeSlide(-1)">❮</a>
+    <a class="next" (click)="changeSlide(1)">❯</a>
+
+    <!-- THUMBNAILS -->
+    <div class="form-row">
+        <div class="column" *ngFor="let video of videos; let i = index">
+            <div class="thumb-container">
+
+                <video class="demo thumb-video" [src]="video.url" muted (click)="setSlide(i)">
+                </video>
+
+                <!-- REMOVE THUMB -->
+                <button mat-icon-button color="warn" class="remove-thumb" (click)="removeVideo(i)">
+                    <mat-icon>close</mat-icon>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- BUTTONS -->
+<div class="button-end">
+    <button mat-raised-button color="warn" *ngIf="videos.length > 0" (click)="clearVideos()">
+        Cancel All
+    </button>
+
+    <button mat-raised-button color="accent" *ngIf="videos.length > 0 && allVideosValid()" (click)="sendPostVideo()">
+        {{ btnSave }}
+    </button>
+</div>

@@ -1,120 +1,60 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+<h2 mat-dialog-title>{{btnSave}} Upload Images</h2>
+<mat-divider></mat-divider>
+
 <div class="slideshow-container">
-    <div *ngFor="let slide of slides; let i = index">
-      <div class="mySlides" *ngIf="currentIndex === i">
-        <div class="numbertext">{{ i + 1 }} / {{ slides.length }}</div>
-        <img [src]="slide.posts" [alt]="slide.caption" class="slide-image" />
+  <div *ngFor="let slide of slides; let i = index">
+    <div class="mySlides" *ngIf="currentIndex === i">
+
+      <div class="numbertext">{{ i + 1 }} / {{ slides.length }}</div>
+
+      <!-- Remove single image -->
+      <button mat-icon-button class="close-button" (click)="removeSlide(i)">
+        <mat-icon color="warn">close</mat-icon>
+      </button>
+
+      <!-- Image -->
+      <img [src]="slide.url" class="slide-image" />
+
+      <!-- Warning -->
+      <div *ngIf="slide.warning" class="warning-text">
+        {{ slide.warning }}
       </div>
-    </div>
-  
-    <a class="prev" (click)="changeSlide(-1)">❮</a>
-    <a class="next" (click)="changeSlide(1)">❯</a>
-  
-    <div class="caption-container">
-        <p *ngIf="slides.length > 0">{{ slides[currentIndex].caption }}</p>
-    </div>
-  
-    <div class="form-row">
-      <div class="column" *ngFor="let slide of slides; let i = index">
-        <div class="image-container">
-          <img
-            class="demo cursor"
-            [src]="slide.thumbnail"
-            [alt]="slide.caption"
-            [class.active]="currentIndex === i"
-            (click)="setSlide(i)"
-          />
-          <!-- Remove button -->
-          <button mat-icon-button color="warn" class="remove-btn" (click)="removeImage(i)">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-    
 
-    <div class="button-end">
-        <!-- Upload Button -->
-        <button mat-button color="primary" (click)="fileInput.click()">
-          <mat-icon>cloud_upload</mat-icon>Upload Images</button>
-        <input #fileInput type="file" multiple (change)="onImagesUpload($event)" accept="image/*" hidden />
-
-        <button (click)="clearUploads()" *ngIf="uploadedImages.length > 0">Cancel All</button>
-        <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
-        <button mat-raised-button color="primary"  (click)="sendPostImage()" *ngIf="uploadedImages.length > 0" >Next</button>
-     </div>
-
-     
+    </div>
   </div>
 
-<!-- 
-  <div class="slideshow-container">
-    <div *ngFor="let slide of slides; let i = index">
-      <div class="mySlides" *ngIf="currentIndex === i">
-        <div class="numbertext">{{ i + 1 }} / {{ slides.length }}</div>
-        <img [src]="slide.posts" [alt]="slide.caption" class="slide-image" />
-      </div>
-    </div>
-  
-    <a class="prev" (click)="changeSlide(-1)">❮</a>
-    <a class="next" (click)="changeSlide(1)">❯</a>
-  
-    <div class="caption-container">
-      <p *ngIf="slides.length > 0">{{ slides[currentIndex].caption }}</p>
-    </div>
-  
-    <div class="row">
-      <div class="column" *ngFor="let slide of slides; let i = index">
-        <img
-          class="demo cursor"
-          [src]="slide.thumbnail"
-          [alt]="slide.caption"
-          [class.active]="currentIndex === i"
-          (click)="setSlide(i)"
-        />
-      </div>
-    </div>
-  
-    <div class="button-end">
-      <input type="file" multiple (change)="onImagesUpload($event)" accept="image/*">
-      <button (click)="clearUploads()" *ngIf="slides.length > 0">Cancel All</button>
-      <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
-      <button mat-raised-button color="primary" (click)="sendPostImage()" *ngIf="slides.length > 0">Next</button>
-    </div>
-  </div>
-   -->
+  <!-- Prev/Next -->
+  <a class="prev" (click)="changeSlide(-1)">❮</a>
+  <a class="next" (click)="changeSlide(1)">❯</a>
 
-   <!-- <div class="slideshow-container">
-    <div *ngFor="let slide of slides; let i = index">
-      <div class="mySlides" *ngIf="currentIndex === i">
-        <div class="numbertext">{{ i + 1 }} / {{ slides.length }}</div>
-        <img [src]="slide.posts" [alt]="slide.caption" class="slide-image" />
+  <!-- Thumbnails -->
+  <div class="form-row">
+    <div class="column" *ngFor="let slide of slides; let i = index">
+      <div class="image-container">
+        <img class="demo cursor" [src]="slide.url" [alt]="slide.caption" [class.active]="currentIndex === i"
+          (click)="setSlide(i)" />
       </div>
-    </div>
-  
-    <a class="prev" (click)="changeSlide(-1)">❮</a>
-    <a class="next" (click)="changeSlide(1)">❯</a>
-  
-    <div class="caption-container">
-      <p *ngIf="slides.length > 0">{{ slides[currentIndex].caption }}</p>
-    </div>
-  
-    <div class="row">
-      <div class="column" *ngFor="let slide of slides; let i = index">
-        <img
-          class="demo cursor"
-          [src]="slide.thumbnail"
-          [alt]="slide.caption"
-          [class.active]="currentIndex === i"
-          (click)="setSlide(i)"
-        />
-      </div>
-    </div>
-  
-    <div class="button-end">
-      <input type="file" multiple (change)="onImagesUpload($event)" accept="image/*">
-      <button (click)="clearUploads()" *ngIf="slides.length > 0">Cancel All</button>
-      <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
-      <button mat-raised-button color="primary" (click)="sendPostImage()" *ngIf="slides.length > 0">Next</button>
     </div>
   </div>
-   -->
+</div>
+
+<!-- Footer Buttons -->
+<div class="button-end">
+  <button mat-raised-button color="primary" (click)="fileInput.click()">
+    Select Images
+  </button>
+
+  <input #fileInput type="file" multiple accept="image/*" (change)="onFileSelected($event)" hidden />
+
+  <button mat-raised-button color="warn" *ngIf="slides.length > 0" (click)="clearUploads()">
+    Cancel All
+  </button>
+
+  <!-- Next only when all images valid -->
+  <button mat-raised-button color="accent" *ngIf="slides.length > 0 && allImagesValid()" (click)="sendPostImage()">
+    {{btnSave}}
+  </button>
+</div>

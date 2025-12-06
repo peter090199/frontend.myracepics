@@ -5,6 +5,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { EchoService } from 'src/app/services/echo.service';
 import { PusherService } from 'src/app/services/pusher.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { NsfwDetectorService } from 'src/app/services/DetectorAI/nsfw-detector.service';
+
 @Component({
   selector: 'app-chat-popup',
   templateUrl: './chat-popup.component.html',
@@ -21,7 +23,8 @@ export class ChatPopupComponent implements OnInit {
   messages: any[] = [];
   newMessageCounts: { [userId: number]: number } = {}; // Track unread messages per user
   @Input() receiverId!: number;
-
+  imageUrl: string = '';
+  result: any;
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
   count = 0;
@@ -35,8 +38,22 @@ export class ChatPopupComponent implements OnInit {
     private authService: AuthService,
     private echoService: EchoService,
     private pusherService: PusherService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private nsfwService: NsfwDetectorService
   ) {}
+
+  
+  checkImage() {
+    if (!this.imageUrl) return;
+
+    this.nsfwService.detectNSFW(this.imageUrl).subscribe(
+      res => {
+        this.result = res;
+        console.log('NSFW Result:', res);
+      },
+      err => console.error(err)
+    );
+  }
 
   userId:number = 0;
 

@@ -1,192 +1,156 @@
-<!-- Close Button -->
-<button mat-icon-button class="close-button" [mat-dialog-close]="true">
-  <mat-icon class="close-icon">close</mat-icon>
-</button>
+<div class="container">
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+  </button>
+  <h2 mat-dialog-title>{{btnSave}} Job Posting</h2>
+  <mat-divider></mat-divider>
 
-<!-- Dialog Title -->
-<h2 style="text-align: center; font-size: 14px;" >{{ btnSave }} Job Posting</h2>
-<mat-divider></mat-divider>
+  <!-- Progress Bar -->
+  <mat-progress-bar color="accent" [mode]="loading ? 'indeterminate' : 'determinate'"
+    [value]="loading ? null : progressValue">
+  </mat-progress-bar>
 
-<!-- Progress Bar -->
-<mat-progress-bar color="accent" [mode]="loading ? 'indeterminate' : 'determinate'"
-  [value]="loading ? null : getProgressValue(stepper.selectedIndex)">
-</mat-progress-bar>
+  <!-- Stepper -->
+  <mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
 
-<!-- Horizontal Stepper -->
-<mat-horizontal-stepper #stepper linear (selectionChange)="onStepChange($event)">
+    <!-- Step 1: Image Upload -->
+    <mat-step [stepControl]="imageForm">
+      <form [formGroup]="imageForm" class="form-container">
+        <ng-template matStepLabel>Upload Job Image</ng-template>
 
-  <!-- Step 1: Image Upload -->
-  <mat-step [stepControl]="imageForm">
-    <form [formGroup]="imageForm" class="form-container">
-      <ng-template matStepLabel>Upload Job Image</ng-template>
+        <input id="fileUpload" type="file" (change)="onUploadPhoto($event)" />
 
-      <!-- FIX: changed to formControlName="job_image" to match TS -->
-      <input id="fileUpload" formControlName="job_image" type="file" (change)="onUploadPhoto($event)" />
+        <div *ngIf="fileError" class="text-red-500 text-sm">{{ fileError }}</div>
 
-      <div *ngIf="fileError" class="text-red-500 text-sm">
-        {{ fileError }}
-      </div>
-
-      <div *ngIf="previewUrl" class="image-preview-container mt-2">
-        <img [src]="previewUrl" alt="Preview" class="preview-img" />
-      </div>
-
-      <div class="button-end" *ngIf="previewUrl">
-        <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!imageForm.valid">
-          Next
-        </button>
-      </div>
-    </form>
-  </mat-step>
-
-  <!-- Step 2: Job Details -->
-  <mat-step [stepControl]="jobForm">
-    <form [formGroup]="jobForm">
-      <ng-template matStepLabel>Job Details</ng-template>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Job Name</mat-label>
-        <input matInput formControlName="job_name" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Position</mat-label>
-        <input matInput formControlName="job_position" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Location</mat-label>
-        <input matInput formControlName="location" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Benefits</mat-label>
-        <input matInput formControlName="benefits" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>About the Job</mat-label>
-        <textarea matInput rows="3" formControlName="job_about" required></textarea>
-      </mat-form-field>
-
-      <mat-card class="job-description-card">
-        <h2 class="section-title">Job description</h2>
-        <p class="subtitle">
-          Your job description will be visible to anyone that views this job. Edit to ensure it reflects the role’s
-          scope.
-        </p>
-
-        <!-- Rich text editor -->
-        <div class="editor-box">
-          <div class="editor-toolbar">
-            <button mat-icon-button type="button" (click)="formatText('bold')"><mat-icon>format_bold</mat-icon></button>
-            <button mat-icon-button type="button"
-              (click)="formatText('italic')"><mat-icon>format_italic</mat-icon></button>
-            <button mat-icon-button type="button"
-              (click)="addBullet()"><mat-icon>format_list_bulleted</mat-icon></button>
-          </div>
-
-          <!-- FIX: removed [(ngModel)], bind to FormControl instead -->
-          <textarea matInput class="editor-textarea" formControlName="job_description" (input)="updateCharCount()"
-            placeholder="Write job description here..."></textarea>
-
-          <div class="editor-footer">
-            <button mat-stroked-button color="primary" class="ml-auto" type="button">Draft with AI</button>
-            <span class="char-count">{{ charCount }}/10,000</span>
-          </div>
+        <div *ngIf="previewUrl" class="image-preview-container mt-2">
+          <img [src]="previewUrl" alt="Preview" class="preview-img" />
         </div>
 
-        <!-- Responsibilities -->
-        <div class="description-section">
-          <h3>Responsibilities</h3>
-          <ul>
-            <li *ngFor="let resp of responsibilities; let i = index">
-              {{ resp }}
-              <button mat-icon-button color="warn" type="button" (click)="removeResponsibility(i)">
+        <div class="button-end" *ngIf="previewUrl">
+          <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!imageForm.valid">
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Job Details -->
+    <mat-step [stepControl]="jobForm">
+      <form [formGroup]="jobForm">
+        <ng-template matStepLabel>Job Details</ng-template>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Job Name</mat-label>
+            <input matInput formControlName="job_name" required />
+          </mat-form-field>
+
+          <mat-form-field class="form-field">
+            <mat-label>Position</mat-label>
+            <input matInput formControlName="job_position" required />
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Location</mat-label>
+            <input matInput formControlName="location" required />
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Benefits</mat-label>
+            <textarea matInput rows="3" formControlName="benefits" required></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>About the Job</mat-label>
+            <textarea matInput rows="2" formControlName="job_about" required></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Job Description</mat-label>
+            <textarea matInput rows="3" formControlName="job_description" required></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="button-end">
+          <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+          <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!jobForm.valid">
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Company Info -->
+    <mat-step [stepControl]="companyForm">
+      <form [formGroup]="companyForm">
+        <ng-template matStepLabel>Company Info</ng-template>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Qualification</mat-label>
+            <textarea matInput rows="3" formControlName="qualification" required></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field class="form-field">
+            <mat-label>Work Type</mat-label>
+            <mat-select formControlName="work_type" required>
+              <mat-option *ngFor="let type of worktypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="button-end">
+          <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
+          <button mat-raised-button color="accent" (click)="nextStep(stepper)" [disabled]="!companyForm.valid">
+            Next
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 4: Applied Questions -->
+    <mat-step [stepControl]="appliedQuestionForm">
+      <form [formGroup]="appliedQuestionForm">
+        <ng-template matStepLabel>Applied Questions</ng-template>
+
+        <button mat-button color="primary" type="button" (click)="addQuestion()">Add Question</button>
+        <br />
+        <mat-divider></mat-divider>
+        <br />
+
+        <div formArrayName="questions">
+          <div *ngIf="questions.length === 0" class="no-questions">No questions added yet.</div>
+
+          <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="question-item">
+            <div class="form-row">
+              <mat-form-field class="form-field2" appearance="standard">
+                <mat-label>{{ 'Question ' + (i + 1) }}</mat-label>
+                <input matInput placeholder="Enter question" formControlName="question_text" required />
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" type="button" (click)="removeQuestion(i)">
                 <mat-icon>delete</mat-icon>
               </button>
-            </li>
-          </ul>
-          <div class="add-box">
-            <input matInput placeholder="Add responsibility..." [(ngModel)]="newResponsibility" />
-            <button mat-icon-button color="primary" type="button" (click)="addResponsibility()">
-              <mat-icon>add</mat-icon>
-            </button>
+            </div>
           </div>
         </div>
-
-        <!-- Qualifications -->
-        <div class="description-section">
-          <h3>Qualifications</h3>
-          <ul>
-            <li *ngFor="let qual of qualifications; let i = index">
-              {{ qual }}
-              <button mat-icon-button color="warn" type="button" (click)="removeQualification(i)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </li>
-          </ul>
-          <div class="add-box">
-            <input matInput placeholder="Add qualification..." [(ngModel)]="newQualification" />
-            <button mat-icon-button color="primary" type="button" (click)="addQualification()">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-        </div>
-      </mat-card>
+      </form>
 
       <div class="button-end">
-        <button mat-raised-button color="warn" type="button" (click)="previousStep(stepper)">
-          Previous
-        </button>
-        <button mat-raised-button color="accent" type="button" (click)="nextStep(stepper)" [disabled]="!jobForm.valid">
-          Next
-        </button>
-      </div>
-    </form>
-  </mat-step>
-
-  <!-- Step 3: Company Info -->
-  <mat-step [stepControl]="companyForm">
-    <form [formGroup]="companyForm">
-      <ng-template matStepLabel>Company Info</ng-template>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Qualification</mat-label>
-        <input matInput formControlName="qualification" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Work Type</mat-label>
-        <mat-select formControlName="work_type" required>
-          <mat-option *ngFor="let type of worktypes" [value]="type">
-            {{ type }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Company Name</mat-label>
-        <input matInput formControlName="comp_name" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="standard" class="full-width">
-        <mat-label>Company Description</mat-label>
-        <textarea matInput rows="3" formControlName="comp_description" required></textarea>
-      </mat-form-field>
-
-      <div class="button-end">
-        <button mat-raised-button color="warn" type="button" (click)="previousStep(stepper)">
-          Previous
-        </button>
-        <button mat-raised-button color="accent" type="submit" (click)="onSubmit()"
-          [disabled]="loading || !companyForm.valid">
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading">
           {{ btnSave }}
         </button>
       </div>
-    </form>
-  </mat-step>
-
-
-
-</mat-horizontal-stepper>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

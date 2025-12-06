@@ -24,7 +24,7 @@
         (change)="onFileSelected($event)"
         accept="image/*"
         required>
-      <mat-error *ngIf="fileControl?.hasError('required')">
+      <mat-error *ngIf="fileControl.hasError('required')">
         Image is required.
       </mat-error>
     </mat-form-field>

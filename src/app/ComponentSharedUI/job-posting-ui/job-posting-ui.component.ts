@@ -1,9 +1,10 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
+import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { JobPostingService } from 'src/app/services/Jobs/job-posting.service';
-import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-job-posting-ui',
@@ -16,7 +17,7 @@ export class JobPostingUIComponent implements OnInit {
   imageForm!: FormGroup;
   jobForm!: FormGroup;
   companyForm!: FormGroup;
-
+  appliedQuestionForm!: FormGroup;
 
   btnSave = "Save";
   loading = false;
@@ -27,120 +28,75 @@ export class JobPostingUIComponent implements OnInit {
 
   worktypes: string[] = ['Onsite', 'Work From Home', 'Hybrid'];
   progressValue: number = 0;
+  transNo: any;
 
-  charCount: number = 0;
-
-  responsibilities: string[] = [
-    'Develop quality software and web applications',
-    'Analyze and maintain existing software applications',
-    'Design highly scalable, testable code',
-    'Discover and fix programming bugs'
-  ];
-  qualifications: string[] = [
-    "Bachelor's degree or equivalent experience in Computer Science or related field",
-    'Development experience with programming languages',
-    'SQL database or relational database skills'
-  ];
-
-  newResponsibility: string = '';
-  newQualification: string = '';
-
-  
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<JobPostingUIComponent>,
+    @Inject(MAT_DIALOG_DATA) @Optional() public data: any,
     private notificationService: NotificationsService,
     private jobServices: JobPostingService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-  ) { }
+    private router: Router,
+    private dialogRef: MatDialogRef<JobPostingUIComponent>
+  ) {
+    // Save transNo for update
+    this.transNo = data?.transNo ?? null;
+  }
 
   ngOnInit(): void {
-    this.progressValue = ((0 + 1) / 3) * 100;
+    this.initForms();
 
-    // Step 0 - Image
+    // Patch data if editing
+    if (this.data?.job_id) {
+      this.btnSave = "Update";
+      this.displayFormData();
+    }
+
+    this.progressValue = this.getProgressValue(0);
+  }
+
+  /** Initialize forms */
+  initForms(): void {
     this.imageForm = this.fb.group({
-      job_image: [null, Validators.required]   // FIXED
+      image: [null, Validators.required]
     });
 
-    // Step 1 - Job Details
     this.jobForm = this.fb.group({
       job_name: ['', Validators.required],
       job_position: ['', Validators.required],
-      job_description: ['', Validators.required], // FIXED
+      job_description: ['', Validators.required],
+      job_about: ['', Validators.required],
       location: ['', Validators.required],
       benefits: ['', Validators.required],
-      job_about: ['', Validators.required],
     });
 
-    // Step 2 - Company Info
     this.companyForm = this.fb.group({
       qualification: ['', Validators.required],
       work_type: ['', Validators.required],
-      comp_name: ['', Validators.required],
-      comp_description: ['', Validators.required],
+      comp_name: [''],
+      comp_description: ['']
     });
 
- 
-    if (this.data?.id) {
-      this.btnSave = "Update";
-      this.fillFormData();
+    this.appliedQuestionForm = this.fb.group({
+      questions: this.fb.array([])
+    });
+  }
+
+  /** FormArray getter */
+  get questions(): FormArray {
+    return this.appliedQuestionForm.get('questions') as FormArray;
+  }
+
+  /** Display data for editing */
+  displayFormData(): void {
+    if (!this.data) return;
+
+    // Image preview
+    if (this.data.job_image) {
+      this.previewUrl = this.data.job_image;
+      this.imageForm.get('image')?.setValue('loaded'); // mark as valid
     }
-  }
 
-  getProgressValue(stepIndex: number): number {
-    const totalSteps = 3;
-    return ((stepIndex + 1) / totalSteps) * 100;
-  }
-
-  nextStep(stepper?: MatStepper): void {
-    (stepper || this.stepper).next();
-  }
-
-  previousStep(stepper?: MatStepper): void {
-    (stepper || this.stepper).previous();
-  }
-
-  onStepChange(event?: any) {
-    if (!this.loading) {
-      const totalSteps = 3;
-      const currentStep = event?.selectedIndex ?? 0;
-      this.progressValue = ((currentStep + 1) / totalSteps) * 100;
-    }
-  }
-
-  onUploadPhoto(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        this.fileError = 'Only image files are allowed.';
-        this.selectedFile = null;
-        this.previewUrl = null;
-        return;
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        this.fileError = 'Image size must be less than 2MB.';
-        this.selectedFile = null;
-        this.previewUrl = null;
-        return;
-      }
-
-      this.selectedFile = file;
-      this.imageForm.patchValue({ job_image: file });
-      this.imageForm.get('job_image')?.updateValueAndValidity();
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-      this.fileError = null;
-    } else {
-      this.fileError = 'Please select a valid image.';
-    }
-  }
-
-  /** Fill in data when editing */
-  fillFormData() {
+    // Patch job fields
     this.jobForm.patchValue({
       job_name: this.data.job_name,
       job_position: this.data.job_position,
@@ -150,6 +106,7 @@ export class JobPostingUIComponent implements OnInit {
       benefits: this.data.benefits,
     });
 
+    // Patch company fields
     this.companyForm.patchValue({
       qualification: this.data.qualification,
       work_type: this.data.work_type,
@@ -157,104 +114,151 @@ export class JobPostingUIComponent implements OnInit {
       comp_description: this.data.comp_description,
     });
 
-    this.previewUrl = this.data.job_image || null;
+    // Patch questions
+    const questionsArray = this.fb.array([]);
+    if (this.data.questions?.length > 0) {
+      this.data.questions.forEach((q: any) => {
+        questionsArray.push(
+          this.fb.group({
+            question_text: [q.question_text, Validators.required]
+          })
+        );
+      });
+    }
+    this.appliedQuestionForm.setControl('questions', questionsArray);
   }
 
-  /** Submit all forms */
-  onSubmit(): void {
-    if (!this.selectedFile && this.btnSave.toLowerCase() === "save") {
-      this.notificationService.toastrError("Please upload a job image before saving.");
+  /** Stepper helpers */
+  nextStep(stepper?: MatStepper): void {
+    (stepper || this.stepper).next();
+  }
+
+  previousStep(stepper?: MatStepper): void {
+    (stepper || this.stepper).previous();
+  }
+
+  onStepChange(event: any) {
+    const currentStep = event?.selectedIndex ?? 0;
+    this.progressValue = this.getProgressValue(currentStep);
+  }
+
+  getProgressValue(stepIndex: number): number {
+    const totalSteps = 4;
+    return ((stepIndex + 1) / totalSteps) * 100;
+  }
+
+  /** File upload */
+  onUploadPhoto(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) {
+      this.fileError = 'Please select a valid image.';
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      this.fileError = 'Only image files are allowed.';
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      this.fileError = 'Image size must be less than 2MB.';
       return;
     }
 
-    if (this.jobForm.invalid || this.companyForm.invalid) {
+    this.selectedFile = file;
+    this.imageForm.get('image')?.setValue('selected');
+
+    const reader = new FileReader();
+    reader.onload = () => this.previewUrl = reader.result as string;
+    reader.readAsDataURL(file);
+
+    this.fileError = null;
+  }
+
+  /** Add dynamic question */
+  addQuestion(): void {
+    this.questions.push(
+      this.fb.group({
+        question_text: ['', Validators.required]
+      })
+    );
+  }
+
+  /** Remove question */
+  removeQuestion(index: number): void {
+    this.questions.removeAt(index);
+  }
+  /** Submit form */
+  onSubmit(): void {
+    // Validate forms
+    if (this.jobForm.invalid || this.companyForm.invalid || this.appliedQuestionForm.invalid) {
       this.notificationService.toastrError("Please complete all required fields.");
       return;
     }
-
     this.loading = true;
     const formData = new FormData();
-
+    // Append job image if selected
     if (this.selectedFile) {
-      formData.append('job_image', this.selectedFile);
+      formData.append("job_image", this.selectedFile);
     }
 
-    const jobValues = this.jobForm.value;
-    const companyValues = this.companyForm.value;
-
-    Object.entries({ ...jobValues, ...companyValues }).forEach(([key, value]) => {
+    // Append job & company form values
+    Object.entries({ ...this.jobForm.value, ...this.companyForm.value }).forEach(([key, value]) => {
       formData.append(key, value as string);
     });
 
-    if (this.btnSave.toLowerCase() === "save") {
-      this.jobServices.saveJobPosting(formData).subscribe({
+    // Append questions as question_text[]
+    const appliedQuestionValues = this.appliedQuestionForm.value;
+    if (appliedQuestionValues.questions?.length > 0) {
+      appliedQuestionValues.questions.forEach((q: any, index: number) => {
+        formData.append(`question_text[${index}]`, q.question_text);
+      });
+    }
+
+    // ---------- DEBUG: log for verification ----------
+    console.log("=== FORM DATA DEBUG ===");
+    console.log("TransNo:", this.transNo);
+    console.log("Job Form:", this.jobForm.value);
+    console.log("Company Form:", this.companyForm.value);
+    console.log("Questions:", this.appliedQuestionForm.value.questions);
+    console.log("Selected File:", this.selectedFile);
+
+    // ---------- Call API ----------
+    if (this.btnSave.toLowerCase() === "update") {
+      this.jobServices.updateJobPosting(formData, this.transNo).subscribe({
         next: (res) => {
-          this.notificationService.toastrSuccess(res.message);
-          this.dialogRef.close(true);
           this.loading = false;
+          if (res.success) {
+            this.notificationService.toastrSuccess(res.message);
+            this.dialogRef.close(true);
+          } else {
+            this.notificationService.toastrError(res.message);
+          }
         },
-        error: (err) => {
-          this.notificationService.toastrError(err.error?.message || "Error saving job");
+        error: () => {
           this.loading = false;
+          this.notificationService.toastrError("Error updating job!");
         }
       });
     } else {
-      // Uncomment when update service is ready
-      // this.jobServices.updateJobPosting(this.data.id, formData).subscribe({
-      //   next: (res) => {
-      //     this.notificationService.toastrSuccess(res.message);
-      //     this.dialogRef.close(true);
-      //     this.loading = false;
-      //   },
-      //   error: (err) => {
-      //     this.notificationService.toastrError(err.error?.message || "Error updating job");
-      //     this.loading = false;
-      //   }
-      // });
+      this.jobServices.saveJobPosting(formData).subscribe({
+        next: (res) => {
+          this.loading = false;
+          if (res.success) {
+            this.notificationService.toastrSuccess(res.message);
+            this.dialogRef.close(true);
+          } else {
+            this.notificationService.toastrError(res.message);
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.notificationService.toastrError("Error saving job!");
+        }
+      });
     }
   }
 
-  onClose() {
+  /** Close dialog */
+  onClose(): void {
     this.dialogRef.close();
-  }
-
-  /** Character count for job description */
-  updateCharCount() {
-    this.charCount = this.jobForm.get('job_description')?.value?.length || 0;
-  }
-
-  /** Responsibilities */
-  addResponsibility() {
-    if (this.newResponsibility.trim()) {
-      this.responsibilities.push(this.newResponsibility.trim());
-      this.newResponsibility = '';
-    }
-  }
-
-  removeResponsibility(index: number) {
-    this.responsibilities.splice(index, 1);
-  }
-
-  /** Qualifications */
-  addQualification() {
-    if (this.newQualification.trim()) {
-      this.qualifications.push(this.newQualification.trim());
-      this.newQualification = '';
-    }
-  }
-
-  removeQualification(index: number) {
-    this.qualifications.splice(index, 1);
-  }
-
-  // simple text formatting
-  formatText(cmd: string) {
-    document.execCommand(cmd, false, '');
-  }
-
-  addBullet() {
-    const ctrl = this.jobForm.get('job_description');
-    ctrl?.setValue((ctrl.value || '') + '\n• ');
-    this.updateCharCount();
   }
 }

@@ -8,6 +8,8 @@ import { JobPostingUIComponent } from 'src/app/ComponentSharedUI/job-posting-ui/
 import { JobPostingService } from 'src/app/services/Jobs/job-posting.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { Router } from '@angular/router';
+import { JobViewDetailsComponent } from './job-view-details/job-view-details.component';
+import { PostingJobComponent } from 'src/app/ComponentSharedUI/posting-job/posting-job.component';
 
 @Component({
   selector: 'app-job-posting',
@@ -51,7 +53,7 @@ export class JobPostingComponent implements OnInit {
 
   dataSource = new MatTableDataSource<any>([]);
   jobPosting: any[] = [];
-
+  questions: any[] = [];
   pageSizeOptions: number[] = [5, 10, 25, 100];
   success: boolean = false;
 
@@ -66,6 +68,7 @@ export class JobPostingComponent implements OnInit {
 
   ngOnInit(): void {
     this.getJobPosting();
+    this.toggleColumns();
   }
 
   // 🔄 Toggle between default & merged
@@ -73,7 +76,7 @@ export class JobPostingComponent implements OnInit {
     if (this.displayedColumns === this.defaultColumns) {
       this.displayedColumns = this.mergedColumns;
     } else {
-      this.displayedColumns = this.defaultColumns;
+      //   this.displayedColumns = this.defaultColumns;
     }
   }
 
@@ -111,15 +114,16 @@ export class JobPostingComponent implements OnInit {
 
       if (res.success) {
         this.success = true;
-
-        // Prepend base URL if needed
-        this.jobPosting = res.jobs.map((job: any) => ({
-          ...job,
-          job_image: job.job_image
-            ? `https://exploredition.com${job.job_image}`
-            : null
-        }));
-
+        this.jobPosting = res.jobs.map((job: any) => {
+          const relatedQuestions = res.questions.filter((q: any) => q.transNo === job.transNo);
+          return {
+            ...job,
+            job_image: job.job_image
+              ? `https://exploredition.com${job.job_image}`
+              : null,
+            questions: relatedQuestions  
+          };
+        });
         this.dataSource.data = this.jobPosting;
       } else {
         this.success = false;
@@ -134,13 +138,13 @@ export class JobPostingComponent implements OnInit {
     }
   }
 
-  delete(job: any): void {
+  delete2(job: any): void {
     this.notificationsService.popupWarning(
       job.job_name,
       ' Are you sure to delete this job posting?'
     ).then((result) => {
       if (result.value) {
-        this.jobServices.deleteJobPosting(job.id).subscribe({
+        this.jobServices.deleteJobPosting(job.transNo).subscribe({
           next: (res) => {
             if (res.success === true) {
               this.notificationsService.toastrSuccess(res.message);
@@ -157,10 +161,10 @@ export class JobPostingComponent implements OnInit {
     });
   }
 
-  edit(element: any): void {
+
+  createJobPosting(): void {
     const dialogRef = this.dialog.open(JobPostingUIComponent, {
-      width: '600px',
-      data: element || null
+      width: '900px',
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -169,4 +173,37 @@ export class JobPostingComponent implements OnInit {
       }
     });
   }
+
+
+  edit(job: any): void {
+    const dialogRef = this.dialog.open(JobPostingUIComponent, {
+      width: '800px',
+      data: job
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getJobPosting();
+      }
+    });
+  }
+
+
+  viewDetails(data: any): void {
+    console.log('Job details:', data);
+
+    const dialogRef = this.dialog.open(JobViewDetailsComponent, {
+      width: '800px',
+      data: data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getJobPosting();
+      }
+    });
+  }
+
+
+
 }

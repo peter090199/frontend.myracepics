@@ -1,0 +1,197 @@
+/* -------------------------- */
+/* HEADER                     */
+/* -------------------------- */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+}
+
+.modal-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* -------------------------- */
+/* COMPANY SECTION            */
+/* -------------------------- */
+.company-box {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 15px 0;
+  flex-wrap: wrap;
+}
+
+.job-image {
+  width: 95px;
+  height: 95px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+}
+
+.company-info h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.company-info .role {
+  margin: 3px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge.onsite {
+  background: #ffe4e1;
+  color: #d9534f;
+}
+
+.badge.remote {
+  background: #e1ffe9;
+  color: #3c8d50;
+}
+
+.badge.hybrid {
+  background: #e1eaff;
+  color: #3f51b5;
+}
+
+/* -------------------------- */
+/* CONTENT WRAPPER            */
+/* -------------------------- */
+.content-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Custom scroll */
+.content-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.content-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+/* -------------------------- */
+/* CARDS                      */
+/* -------------------------- */
+.info-card,
+.section-card {
+  margin: 15px 0;
+  border-radius: 14px;
+  padding: 12px;
+
+}
+
+.section-card mat-card-title,
+.info-card mat-card-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.section-card p,
+.info-card p {
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+ul {
+  margin-left: 15px;
+  padding-left: 10px;
+}
+ul li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ========================================================= */
+/* RESPONSIVE DESIGN                                         */
+/* ========================================================= */
+
+/* ---------- Mobile Small (≤480px) ----------- */
+@media (max-width: 480px) {
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .company-box {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .job-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .company-info h3 {
+    font-size: 18px;
+  }
+
+  .section-card,
+  .info-card {
+    padding: 10px;
+  }
+}
+
+/* ---------- Tablets (481px – 768px) ----------- */
+@media (max-width: 768px) {
+  .company-box {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .job-image {
+    width: 130px;
+    height: 130px;
+  }
+
+  .modal-header h2 {
+    font-size: 20px;
+  }
+
+  .section-card mat-card-title,
+  .info-card mat-card-title {
+    font-size: 17px;
+  }
+}
+
+/* ---------- Desktop Large (≥1024px) ---------- */
+@media (min-width: 1024px) {
+  .modal-header h2 {
+    font-size: 24px;
+  }
+
+  .company-box {
+    flex-direction: row;
+  }
+
+  .job-image {
+    width: 110px;
+    height: 110px;
+  }
+
+  .content-wrapper {
+    height: 490px; /* More space for larger screens */
+  }
+
+  .section-card,
+  .info-card {
+    padding: 14px 18px;
+  }
+}

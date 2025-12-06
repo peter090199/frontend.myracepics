@@ -6,7 +6,7 @@
   height: 500px;
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 5px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -124,7 +124,7 @@
 }
 
 .user-status.offline {
-  background-color: #9e9e9e; /* gray offline */
+  background-color: #f80606; /* gray offline */
 }
 
 .user-info {

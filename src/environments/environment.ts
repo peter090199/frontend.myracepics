@@ -6,7 +6,6 @@ export const environment = {
   production: true,
   //apiUrl: 'http://localhost:8000/api/' 
   apiUrl: 'https://exploredition.com/public/api/',
-  domain: 'https://exploredition.com/'
 
 }; 
 
