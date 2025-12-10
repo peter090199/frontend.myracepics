@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -9,6 +9,8 @@ import { AppiedListJobService } from '../../../services/Jobs/appied-list-job.ser
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { Router } from '@angular/router';
 import { AppliedStatusService } from 'src/app/services/NotificationsApp/applied-status.service';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { UserResumeUIComponent } from 'src/app/ComponentSharedUI/Resume/user-resume-ui/user-resume-ui.component';
 
 @Component({
   selector: 'app-list-applied-jobs',
@@ -44,6 +46,10 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   @ViewChild('sortOngoing') sortOngoing!: MatSort;
   @ViewChild('sortFinished') sortFinished!: MatSort;
   @ViewChild('sortReject') sortReject!: MatSort;
+  applicantCode!: string;
+  fullname!: string;
+  resumes: any[] = [];
+  previewFile: any = null;
 
   constructor(
     private jobServices: AppiedListJobService,
@@ -181,10 +187,10 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
     }
 
     this.notificationsService
-      .popupWarning(job.transNo, `Are you sure you want to mark this job as "${status}"?`)
+      .popupWarning(job.applied_id, `Are you sure you want to mark this job as "${status}"?`)
       .then((result) => {
         if (result.value) {
-          this.appliedService.updateAppliedStatus(job.transNo, status).subscribe({
+          this.appliedService.updateAppliedStatus(job.applied_id, status).subscribe({
             next: (res: any) => {
               if (res.success) {
                 this.notificationsService.toastrInfo(res.message);
@@ -205,6 +211,35 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
 
   markFinished(job: any) {
     console.log(job.transNo)
+  }
+
+  selectedJob: any = null;
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
+  @ViewChild('menuTrigger', { read: ElementRef }) triggerElement!: ElementRef;
+  /** RIGHT CLICK ON ROW */
+  onRightClick(event: MouseEvent, job: any) {
+    event.preventDefault();
+    this.selectedJob = job;
+
+    // Move hidden trigger to cursor location
+    const triggerEl = this.triggerElement.nativeElement;
+    triggerEl.style.left = event.clientX + 'px';
+    triggerEl.style.top = event.clientY + 'px';
+
+    // Open the menu
+    this.menuTrigger.openMenu();
+  }
+
+  /** VIEW RESUME FUNCTION */
+  openResumeDialog(resume: any): void {
+    const dialogRef = this.dialog.open(UserResumeUIComponent, {
+      width: '1200px',
+      data: resume
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.getJobPosting();
+    });
   }
 
 }

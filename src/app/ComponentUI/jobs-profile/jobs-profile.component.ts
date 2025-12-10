@@ -86,6 +86,7 @@ export class JobsProfileComponent implements OnInit {
     if (transNo) {
       this.selectedJob = this.jobs.find(job => job.transNo == transNo) || null;
     }
+     await this.loadAppliedStatus(this.selectedJob);
   }
 
   getButtonStatus(job: any): string {
@@ -114,6 +115,27 @@ export class JobsProfileComponent implements OnInit {
     }
   }
 
+
+  async loadAppliedStatus(job: any) {
+    if (!job?.transNo) return;
+
+    try {
+      const res = await firstValueFrom(
+        this.jobListServices.getAppliedStatus(job.transNo)
+      );
+
+      if (res.success) {
+        job.applied_status = res.applied_status;  // 🔥 Set status to the job
+        this.selectedJob = job;                    // Update sidebar UI
+      } else {
+        job.applied_status = 'default';            // If job not applied
+      }
+    } catch (error) {
+      job.applied_status = 'default';              // Fallback
+    }
+  }
+
+
   removeJob(job: any) {
     this.jobs = this.jobs.filter(j => j !== job);
     if (this.selectedJob?.transNo === job.transNo) {
@@ -125,10 +147,12 @@ export class JobsProfileComponent implements OnInit {
     this.recentSearch = { term: '', count: 0, location: '' };
   }
 
-  selectJob(job: any) {
+  async selectJob(job: any) {
     this.selectedJob = job;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.router.navigate(['/recommended-jobs', this.selectedJob.transNo]);
+    // 🔥 NEW: Fetch applied_status for this transNo
+    await this.loadAppliedStatus(job);
   }
 
   goToJob(job: any) {

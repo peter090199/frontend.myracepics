@@ -51,6 +51,9 @@
               <button mat-icon-button color="warn" matTooltip="Mark as Rejected" (click)="markStatus(job, 'reject')">
                 <mat-icon>cancel</mat-icon>
               </button>
+              <a (click)="openResumeDialog(job)" color="primary">
+                View CV
+              </a>
             </ng-container>
 
           </mat-cell>
@@ -64,7 +67,7 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></mat-row>
         <mat-footer-row *matFooterRowDef="['noData']"
           [ngClass]="{ hide: dataSourceApply.data.length > 0 }"></mat-footer-row>
 
@@ -113,7 +116,9 @@
               <button mat-icon-button color="warn" matTooltip="Mark as Rejected" (click)="markStatus(job, 'reject')">
                 <mat-icon>cancel</mat-icon>
               </button>
-
+              <a (click)="openResumeDialog(job)" color="primary">
+                View CV
+              </a>
 
               <!-- Back to Applied Active -->
               <!-- <button mat-icon-button color="accent" matTooltip="Mark as Applied Active"
@@ -133,7 +138,7 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></mat-row>
         <mat-footer-row *matFooterRowDef="['noData']"
           [ngClass]="{ hide: dataSourceOngoing.data.length > 0 }"></mat-footer-row>
 
@@ -173,7 +178,9 @@
                 (click)="markStatus(job, 'applied_active')">
                 <mat-icon>check_circle</mat-icon>
               </button>
-
+              <a (click)="openResumeDialog(job)" color="primary">
+                View CV
+              </a>
 
             </ng-container>
 
@@ -187,7 +194,7 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></mat-row>
         <mat-footer-row *matFooterRowDef="['noData']"
           [ngClass]="{ hide: dataSourceFinished.data.length > 0 }"></mat-footer-row>
       </mat-table>
@@ -227,6 +234,9 @@
                 (click)="markStatus(job, 'applied_active')">
                 <mat-icon>autorenew</mat-icon>
               </button>
+              <a (click)="openResumeDialog(job)" color="primary">
+                View CV
+              </a>
             </ng-container>
 
           </mat-cell>
@@ -239,7 +249,7 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></mat-row>
         <mat-footer-row *matFooterRowDef="['noData']"
           [ngClass]="{ hide: dataSourceFinished.data.length > 0 }"></mat-footer-row>
       </mat-table>
@@ -251,4 +261,17 @@
     </mat-tab>
 
   </mat-tab-group>
+  <!-- Hidden right-click trigger -->
+  <div #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="rightClickMenu" style="position: fixed; visibility: hidden;">
+  </div>
+
+  <!-- Right-click menu -->
+  <mat-menu #rightClickMenu="matMenu">
+    <button mat-menu-item (click)="openResumeDialog(selectedJob)">
+      <mat-icon>visibility</mat-icon>
+      <span>View Resume</span>
+    </button>
+  </mat-menu>
+
+
 </section>

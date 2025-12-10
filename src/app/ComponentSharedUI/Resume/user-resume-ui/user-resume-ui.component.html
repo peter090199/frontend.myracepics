@@ -1,0 +1,38 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+<h2 mat-dialog-title>Resume Viewer</h2>
+<mat-divider></mat-divider>
+
+<mat-dialog-content class="container">
+    <div class="preview-container" *ngIf="selectedResume">
+        <img *ngIf="isImage(selectedResume.url)" [src]="domain + selectedResume.url" class="preview-img">
+        <iframe *ngIf="isPDF(selectedResume.url)" [src]="selectedResume.safeUrl" class="preview-pdf">
+        </iframe>
+    </div>
+    <div class="gallery" *ngIf="gallery.length > 0">
+        <div class="thumb" *ngFor="let item of gallery" (click)="setSelected(item)"
+            [class.active]="selectedResume && item.url === selectedResume.url">
+
+            <img *ngIf="isImage(item.url)" [src]="domain + item.url">
+        </div>
+        <!-- User / Job Info -->
+        <div class="user-info" *ngIf="user">
+            <h3>{{ user.fullname }}</h3>
+            <p><strong>Job:</strong> {{ user.job_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Phone:</strong> +{{ user.country_code }} {{ user.phone_number }}</p>
+            <p>
+                <strong>Status:</strong>
+                <span [ngClass]="getStatusClass(user.applied_status)">
+                    {{ user.applied_status | titlecase }}
+                </span>
+            </p>
+        </div>
+
+    </div>
+    <div *ngIf="!gallery || gallery.length === 0" class="text-center">
+        No resumes available
+    </div>
+
+</mat-dialog-content>

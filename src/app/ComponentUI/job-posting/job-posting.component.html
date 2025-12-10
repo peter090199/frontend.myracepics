@@ -1,3 +1,13 @@
+<!-- <mat-tab-group>
+    <mat-tab label="Create Vacancies">
+
+    </mat-tab>
+    <mat-tab label="View Active Vacancies">
+
+    </mat-tab>
+
+</mat-tab-group> -->
+
 <div class="search-div">
     <mat-form-field class="w-40" floatLabel="never" appearance="standard">
         <input matInput [(ngModel)]="searchKey" [placeholder]="placeHolder" (keyup)="applyFilter()"
@@ -7,15 +17,8 @@
         </button>
     </mat-form-field>
     <button type="button" mat-raised-button color="accent" (click)="createJobPosting()">
-         Job Posting
+        <mat-icon>person_search</mat-icon>New Vacancies
     </button>
-    <!-- <button type="button" mat-raised-button color="accent" [routerLink]="['/posting-job']">
-        Job Posting
-    </button> -->
-
-    <!-- <button type="button" mat-raised-button color="primary" (click)="toggleColumns()">
-        Toggle View
-    </button> -->
 </div>
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z4" matSort>
@@ -128,6 +131,11 @@
             <button mat-icon-button color="warn" (click)="delete2(job)">
                 <mat-icon>delete</mat-icon>
             </button>
+            <a mat-icon-button color="primary" (click)="openCandidates(job)">
+                View Candidates
+            </a>
+
+
         </mat-cell>
     </ng-container>
 

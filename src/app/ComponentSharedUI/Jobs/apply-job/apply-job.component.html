@@ -65,7 +65,7 @@
 
                 <!-- Country + Phone -->
                 <div class="form-row">
-                    <mat-form-field appearance="standard" class="half-width" *ngIf="countryCodes?.length">
+                    <mat-form-field appearance="standard" class="half-width" *ngIf="countryCodes.length">
                         <mat-label>Country Code</mat-label>
                         <input type="text" matInput [formControl]="countryControl" [matAutocomplete]="autoCountry"
                             placeholder="Select or search country code" />
@@ -88,9 +88,9 @@
                     <button mat-raised-button color="warn" (click)="previousStep(stepper)">Previous</button>
                     <button mat-raised-button color="accent" (click)="nextStep(stepper)">Next</button>
                     <!-- <button mat-raised-button color="accent" (click)="onCheckCountryCode()"
-[disabled]="!personalForm.valid">
-Next
-</button> -->
+                        [disabled]="!personalForm.valid">
+                        Next
+                        </button> -->
                 </div>
             </form>
         </mat-step>

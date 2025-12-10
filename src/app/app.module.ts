@@ -118,6 +118,7 @@ import { InvitesComponent } from './ComponentUI/invites/invites.component';
 import { RecruitersComponent } from './ComponentUI/recruiters/recruiters.component';
 import { PostUploadVideosComponent } from './ComponentSharedUI/Public/post-upload-videos/post-upload-videos.component';
 import { JobViewDetailsComponent } from './ComponentUI/job-posting/job-view-details/job-view-details.component';
+import { UserResumeUIComponent } from './ComponentSharedUI/Resume/user-resume-ui/user-resume-ui.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -230,6 +231,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     RecruitersComponent,
     PostUploadVideosComponent,
     JobViewDetailsComponent,
+    UserResumeUIComponent,
   ],
   imports: [
     BrowserModule,

@@ -10,6 +10,7 @@ import { NotificationsService } from 'src/app/services/Global/notifications.serv
 import { Router } from '@angular/router';
 import { JobViewDetailsComponent } from './job-view-details/job-view-details.component';
 import { PostingJobComponent } from 'src/app/ComponentSharedUI/posting-job/posting-job.component';
+import { ListAppliedJobsComponent } from '../jobs/list-applied-jobs/list-applied-jobs.component';
 
 @Component({
   selector: 'app-job-posting',
@@ -121,7 +122,7 @@ export class JobPostingComponent implements OnInit {
             job_image: job.job_image
               ? `https://exploredition.com${job.job_image}`
               : null,
-            questions: relatedQuestions  
+            questions: relatedQuestions
           };
         });
         this.dataSource.data = this.jobPosting;
@@ -137,6 +138,22 @@ export class JobPostingComponent implements OnInit {
       this.isLoading = false;
     }
   }
+
+  viewCandidates(user: any) {
+
+  }
+
+  openCandidates(job: any): void {
+    const dialogRef = this.dialog.open(ListAppliedJobsComponent, {
+      width: '1400px',
+      data: job
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.getJobPosting();
+    });
+  }
+
 
   delete2(job: any): void {
     this.notificationsService.popupWarning(

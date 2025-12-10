@@ -34,10 +34,10 @@ export class AppliedStatusService {
     };
   }
 
-  updateAppliedStatus(transNo: any, status: string) {
+  updateAppliedStatus(applied_id: number, status: string) {
     const headers = this.createHeaders();
     return this.http.post(
-      `${_url}updateAppliedStatus/${transNo}`,
+      `${_url}updateAppliedStatus/${applied_id}`,
       { status: status }, 
       { headers }
     );
