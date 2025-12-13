@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -50,14 +50,19 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   fullname!: string;
   resumes: any[] = [];
   previewFile: any = null;
+  transNo:any;
 
   constructor(
     private jobServices: AppiedListJobService,
     private router: Router,
     public dialog: MatDialog,
     private notificationsService: NotificationsService,
-    private appliedService: AppliedStatusService
-  ) { }
+    private appliedService: AppliedStatusService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {
+    this.transNo = data.transNo;
+    console.log(this.transNo)
+   }
 
   columnDefs = [
     { columnDef: 'transNo', header: 'TransNo', cell: (job: any) => `${job.transNo}` },
@@ -96,7 +101,7 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
       this.isLoadingFinished = true;
       this.isLoadingReject = true;
 
-      const res = await firstValueFrom(this.jobServices.getAppliedJob());
+      const res = await firstValueFrom(this.jobServices.getAppliedJobByTransNo(this.transNo));
 
       if (res.success) {
         const jobs = res.data || [];

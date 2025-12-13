@@ -76,10 +76,13 @@ export class AppiedListJobService {
     );
   }
 
-  getAppliedJob(): Observable<any> {
+  getAppliedJob(transNo: any): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getAppliedJob`,{headers});
   }
 
-
+  getAppliedJobByTransNo(transNo: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getAppliedJobByTransNo/${transNo}`,{headers});
+  }
 }
