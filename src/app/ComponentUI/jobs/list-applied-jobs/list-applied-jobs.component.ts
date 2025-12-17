@@ -65,7 +65,7 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
    }
 
   columnDefs = [
-    { columnDef: 'transNo', header: 'TransNo', cell: (job: any) => `${job.transNo}` },
+    { columnDef: 'transNo', header: 'CandidateNo', cell: (job: any) => `${job.code}` },
     { columnDef: 'fullname', header: 'Fullname', cell: (job: any) => job },
     { columnDef: 'job_name', header: 'Job Name', cell: (job: any) => `${job.job_name}` },
     { columnDef: 'email', header: 'Email', cell: (job: any) => `${job.email}` },
@@ -192,7 +192,7 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
     }
 
     this.notificationsService
-      .popupWarning(job.applied_id, `Are you sure you want to mark this job as "${status}"?`)
+      .popupWarning(job.fullname, `Are you sure you want to mark this job as "${status}"?`)
       .then((result) => {
         if (result.value) {
           this.appliedService.updateAppliedStatus(job.applied_id, status).subscribe({

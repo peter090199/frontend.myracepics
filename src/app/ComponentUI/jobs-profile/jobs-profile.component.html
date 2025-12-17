@@ -1,16 +1,9 @@
 <div class="jobs-container">
-
-  <!-- LEFT SIDEBAR (LIST OF JOBS) -->
   <mat-card class="sidebar">
-    <button mat-button [routerLink]="['/jobs']">
-      <mat-icon>arrow_back</mat-icon>
-      Back to Job
-    </button>
-
     <h3>Top job picks for you</h3>
     <ng-container *ngIf="isLoading; else jobsList">
       <mat-list>
-        <div mat-subheader>Hiring Jobs</div>
+      <div mat-subheader>Hiring Jobs</div>
         <mat-list-item *ngFor="let _ of skeletonRows">
           <div class="skeleton skeleton-avatar" matListAvatar aria-hidden="true"></div>
           <div class="job-details w-full">
@@ -26,7 +19,41 @@
 
     <ng-template #jobsList>
       <div class="jobs-list">
-        <div class="subheader">Hiring Jobs</div>
+        <div mat-subheader>Hiring Jobs</div>
+        <mat-divider></mat-divider>
+        <div class="job-item" *ngFor="let job of jobs" (click)="selectJob(job)">
+
+          <img [src]="job.job_image" alt="Company Logo" class="job-logo" />
+
+          <div class="job-details">
+            <span class="job-name">{{ job.job_name }}</span>
+            <small>{{ job.comp_name }} · {{ job.work_type }}</small>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+
+    <ng-container *ngIf="isLoading; else saveJobList">
+      <mat-list>
+        <div mat-subheader>Saved Jobs</div>
+        <mat-list-item *ngFor="let _ of skeletonRows">
+          <div class="skeleton skeleton-avatar" matListAvatar aria-hidden="true"></div>
+          <div class="job-details w-full">
+            <div class="skeleton skeleton-line w-56"></div>
+            <div class="skeleton skeleton-line w-40 mt-6px"></div>
+          </div>
+          <button mat-icon-button disabled aria-hidden="true">
+            <div class="skeleton skeleton-icon"></div>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+
+    <ng-template #saveJobList>
+      <div class="jobs-list">
+        <div mat-subheader>Saved Jobs</div>
+       <mat-divider></mat-divider>
         <div class="job-item" *ngFor="let job of jobs" (click)="selectJob(job)">
 
           <img [src]="job.job_image" alt="Company Logo" class="job-logo" />
@@ -41,9 +68,7 @@
 
   </mat-card>
 
-  <div class="sidebar-overlay" [class.active]="selectedJob" (click)="closeSidebar()"></div>
-
-  <!-- JOB DETAILS SIDEBAR (RIGHT) -->
+<div class="sidebar-overlay" [class.active]="selectedJob" (click)="closeSidebar()"></div>
   <mat-card class="leftsidebar" [class.active]="selectedJob">
     <button class="responsive-back-btn" mat-button [routerLink]="['/jobs']">
       <mat-icon>arrow_back</mat-icon>
@@ -60,13 +85,28 @@
       </div>
 
       <div class="sidebar-actions sticky-actions">
-        <button mat-raised-button
+        <!-- <button mat-raised-button (click)="onApplyClick(selectedJob)">
+          <mat-icon>
+            {{ getStatusIcon(getButtonStatus(selectedJob)) }}
+          </mat-icon>
+          {{ getStatusText(getButtonStatus(selectedJob)) }}
+        </button> -->
+
+        <button mat-raised-button (click)="onApplyClick(selectedJob)"
+          [ngStyle]="{'background-color': getStatusColor(getButtonStatus(selectedJob)), 'color': 'white'}"
+          [routerLink]="getButtonStatus(selectedJob) === 'default' ? ['/apply-job', selectedJob.transNo] : null">
+          <mat-icon>{{ getStatusIcon(getButtonStatus(selectedJob)) }}</mat-icon>
+          {{ getStatusText(getButtonStatus(selectedJob)) }}
+        </button>
+
+
+        <!-- <button mat-raised-button
           [ngStyle]="{'background-color': getStatusColor(getButtonStatus(selectedJob)), 'color': 'white'}"
           [disabled]="getButtonStatus(selectedJob) === 'applied_active'"
           [routerLink]="getButtonStatus(selectedJob) === 'default' ? ['/apply-job', selectedJob.transNo] : null">
           <mat-icon>{{ getStatusIcon(getButtonStatus(selectedJob)) }}</mat-icon>
           {{ getStatusText(getButtonStatus(selectedJob)) }}
-        </button>
+        </button> -->
 
 
         <!-- Save Heart Button -->

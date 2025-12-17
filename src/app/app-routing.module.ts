@@ -37,6 +37,8 @@ import { PostingJobComponent } from './ComponentSharedUI/posting-job/posting-job
 import { CompanyProfileUIComponent } from './ComponentSharedUI/Jobs/company-profile-ui/company-profile-ui.component';
 import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.component';
 import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
+import { ClientDashboardComponent } from './ComponentUI/dashboard/client-dashboard/client-dashboard.component';
+import { AdminDashboardComponent } from './ComponentUI/dashboard/admin-dashboard/admin-dashboard.component';
 
 const routes: Routes = [
   // Public routes
@@ -74,13 +76,13 @@ const routes: Routes = [
       { path: 'menu', component: MenuComponent },
       { path: 'role', component: RoleComponent },
       { path: 'job_posting', component: JobPostingComponent },
-      { path: 'jobs', component: JobsComponent },
+      // { path: 'jobs', component: JobsComponent },
       { path: 'recommended-jobs/:transNo', component: JobsProfileComponent },
       { path: 'posting-job', component: PostingJobComponent },
       { path: 'client_profile/:code', component: CompanyProfileUIComponent },
       { path: 'apply-job/:transNo', component: ApplyJobComponent },
       { path: 'applied-jobs', component: ListAppliedJobsComponent },
-
+      { path: 'client-dashboard', component: ClientDashboardComponent },
 
     ]
   },

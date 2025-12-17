@@ -72,7 +72,7 @@ export class JobListService {
 
   getAppliedStatus(transNo: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.delete<any>(`${_url}getAppliedStatus/${transNo}`, { headers });
+    return this.http.get<any>(`${_url}getAppliedJobByUsers/${transNo}`, { headers });
   }
 
 

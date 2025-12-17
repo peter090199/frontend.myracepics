@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { JobListService } from 'src/app/services/Jobs/job-list.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { AppliedStatusDialogComponent } from '../jobs/applied-status-dialog/applied-status-dialog.component';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
 
 @Component({
   selector: 'app-jobs-profile',
@@ -10,10 +13,16 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./jobs-profile.component.css']
 })
 export class JobsProfileComponent implements OnInit {
+
   jobs: any[] = [];
-  success = false;
-  isLoading = false;
+  savedJobs: any[] = [];
   selectedJob: any = null;
+
+  isLoading = false;
+  success = false;
+  saved = false;
+
+  currentUserCode: string | null = null;
 
   recentSearch = {
     term: 'software engineer',
@@ -25,84 +34,60 @@ export class JobsProfileComponent implements OnInit {
 
   constructor(
     private jobListServices: JobListService,
-    private route: ActivatedRoute, private router: Router,
-    private authService: AuthService
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private dialog: MatDialog,private alert:NotificationsService
   ) { }
 
-  saved = false;
-
-  toggleHeart() {
-    this.saved = !this.saved;
-  }
-  getStatusIcon(status: string | undefined): string {
-    switch (status) {
-      case 'default': return 'send';
-      case 'applied_active': return 'hourglass_top';         // user applied and active
-      case 'review': return 'hourglass_top';        // under review
-      case 'reject': return 'close';                // rejected
-      case 'approved': return 'check_circle';       // approved
-      default: return 'send';                       // not applied / default
-    }
-  }
-
-  getStatusText(status: string | undefined): string {
-    switch (status) {
-      case 'applied_active': return 'Pending';
-      case 'review': return 'Under Review';
-      case 'reject': return 'Rejected';
-      case 'approved': return 'Approved';
-      default: return 'Apply Now';                  // not applied / default
-    }
-  }
-
-
-  getStatusColor(status: string | undefined): string {
-    switch (status) {
-      case 'default': return '#3071e0ff';
-      case 'applied_active': return '#ec4a04ff';        // blue
-      case 'review': return '#ffb300';        // yellow / amber
-      case 'reject': return '#d32f2f';        // red
-      case 'approved': return '#388e3c';      // green
-      default: return '#1976d2';              // default blue
-    }
-  }
-
-  closeSidebar() {
-    this.selectedJob = null;
-  }
-
-  currentUserCode: any;
+  /* ==============================
+     INIT
+  ============================== */
   async ngOnInit(): Promise<void> {
-    const ownCode = this.authService.getAuthCode(); // get logged-in user
-    if (ownCode) {
-      this.currentUserCode = ownCode;
-      console.log(this.currentUserCode);
-    }
+    this.currentUserCode = this.authService.getAuthCode();
 
+    // Load jobs first
     await this.getJobPosting();
 
-    // ✅ After jobs are loaded, check the route param
-    const transNo = this.route.snapshot.paramMap.get('transNo');
-    if (transNo) {
-      this.selectedJob = this.jobs.find(job => job.transNo == transNo) || null;
-    }
-     await this.loadAppliedStatus(this.selectedJob);
+    // Auto-load transNo whenever route changes
+    this.route.paramMap.subscribe(async params => {
+      const transNo = params.get('transNo');
+
+      if (transNo) {
+        this.selectedJob =
+          this.jobs.find(job => String(job.transNo) === String(transNo)) || null;
+
+        if (this.selectedJob) {
+          await this.loadAppliedStatus(this.selectedJob);
+        }
+      }
+    });
   }
 
-  getButtonStatus(job: any): string {
-    if (!job) return 'default';
-    return job.code === this.currentUserCode ? 'default' : job.applied_status;
-  }
+  // async ngOnInit(): Promise<void> {
+  //   this.currentUserCode = this.authService.getAuthCode();
 
+  //   await this.getJobPosting();
 
+  //   const transNo = this.route.snapshot.paramMap.get('transNo');
+  //   if (transNo) {
+  //     this.selectedJob = this.jobs.find(job => job.transNo == transNo) || null;
+  //     await this.loadAppliedStatus(this.selectedJob);
+  //   }
+  // }
+
+  /* ==============================
+     JOB FETCHING
+  ============================== */
   async getJobPosting(): Promise<void> {
     try {
       this.isLoading = true;
       const res = await firstValueFrom(this.jobListServices.getActiveJobs());
 
-      if (res.success) {
+      if (res?.success) {
         this.jobs = res.data.map((job: any) => ({
           ...job,
+          applied_status: 'default',
           job_image: job.job_image
             ? `https://exploredition.com${job.job_image}`
             : null
@@ -116,7 +101,7 @@ export class JobsProfileComponent implements OnInit {
   }
 
 
-  async loadAppliedStatus(job: any) {
+  async loadAppliedStatus(job: any): Promise<void> {
     if (!job?.transNo) return;
 
     try {
@@ -124,70 +109,144 @@ export class JobsProfileComponent implements OnInit {
         this.jobListServices.getAppliedStatus(job.transNo)
       );
 
-      if (res.success) {
-        job.applied_status = res.applied_status;  // 🔥 Set status to the job
-        this.selectedJob = job;                    // Update sidebar UI
+      if (res?.success === true && Array.isArray(res.data) && res.data.length) {
+        job.applied_status = res.data[0].applied_status || 'default';
       } else {
-        job.applied_status = 'default';            // If job not applied
+        job.applied_status = 'default';
       }
+
+      this.selectedJob = { ...job };
+
     } catch (error) {
-      job.applied_status = 'default';              // Fallback
+      console.error('Applied status error:', error);
+      job.applied_status = 'default';
     }
   }
 
 
-  removeJob(job: any) {
-    this.jobs = this.jobs.filter(j => j !== job);
+
+  /* ==============================
+     BUTTON STATUS HELPERS
+  ============================== */
+  getButtonStatus(job: any): string {
+    if (!job) return 'default';
+    if (job.code === this.currentUserCode) return 'applied_active';
+    return job.applied_status;
+  }
+
+  getStatusIcon(status?: string): string {
+    switch (status) {
+      case 'applied_active':
+      case 'review':
+        return 'hourglass_top';
+      case 'approved':
+        return 'check_circle';
+      case 'reject':
+        return 'close';
+      default:
+        return 'send';
+    }
+  }
+
+  getStatusText(status?: string): string {
+    switch (status) {
+      case 'applied_active': return 'View Status';
+      case 'review': return 'View Status';
+      case 'approved': return 'View Status';
+      case 'reject': return 'View Status';
+      default: return 'Apply Now';
+    }
+  }
+
+  getStatusColor(status?: string): string {
+    switch (status) {
+      case 'applied_active': return '#f4895eff';
+      case 'review': return '#ffb300';
+      case 'approved': return '#388e3c';
+      case 'reject': return '#d32f2f';
+      default: return '#3071e0';
+    }
+  }
+
+  isButtonDisabled(status: string): boolean {
+    return status === 'review' || status === 'approved' || status === 'reject';
+  }
+
+  /* ==============================
+     APPLY BUTTON ACTION
+  ============================== */
+  onApplyClick(job: any): void {
+    console.log(job)
+    // const status = this.getButtonStatus(job);
+    if (job.applied_status == 'default') {
+      this.router.navigate(['/apply-job', job.transNo]);
+      return;
+    }
+    this.openAppliedStatusDialog(job);
+  }
+
+
+  openAppliedStatusDialog(job: any): void {
+    const dialogRef = this.dialog.open(AppliedStatusDialogComponent, {
+      width: '460px',
+      data: job
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.getJobPosting();
+    });
+  }
+
+  /* ==============================
+     JOB SELECTION & NAV
+  ============================== */
+  async selectJob(job: any): Promise<void> {
+    this.selectedJob = job;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.router.navigate(['/recommended-jobs', job.transNo]);
+    await this.loadAppliedStatus(job);
+  }
+
+  goToJob(job: any): void {
+    this.router.navigate(['/recommended-jobs', job.transNo]);
+    this.selectedJob = job;
+  }
+
+  closeSidebar(): void {
+    this.selectedJob = null;
+  }
+
+  /* ==============================
+     SAVE JOBS
+  ============================== */
+  toggleSaveJob(job: any): void {
+    if (!job) return;
+
+    const index = this.savedJobs.findIndex(j => j.transNo === job.transNo);
+
+    if (index === -1) {
+      this.savedJobs.push(job);
+      this.selectedJob = job;
+    } else {
+      this.savedJobs.splice(index, 1);
+      if (this.selectedJob?.transNo === job.transNo) {
+        this.selectedJob = null;
+      }
+    }
+  }
+
+  toggleHeart(): void {
+    this.saved = !this.saved;
+  }
+
+  clearSearches(): void {
+    this.recentSearch = { term: '', count: 0, location: '' };
+  }
+
+  removeJob(job: any): void {
+    this.jobs = this.jobs.filter(j => j.transNo !== job.transNo);
     if (this.selectedJob?.transNo === job.transNo) {
       this.selectedJob = null;
     }
   }
-
-  clearSearches() {
-    this.recentSearch = { term: '', count: 0, location: '' };
-  }
-
-  async selectJob(job: any) {
-    this.selectedJob = job;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.router.navigate(['/recommended-jobs', this.selectedJob.transNo]);
-    // 🔥 NEW: Fetch applied_status for this transNo
-    await this.loadAppliedStatus(job);
-  }
-
-  goToJob(job: any) {
-    // Navigate programmatically
-    this.router.navigate(['/recommended-jobs', job.transNo]);
-
-    // Optional: select job to show sidebar
-    this.selectedJob = job;
-  }
-
-
-
-  savedJobs: any;
-  // Handle save/un-save or select job from child component
-  toggleSaveJob(job: any) {
-    if (!job) return;
-
-    // Remove job
-    if (job.remove) {
-      this.savedJobs = this.savedJobs.filter((j: { transNo: any; }) => j.transNo !== job.transNo);
-      if (this.selectedJob?.transNo === job.transNo) this.selectedJob = null;
-      return;
-    }
-
-    // Add job if not saved
-    const index = this.savedJobs.findIndex((j: { transNo: any; }) => j.transNo === job.transNo);
-    if (index === -1) {
-      this.savedJobs.push(job);
-      this.selectedJob = job; // Optional: select it
-    } else {
-      // Highlight existing saved job
-      this.selectedJob = job;
-    }
-  }
-
-
-
 }

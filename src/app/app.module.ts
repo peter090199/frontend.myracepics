@@ -119,6 +119,9 @@ import { RecruitersComponent } from './ComponentUI/recruiters/recruiters.compone
 import { PostUploadVideosComponent } from './ComponentSharedUI/Public/post-upload-videos/post-upload-videos.component';
 import { JobViewDetailsComponent } from './ComponentUI/job-posting/job-view-details/job-view-details.component';
 import { UserResumeUIComponent } from './ComponentSharedUI/Resume/user-resume-ui/user-resume-ui.component';
+import { AppliedStatusDialogComponent } from './ComponentUI/jobs/applied-status-dialog/applied-status-dialog.component';
+import { ClientDashboardComponent } from './ComponentUI/dashboard/client-dashboard/client-dashboard.component';
+import { AdminDashboardComponent } from './ComponentUI/dashboard/admin-dashboard/admin-dashboard.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -232,6 +235,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     PostUploadVideosComponent,
     JobViewDetailsComponent,
     UserResumeUIComponent,
+    AppliedStatusDialogComponent,
+    ClientDashboardComponent,
+    AdminDashboardComponent,
   ],
   imports: [
     BrowserModule,

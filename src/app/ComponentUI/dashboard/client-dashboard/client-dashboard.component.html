@@ -1,0 +1,145 @@
+<div class="dashboard">
+
+  <!-- HEADER -->
+  <section class="header">
+    <div>
+      <h1>Welcome, Recruiter 👋</h1>
+      <p>Track vacancies and manage candidates efficiently</p>
+    </div>
+
+    <button mat-raised-button color="primary">
+      <mat-icon>add</mat-icon>
+      New Vacancy
+    </button>
+  </section>
+
+  <!-- SUMMARY STATS -->
+  <section class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-icon>work</mat-icon>
+      <div>
+        <h2>{{ totalVacancies }}</h2>
+        <p>Active Vacancies</p>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon>group</mat-icon>
+      <div>
+        <h2>{{ totalApplicants }}</h2>
+        <p>Total Applicants</p>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon color="primary">pending_actions</mat-icon>
+      <div>
+        <h2>{{ pendingReviews }}</h2>
+        <p>Pending Reviews</p>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card highlight">
+      <mat-icon>check_circle</mat-icon>
+      <div>
+        <h2>{{ hired }}</h2>
+        <p>Hired</p>
+      </div>
+    </mat-card>
+  </section>
+
+  <!-- PIPELINE -->
+  <section class="pipeline">
+    <h3>Recruitment Pipeline</h3>
+
+    <div class="kanban">
+      <div class="column">
+        <h4>Applied</h4>
+        <span class="pill blue">124</span>
+      </div>
+
+      <div class="column">
+        <h4>Interview</h4>
+        <span class="pill orange">48</span>
+      </div>
+
+      <div class="column">
+        <h4>Offer</h4>
+        <span class="pill purple">18</span>
+      </div>
+
+      <div class="column">
+        <h4>Hired</h4>
+        <span class="pill green">14</span>
+      </div>
+    </div>
+  </section>
+
+  
+  <mat-card class="table-card">
+    <h3>Active Vacancies</h3>
+
+    <table mat-table [dataSource]="vacancies">
+
+      <ng-container matColumnDef="job">
+        <th mat-header-cell *matHeaderCellDef>Job Title</th>
+        <td mat-cell *matCellDef="let v">{{ v.title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="applicants">
+        <th mat-header-cell *matHeaderCellDef>Applicants</th>
+        <td mat-cell *matCellDef="let v">{{ v.applicants }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let v">
+          <span class="status" [class.active]="v.status === 'Active'">
+            {{ v.status }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let v">
+          <button mat-button color="primary">View</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </mat-card>
+
+
+
+  <!-- RECENT APPLICANTS -->
+  <section class="recent">
+    <h3>Recent Applicants</h3>
+
+    <mat-card class="applicant">
+      <div class="avatar">JD</div>
+      <div>
+        <strong>John Doe</strong>
+        <p>Frontend Developer</p>
+      </div>
+      <span class="pill blue">Applied</span>
+    </mat-card>
+
+    <mat-card class="applicant">
+      <div class="avatar">MS</div>
+      <div>
+        <strong>Maria Santos</strong>
+        <p>Backend Developer</p>
+      </div>
+      <span class="pill orange">Interview</span>
+    </mat-card>
+  </section>
+
+</div>
+
+<!-- FLOATING ACTION BUTTON -->
+<button mat-fab color="accent" class="fab">
+  <mat-icon>add</mat-icon>
+</button>
