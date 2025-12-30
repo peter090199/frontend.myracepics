@@ -140,6 +140,7 @@
     display: flex;
     flex-direction: column;
     height: 510px; /* Make sure the card takes the full available height */
+    overflow-y: auto;
   }
   
   mat-card-content {

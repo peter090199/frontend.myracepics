@@ -76,7 +76,7 @@ export class AppiedListJobService {
     );
   }
 
-  getAppliedJob(transNo: any): Observable<any> {
+  getAppliedJob(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getAppliedJob`,{headers});
   }
@@ -85,4 +85,13 @@ export class AppiedListJobService {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getAppliedJobByTransNo/${transNo}`,{headers});
   }
+   getInterviewAppliedJobs(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getInterviewAppliedJobs`,{headers});
+  }
+  getAllAppliedJobsByCode(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getAllAppliedJobsByCode`,{headers});
+  }
+
 }

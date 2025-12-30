@@ -1,55 +1,76 @@
- 
- <div class="form-container">
- <div *ngIf="loading" class="d-flex justify-content-center align-items-center my-4">
-  <mat-spinner diameter="40"></mat-spinner>
-  <span class="ml-3">Loading...</span>
-</div>
+<div class="form-container">
 
-<div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error }}
+  </div>
 
-<form (ngSubmit)="submitData()" *ngIf="!loading && !error">
-  
-  <div *ngFor="let section of securityRoles" class="mb-4">
-    <h4 class="text-primary">{{ section.desc_code | titlecase }}</h4>
+  <form (ngSubmit)="submitData()" *ngIf="!loading && !error">
 
-    <div *ngFor="let item of section.datas" class="mb-3">
+    <ng-container *ngFor="let section of securityRoles">
 
-      <mat-expansion-panel (opened)="toggleSubMenu(item)" (closed)="toggleSubMenu(item)">
+      <h4 class="text-primary mb-2">
+        {{ section.desc_code | titlecase }}
+      </h4>
+
+      <mat-expansion-panel *ngFor="let item of section.datas" class="mb-2">
         <mat-expansion-panel-header>
+
           <mat-checkbox 
             [checked]="item.access" 
-            (change)="onCheckboxChange2(item, item.submenu, $event)"
+            (change)="onMenuChange(item, $event)"
             (click)="$event.stopPropagation()">
             {{ item.description }}
           </mat-checkbox>
-          <mat-icon *ngIf="item.submenu?.length > 0">
-            {{ item.expanded ? 'expand_more' : 'expand_less' }}
-          </mat-icon>
+
         </mat-expansion-panel-header>
-  
-        <!-- Submenu items -->
-        <div *ngIf="item.expanded">
-          <mat-list>
-            <mat-list-item *ngFor="let submenu of item.submenu">
-              <mat-checkbox 
-                [checked]="submenu.access" 
-                (change)="onCheckboxChange2(item, submenu, $event)">
-                {{ submenu.description }}
-              </mat-checkbox>
-            </mat-list-item>
-          </mat-list>
-        </div>
+
+        <mat-list *ngIf="item.submenu?.length">
+          <mat-list-item *ngFor="let sub of item.submenu">
+            <mat-checkbox 
+              [checked]="sub.access" 
+              (change)="onSubmenuChange(item, sub, $event)">
+              {{ sub.description }}
+            </mat-checkbox>
+          </mat-list-item>
+        </mat-list>
+
       </mat-expansion-panel>
 
+    </ng-container>
+
+    <div *ngIf="securityRoles.length === 0" class="alert alert-info text-center">
+      No data available
+    </div>
+
+    <div mat-dialog-actions align="end">
+      <button mat-raised-button color="primary" type="submit">
+        Update
+      </button>
+    </div>
+
+  </form>
+</div>
+<!-- 
+
+
+<mat-card>
+  <h2>Role Access Menu</h2>
+  <div *ngFor="let menu of data.header; let i = index" class="menu-card">
+    <mat-checkbox [(ngModel)]="menu.checked" (change)="onMenuChange(menu)">
+      Menu ID: {{ menu.menus_id }} (Role: {{ menu.rolecode }})
+    </mat-checkbox>
+
+    <div class="submenu-list" *ngIf="menu.lines && menu.lines.length > 0">
+      <mat-checkbox
+        *ngFor="let sub of menu.lines"
+        [(ngModel)]="sub.checked"
+        (change)="onSubmenuChange(menu, sub)"
+      >
+        Submenu ID: {{ sub.submenus_id }}
+      </mat-checkbox>
     </div>
   </div>
 
-  <!-- No data message -->
-  <div *ngIf="securityRoles.length === 0" class="alert alert-info text-center">No data available</div>
+  <button mat-raised-button color="primary" (click)="saveData()">Save</button>
 
-  <!-- Update button -->
-  <div mat-dialog-actions align="end">
-    <button type="submit" mat-raised-button color="primary">Update</button>
-  </div>
-</form>
-</div>
+</mat-card> -->

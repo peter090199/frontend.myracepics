@@ -211,38 +211,101 @@ export class SignInUIComponent implements OnInit {
 
     this.isLoading = true;
     const { email, password } = this.loginForm.value;
-    console.log(this.loginForm.value)
-    this.sigInService.signin(email, password).subscribe({
-      next: (res) => {
-        this.isLoading = false;
-        if (res.success == true) {
-          sessionStorage.setItem('token', res.token);
-          localStorage.setItem("chatmessages", "true");
-          if (res.message == 0) {
-            // this.router.navigateByUrl("profile/705");
-            // this.router.navigate(['/profile', this]);
-                this.router.navigateByUrl("/home")
-            // this.router.navigateByUrl("/home").then(() => {
-            //   window.location.reload(); // Only if absolutely necessary
-            // });
-          }
-          if (res.message == 1) {
-            this.router.navigateByUrl("/user-cv")
-          }
 
-          // const targetRoute = res.message === 1 ? '/home' : '/user-cv';
-          // this.router.navigate([targetRoute]).then(() => location.reload());
-        } else {
-          this.notificationService.toastPopUpError(res.message);
+    this.sigInService.signin(email, password).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+
+        if (!res || res.success !== true) {
+          this.notificationService.toastPopUpError(
+            res?.message || 'Login failed'
+          );
+          return;
         }
+
+        /* 🔐 STORE AUTH DATA */
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('role', res.role);
+        sessionStorage.setItem('is_online', String(res.is_online ?? true));
+        localStorage.setItem('chatmessages', 'true');
+
+        /* 🚦 REDIRECT BY ROLE */
+        if (res.role === 'DEF-CLIENT') {
+          this.router.navigate(['/recruiter/client-dashboard']);
+          return;
+        }
+
+        if (res.role === 'DEF-ADMIN') {
+          this.router.navigate(['/admin/admin-dashboard']);
+          return;
+        }
+
+        if (res.role === 'DEF-MASTERADMIN') {
+          this.router.navigate(['/masteradmin/admin-dashboard']);
+          return;
+        }
+
+        if (res.role === 'DEF-USERS') {
+          this.router.navigate(['/home']);
+          return;
+        }
+
+        /* ❌ FALLBACK */
+      //  this.router.navigate(['/homepage']);
       },
+
       error: (err) => {
         this.isLoading = false;
-        const errorMsg = err.status === 401 ? err.error : err.message;
+
+        const errorMsg =
+          err.status === 401
+            ? err.error?.message || 'Invalid email or password'
+            : err.message || 'Something went wrong';
+
         this.notificationService.toastPopUpError(errorMsg);
       }
     });
   }
+
+  // onSubmit(): void {
+  //   if (this.loginForm.invalid) return;
+
+  //   this.isLoading = true;
+  //   const { email, password } = this.loginForm.value;
+  //   console.log(this.loginForm.value)
+  //   this.sigInService.signin(email, password).subscribe({
+  //     next: (res) => {
+
+  //       this.isLoading = false;
+  //       if (res.success == true) {
+  //         console.log(res)
+  //         sessionStorage.setItem('token', res.token);
+  //         localStorage.setItem("chatmessages", "true");
+  //         if (res.message == 0) {
+  //           // this.router.navigateByUrl("profile/705");
+  //           // this.router.navigate(['/profile', this]);
+  //               this.router.navigateByUrl("/client")
+  //           // this.router.navigateByUrl("/home").then(() => {
+  //           //   window.location.reload(); // Only if absolutely necessary
+  //           // });
+  //         }
+  //         if (res.message == 1) {
+  //           this.router.navigateByUrl("/user-cv")
+  //         }
+
+  //         // const targetRoute = res.message === 1 ? '/home' : '/user-cv';
+  //         // this.router.navigate([targetRoute]).then(() => location.reload());
+  //       } else {
+  //         this.notificationService.toastPopUpError(res.message);
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false;
+  //       const errorMsg = err.status === 401 ? err.error : err.message;
+  //       this.notificationService.toastPopUpError(errorMsg);
+  //     }
+  //   });
+  // }
 
   signInWithGoogle() {
     this.googleAuth.loginWithGoogle();

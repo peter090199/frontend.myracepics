@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Inject, Optional } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { AppliedStatusService } from 'src/app/services/NotificationsApp/applied-status.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { UserResumeUIComponent } from 'src/app/ComponentSharedUI/Resume/user-resume-ui/user-resume-ui.component';
+import { SharedService } from 'src/app/services/SharedServices/shared.service';
+import { ProfileService } from 'src/app/services/Profile/profile.service';
 
 @Component({
   selector: 'app-list-applied-jobs',
@@ -26,10 +28,13 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   isLoadingOngoing = false;
   isLoadingFinished = false;
   isLoadingReject = false;
+  isLoadingInterview = false;
+
 
   displayedColumns: string[] = [];
   dataSourceApply = new MatTableDataSource<any>([]);
   dataSourceOngoing = new MatTableDataSource<any>([]);
+  dataSourceInterview = new MatTableDataSource<any>([]);
   dataSourceFinished = new MatTableDataSource<any>([]);
   dataSourceReject = new MatTableDataSource<any>([]);
 
@@ -39,18 +44,23 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
 
   @ViewChild('paginatorApply') paginatorApply!: MatPaginator;
   @ViewChild('paginatorOngoing') paginatorOngoing!: MatPaginator;
+  @ViewChild('paginatorInterview') paginatorInterview!: MatPaginator;
   @ViewChild('paginatorFinished') paginatorFinished!: MatPaginator;
-  @ViewChild('paginatorFinished') paginatorReject!: MatPaginator;
+  @ViewChild('paginatorReject') paginatorReject!: MatPaginator;
 
   @ViewChild('sortApply') sortApply!: MatSort;
   @ViewChild('sortOngoing') sortOngoing!: MatSort;
+  @ViewChild('sortInterview') sortInterview!: MatSort;
   @ViewChild('sortFinished') sortFinished!: MatSort;
   @ViewChild('sortReject') sortReject!: MatSort;
   applicantCode!: string;
   fullname!: string;
   resumes: any[] = [];
   previewFile: any = null;
-  transNo:any;
+  transNo: any;
+  profile: any;
+
+
 
   constructor(
     private jobServices: AppiedListJobService,
@@ -59,10 +69,13 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
     private notificationsService: NotificationsService,
     private appliedService: AppliedStatusService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private sharedService: SharedService,
+    private profileService: ProfileService,
+    @Optional() private dialogRef: MatDialogRef<ListAppliedJobsComponent>
   ) {
     this.transNo = data.transNo;
     console.log(this.transNo)
-   }
+  }
 
   columnDefs = [
     { columnDef: 'transNo', header: 'CandidateNo', cell: (job: any) => `${job.code}` },
@@ -86,11 +99,39 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
     this.dataSourceOngoing.paginator = this.paginatorOngoing;
     this.dataSourceOngoing.sort = this.sortOngoing;
 
+    this.dataSourceInterview.paginator = this.paginatorInterview;
+    this.dataSourceInterview.sort = this.sortInterview;
+
     this.dataSourceFinished.paginator = this.paginatorFinished;
     this.dataSourceFinished.sort = this.sortFinished;
 
     this.dataSourceReject.paginator = this.paginatorReject;
     this.dataSourceReject.sort = this.sortReject;
+  }
+
+
+  // getsettingsUrl(): string {
+  //   return this.sharedService.getSettingsUrl(this.profile);
+  // }
+
+  // getProfileUrl(code:any): string {
+  //   console.log(code)
+  //   return this.sharedService.getProfileUrl(code);
+  // }
+
+  getJobProfileLink(job: any, roleCode: string): string[] {
+    if (!job?.code) return ['/profile']; // fallback
+
+    switch (roleCode) {
+      case 'DEF-CLIENT':
+        return ['/recruiter/profile', job.code]; // normal user profile
+      case 'DEF-MASTERADMIN':
+        return ['/masteradmin/profile', job.code];
+      case 'DEF-USERS':
+        return ['/recruiter/profile', job.code]; // recruiter profile
+      default:
+        return ['/profile', job.code]; // fallback
+    }
   }
 
   async getJobPosting(): Promise<void> {
@@ -107,11 +148,13 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
         const jobs = res.data || [];
         this.dataSourceApply.data = jobs.filter((j: any) => j.applied_status === 'applied_active');
         this.dataSourceOngoing.data = jobs.filter((j: any) => j.applied_status === 'review');
+        this.dataSourceInterview.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'interview');
         this.dataSourceFinished.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'approved');
         this.dataSourceReject.data = jobs.filter((j: any) => j.applied_status.toLowerCase() === 'reject');
       } else {
         this.dataSourceApply.data = [];
         this.dataSourceOngoing.data = [];
+        this.dataSourceInterview.data = [];
         this.dataSourceFinished.data = [];
         this.dataSourceReject.data = [];
       }
@@ -119,12 +162,14 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
       console.error('Error fetching jobs:', error);
       this.dataSourceApply.data = [];
       this.dataSourceOngoing.data = [];
+      this.dataSourceInterview.data = [];
       this.dataSourceFinished.data = [];
       this.dataSourceReject.data = [];
     } finally {
       // ✅ stop loading individually
       this.isLoadingApply = false;
       this.isLoadingOngoing = false;
+      this.isLoadingInterview = false;
       this.isLoadingFinished = false;
       this.isLoadingReject = false;
     }
@@ -213,6 +258,32 @@ export class ListAppliedJobsComponent implements OnInit, AfterViewInit {
   }
 
 
+  markStatusInterview(job: any, status: string): void {
+    if (!job || !job.transNo) {
+      this.notificationsService.toastrError("Missing transNo!");
+      return;
+    }
+
+    this.notificationsService
+      .popupWarning(job.fullname, `Are you sure you want to schedule an "${status}" for this candidate?`)
+      .then((result) => {
+        if (result.value) {
+          this.appliedService.updateAppliedStatus(job.applied_id, status).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.notificationsService.toastrInfo(res.message);
+              } else {
+                this.notificationsService.toastrError(res.message);
+              }
+              this.getJobPosting();
+            },
+            error: () => {
+              this.notificationsService.toastrError("Failed to update status.");
+            },
+          });
+        }
+      });
+  }
 
   markFinished(job: any) {
     console.log(job.transNo)

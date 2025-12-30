@@ -1,30 +1,14 @@
-/* GLOBAL SAFETY */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
-  width: 100%;
-  overflow-x: hidden;
-}
-
-/* ROOT DASHBOARD */
 .dashboard {
   padding: 16px;
   max-width: 1300px;
   margin: 0 auto;
   width: 100%;
   height: 90vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .header {
   display: flex;
   justify-content: space-between;
@@ -32,132 +16,172 @@ html, body {
   gap: 16px;
   padding: 20px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+  background: linear-gradient(135deg, #3fb5b5, #5c6bc0);
   color: #fff;
   margin-bottom: 20px;
   flex-wrap: wrap;
-
-  h1 {
-    margin: 0;
-    font-size: 22px;
-  }
-
-  p {
-    margin: 4px 0 0;
-    font-size: 14px;
-    opacity: 0.9;
-  }
 }
 
-/* STATS GRID */
+/* =========================
+   STATS GRID
+========================= */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
   margin-bottom: 24px;
-  width: 100%;
 }
 
-/* STAT CARD */
 .stat-card {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 16px;
   border-radius: 16px;
-  width: 100%;
-  min-width: 0;
-
-  mat-icon {
-    font-size: 36px;
-    min-width: 36px;
-    color: #3f51b5;
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 22px;
-  }
-
-  p {
-    margin: 0;
-    font-size: 13px;
-    color: #666;
-  }
+  background: #fff;
 }
 
 .stat-card.highlight {
-  background: linear-gradient(135deg, #43a047, #66bb6a);
+  background: linear-gradient(135deg, #3fb5b5, #5c6bc0);
   color: #fff;
-
-  mat-icon {
-    color: #fff;
-  }
-
-  p {
-    color: rgba(255, 255, 255, 0.85);
-  }
 }
 
-/* TABLE CARD */
-.table-card {
-  padding: 16px;
-  border-radius: 16px;
-  width: 700px;
-  overflow-x: auto; 
-
+/* =========================
+   VACANCY CARDS GRID
+========================= */
+.vacancy-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 3fr));
+  gap: 10px;
+  margin: 2px 0;
 }
 
-/* MATERIAL TABLE */
+.vacancy-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.vacancy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+.vacancy-card h3 {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+/* =========================
+   TABLE RESPONSIVE FIX
+========================= */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
-  min-width: 650px; /* Allows scroll instead of overflow */
   border-collapse: collapse;
 }
 
 th, td {
-  white-space: nowrap;
   padding: 10px;
+  white-space: nowrap;
 }
 
-/* STATUS BADGE */
+th.mat-header-cell {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+td.mat-cell {
+  color: #374151;
+}
+
+/* =========================
+   STATUS BADGE
+========================= */
 .status {
   padding: 4px 10px;
   border-radius: 14px;
   font-size: 12px;
-  background: #eee;
+  background: #e5e7eb;
   display: inline-block;
-
-  &.active {
-    background: #e3f2fd;
-    color: #1976d2;
-  }
 }
 
-/* PIPELINE */
+.status.active {
+  background: #10b981;
+  color: #fff;
+}
+
+/* =========================
+   PIPELINE / KANBAN
+========================= */
 .pipeline {
+  padding: 20px;
   margin: 24px 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.pipeline h3 {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  color: #0f172a;
 }
 
 .kanban {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 14px;
-  width: 100%;
 }
 
 .column {
-  background: #fafafa;
-  border-radius: 16px;
+  background: #f3f4f6;
+  border-radius: 14px;
   padding: 16px;
   text-align: center;
+  transition: transform .2s ease;
 }
 
-/* RECENT APPLICANTS */
+.column:hover {
+  transform: translateY(-4px);
+}
+
+.column h4 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+/* =========================
+   PILLS
+========================= */
+.pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pill.blue   { background: #3b82f6; }
+.pill.orange { background: #f97316; }
+.pill.purple { background: #8b5cf6; }
+.pill.green  { background: #10b981; }
+
+/* =========================
+   RECENT APPLICANTS
+========================= */
 .recent {
   display: grid;
   gap: 12px;
-  margin-bottom: 80px; /* space for FAB */
+  margin-bottom: 80px;
 }
 
 .applicant {
@@ -166,17 +190,15 @@ th, td {
   gap: 14px;
   padding: 14px;
   border-radius: 14px;
-  width: 100%;
-  min-width: 0;
+  background: #fff;
 }
 
-/* AVATAR */
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: #3f51b5;
-  color: white;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,41 +206,34 @@ th, td {
   flex-shrink: 0;
 }
 
-/* STATUS PILLS */
-.pill {
-  margin-left: auto;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: white;
-  white-space: nowrap;
+/* =========================
+   RESPONSIVE BREAKPOINTS
+========================= */
 
-  &.blue { background: #42a5f5; }
-  &.orange { background: #fb8c00; }
-  &.purple { background: #7e57c2; }
-  &.green { background: #43a047; }
+/* Tablets */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-
-/* MOBILE OPTIMIZATION */
+/* Mobile */
 @media (max-width: 768px) {
-
   .header {
     padding: 16px;
   }
 
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .vacancy-cards-container {
+    grid-template-columns: 1fr;
   }
 
-  table {
-    min-width: 600px;
+  .kanban {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* EXTRA SMALL DEVICES */
+/* Extra small */
 @media (max-width: 480px) {
-
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -227,15 +242,7 @@ th, td {
     font-size: 18px;
   }
 
-  .fab {
-    bottom: 16px;
-    right: 16px;
+  .kanban {
+    grid-template-columns: 1fr;
   }
 }
-
-@media (min-width: 1024px) {
-  .dashboard {
-    scrollbar-width: none;
-  }
-}
-

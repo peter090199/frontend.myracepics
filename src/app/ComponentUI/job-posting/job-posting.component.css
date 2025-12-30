@@ -1,0 +1,15 @@
+.mat-column-actions {
+  white-space: nowrap;
+  text-align: left;
+}
+/* Remove left padding of the Actions column */
+.mat-column-actions {
+  padding-left: 0 !important;
+}
+
+/* Optional: tighten button spacing */
+.mat-column-actions button,
+.mat-column-actions a {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}

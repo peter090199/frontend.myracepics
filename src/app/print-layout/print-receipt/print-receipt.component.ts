@@ -43,7 +43,7 @@ export class PrintReceiptComponent implements OnInit {
   //   return sum;
   // }
 
-  @HostListener('window:beforeunload', ['$event'])
+
   // beforeunloadHandler(event) {
   //   localStorage.clear();
   // }

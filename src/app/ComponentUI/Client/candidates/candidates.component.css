@@ -1,0 +1,32 @@
+.middle-column {
+  flex: 1;
+  max-width: 800px; /* Adjust based on job list design */
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Ensure the child component fills the container */
+app-listAppliedJobsComponent {
+  display: block;
+  width: 100%;
+}
+
+/* Make all status text bold */
+.status {
+  font-weight: bold;
+}
+
+/* Optional: color coding per status */
+.status.applied {
+  color: gray;
+}
+
+.status.interview {
+  color: blue;
+}
+.status.review {
+  color: rgb(255, 191, 0);
+}
+.status.finished {
+  color: green;
+}

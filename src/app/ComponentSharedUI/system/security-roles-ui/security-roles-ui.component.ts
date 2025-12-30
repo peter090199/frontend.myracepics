@@ -1,15 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SecurityRolesService } from 'src/app/services/Security/security-roles.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-
-interface DialogData {
-  menus_id: number;
-  submenu: any[];
-  id: number;
-  rolecode: string;
-}
 
 @Component({
   selector: 'app-security-roles-ui',
@@ -18,174 +11,243 @@ interface DialogData {
 })
 export class SecurityRolesUIComponent implements OnInit {
 
-  isLoading = false;
-  role_code: string;
+  role_code!: string;
   securityRoles: any[] = [];
-  loading: boolean = false;
+  selectedMenus: any[] = [];
+  loading = false;
   error: string | null = null;
-  response: any;
-  menus_id: number;
-  selectedMenus: any[] = []; 
-  lines:any[];
 
   constructor(
     private securityService: SecurityRolesService,
-    private notificationService:NotificationsService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    private notify: NotificationsService,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.role_code = data.rolecode;
- 
   }
 
   ngOnInit(): void {
     this.getSecurityRoles(this.role_code);
   }
 
-  closeLoading(): void {
-    this.loading = false;
-  }
-
   getSecurityRoles(rolecode: string): void {
     this.loading = true;
-    this.securityService.getSecurityRolesByDesc_Code(rolecode).subscribe(
-      (datas: any) => {
-        this.securityRoles = datas;
-        console.log(this.securityRoles);
+    this.securityService.getSecurityRolesByDesc_Code(rolecode).subscribe({
+      next: (res: any[]) => {
+        this.securityRoles = res;
         this.loading = false;
       },
-      (error) => {
-        console.error('Error fetching security roles:', error);
+      error: () => {
         this.error = 'Failed to load security roles';
         this.loading = false;
       }
-    );
+    });
   }
 
-  toggleSubMenu(menu: any): void {
-    menu.expanded = !menu.expanded;
-  }
+  onMenuChange(menu: any, event: MatCheckboxChange): void {
+    menu.access = event.checked;
 
-  onCheckboxChange2(item: any, submenu: any, event: any): void {
-    // Initialize selectedMenus if not already defined
-    this.selectedMenus ??= [];
-  
-    const submenusId = submenu?.submenus_id;
-    const menuIndex = this.selectedMenus.findIndex(menu => menu.menus_id === item.menus_id);
-  
     if (event.checked) {
-      // Add new menu if it doesn't exist
-      if (menuIndex === -1) {
+      let existing = this.selectedMenus.find(m => m.menus_id === menu.menus_id);
+      if (!existing) {
         this.selectedMenus.push({
           rolecode: this.role_code,
-          menus_id: item.menus_id,
-          lines: submenusId ? [{ submenus_id: submenusId }] : []
+          menus_id: menu.menus_id,
+          checked: true,
+          lines: []
         });
-      } else if (submenusId) {
-        // Update existing menu with new submenus_id if not already present
-        const menu = this.selectedMenus[menuIndex];
-        if (!menu.lines.some((line: { submenus_id: any; }) => line.submenus_id === submenusId)) {
-          menu.lines.push({ submenus_id: submenusId });
-        }
+      } else {
+        existing.checked = true;
       }
     } else {
-      // Remove submenus_id if unchecked
-      if (menuIndex !== -1) {
-        const menu = this.selectedMenus[menuIndex];
-        menu.lines = menu.lines.filter((line: { submenus_id: any; }) => line.submenus_id !== submenusId);
-  
-        // Remove menu entry if lines array is empty
-        if (menu.lines.length === 0) {
-          this.selectedMenus.splice(menuIndex, 1);
+      const menuObj = this.selectedMenus.find(m => m.menus_id === menu.menus_id);
+      if (menuObj) {
+        menuObj.checked = false;
+        menuObj.lines = [];
+      }
+    }
+    this.logSelectedMenus();
+  }
+
+  onSubmenuChange(menu: any, sub: any, event: MatCheckboxChange): void {
+    sub.access = event.checked;
+    let parent = this.selectedMenus.find(m => m.menus_id === menu.menus_id);
+
+    if (event.checked) {
+      if (!parent) {
+        parent = {
+          rolecode: this.role_code,
+          menus_id: menu.menus_id,
+          checked: true,
+          lines: []
+        };
+        this.selectedMenus.push(parent);
+        menu.access = true;
+      }
+      const existingSub = parent.lines.find((l: { submenus_id: any; }) => l.submenus_id === sub.submenus_id);
+      if (!existingSub) {
+        parent.lines.push({ submenus_id: sub.submenus_id, checked: true });
+      } else {
+        existingSub.checked = true;
+      }
+    } else {
+      if (parent) {
+        const subIndex = parent.lines.findIndex((l: { submenus_id: any; }) => l.submenus_id === sub.submenus_id);
+        if (subIndex > -1) parent.lines[subIndex].checked = false;
+
+        const anyChecked = parent.lines.some((l: { checked: any; }) => l.checked);
+        if (!anyChecked && !parent.checked) {
+          this.selectedMenus = this.selectedMenus.filter(m => m.menus_id !== menu.menus_id);
+          menu.access = false;
         }
       }
     }
-  
-    console.log("selectedMenus:", this.selectedMenus);
+
+    this.logSelectedMenus();
   }
-  
 
+  private logSelectedMenus(): void {
+    console.clear();
+    console.log('===== SELECTED MENUS =====');
+    this.selectedMenus.forEach(menu => {
+      console.group(`Menu ID: ${menu.menus_id} (checked: ${menu.checked})`);
+      if (menu.lines.length === 0) {
+        console.log('Submenus: NONE');
+      } else {
+        menu.lines.forEach((sub: { submenus_id: any; checked: any; }) => console.log(`- Submenu ID: ${sub.submenus_id} (checked: ${sub.checked})`));
+      }
+      console.groupEnd();
+    });
+    console.log('==========================');
+  }
   submitData(): void {
-    console.log("Submitted Data:", this.selectedMenus);
-    const header = {
-      header: this.selectedMenus
-    };
-   //console.log(header)
-    this.securityService.submitData(header).subscribe({
-      next: (res) => {
-         if(res.success)
-          {
-            this.loading = true;
-            this.notificationService.toastrSuccess(res.message);
-            this.loading = false;
+    if (!this.selectedMenus || this.selectedMenus.length === 0) {
+      this.notify.toastrError('Please select at least one menu');
+      return;
+    }
 
-          }
-          else{
-           this.notificationService.toastrError(res.message);
-            this.loading = false; 
-          }
-     
+    const payload = {
+      header: this.selectedMenus.map(menu => ({
+        rolecode: this.role_code,
+        menus_id: menu.menus_id,
+        checked: !!menu.checked,
+        lines: Array.isArray(menu.lines)
+          ? menu.lines.map((sub: { submenus_id: any; checked: any; }) => ({
+            submenus_id: sub.submenus_id,
+            checked: !!sub.checked
+          }))
+          : []
+      }))
+    };
+
+    console.log('Payload to send:', payload);
+
+    this.loading = true;
+
+    this.securityService.saveAccessMenu(payload).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+
+        if (res?.success) {
+          this.notify.toastrSuccess(res.message || 'Saved successfully');
+        } else {
+          this.notify.toastrError(res?.message || 'Save failed');
+        }
       },
       error: (err) => {
+        console.error('Save error:', err);
         this.loading = false;
-        this.error = 'There was an error submitting the form. Please try again.';
-        this.notificationService.toastrError(this.error);
+        this.notify.toastrError('Submission failed');
       }
-   });
+    });
   }
-  
+}
+// import { Component, Inject, OnInit } from '@angular/core';
+// import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+// import { MatCheckboxChange } from '@angular/material/checkbox';
+// import { SecurityRolesService } from 'src/app/services/Security/security-roles.service';
+// import { NotificationsService } from 'src/app/services/Global/notifications.service';
 
-//   submitData(): void {
-//     const formData = this.securityRoles.map(role => ({
-//       rolecode: this.role_code,  
-//       menus_id: this.selectedMenus.length > 0 ? this.selectedMenus[0] : null, 
-//       lines: role.submenu || []  
-//     }));
-
-//     if (this.selectedMenus.length > 0) {
-//       // Prepare the data you want to save, in this case, it's the selected menu IDs
-//       const dataToSave = {
-//         selectedMenus: this.selectedMenus
-//       };
-//     }
-  
-//     console.log('Form submitted with data:', formData);
-    
-//   //   this.loading = true;
-//   //   this.securityService.submitData(formData).subscribe({
-//   //     next: (res) => {
-//   //        if(res.success)
-//   //         {
-//   //           this.notificationService.toastrSuccess(res.message);
-//   //         //  this.ResetForm();
-//   //           this.loading = false;
-
-//   //         }
-//   //         else{
-//   //          this.notificationService.toastrError(res.message);
-//   //           this.loading = false; 
-//   //         }
-     
-//   //     },
-//   //     error: (err) => {
-//   //       this.loading = false;
-//   //       this.error = 'There was an error submitting the form. Please try again.';
-//   //       this.notificationService.toastrError(this.error);
-//   //     }
-//   //  });
-//   }
+// interface Submenu {
+//   submenus_id: number;
+//   checked: boolean;
 // }
 
-  // private prepareFormData(): any {
-  //   // Prepare the data to be submitted with rolecode, menus_id, and lines
-  //   // const data = {
-  //   //   roles: this.securityRoles.map(role => ({
-  //   //     rolecode: this.role_code,  // Ensure rolecode is included
-  //   //     menus_id: 1,   // Ensure menus_id is included
-  //   //     lines: role.lines || []    // Ensure lines is included (default to empty array if undefined)
-  //   //   }))
-  //   // };
+// interface Menu {
+//   rolecode: string;
+//   menus_id: number;
+//   checked: boolean;
+//   lines: Submenu[];
+// }
+
+// interface HeaderData {
+//   header: Menu[];
+// }
+
+// @Component({
+//   selector: 'app-security-roles-ui',
+//   templateUrl: './security-roles-ui.component.html',
+//   styleUrls: ['./security-roles-ui.component.css']
+// })
+// export class SecurityRolesUIComponent implements OnInit {
+//   data: HeaderData = {
+//     header: [
+//       {
+//         rolecode: 'DEF-ADMIN',
+//         menus_id: 2,
+//         checked: true,
+//         lines: [
+//           { submenus_id: 2, checked: true },
+//           { submenus_id: 1, checked: false }
+//         ]
+//       },
+//       {
+//         rolecode: 'DEF-ADMIN',
+//         menus_id: 6,
+//         checked: true,
+//         lines: []
+//       }
+//     ]
+//   };
+
+//   role_code:any[]=[];
+
+//   constructor(
+//     private securityService: SecurityRolesService,
+//     private notify: NotificationsService,
+//     @Inject(MAT_DIALOG_DATA) public data2: any
+//   ) {
+//     this.role_code = data2.rolecode;
+//   }
+//   ngOnInit(): void {
+//     // Optional: Initialize or fetch data here
+//   }
+
+//   // When menu checkbox changes
+//   onMenuChange(menu: Menu) {
+//     if (menu.lines && menu.lines.length > 0) {
+//       menu.lines.forEach(sub => sub.checked = menu.checked);
+//     }
+//     console.log('Menu updated:', menu);
+//   }
+
+//   // When submenu checkbox changes
+//   onSubmenuChange(menu: Menu, sub: Submenu) {
+//     if (menu.lines && menu.lines.length > 0) {
+//       // If all submenus are checked, menu.checked becomes true
+//       menu.checked = menu.lines.every(s => s.checked);
+//     }
+//     console.log('Submenu updated:', sub);
+//   }
 
 
-  //   return data;
-  // }
-}
+//    saveData() {
+
+//     console.log(this.data)
+//     this.securityService.saveAccessMenu(this.data).subscribe({
+//       next: res => console.log('Saved successfully', res),
+//       error: err => console.error('Error saving data', err)
+//     });
+//   }
+
+
+//}

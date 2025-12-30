@@ -92,18 +92,57 @@ nav {
 }
 
 /* ---- Left Sidebar ---- */
+/* Base Sidebar Styles */
 .left-sidebar {
   position: fixed;
   top: 64px;
   left: 0;
   width: 380px;
   height: calc(100vh - 64px);
-  background: #f0f2f5;
   padding: 1rem;
   overflow-y: auto;
+  background: #fff;
+  transition: width 0.3s ease, left 0.3s ease;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
 }
 
+/* Standalone Collapsed State */
+.left-sidebar-collapsed {
+  width: 80px !important;
+  padding: 1rem 0.5rem;
+}
+
+/* Hide text elements specifically when collapsed */
+.left-sidebar-collapsed .btn-text, 
+.left-sidebar-collapsed .profile-name,
+.left-sidebar-collapsed .profile-profession,
+.left-sidebar-collapsed .profile-avatar .edit-overlay {
+  display: none !important;
+}
+
+/* Center icons in the mini-bar */
+.left-sidebar-collapsed .list-label {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.left-sidebar-collapsed mat-icon {
+  margin-right: 0;
+}
+
+/* Responsive Mobile View */
+@media (max-width: 768px) {
+  .left-sidebar {
+    width: 280px;
+    left: -280px; /* Hide off-screen */
+  }
+  
+  /* Show full sidebar on mobile when active */
+  .left-sidebar-mobile-open {
+    left: 0 !important;
+  }
+}
 /* ---- Sidebar Profile ---- */
 .profile-avatar {
   display: flex;

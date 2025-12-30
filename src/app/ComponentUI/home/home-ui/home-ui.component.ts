@@ -216,13 +216,14 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
     private echoService: EchoService,
     private pusherService: PusherService
   ) {
-    // optional eager call moved to ngOnInit flows
+   this.checkScreenSize();
   }
   subscription!: Subscription;
   private postsLoaded = false;
   allLoaded = false;
   perPage = 5;
   showLoadButton: boolean = false;
+  isSidebarCollapsed: boolean = true;
   // ----------------------- LIFECYCLE -----------------------
 
 
@@ -245,6 +246,22 @@ export class HomeUIComponent implements OnInit, AfterViewInit, OnDestroy {
   newPostSubscription!: Subscription;
   newPostsQueue: any[] = [];         // temporary queue for new posts
   hasNewPosts = false;
+
+@HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    this.isMobile = window.innerWidth <= 768;
+    if (this.isMobile) {
+      this.isSidebarCollapsed = true; // Auto-collapse on mobile
+    }
+  }
+
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
 
   loadRealtimePosts() {
     if (!this.newPostSubscription || this.newPostSubscription.closed) {

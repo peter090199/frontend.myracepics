@@ -75,9 +75,14 @@ export class SecurityRolesService {
     return this.http.delete(`${_url}${endpoint}`, { headers });
   }
 
-  submitData(formData: any): Observable<any> {
+  submitData(data: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post(`${_url}security`,formData, { headers });
+    return this.http.post(`${_url}security`,data, { headers });
+  }
+
+  saveAccessMenu(data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post(`${_url}saveAccessMenu`,data, { headers });
   }
 
 }

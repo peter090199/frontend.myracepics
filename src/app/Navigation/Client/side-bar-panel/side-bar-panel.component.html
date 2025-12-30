@@ -1,0 +1,107 @@
+<mat-sidenav-container class="sidenav-container">
+
+  <!-- SIDEBAR -->
+  <mat-sidenav mode="side" [(opened)]="sidebarOpen" class="recruit-sidenav">
+
+    <!-- LOGO -->
+    <div class="logo" *ngIf="!isMobile">
+      <img src="assets/images/logo.png" alt="logo">
+      <h3>Recruiter</h3>
+    </div>
+
+    <!-- MENU LIST -->
+    <mat-nav-list class="menu-list">
+
+      <ng-container *ngFor="let item of menuItems">
+
+        <!-- MAIN MENU WITHOUT SUBMENU -->
+        <a mat-list-item *ngIf="!item.submenus?.length" [routerLink]="item.route" routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <i class="{{ item.icon }} menu-icon"></i>
+          <span class="menu-text">{{ item.label }}</span>
+        </a>
+
+        <!-- MAIN MENU WITH SUBMENU -->
+        <div *ngIf="item.submenus?.length" class="submenu-wrapper">
+          <a mat-list-item (click)="toggleSubmenu(item)">
+            <i class="{{ item.icon }} menu-icon"></i>
+            <span class="menu-text">{{ item.label }}</span>
+            <span class="spacer"></span>
+            <mat-icon class="arrow">{{ item.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </a>
+
+          <!-- SUBMENU -->
+          <div class="submenu" *ngIf="item.expanded">
+            <a mat-list-item *ngFor="let sub of item.submenus" [routerLink]="sub.route" routerLinkActive="active-sub"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <i class="{{ sub.icon }} submenu-icon"></i>
+              <span class="submenu-text">{{ sub.label || sub.description }}</span>
+            </a>
+          </div>
+        </div>
+
+      </ng-container>
+
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <!-- MAIN CONTENT -->
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="topbar">
+      <button mat-icon (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="title">{{ pageTitle }}</span>
+      <span class="spacer"></span>
+
+      <!-- SEARCH -->
+      <button mat-icon>
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <!-- NOTIFICATIONS -->
+      <button mat-icon matTooltip="View Notifications" (click)="openNotifications()" [matBadge]="unreadCount"
+        [matBadgeHidden]="unreadCount === 0" matBadgeColor="warn">
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <!-- USER PROFILE BUTTON -->
+      <button mat-icon [matMenuTriggerFor]="userMenu">
+        <img *ngIf="profile?.coverphoto; else defaultIcon" [src]="profile.coverphoto" alt="Profile"
+          class="profile-icon" />
+        <ng-template #defaultIcon>
+          <mat-icon>account_circle</mat-icon>
+        </ng-template>
+      </button>
+
+
+      <mat-menu #userMenu="matMenu">
+<!-- 
+        <a mat-menu-item [routerLink]="getProfileUrl()">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </a> -->
+        <a mat-menu-item [routerLink]="getsettingsUrl()">
+          <mat-icon>settings</mat-icon>
+          <span>Profile</span>
+        </a>
+
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+
+      </mat-menu>
+
+
+    </mat-toolbar>
+
+    <!-- PAGE CONTENT -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

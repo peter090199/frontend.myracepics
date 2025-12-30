@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {  RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { UserhomepageComponent } from './Users/userhomepage/userhomepage.component';
 import { SignInUIComponent } from './SignIn/sign-in-ui/sign-in-ui.component';
 import { SignUpUIComponent } from './SignUp/sign-up-ui/sign-up-ui.component';
@@ -39,6 +39,10 @@ import { ApplyJobComponent } from './ComponentSharedUI/Jobs/apply-job/apply-job.
 import { ListAppliedJobsComponent } from './ComponentUI/jobs/list-applied-jobs/list-applied-jobs.component';
 import { ClientDashboardComponent } from './ComponentUI/dashboard/client-dashboard/client-dashboard.component';
 import { AdminDashboardComponent } from './ComponentUI/dashboard/admin-dashboard/admin-dashboard.component';
+import { SideBarPanelComponent } from './Navigation/Client/side-bar-panel/side-bar-panel.component';
+import { RoleGuard } from './AuthGuard/role.guard';
+import { CandidatesComponent } from './ComponentUI/Client/candidates/candidates.component';
+import { InterviewsComponent } from './ComponentUI/Client/interviews/interviews.component';
 
 const routes: Routes = [
   // Public routes
@@ -53,7 +57,7 @@ const routes: Routes = [
   { path: 'activation/:email', component: ActivationUIComponent },
   { path: 'layout', component: LayoutComponent },
   { path: 'curriculum-vitae', component: CurriculumVitaeUIComponent, canActivate: [AuthGuard] },
-  { path: 'user-cv', component: UserCVComponent },
+
   { path: 'upload-cv', component: UploadProfileComponent, canActivate: [AuthGuard] },
   { path: 'print-cv', component: PrintCVComponent, canActivate: [AuthGuard] },
   { path: 'socket', component: ChatUIComponent },
@@ -61,29 +65,94 @@ const routes: Routes = [
   {
     path: '',
     component: TopNavigationComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['DEF-USERS'] },
     children: [
       { path: 'profile/:code', component: ProfileUIComponent },
-      { path: 'profile/:code', component: CompanyProfileUIComponent },
+      { path: 'client_profile/:code', component: CompanyProfileUIComponent },
       { path: 'profile', component: ProfileUIComponent },
       { path: 'home', component: HomeUIComponent },
       { path: 'message', component: MessagesComponent },
       { path: 'network', component: NetworkingComponent },
       { path: 'settings', component: SettingsComponent },
       { path: 'search', component: UserListComponent },
+      { path: 'user-cv', component: UserCVComponent },
+      { path: 'jobs', component: JobsComponent },
+      { path: 'recommended-jobs/:transNo', component: JobsProfileComponent },
+      { path: 'apply-job/:transNo', component: ApplyJobComponent },
+      { path: 'applied-jobs', component: ListAppliedJobsComponent },
+
+    ]
+  },
+  {
+    path: 'recruiter',
+    component: SideBarPanelComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['DEF-CLIENT'] },
+    children: [
+      { path: 'client-dashboard', component: ClientDashboardComponent },
+      { path: 'home', component: HomeUIComponent },
+      { path: 'vacancies', component: JobPostingComponent },
+      { path: 'posting-job', component: PostingJobComponent },
+      { path: 'message', component: MessagesComponent },
+      { path: 'settings', component: SettingsComponent },
+      { path: 'recommended-jobs/:transNo', component: JobsProfileComponent },
+      { path: 'client_profile/:code', component: CompanyProfileUIComponent },
+      { path: 'profile/:code', component: ProfileUIComponent },
+      { path: 'network', component: NetworkingComponent },
+      { path: 'candidates', component: CandidatesComponent },
+      { path: 'interviews', component: InterviewsComponent },
+    ]
+  },
+  {
+    path: 'admin',
+    component: SideBarPanelComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['DEF-ADMIN'] },
+    children: [
+       { path: 'admin-dashboard', component: AdminDashboardComponent },
+      { path: 'home', component: HomeUIComponent },
+      { path: 'message', component: MessagesComponent },
+      { path: 'settings', component: SettingsComponent },
+      { path: 'client_profile/:code', component: CompanyProfileUIComponent },
+      { path: 'network', component: NetworkingComponent },
+      { path: 'user', component: UsersComponent },
+    ]
+  },
+  {
+    path: 'masteradmin',
+    component: SideBarPanelComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['DEF-MASTERADMIN'] },
+    children: [
+      /* DASHBOARD */
+      { path: 'admin-dashboard', component: ClientDashboardComponent },
+      /* CORE PAGES */
+      { path: 'home', component: HomeUIComponent },
+      { path: 'message', component: MessagesComponent },
+      { path: 'network', component: NetworkingComponent },
+      { path: 'settings', component: SettingsComponent },
+      { path: 'vacancies', component: JobPostingComponent },
+      /* PROFILE */
+      { path: 'profile/:code', component: ProfileUIComponent },
+      { path: 'client_profile/:code', component: CompanyProfileUIComponent },
+
+      /* ADMIN MANAGEMENT */
+      { path: 'search', component: UserListComponent },
       { path: 'security', component: SecurityRolesComponent },
       { path: 'user', component: UsersComponent },
       { path: 'menu', component: MenuComponent },
       { path: 'role', component: RoleComponent },
-      { path: 'job_posting', component: JobPostingComponent },
-      // { path: 'jobs', component: JobsComponent },
-      { path: 'recommended-jobs/:transNo', component: JobsProfileComponent },
-      { path: 'posting-job', component: PostingJobComponent },
-      { path: 'client_profile/:code', component: CompanyProfileUIComponent },
+
+      /* JOBS */
+      { path: 'user-cv', component: UserCVComponent },
+      { path: 'profile/recommended-jobs/:transNo', component: JobsProfileComponent },
+      { path: 'client_profile/recommended-jobs/:transNo', component: JobsProfileComponent },
       { path: 'apply-job/:transNo', component: ApplyJobComponent },
       { path: 'applied-jobs', component: ListAppliedJobsComponent },
-      { path: 'client-dashboard', component: ClientDashboardComponent },
 
+      { path: 'candidates', component: CandidatesComponent },
+      { path: 'interviews', component: InterviewsComponent },
     ]
   },
   {

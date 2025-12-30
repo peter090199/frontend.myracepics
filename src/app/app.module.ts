@@ -122,7 +122,11 @@ import { UserResumeUIComponent } from './ComponentSharedUI/Resume/user-resume-ui
 import { AppliedStatusDialogComponent } from './ComponentUI/jobs/applied-status-dialog/applied-status-dialog.component';
 import { ClientDashboardComponent } from './ComponentUI/dashboard/client-dashboard/client-dashboard.component';
 import { AdminDashboardComponent } from './ComponentUI/dashboard/admin-dashboard/admin-dashboard.component';
-
+import { SideBarPanelComponent } from './Navigation/Client/side-bar-panel/side-bar-panel.component';
+import { MatIconModule } from '@angular/material/icon';
+import { CandidatesComponent } from './ComponentUI/Client/candidates/candidates.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { InterviewsComponent } from './ComponentUI/Client/interviews/interviews.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -238,6 +242,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppliedStatusDialogComponent,
     ClientDashboardComponent,
     AdminDashboardComponent,
+    SideBarPanelComponent,
+    CandidatesComponent,
+    InterviewsComponent,
+   
   ],
   imports: [
     BrowserModule,
@@ -249,7 +257,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSidenavModule,
     FormsModule,
     MatTabsModule,
-
+    MatIconModule,
+    MatDialogModule,
     ToastrModule.forRoot(), // Correctly placed ToastrModule
     TranslateModule.forRoot({
       loader: {
