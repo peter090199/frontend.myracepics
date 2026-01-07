@@ -64,7 +64,31 @@ export class JobListService {
       catchError(error => this.handleAuthError(error))
     );
   }
+  getJobVacanciesByCode(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getJobVacanciesCountByCode`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+  getAppliedJobCount(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getAppliedJobCount`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
+  getPendingReviews(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getPendingReviews`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
 
+   getHired(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getHired`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
   deleteJobPosting(id: number): Observable<any> {
     const headers = this.createHeaders();
     return this.http.delete<any>(`${_url}deleteJobPosting/${id}`, { headers });
