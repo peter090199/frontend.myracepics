@@ -1,0 +1,102 @@
+/* Dialog Title */
+h2[mat-dialog-title] {
+  font-size: 22px;
+  font-weight: 600;
+  color: #0d47a1;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+/* Divider */
+mat-divider {
+  margin-bottom: 20px;
+}
+
+/* Photographer Role Card */
+.role-card.photographer {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(145deg, #ffffff, #f9f9f9);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 25px 20px;
+  margin: 0 auto;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hover effect for cards (optional inside dialog) */
+.role-card.photographer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* Description text */
+.role-description {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* Feature List */
+.role-card.photographer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.role-card.photographer ul li {
+  font-size: 14px;
+  color: #333;
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 12px;
+}
+
+/* Custom checkmark */
+.role-card.photographer ul li::before {
+  content: '✔';
+  position: absolute;
+  left: 0;
+  color: #1976d2;
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h2[mat-dialog-title] {
+    font-size: 20px;
+  }
+
+  .role-card.photographer {
+    padding: 20px 15px;
+    max-width: 95%;
+  }
+
+  .role-description {
+    font-size: 14px;
+  }
+
+  .role-card.photographer ul li {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-card.photographer {
+    padding: 15px 10px;
+  }
+
+  h2[mat-dialog-title] {
+    font-size: 18px;
+  }
+
+  .role-description {
+    font-size: 13px;
+  }
+
+  .role-card.photographer ul li {
+    font-size: 12px;
+  }
+}

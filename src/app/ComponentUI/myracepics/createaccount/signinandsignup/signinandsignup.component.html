@@ -87,18 +87,6 @@
                             </mat-error>
                         </mat-form-field>
 
-                        <!-- ROLE -->
-                        <!-- <mat-form-field appearance="standard" class="full">
-<mat-label>Register as</mat-label>
-<mat-select formControlName="role">
-<mat-option value="runner">Runner</mat-option>
-<mat-option value="photographer">Photographer</mat-option>
-</mat-select>
-<mat-error *ngIf="signupForm.get('role')?.hasError('required')">
-Role is required
-</mat-error>
-</mat-form-field> -->
-
                         <mat-form-field appearance="standard" class="full">
                             <mat-label>Password</mat-label>
                             <input matInput type="password" formControlName="password" />
@@ -109,24 +97,24 @@ Role is required
                             <input matInput type="password" formControlName="password_confirmation" />
                         </mat-form-field>
 
-                        <br />
+                        <!-- ROLE SELECTION -->
+                        <mat-radio-group formControlName="role" class="full" (change)="onRoleSelected($event.value)">
+                            <mat-radio-button value="runner">Runner</mat-radio-button>
+                            <mat-radio-button value="photographer">Photographer</mat-radio-button>
+                        </mat-radio-group>
 
-                        <!-- <button mat-raised-button color="primary" class="btn full" type="submit"
-                            [disabled]="signupForm.invalid">
-                            Register
-                        </button> -->
+                        <mat-error *ngIf="signupForm.get('role')?.hasError('required')">
+                            Role is required
+                        </mat-error>
 
-                        <button mat-raised-button color="primary" class="btn full" type="button"
-                            (click)="openRoleDialog()">
+                        <button mat-raised-button color="primary" [disabled]="signupForm.invalid" class="btn full"
+                            type="button" (click)="onSignup()">
                             Register
                         </button>
 
-
                     </form>
                 </mat-tab>
-
             </mat-tab-group>
         </div>
-
     </div>
 </div>

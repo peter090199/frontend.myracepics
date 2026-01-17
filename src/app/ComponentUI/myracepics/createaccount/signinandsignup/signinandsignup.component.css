@@ -106,3 +106,37 @@
     padding: 25px;
   }
 }
+
+/* Container for radio buttons */
+mat-radio-group.full {
+  display: flex;            /* Layout radio buttons horizontally */
+  gap: 20px;                /* Space between buttons */
+  margin: 10px 0;           /* Top and bottom spacing */
+  flex-wrap: wrap;          /* Wrap on smaller screens */
+}
+
+/* Individual radio button */
+mat-radio-button {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Change color when selected */
+mat-radio-button.mat-radio-checked .mat-radio-label-content {
+  color: #1976d2; /* Primary blue */
+  font-weight: 600;
+}
+
+/* Hover effect */
+mat-radio-button:hover .mat-radio-label-content {
+  color: #1565c0; /* Darker blue on hover */
+}
+
+/* For smaller screens */
+@media (max-width: 600px) {
+  mat-radio-group.full {
+    flex-direction: row; /* Stack vertically on mobile */
+  }
+}
