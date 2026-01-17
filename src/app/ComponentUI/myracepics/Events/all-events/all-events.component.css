@@ -1,0 +1,234 @@
+.events-unique-grid-container {
+  max-height: 90vh; /* max height to prevent overflowing viewport */
+  overflow-y: auto; /* enable vertical scroll when content exceeds max-height */
+  box-sizing: border-box; 
+  overflow-x: hidden;
+}
+
+.events-unique-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* minimum 5 columns on large screens */
+  gap: 10px;
+  width: 100%;
+}
+
+/* Filter container */
+.filter-container {
+  display: flex;
+  justify-content: center; 
+  flex-wrap: wrap;         
+  gap: 5px;               
+  margin: 5px auto;       
+  max-width: 1200px;       
+}
+mat-icon {
+  vertical-align: middle;
+  margin-right: 6px;
+  color: #555; /* default icon color */
+}
+
+span {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.skeleton-banner {
+  width: 100%;
+  height: 150px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.skeleton-content {
+  padding: 10px;
+}
+
+.skeleton-line {
+  height: 15px;
+  background-color: #e0e0e0;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.skeleton-line.title {
+  width: 60%;
+  height: 20px;
+}
+
+.skeleton-button {
+  width: 100%;
+  height: 35px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+}
+
+/* Shimmer Animation */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { left: -150px; }
+  100% { left: 100%; }
+}
+
+/* Event Card */
+.event-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+  margin: 5px;
+  margin-bottom: 10px;
+}
+
+.event-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+/* Event Banner */
+.event-banner {
+  position: relative;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+}
+
+.event-banner img.event-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.event-banner img.event-img:hover {
+  transform: scale(1.05);
+}
+
+/* Skeleton Banner */
+.skeleton-banner {
+  width: 100%;
+  height: 160px;
+  background: #e0e0e0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.6) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% { left: 100%; }
+}
+
+/* Status Badge */
+.status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.status-badge.upcoming { background-color: #2196f3; }
+.status-badge.running { background-color: #ff9800; }
+.status-badge.completed { background-color: #4caf50; }
+
+/* Event Details */
+.event-details {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.event-details h3 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.event-details p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #555;
+}
+
+.actions {
+  display: flex;
+  gap: 2px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* RESPONSIVE: Mobile Layout */
+@media (max-width: 1200px) {
+  .events-unique-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns for large tablets */
+  }
+}
+
+@media (max-width: 992px) {
+  .events-unique-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .events-unique-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile landscape */
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .event-card {
+    width: 100%;
+  }
+
+  .filter-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .events-unique-grid {
+    grid-template-columns: 1fr; /* 1 column for small mobile */
+  }
+}

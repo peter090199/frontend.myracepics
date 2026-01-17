@@ -1,0 +1,117 @@
+/* ----- Form Card Styling ----- */
+.form-card {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ----- Form Rows ----- */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+/* Half-width fields on desktop */
+.half-width {
+  flex: 1 1 calc(50% - 20px);
+}
+
+/* Full-width for small screens */
+@media (max-width: 600px) {
+  .half-width {
+    flex: 1 1 100%;
+  }
+}
+
+/* ----- Image Upload Card ----- */
+.upload-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+}
+
+.upload-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #555;
+}
+
+.image-preview {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* ----- Save/Update Button ----- */
+button[mat-raised-button] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ----- Saved Events ----- */
+.saved-events h3 {
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+.saved-events mat-card {
+  position: relative;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.saved-events mat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Edit Button Position */
+.saved-events mat-card button[mat-mini-fab] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Responsive grid for saved events */
+@media (min-width: 601px) {
+  .saved-events {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .saved-events {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+/* ----- General Text Styling ----- */
+mat-label {
+  font-weight: 500;
+}
+
+.mat-form-field-appearance-standard .mat-form-field-flex {
+  padding: 0 8px;
+}

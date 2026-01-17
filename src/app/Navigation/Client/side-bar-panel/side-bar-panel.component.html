@@ -17,14 +17,14 @@
         <!-- MAIN MENU WITHOUT SUBMENU -->
         <a mat-list-item *ngIf="!item.submenus?.length" [routerLink]="item.route" routerLinkActive="active-link"
           [routerLinkActiveOptions]="{ exact: true }">
-          <i class="{{ item.icon }} menu-icon"></i>
+          <mat-icon>{{ item.icon }}</mat-icon>
           <span class="menu-text">{{ item.label }}</span>
         </a>
 
         <!-- MAIN MENU WITH SUBMENU -->
         <div *ngIf="item.submenus?.length" class="submenu-wrapper">
           <a mat-list-item (click)="toggleSubmenu(item)">
-            <i class="{{ item.icon }} menu-icon"></i>
+           <mat-icon>{{ item.icon }}</mat-icon>
             <span class="menu-text">{{ item.label }}</span>
             <span class="spacer"></span>
             <mat-icon class="arrow">{{ item.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
@@ -34,7 +34,7 @@
           <div class="submenu" *ngIf="item.expanded">
             <a mat-list-item *ngFor="let sub of item.submenus" [routerLink]="sub.route" routerLinkActive="active-sub"
               [routerLinkActiveOptions]="{ exact: true }">
-              <i class="{{ sub.icon }} submenu-icon"></i>
+             <mat-icon>{{ item.icon }}</mat-icon>
               <span class="submenu-text">{{ sub.label || sub.description }}</span>
             </a>
           </div>

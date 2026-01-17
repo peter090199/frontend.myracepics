@@ -135,13 +135,6 @@ body {
   background-color: #f4eeee;
   height: 100vh;
 }
-.section {
-  padding: 10px; /* added px */
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 90vh;
-  width: 100%;
-}
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
@@ -1635,7 +1628,7 @@ react emoji */
 }
 
 .spacer {
-  flex: 1 1 auto;
+  flex: 1 auto;
 }
 
 .reply-body {

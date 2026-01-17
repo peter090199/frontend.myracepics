@@ -127,6 +127,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { CandidatesComponent } from './ComponentUI/Client/candidates/candidates.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InterviewsComponent } from './ComponentUI/Client/interviews/interviews.component';
+import { UserUIComponent } from './ComponentUI/myracepics/navigation/user-ui/user-ui.component';
+import { SigninandsignupComponent } from './ComponentUI/myracepics/createaccount/signinandsignup/signinandsignup.component';
+import { TemplateComponent } from './ComponentUI/myracepics/navigation/template/template.component';
+import { ProfileEventComponent } from './ComponentUI/myracepics/Events/profile-event/profile-event.component';
+import { ImagePreviewDialogComponent } from './ComponentUI/myracepics/Events/image-preview-dialog/image-preview-dialog.component';
+import { ViewCartCheckOutComponent } from './ComponentUI/myracepics/Events/Cart/view-cart-check-out/view-cart-check-out.component';
+import { ToolbarUIComponent } from './ComponentUI/myracepics/navigation/toolbar-ui/toolbar-ui.component';
+import { AllEventsComponent } from './ComponentUI/myracepics/Events/all-events/all-events.component';
+import { UploadPhotosEventComponent } from './ComponentUI/myracepics/Events/upload-photos-event/upload-photos-event.component';
+import { CreateEventsComponent } from './ComponentUI/myracepics/Events/create-events/create-events.component';
+import { RoleselecteduiComponent } from './ComponentUI/myracepics/createaccount/role/roleselectedui/roleselectedui.component';
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -245,7 +257,17 @@ export function HttpLoaderFactory(http: HttpClient) {
     SideBarPanelComponent,
     CandidatesComponent,
     InterviewsComponent,
-   
+    UserUIComponent,
+    SigninandsignupComponent,
+    TemplateComponent,
+    ProfileEventComponent,
+    ImagePreviewDialogComponent,
+    ViewCartCheckOutComponent,
+    ToolbarUIComponent,
+    AllEventsComponent,
+    UploadPhotosEventComponent,
+    CreateEventsComponent,
+    RoleselecteduiComponent
   ],
   imports: [
     BrowserModule,

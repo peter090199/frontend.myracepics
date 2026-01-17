@@ -1,0 +1,132 @@
+<div class="auth-container">
+    <div class="auth-card">
+
+        <div class="auth-cover"></div>
+
+        <div class="auth-content">
+            <mat-tab-group [(selectedIndex)]="selectedTab" animationDuration="500ms"
+                (selectedIndexChange)="onTabChange($event)">
+
+                <!-- ================= LOGIN ================= -->
+                <mat-tab label="Login">
+                    <br />
+                    <h2>Welcome Back</h2>
+                    <br />
+
+                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                        <mat-form-field appearance="standard" class="full-width">
+                            <mat-label>Email</mat-label>
+                            <input matInput type="email" placeholder="Enter your email" formControlName="email" />
+
+                            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+                                Email is required
+                            </mat-error>
+                            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+                                Invalid email address
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="standard" class="full-width">
+                            <mat-label>Password</mat-label>
+                            <input matInput [type]="passwordVisible ? 'text' : 'password'"
+                                placeholder="Enter your password" formControlName="password" />
+
+                            <mat-icon matSuffix (click)="togglePasswordVisibility()" style="cursor:pointer">
+                                {{ passwordVisible ? 'visibility_off' : 'visibility' }}
+                            </mat-icon>
+
+                            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                                Password is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <br /><br />
+
+                        <button mat-raised-button color="primary" class="full" type="submit"
+                            [disabled]="isLoading || loginForm.invalid">
+                            Login
+                        </button>
+
+                    </form>
+
+                    <div class="links">
+                        <a (click)="switchToSignUp()">Don't have an account? Sign up</a><br />
+                        <a routerLink="/forgetpassword">Forgot Password?</a><br /><br />
+                        <a routerLink="/">Back to home</a>
+                    </div>
+                </mat-tab>
+
+                <!-- ================= REGISTER ================= -->
+                <mat-tab label="Register">
+                    <h2>Create Account</h2>
+
+                    <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+
+                        <mat-form-field appearance="standard" class="full">
+                            <mat-label>First Name</mat-label>
+                            <input matInput formControlName="firstname" />
+                            <mat-error *ngIf="signupForm.get('firstname')?.hasError('required')">
+                                First name is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="standard" class="full">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput formControlName="lastname" />
+                            <mat-error *ngIf="signupForm.get('lastname')?.hasError('required')">
+                                Last name is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="standard" class="full">
+                            <mat-label>Email</mat-label>
+                            <input matInput type="email" formControlName="email" />
+                            <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
+                                Email is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!-- ROLE -->
+                        <!-- <mat-form-field appearance="standard" class="full">
+<mat-label>Register as</mat-label>
+<mat-select formControlName="role">
+<mat-option value="runner">Runner</mat-option>
+<mat-option value="photographer">Photographer</mat-option>
+</mat-select>
+<mat-error *ngIf="signupForm.get('role')?.hasError('required')">
+Role is required
+</mat-error>
+</mat-form-field> -->
+
+                        <mat-form-field appearance="standard" class="full">
+                            <mat-label>Password</mat-label>
+                            <input matInput type="password" formControlName="password" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="standard" class="full">
+                            <mat-label>Confirm Password</mat-label>
+                            <input matInput type="password" formControlName="password_confirmation" />
+                        </mat-form-field>
+
+                        <br />
+
+                        <!-- <button mat-raised-button color="primary" class="btn full" type="submit"
+                            [disabled]="signupForm.invalid">
+                            Register
+                        </button> -->
+
+                        <button mat-raised-button color="primary" class="btn full" type="button"
+                            (click)="openRoleDialog()">
+                            Register
+                        </button>
+
+
+                    </form>
+                </mat-tab>
+
+            </mat-tab-group>
+        </div>
+
+    </div>
+</div>

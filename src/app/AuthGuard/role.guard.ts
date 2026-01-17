@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree
+} from '@angular/router';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,11 +20,11 @@ export class RoleGuard implements CanActivate {
   ): boolean | UrlTree {
 
     const allowedRoles = route.data['roles'] as string[];
-    const userRole = sessionStorage.getItem('role');
+    const userRole = sessionStorage.getItem('role'); // runner | admin | masteradmin | photographer
 
-    // ❌ No role found → force login
+    // ❌ Not logged in
     if (!userRole) {
-      return this.router.parseUrl('/signInUI');
+      return this.router.parseUrl('/createaccount');
     }
 
     // ✅ Role allowed
@@ -25,33 +32,27 @@ export class RoleGuard implements CanActivate {
       return true;
     }
 
-    // ❌ Role not allowed → redirect by role
+    // ❌ Role not allowed → redirect
     return this.redirectByRole(userRole);
   }
 
   private redirectByRole(role: string): UrlTree {
     switch (role) {
 
-      case 'DEF-CLIENT':
-        return this.router.parseUrl('/recruiter');
+      case 'photographer':
+        return this.router.parseUrl('/photographer');
 
-      case 'DEF-ADMIN':
+      case 'admin':
         return this.router.parseUrl('/admin/admin-dashboard');
 
-      case 'DEF-MASTERADMIN':
+      case 'masteradmin':
         return this.router.parseUrl('/masteradmin/admin-dashboard');
 
-      case 'DEF-SUPERADMIN':
-        return this.router.parseUrl('/superadmin/dashboard');
-
-      case 'DEF-USERS':
-        return this.router.parseUrl('/home');
+      case 'runner':
+        return this.router.parseUrl('/runner');
 
       default:
         return this.router.parseUrl('/homepage');
     }
   }
-
-
-
 }

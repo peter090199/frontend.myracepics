@@ -1,0 +1,28 @@
+<h2>My Cart</h2>
+<mat-divider></mat-divider>
+
+<ng-container *ngIf="cart.length > 0; else emptyCart">
+  <mat-list>
+    <mat-list-item *ngFor="let item of cart">
+      <img matListAvatar [src]="item.image" alt="{{item.title}}">
+      <div class="cart-item-info">
+        <h4 matLine>{{ item.title }}</h4>
+        <p matLine>₱{{ item.price | number }}</p>
+      </div>
+      <button mat-icon-button color="warn" (click)="removeFromCart(item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+
+  <mat-divider></mat-divider>
+
+  <div class="cart-footer">
+    <p>Total: ₱{{ getCartTotal() | number }}</p>
+    <button mat-raised-button color="primary" (click)="checkout()">Checkout</button>
+  </div>
+</ng-container>
+
+<ng-template #emptyCart>
+  <p class="empty-cart">Your cart is empty</p>
+</ng-template>

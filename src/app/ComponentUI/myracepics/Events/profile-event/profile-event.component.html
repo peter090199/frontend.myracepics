@@ -1,0 +1,188 @@
+
+<mat-sidenav-container class="event-sidenav-container">
+  <mat-sidenav *ngIf="!isMobile" mode="side" opened class="event-sidebar">
+    <!-- EVENT HEADER IMAGE -->
+    <div class="event-header-image">
+      <img [src]="event.image" alt="Event Image" class="event-cover" />
+      <div class="event-header-overlay">
+        <h2 class="event-title">{{ event.title }}</h2>
+        <span class="event-details">
+          📍 {{ event.location }} | 📅 {{ event.date | date:'MMMM d, y' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- SIDEBAR CONTENT -->
+    <div class="sidebar-content">
+      <div class="event-stats">
+        <div class="stat">
+          <mat-icon color="primary">photo_library</mat-icon>
+          <span>{{ event.photosCount | number }} Photos</span>
+        </div>
+        <div class="stat">
+          <mat-icon color="primary">people</mat-icon>
+          <span>{{ event.participantsCount | number }} Participants</span>
+        </div>
+      </div>
+
+      <div class="event-actions">
+        <button mat-stroked-button color="accent" class="full-width">
+          <mat-icon>share</mat-icon> Share Event
+        </button>
+        <button mat-stroked-button color="primary" class="full-width">
+          <mat-icon>event</mat-icon> Join Event
+        </button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Bib Number</mat-label>
+        <input matInput placeholder="Enter your bib #" />
+        <button mat-icon-button matSuffix>
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </mat-sidenav>
+
+
+  <!-- Main content -->
+  <mat-sidenav-content class="event-main">
+
+    <!-- Top sticky toolbar with cart -->
+    <!-- <mat-toolbar color="basic" class="cart-toolbar" appearance="flat">
+
+      <button mat-icon-button [matBadge]="cart.length" matBadgeColor="warn" [matMenuTriggerFor]="cartMenu">
+        <mat-icon>shopping_cart</mat-icon>
+      </button>
+
+      <mat-menu #cartMenu="matMenu" class="cart-menu">
+        <ng-container *ngIf="cart.length > 0; else emptyCart">
+          <div class="cart-items">
+            <mat-list>
+              <mat-list-item *ngFor="let item of cart">
+                <img matListAvatar [src]="item.image" alt="{{item.title}}">
+                <div class="cart-item-info">
+                  <h4 matLine>{{ item.title }}</h4>
+                  <p matLine>₱{{ 100 | number }}</p>
+                </div>
+                <button mat-icon-button color="warn" (click)="removeFromCart(item)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="cart-footer">
+            <p>Total: ₱{{ 6000 | number }}</p>
+            <button mat-raised-button color="primary" [routerLink]="['/cart', cartCode]">
+              View Cart
+            </button>
+
+          </div>
+        </ng-container>
+
+        <ng-template #emptyCart>
+          <p class="empty-cart">Your cart is empty</p>
+        </ng-template>
+      </mat-menu>
+
+    </mat-toolbar> -->
+
+    <!-- <mat-divider></mat-divider> -->
+
+    <!-- Mobile top header -->
+    <ng-container *ngIf="isMobile">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span *ngIf="!loading">Sinulog Run 2026 - Cebu Business Park</span>
+              <span *ngIf="loading" class="skeleton skeleton-text short"></span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="mobile-panel-content">
+            <ng-container *ngIf="loading">
+              <div class="skeleton skeleton-image"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </ng-container>
+
+            <ng-container *ngIf="!loading">
+              <img src="assets/logo.jpg" alt="Event Image" class="mobile-header-image" />
+              <p>🖼 183,736 Photos</p>
+              <p>👥 12,000 Participants</p>
+              <button mat-stroked-button color="accent">
+                <mat-icon>share</mat-icon> Share Event
+              </button>
+              <mat-divider></mat-divider>
+              <mat-form-field appearance="standard" class="full-width">
+                <mat-label>Bib Number</mat-label>
+                <input matInput placeholder="Enter your bib #" />
+                <button mat-icon-button matSuffix>
+                  <mat-icon>search</mat-icon>
+                </button>
+              </mat-form-field>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+
+    <!-- Events grid -->
+    <div class="events-grid">
+      <ng-container *ngIf="loading; else showEvents">
+        <article class="event-card" *ngFor="let i of [1,2,3,4,5,6]">
+          <div class="event-banner skeleton skeleton-image"></div>
+          <div class="event-content">
+            <div class="skeleton skeleton-text short"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text short"></div>
+            <div class="event-actions shop-actions">
+              <div class="skeleton skeleton-button"></div>
+              <div class="skeleton skeleton-button"></div>
+            </div>
+          </div>
+        </article>
+      </ng-container>
+
+      <ng-template #showEvents>
+        <!-- <article class="event-card" *ngFor="let event of events">
+            <div class="event-banner" [ngStyle]="{'background-image': 'url(' + event.image + ')'}"
+              (click)="previewImages(event)">
+              <span class="status-badge" [ngClass]="event.status">
+                PRICE ₱{{ event.price | number }}
+              </span>
+
+              <span class="watermark">{{ event.photographer }}</span>
+
+
+              <div class="event-content">
+                <div class="button-end">
+
+                  <button mat-raised-button [color]="isInCart(event) ? 'warn' : 'primary'"
+                    (click)="addToCart(event); $event.stopPropagation()">
+                    <mat-icon>shopping_cart</mat-icon>
+                    {{ isInCart(event) ? 'Added' : 'Add to Cart' }}
+                  </button>
+
+                  <button mat-raised-button color="basic" (click)="buyNow(event); $event.stopPropagation()">
+                    <mat-icon>payment</mat-icon>
+                    Buy Now
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </article> -->
+
+      </ng-template>
+    </div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

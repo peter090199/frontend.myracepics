@@ -4,9 +4,8 @@ import Pusher from 'pusher-js';
 
 export const environment = {
   production: true,
-  //apiUrl: 'http://localhost:8000/api/' 
-  apiUrl: 'https://exploredition.com/public/api/',
-
+  apiUrl: 'https://backend.myracepics.com/public/api/', 
+  //apiUrl: 'https://exploredition.com/public/api/',
 }; 
 
 export const echo = new Echo({
@@ -22,3 +21,13 @@ export const echo = new Echo({
     },
     client: Pusher, // Ensure Laravel Echo uses the correct Pusher client
 });
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBM05Q4VufV84DW70N7QSQFYJPDiIo5ki8",
+  authDomain: "racepics-storage.firebaseapp.com",
+  projectId: "racepics-storage",
+  storageBucket: "racepics-storage.firebasestorage.app",
+  messagingSenderId: "679405043618",
+  appId: "1:679405043618:web:7bfab3d27aee02aaaabcfb"
+};

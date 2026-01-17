@@ -1,0 +1,54 @@
+<h2 mat-dialog-title class="dialog-title">
+  Welcome to <span>MyRacePICS</span>
+  <button mat-icon-button class="close-button" (click)="dialogRef.close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</h2>
+
+
+<p class="dialog-subtitle">
+  Personalize your experience! Tell us a bit about yourself to get started.
+</p>
+
+<div class="role-container">
+
+  <!-- BUYER / RUNNER -->
+  <mat-card class="role-card buyer" (click)="selectRole('runner')">
+    <div class="role-header">
+      <mat-icon class="role-icon">groups</mat-icon>
+      <h3>I'm a Runner / Buyer</h3>
+    </div>
+
+    <p class="role-description">
+      Find and enjoy all your race photos in one place. Stay updated and share your achievements with ease.
+    </p>
+
+    <ul>
+      <li>Access all your race photos anytime</li>
+      <li>Receive notifications for new photos</li>
+      <li>Share your favorite moments on social media</li>
+      <li>Connect with event photographers</li>
+    </ul>
+  </mat-card>
+
+  <!-- PHOTOGRAPHER -->
+  <mat-card class="role-card photographer" (click)="selectRole('photographer')">
+    <div class="role-header">
+      <mat-icon class="role-icon">photo_camera</mat-icon>
+      <h3>I'm a Photographer</h3>
+    </div>
+
+    <p class="role-description">
+      Capture, share, and monetize your event photography while building your professional portfolio.
+    </p>
+
+    <ul>
+      <li>Upload and organize event photos</li>
+      <li>Track photo engagement and downloads</li>
+      <li>Earn money when people download your photos</li>
+      <li>Showcase your photography portfolio</li>
+      <li>Connect with event organizers and runners</li>
+    </ul>
+  </mat-card>
+
+</div>

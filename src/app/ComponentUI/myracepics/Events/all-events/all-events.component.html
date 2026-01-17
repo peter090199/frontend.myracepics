@@ -1,0 +1,91 @@
+<section class="events-unique-grid-container">
+
+  <div class="c">
+    <mat-form-field appearance="outline" class="w-140">
+      <mat-label>Search Events</mat-label>
+      <input matInput [(ngModel)]="eventSearch" (keyup)="filterEvents()">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate">
+      <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>To</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate">
+      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <!-- TABS -->
+  <mat-tab-group [(selectedIndex)]="selectedTab" (selectedTabChange)="onTabChange()">
+    <mat-tab label="All Events"></mat-tab>
+    <mat-tab label="Upcoming"></mat-tab>
+    <mat-tab label="Completed"></mat-tab>
+  </mat-tab-group>
+  <br><br>
+
+  <!-- LOADING SKELETON -->
+  <ng-container *ngIf="loading; else eventCards">
+    <!-- <div class="skeleton-card" *ngFor="let event of filteredEvents">
+      <div class="skeleton-banner shimmer"></div>
+      <div class="skeleton-content">
+        <div class="skeleton-line title shimmer"></div>
+        <div class="skeleton-line shimmer"></div>
+        <div class="skeleton-line shimmer"></div>
+        <div class="skeleton-button shimmer"></div>
+      </div>
+    </div> -->
+  </ng-container>
+
+  <!-- REAL EVENT CARDS -->
+  <ng-template #eventCards>
+    <div class="events-unique-grid">
+      <mat-card class="event-card" *ngFor="let event of events">
+
+        <!-- IMAGE WITH SKELETON -->
+        <div class="event-banner" *ngFor="let img of event.image; let i = index">
+          <!-- Skeleton -->
+          <div class="skeleton-banner shimmer" *ngIf="!event.imageLoaded[i]"></div>
+          <!-- Real Image -->
+          <img [src]="img" (load)="onImageLoad(event, i)" alt="Event Image" class="event-img"
+            [hidden]="!event.imageLoaded[i]">
+        </div>
+        <div class="event-details">
+          <h3>{{ event.title }}</h3>
+          <p><mat-icon>place</mat-icon> {{ event.location }}</p>
+          <p><mat-icon>calendar_today</mat-icon>
+            {{ event.date }}
+          </p>
+          <p><mat-icon>event</mat-icon>
+            {{ event.category }}
+          </p>
+
+          <button mat-icon-button color="primary" (click)="shareEvent(event)">
+            <mat-icon>share</mat-icon>
+          </button>
+          <!-- <button mat-raised-button color="primary" routerLink="/events/shop-section/{{ event.title }}">
+                View Photos
+              </button> -->
+          <button mat-button color="primary" [routerLink]="eventProfileLink(event)" class="full-width">
+            View Photos
+          </button>
+
+
+          <button mat-button color="basic" class="full-width">
+            Upload Photos
+          </button>
+
+        </div>
+
+      </mat-card>
+      <br><br>
+    </div>
+  </ng-template>
+
+
+</section>

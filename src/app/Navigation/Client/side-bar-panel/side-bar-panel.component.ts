@@ -128,7 +128,7 @@ export class SideBarPanelComponent implements OnInit, OnDestroy {
         localStorage.clear();
         localStorage.setItem('showWebsiteChat', 'false');
         localStorage.setItem('cookiesAccepted', 'true');
-        window.location.href = '/homepage';
+        window.location.href = '/';
       },
       error: err => console.error('Logout failed:', err)
     });

@@ -30,6 +30,7 @@ export class TNavigationService {
   }
 
   // Example of a GET request
+  
   getData(): Observable<any> {
     const headers = this.createHeaders();
     const params = this.createParams();

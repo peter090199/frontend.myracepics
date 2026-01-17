@@ -1,0 +1,82 @@
+<div class="form-card">
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+
+    <!-- Row 1: Title & Location -->
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="half-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="Enter event title" />
+        <mat-error *ngIf="eventForm.controls['title'].invalid && eventForm.controls['title'].touched">
+          Title is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard" class="half-width">
+        <mat-label>Location</mat-label>
+        <input matInput formControlName="location" placeholder="Enter location" />
+        <mat-error *ngIf="eventForm.controls['location'].invalid && eventForm.controls['location'].touched">
+          Location is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Row 2: Date & Category -->
+    <div class="form-row">
+      <mat-form-field appearance="standard" class="half-width">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" formControlName="date" />
+        <mat-error *ngIf="eventForm.controls['date'].invalid && eventForm.controls['date'].touched">
+          Date is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard" class="half-width">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option value="Marathon">Marathon</mat-option>
+          <mat-option value="Fun Run">Fun Run</mat-option>
+          <mat-option value="Swim">Swim</mat-option>
+          <mat-option value="Relay">Relay</mat-option>
+          <mat-option value="Charity Run">Charity Run</mat-option>
+        </mat-select>
+        <mat-error *ngIf="eventForm.controls['category'].invalid && eventForm.controls['category'].touched">
+          Category is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Image Upload -->
+    <div class="upload-card">
+      <div class="upload-header">
+        <mat-icon>image</mat-icon>
+        <span>Event Image</span>
+      </div>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      <img *ngIf="imagePreview" [src]="imagePreview" class="image-preview" />
+    </div>
+
+    <!-- Save / Update Button -->
+    <div align="end" style="margin-top: 15px;">
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+        <mat-icon>save</mat-icon>
+        {{ btnSave }}
+        <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="20" style="margin-left: 8px;"></mat-progress-spinner>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Display Saved Events -->
+<!-- <div class="saved-events" *ngIf="events.length > 0" style="margin-top: 25px;">
+  <h3>Saved Events</h3>
+  <mat-card *ngFor="let event of events" style="margin-bottom: 15px; position: relative;">
+    <mat-card-title>{{ event.title }}</mat-card-title>
+    <mat-card-subtitle>{{ event.location }} | {{ event.date }} | {{ event.category }}</mat-card-subtitle>
+
+    <img *ngIf="event.image" [src]="event.image" class="image-preview" style="margin-top: 10px; max-width: 300px;" />
+
+    <button mat-mini-fab color="accent" style="position: absolute; top: 10px; right: 10px;" (click)="editEvent(event)">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </mat-card>
+</div> -->

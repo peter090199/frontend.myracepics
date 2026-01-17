@@ -1,0 +1,116 @@
+<mat-progress-bar
+  *ngIf="isLoading"
+  mode="indeterminate"
+  color="primary">
+</mat-progress-bar>
+<mat-toolbar class="nav">
+  <!-- LOGO -->
+  <div class="logo">
+    <img src="assets/logo.jpg" alt="logo" class="logo-img" />
+    <span class="logo-text">MYRacePICS</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <!-- NAVIGATION LINKS -->
+  <ng-container *ngFor="let link of nav_module">
+
+    <!-- DROPDOWN MENU -->
+    <ng-container *ngIf="link.submenus?.length > 0; else normalLink">
+
+      <button mat-button
+              [matMenuTriggerFor]="menu"
+              class="nav-btn">
+        <mat-icon>{{ link.icon }}</mat-icon>
+        {{ link.description }}
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item
+                *ngFor="let sub of link.submenus"
+                [routerLink]="sub.route">
+          {{ sub.description }}
+        </button>
+      </mat-menu>
+
+    </ng-container>
+
+    <!-- NORMAL LINKS -->
+    <ng-template #normalLink>
+
+      <!-- STANDARD LINK -->
+      <button mat-button
+              *ngIf="link.description !== 'Logout'"
+              [routerLink]="link.route">
+        <mat-icon>{{ link.icon }}</mat-icon>
+        {{ link.description }}
+      </button>
+
+      <!-- LOGOUT -->
+      <button mat-button
+              color="warn"
+              *ngIf="link.description === 'Logout'"
+              (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+      </button>
+
+    </ng-template>
+
+  </ng-container>
+
+  <!-- CART ICON -->
+  <button mat-icon-button
+          [matMenuTriggerFor]="cartMenu"
+          matBadge="{{ cartCount }}"
+          matBadgeColor="warn"
+          [matBadgeHidden]="cartCount === 0">
+
+    <mat-icon>shopping_cart</mat-icon>
+  </button>
+
+  <!-- CART MENU -->
+  <mat-menu #cartMenu="matMenu">
+
+    <ng-container *ngIf="cartItems.length > 0; else emptyCart">
+
+      <div class="cart-item"
+           *ngFor="let item of cartItems">
+
+        <span>{{ item.title }}</span>
+
+        <!-- <button mat-icon-button
+                color="warn"
+                (click)="removeFromCart(item.id)">
+          <mat-icon>close</mat-icon>
+        </button> -->
+
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <button mat-menu-item routerLink="/cart">
+        <mat-icon>shopping_bag</mat-icon>
+        View Cart
+      </button>
+
+    </ng-container>
+
+    <ng-template #emptyCart>
+      <button mat-menu-item disabled>
+        Cart is empty
+      </button>
+    </ng-template>
+
+  </mat-menu>
+
+  <!-- STATIC LOGOUT (OPTIONAL DUPLICATE) -->
+  <button mat-button color="basic" (click)="onLogout()">
+    <mat-icon>logout</mat-icon>
+  </button>
+
+</mat-toolbar>
+
+<!-- PAGE CONTENT -->
+<div class="app-container">
+  <router-outlet></router-outlet>
+</div>

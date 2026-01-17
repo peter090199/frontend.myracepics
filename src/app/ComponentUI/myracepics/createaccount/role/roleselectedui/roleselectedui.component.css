@@ -1,0 +1,83 @@
+:host {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  color: #fff;
+}
+
+.dialog-title span {
+  color: #ff6600; /* orange accent */
+}
+
+.dialog-subtitle {
+  color: #ccc;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.role-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* CARD STYLING */
+.role-card {
+  flex: 1 1 300px;
+  background: linear-gradient(135deg, #0d192f, #1197feef);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* HEADER */
+.role-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.role-icon {
+  font-size: 32px;
+  color: #ff6600;
+}
+
+/* DESCRIPTION */
+.role-description {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+/* LIST ITEMS */
+.role-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.role-card ul li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #eee;
+}
+
+/* ORANGE BULLET */
+.role-card ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  background-color: #ff6600;
+  border-radius: 50%;
+}

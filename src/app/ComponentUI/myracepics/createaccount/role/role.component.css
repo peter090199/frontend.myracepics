@@ -1,0 +1,61 @@
+.dialog-title {
+  text-align: center;
+  font-size: 26px;
+}
+
+.dialog-title span {
+  color: #ff7a00;
+}
+
+.dialog-subtitle {
+  text-align: center;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+.role-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.role-item {
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 14px;
+  border: 2px solid transparent;
+}
+
+.role-item:hover {
+  transform: translateY(-3px);
+  border-color: #ff7a00;
+}
+
+.role-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 10px;
+}
+
+.role-header mat-icon {
+  font-size: 36px;
+}
+
+.role-header.runner mat-icon {
+  color: #ff7a00;
+}
+
+.role-header.photographer mat-icon {
+  color: #feffff;
+}
+
+.role-item ul {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  color: #fcf3f3;
+}
+
+.role-item ul li {
+  margin-bottom: 6px;
+}

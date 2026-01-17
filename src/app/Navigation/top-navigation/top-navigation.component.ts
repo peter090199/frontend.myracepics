@@ -37,7 +37,9 @@ export class TopNavigationComponent implements OnInit {
   isChatOpen = false;
   isSearchOpen = false;
   homeModule:any;
+  loading: boolean = true;
   nav_module: any = [];
+  
   submenuMenu!: MatMenuPanel<any>;
   
 

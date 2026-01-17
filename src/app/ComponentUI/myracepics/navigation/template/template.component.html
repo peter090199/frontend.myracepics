@@ -1,0 +1,60 @@
+<mat-toolbar class="nav">
+  <div class="logo-container" routerLink="/">
+    <img src="assets/logo.jpg" alt="logo" class="logo-img" />
+    <span class="logo-text">MYRacePICS</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <button mat-button routerLink="/publicevents">
+    <mat-icon>event</mat-icon> Events
+  </button>
+
+  <button mat-button routerLink="/createaccount">
+    <mat-icon>login</mat-icon> Login
+  </button>
+</mat-toolbar>
+
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="over" class="mobile-sidenav">
+    <a mat-button href="#gallery-section" (click)="sidenav.close()">Gallery</a>
+    <a mat-button href="#shop-section" (click)="sidenav.close()">Events</a>
+    <button mat-button (click)="sidenav.close()" routerLink="/createaccount">Create Account</button>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1 class="slide-in">Capture Every Race Moment</h1>
+        <!-- <p class="slide-in delay-1">
+          High-quality event photography and action shots of your favorite runs, marathons, and races.
+          Relive every stride, finish line, and celebration with RacePics.
+        </p> -->
+        <a mat-raised-button color="primary" class="slide-in delay-2 btn" routerLink="/createaccount">Explore Events</a>
+      </div>
+      <div class="hero-shapes"><span></span></div>
+    </section>
+
+
+    <!-- Gallery Section -->
+    <section id="gallery-section" class="section">
+      <h2>Most Featured Events</h2>
+      <div class="gallery-slider">
+        <div class="slide-track">
+          <img src="assets/logo.jpg" alt="MyRacEPICS" />
+          <img src="assets/logo.jpg" alt="MyRacEPICS" />
+          <img src="assets/logo.jpg" alt="MyRacEPICS" />
+          <!-- repeat images for looping -->
+        </div>
+      </div>
+    </section>
+
+
+    <footer>
+      © 2026 MyRacEPICS
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

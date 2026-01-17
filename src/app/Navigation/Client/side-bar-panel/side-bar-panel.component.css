@@ -13,7 +13,7 @@
 ========================= */
 .recruit-sidenav {
   width: 260px;
-  background: linear-gradient(135deg, rgb(11, 203, 174), rgb(47, 44, 225));
+  background: linear-gradient(135deg, #0d192f, #1197feef);
   color: #fff;
   overflow-x: hidden;
   overflow-y: auto;
