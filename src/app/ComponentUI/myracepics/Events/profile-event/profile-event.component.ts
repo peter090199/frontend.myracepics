@@ -95,30 +95,105 @@ export class ProfileEventComponent implements OnInit {
   /* =======================
      API
   ======================= */
-  loadEvent(uuid: any): void {
+  loadEvent(uuid: any) {
     this.loading = true;
-    this.eventService.getEventByUuid(uuid).subscribe({
-      next: (res) => {
-        this.event = res.event;
-        console.log('Loaded Event:', res.event);
 
-        // this.images = (res.event?.image || []).map((img: any) => ({
-        //   title: res.event.title,
-        //   image: img.url,
-        //   location: res.event.location,
-        //   date: res.event.date,
-        //   status: res.event.status,
-        //   photographer: img.photographer || 'Official Photographer',
-        //   price: img.price || 0
-        // }));
+    this.eventService.getEventByUuid(uuid).subscribe({
+      next: (res: any) => {
+        if (!res.event) {
+          this.event = null;
+          this.loading = false;
+          return;
+        }
+
+        const images = this.parseImages(res.event.image);
+
+        this.event = {
+          ...res.event,
+          image: images,
+          imageLoaded: new Array(images.length).fill(false) // track image load
+        };
+
         this.loading = false;
       },
-      error: () => {
-        this.alert.toastrError('Failed to load event.');
+      error: err => {
+        console.error('[EventComponent] Error loading event:', err);
         this.loading = false;
       }
     });
   }
+
+  /** Convert image field (string or JSON) into array of secure URLs */
+  private parseImages(imageField: any): string[] {
+    if (!imageField) return [];
+
+    try {
+      // If the field is JSON array, parse it; else treat as single string
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : imageField.startsWith('[') ? JSON.parse(imageField) : [imageField];
+
+      // Convert each image path to secure backend URL
+      return images.map(img =>
+        img.startsWith('http')
+          ? img
+          : `https://backend.myracepics.com/${encodeURIComponent(img.replace(/^\//, ''))}`
+      );
+
+    } catch (err) {
+      console.error('Error parsing images', err);
+      return [];
+    }
+  }
+
+  /** Convert image field (string or JSON) into array of secure URLs */
+  private parseImagesxx(imageField: any): string[] {
+    if (!imageField) return [];
+
+    try {
+      // If the field is JSON array, parse it; else treat as single string
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : imageField.startsWith('[') ? JSON.parse(imageField) : [imageField];
+
+      // Convert each image path to secure backend URL
+      return images.map(img =>
+        img.startsWith('http')
+          ? img
+          : `https://backend.myracepics.com/api/secure-image/${encodeURIComponent(img.replace(/^\//, ''))}`
+      );
+
+    } catch (err) {
+      console.error('Error parsing images', err);
+      return [];
+    }
+  }
+
+
+  // loadEvent(uuid: any): void {
+  //   this.loading = true;
+  //   this.eventService.getEventByUuid(uuid).subscribe({
+  //     next: (res) => {
+  //       this.event = res.event;
+  //       console.log('Loaded Event:', res.event);
+
+  //       this.images = (res.event?.image || []).map((img: any) => ({
+  //         title: res.event.title,
+  //         image: img.url,
+  //         location: res.event.location,
+  //         date: res.event.date,
+  //         status: res.event.status,
+  //         photographer: img.photographer || 'Official Photographer',
+  //         price: img.price || 0
+  //       }));
+  //       this.loading = false;
+  //     },
+  //     error: () => {
+  //       this.alert.toastrError('Failed to load event.');
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
 
   // loadEvent(uuid: string): void {
   //   this.loading = true;

@@ -1,19 +1,20 @@
-<section class="events-unique-grid-container">
+<section class="events-container">
 
-  <div class="c">
-    <mat-form-field appearance="outline" class="w-140">
+  <!-- FILTER BAR -->
+  <div class="filters">
+    <mat-form-field appearance="outline">
       <mat-label>Search Events</mat-label>
       <input matInput [(ngModel)]="eventSearch" (keyup)="filterEvents()">
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="filter-item">
+    <mat-form-field appearance="outline">
       <mat-label>From</mat-label>
       <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate">
       <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
       <mat-datepicker #fromPicker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="filter-item">
+    <mat-form-field appearance="outline">
       <mat-label>To</mat-label>
       <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate">
       <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
@@ -27,65 +28,69 @@
     <mat-tab label="Upcoming"></mat-tab>
     <mat-tab label="Completed"></mat-tab>
   </mat-tab-group>
-  <br><br>
 
-  <!-- LOADING SKELETON -->
+  <br>
+
+  <!-- LOADING -->
   <ng-container *ngIf="loading; else eventCards">
-    <!-- <div class="skeleton-card" *ngFor="let event of filteredEvents">
-      <div class="skeleton-banner shimmer"></div>
-      <div class="skeleton-content">
+    <div class="events-grid">
+      <div class="skeleton-card" *ngFor="let s of [1,2,3,4,5,6]">
+        <div class="skeleton-banner shimmer"></div>
         <div class="skeleton-line title shimmer"></div>
         <div class="skeleton-line shimmer"></div>
-        <div class="skeleton-line shimmer"></div>
-        <div class="skeleton-button shimmer"></div>
       </div>
-    </div> -->
+    </div>
   </ng-container>
 
-  <!-- REAL EVENT CARDS -->
+  <!-- EVENTS -->
   <ng-template #eventCards>
-    <div class="events-unique-grid">
+    <div class="events-grid">
+
       <mat-card class="event-card" *ngFor="let event of events">
 
-        <!-- IMAGE WITH SKELETON -->
-        <div class="event-banner" *ngFor="let img of event.image; let i = index">
-          <!-- Skeleton -->
-          <div class="skeleton-banner shimmer" *ngIf="!event.imageLoaded[i]"></div>
-          <!-- Real Image -->
-          <img [src]="img" (load)="onImageLoad(event, i)" alt="Event Image" class="event-img"
-            [hidden]="!event.imageLoaded[i]">
-        </div>
-        <div class="event-details">
-          <h3>{{ event.title }}</h3>
-          <p><mat-icon>place</mat-icon> {{ event.location }}</p>
-          <p><mat-icon>calendar_today</mat-icon>
-            {{ event.date }}
-          </p>
-          <p><mat-icon>event</mat-icon>
-            {{ event.category }}
-          </p>
+        <!-- IMAGE SCROLL -->
+        <div class="event-banner scroll-x" *ngIf="event.image?.length; else noImage">
+          <div class="image-track">
+            <img *ngFor="let img of event.image; let i = index" [src]="img" (load)="onImageLoad(event, i)"
+              class="event-img" alt="Event Image">
+          </div>
 
-          <button mat-icon-button color="primary" (click)="shareEvent(event)">
-            <mat-icon>share</mat-icon>
-          </button>
-          <!-- <button mat-raised-button color="primary" routerLink="/events/shop-section/{{ event.title }}">
-                View Photos
-              </button> -->
-          <button mat-button color="primary" [routerLink]="eventProfileLink(event)" class="full-width">
+          <div class="image-count" *ngIf="event.image.length > 1">
+            {{ event.image.length }} photos
+          </div>
+        </div>
+
+        <ng-template #noImage>
+          <div class="event-banner no-image">No Image</div>
+        </ng-template>
+        <button mat-icon-button color="primary" class="share-btn" (click)="shareEvent(event)">
+          <mat-icon>share</mat-icon>
+          Share
+        </button>
+
+
+        <!-- DETAILS -->
+        <div class="event-details left-align">
+          <h3>{{ event.title }}</h3>
+
+          <p><mat-icon>place</mat-icon>{{ event.location }}</p>
+          <p><mat-icon>calendar_today</mat-icon>{{ event.date }}</p>
+          <p><mat-icon>event</mat-icon>{{ event.category }}</p>
+
+
+          <button mat-raised-button color="primary" class="full-width" [routerLink]="eventProfileLink(event)">
             View Photos
           </button>
 
-
-          <button mat-button color="basic" class="full-width">
+          <button mat-raised-button color="basic" class="full-width">
             Upload Photos
           </button>
-
         </div>
 
+
       </mat-card>
-      <br><br>
+
     </div>
   </ng-template>
-
 
 </section>

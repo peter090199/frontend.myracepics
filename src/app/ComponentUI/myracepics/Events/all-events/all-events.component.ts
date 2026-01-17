@@ -1,129 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-// import { EventsService } from 'src/app/services/myracepics/MyEvents/events.service';
-
-// interface Event {
-//   title: string;
-//   location: string;
-//   date: string; // YYYY-MM-DD
-//   status: 'Upcoming' | 'Running' | 'Completed';
-//   image: string;
-//   imageLoaded?: boolean; // ✅ track if image has loaded
-// }
-
-// @Component({
-//   selector: 'app-all-events',
-//   templateUrl: './all-events.component.html',
-//   styleUrls: ['./all-events.component.css']
-// })
-// export class AllEventsComponent implements OnInit {
-//  constructor(private eventService: EventsService
-
-
-//  ) { }
-
-//   events: any[] = [];
-//   filteredEvents: any[] = [];
-//   eventSearch: string = '';
-//   selectedTab: number = 0; // 0=All,1=Upcoming,2=Completed
-//   fromDate: Date | null = null;
-//   toDate: Date | null = null;
-//   loading: boolean = true;
-//   nav_module: any = [];
-
-//   ngOnInit(): void {
-
-//       this.loadEvents();
-//     setTimeout(() => {
-//       this.filteredEvents = [...this.events];
-//       this.loading = false;
-//     }, 1500);
-
-
-
-//   }
-
-//   loadEvents() {
-//     this.eventService.getevents().subscribe({
-//       next: (res) => {
-
-//         this.events = res.events.map((e: { image: any; }) => ({
-//           ...e,
-//           image: JSON.parse(e.image)
-//         }));
-
-//           this.filteredEvents = [...this.events];
-//         console.log(this.events);
-//         this.loading = false;
-//       },
-//       error: (err) => {
-//         console.error(err);
-//         this.loading = false;
-//       }
-//     });
-//   }
-
-
-
-//   filterEvents() {
-//     const search = this.eventSearch.toLowerCase();
-
-//     this.filteredEvents = this.events.filter(event => {
-//       const eventDate = new Date(event.date);
-
-//       // 🔹 Tab filter
-//       const matchesTab =
-//         this.selectedTab === 0 ? true :
-//           this.selectedTab === 1 ? event.status === 'Upcoming' || event.status === 'Running' :
-//             event.status === 'Completed';
-
-//       // 🔹 Search filter
-//       const matchesSearch = event.title.toLowerCase().includes(search);
-
-//       // 🔹 Date range filter
-//       let matchesDate = true;
-//       if (this.fromDate && eventDate < this.stripTime(this.fromDate)) matchesDate = false;
-//       if (this.toDate && eventDate > this.stripTime(this.toDate)) matchesDate = false;
-
-//       return matchesTab && matchesSearch && matchesDate;
-//     });
-//   }
-
-//   // Remove time for accurate date comparison
-//   stripTime(date: Date): Date {
-//     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-//   }
-
-//   clearSearch() {
-//     this.eventSearch = '';
-//     this.filterEvents();
-//   }
-
-//   clearDates() {
-//     this.fromDate = null;
-//     this.toDate = null;
-//     this.filterEvents();
-//   }
-
-//   onTabChange() {
-//     this.filterEvents();
-//   }
-
-//   viewPhotos(event: Event) {
-//     console.log('Viewing photos for:', event.title);
-//   }
-
-//   shareEvent(event: Event) {
-//     console.log('Sharing event:', event.title);
-//   }
-
-//   // ✅ Called when an image finishes loading
-//   onImageLoad(event: Event) {
-//     event.imageLoaded = true;
-//   }
-
-// }
-
-
 import { Component, OnInit } from '@angular/core';
 import { EventsService } from 'src/app/services/myracepics/MyEvents/events.service';
 
@@ -159,22 +33,18 @@ export class AllEventsComponent implements OnInit {
     this.loadEvents();
   }
 
-  
+
   eventProfileLink(event: any): any[] {
     const role = sessionStorage.getItem('role');
-
     const roleRouteMap: any = {
       runner: 'runner',
       admin: 'admin',
       masteradmin: 'masteradmin',
       photographer: 'photographer'
     };
-
     const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
-
     return ['/', baseRoute, 'eventprofile', event.title, event.uuid];
   }
-
 
 
   loadEvents() {
@@ -182,38 +52,98 @@ export class AllEventsComponent implements OnInit {
 
     this.eventService.getevents().subscribe({
       next: (res: { events: any[] }) => {
-        this.events = res.events.map((e: any) => {
-          // Safely parse image array
-          let images: string[] = [];
-          try {
-            images = Array.isArray(e.image) ? e.image : JSON.parse(e.image || '[]');
-            // Prepend backend URL if not already full URL
-            images = images.map((img: string) => img.startsWith('http') ? img : `http://localhost:8000/${img}`);
-          } catch (err) {
-            console.error('Error parsing images for event:', e, err);
-          }
-
-          return {
-            ...e,
-            uuid: e.uuid,
-            title: e.title,
-            location: e.location,
-            category: e.category,
-            image: images,
-            imageLoaded: new Array(images.length).fill(false) // track each image load
-          };
-        });
+        this.events = res.events.map(e => ({
+          ...e,
+          image: this.parseImages(e.image),
+          imageLoaded: new Array(this.parseImages2(e.image).length).fill(false)
+        }));
 
         this.filteredEvents = [...this.events];
-        console.log('[AllEventsComponent] Loaded events:', this.events);
         this.loading = false;
       },
-      error: (err) => {
+      error: err => {
         console.error('[AllEventsComponent] Error loading events:', err);
         this.loading = false;
       }
     });
   }
+
+  /** Convert DB image JSON into secure URL array */
+  private parseImages2(imageField: any): string[] {
+    try {
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : JSON.parse(imageField || '[]');
+
+      // Secure access: route images via backend API
+      return images.map(img => {
+        // if already full URL, keep it; else use backend secure route
+        return img.startsWith('http')
+          ? img
+          : `https://backend.myracepics.com/${encodeURIComponent(img)}`;
+      });
+
+    } catch (err) {
+      console.error('Error parsing images', err);
+      return [];
+    }
+  }
+  /** Convert DB image JSON into secure URL array */
+  private parseImages(imageField: any): string[] {
+    try {
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : JSON.parse(imageField || '[]');
+
+      // Secure access: route images via backend API
+      return images.map(img => {
+        // if already full URL, keep it; else use backend secure route
+        return img.startsWith('http')
+          ? img
+          : `https://backend.myracepics.com/${encodeURIComponent(img)}`;
+      });
+
+    } catch (err) {
+      console.error('Error parsing images', err);
+      return [];
+    }
+  }
+  // loadEvents() {
+  //   this.loading = true;
+
+  //   this.eventService.getevents().subscribe({
+  //     next: (res: { events: any[] }) => {
+  //       this.events = res.events.map((e: any) => {
+  //         // Safely parse image array
+  //         let images: string[] = [];
+  //         try {
+  //           images = Array.isArray(e.image) ? e.image : JSON.parse(e.image || '[]');
+  //           // Prepend backend URL if not already full URL
+  //           images = images.map((img: string) => img.startsWith('http') ? img : `https://backend.myracepics.com/${img}`);
+  //         } catch (err) {
+  //           console.error('Error parsing images for event:', e, err);
+  //         }
+
+  //         return {
+  //           ...e,
+  //           uuid: e.uuid,
+  //           title: e.title,
+  //           location: e.location,
+  //           category: e.category,
+  //           image: images,
+  //           imageLoaded: new Array(images.length).fill(false) // track each image load
+  //         };
+  //       });
+
+  //       this.filteredEvents = [...this.events];
+  //       this.loading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('[AllEventsComponent] Error loading events:', err);
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
 
   filterEvents() {
     const search = this.eventSearch.toLowerCase();
@@ -268,7 +198,10 @@ export class AllEventsComponent implements OnInit {
   shareEvent(event: Event) {
     console.log('Sharing event:', event.title);
     // Implement share logic here
+
   }
+
+
   getCategoryIcon(category: string): string {
     switch (category.toLowerCase()) {
       case 'fun run':

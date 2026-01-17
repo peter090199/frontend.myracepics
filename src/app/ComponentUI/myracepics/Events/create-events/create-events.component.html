@@ -1,6 +1,9 @@
 <div class="form-card">
-  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
-
+  <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="20"
+    style="margin-left: 8px;"></mat-progress-spinner>
+  <h2 mat-dialog-title>Create Event</h2>
+  <mat-divider></mat-divider>
+  <form [formGroup]="eventForm">
     <!-- Row 1: Title & Location -->
     <div class="form-row">
       <mat-form-field appearance="standard" class="half-width">
@@ -11,6 +14,8 @@
         </mat-error>
       </mat-form-field>
 
+    </div>
+    <div class="form-row">
       <mat-form-field appearance="standard" class="half-width">
         <mat-label>Location</mat-label>
         <input matInput formControlName="location" placeholder="Enter location" />
@@ -30,17 +35,14 @@
         </mat-error>
       </mat-form-field>
 
+
+    </div>
+    <div class="form-row">
       <mat-form-field appearance="standard" class="half-width">
         <mat-label>Category</mat-label>
-        <mat-select formControlName="category">
-          <mat-option value="Marathon">Marathon</mat-option>
-          <mat-option value="Fun Run">Fun Run</mat-option>
-          <mat-option value="Swim">Swim</mat-option>
-          <mat-option value="Relay">Relay</mat-option>
-          <mat-option value="Charity Run">Charity Run</mat-option>
-        </mat-select>
+        <input matInput formControlName="category" placeholder="Enter category" />
         <mat-error *ngIf="eventForm.controls['category'].invalid && eventForm.controls['category'].touched">
-          Category is required
+          category is required
         </mat-error>
       </mat-form-field>
     </div>
@@ -56,14 +58,14 @@
     </div>
 
     <!-- Save / Update Button -->
-    <div align="end" style="margin-top: 15px;">
-      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
-        <mat-icon>save</mat-icon>
-        {{ btnSave }}
-        <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="20" style="margin-left: 8px;"></mat-progress-spinner>
-      </button>
-    </div>
+
+
   </form>
+
+  <button mat-raised-button color="primary" class="full-width" (click)="onSubmit()" [disabled]="loading">
+    <mat-icon>save</mat-icon>
+    {{ btnSave }}
+  </button>
 </div>
 
 <!-- Display Saved Events -->

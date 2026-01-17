@@ -1,234 +1,190 @@
-.events-unique-grid-container {
-  max-height: 90vh; /* max height to prevent overflowing viewport */
-  overflow-y: auto; /* enable vertical scroll when content exceeds max-height */
-  box-sizing: border-box; 
-  overflow-x: hidden;
+.events-container {
+  padding: 16px;
+  overflow-x: hidden; /* prevent horizontal scroll on the whole page */
+  overflow-y: auto;   /* allow vertical scroll if content exceeds viewport */
+  max-height: 90vh;  /* optional: limit container height */
 }
-
-.events-unique-grid {
+/* FILTER BAR */
+.filters {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* minimum 5 columns on large screens */
-  gap: 10px;
-  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-/* Filter container */
-.filter-container {
-  display: flex;
-  justify-content: center; 
-  flex-wrap: wrap;         
-  gap: 5px;               
-  margin: 5px auto;       
-  max-width: 1200px;       
-}
-mat-icon {
-  vertical-align: middle;
-  margin-right: 6px;
-  color: #555; /* default icon color */
+/* GRID */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
 }
 
-span {
-  font-weight: 500;
-  text-transform: capitalize;
-}
-.skeleton-banner {
-  width: 100%;
-  height: 150px;
-  background-color: #e0e0e0;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.skeleton-content {
-  padding: 10px;
-}
-
-.skeleton-line {
-  height: 15px;
-  background-color: #e0e0e0;
-  margin-bottom: 10px;
-  border-radius: 4px;
-}
-
-.skeleton-line.title {
-  width: 60%;
-  height: 20px;
-}
-
-.skeleton-button {
-  width: 100%;
-  height: 35px;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-}
-
-/* Shimmer Animation */
-.shimmer {
-  position: relative;
-  overflow: hidden;
-}
-.shimmer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -150px;
-  height: 100%;
-  width: 150px;
-  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-  animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer {
-  0% { left: -150px; }
-  100% { left: 100%; }
-}
-
-/* Event Card */
 .event-card {
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fff;
-  margin: 5px;
-  margin-bottom: 10px;
+  cursor: pointer;
 }
 
+/* HOVER EFFECT */
 .event-card:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  transform: translateY(-6px);       /* lifts card slightly */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* adds depth */
 }
 
-/* Event Banner */
+
+/* IMAGE */
 .event-banner {
   position: relative;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  overflow: hidden;
-}
-
-.event-banner img.event-img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.event-banner img.event-img:hover {
-  transform: scale(1.05);
-}
-
-/* Skeleton Banner */
-.skeleton-banner {
-  width: 100%;
-  height: 160px;
-  background: #e0e0e0;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  position: relative;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
+  border-radius: 8px;
 }
 
-.shimmer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -150px;
-  width: 150px;
+/* horizontal scroll */
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.event-details.left-align {
+  text-align: left; /* left-align text */
+  display: flex;
+  flex-direction: column; /* stack items vertically */
+  align-items: flex-start; /* left-align children */
+  gap: 6px; /* space between lines/buttons */
+  padding: 12px;
+}
+
+/* Ensure buttons stretch full width */
+.event-details.left-align .full-width {
+  width: 100%;
+}
+/* If using icon-only button */
+.event-actions {
+  display: flex;
+  justify-content: flex-end; /* push button to the right */
+  margin-top: 4px;
+}
+
+/* If using icon + text button */
+.share-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;      /* space between icon and text */
+  width: auto;   /* fits content */
+  min-width: 80px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .share-btn {
+    font-size: 0.85rem;
+    min-width: 60px;
+  }
+
+  .event-actions {
+    justify-content: flex-end;
+  }
+}
+
+/* Optional: icons stay left-aligned */
+.event-details.left-align p {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between icon and text */
+  margin: 4px 0;
+}
+
+.image-track {
+  display: flex;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.6) 50%,
-    rgba(255,255,255,0) 100%
-  );
-  animation: shimmer 1.2s infinite;
 }
 
-@keyframes shimmer {
-  100% { left: 100%; }
+.image-track img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scroll-snap-align: start;
 }
 
-/* Status Badge */
-.status-badge {
+/* image count badge */
+.image-count {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  border-radius: 12px;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0,0,0,0.65);
   color: #fff;
-  font-weight: bold;
-  text-transform: uppercase;
+  padding: 3px 6px;
   font-size: 12px;
+  border-radius: 4px;
 }
 
-.status-badge.upcoming { background-color: #2196f3; }
-.status-badge.running { background-color: #ff9800; }
-.status-badge.completed { background-color: #4caf50; }
+/* no image */
+.no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+  color: #888;
+}
 
-/* Event Details */
+/* DETAILS */
 .event-details {
   padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .event-details h3 {
   font-size: 1.1rem;
-  margin: 0;
+  margin-bottom: 6px;
 }
 
 .event-details p {
-  margin: 0;
   display: flex;
   align-items: center;
-  gap: 5px;
-  color: #555;
+  gap: 6px;
+  font-size: 0.9rem;
+  margin: 4px 0;
 }
 
-.actions {
-  display: flex;
-  gap: 2px;
-  margin-top: 10px;
-  flex-wrap: wrap;
+/* BUTTONS */
+.full-width {
+  width: 100%;
+  margin-top: 6px;
 }
 
-/* RESPONSIVE: Mobile Layout */
-@media (max-width: 1200px) {
-  .events-unique-grid {
-    grid-template-columns: repeat(4, 1fr); /* 4 columns for large tablets */
-  }
+/* SKELETON */
+.skeleton-card {
+  height: 260px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
 }
 
-@media (max-width: 992px) {
-  .events-unique-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns for tablets */
-  }
+.skeleton-banner {
+  height: 140px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 10px;
 }
 
-@media (max-width: 768px) {
-  .events-unique-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile landscape */
-    gap: 15px;
-    margin-top: 15px;
-  }
-
-  .event-card {
-    width: 100%;
-  }
-
-  .filter-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
+.skeleton-line {
+  height: 14px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 6px;
 }
 
-@media (max-width: 480px) {
-  .events-unique-grid {
-    grid-template-columns: 1fr; /* 1 column for small mobile */
+.skeleton-line.title {
+  width: 70%;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .event-details h3 {
+    font-size: 1rem;
   }
 }

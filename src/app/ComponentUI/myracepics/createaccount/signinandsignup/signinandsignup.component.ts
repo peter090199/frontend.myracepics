@@ -158,7 +158,7 @@ export class SigninandsignupComponent implements OnInit {
         this.isLoading = false;
 
         if (!res?.success) {
-          this.alert.toastPopUpError(res?.message || 'Registration failed');
+          this.alert.toastPopUpError(res.message || 'Registration failed');
           return;
         }
 
