@@ -3,12 +3,19 @@ import { EventsService } from 'src/app/services/myracepics/MyEvents/events.servi
 
 interface Event {
   id: number;
+  uuid: string;
   title: string;
   location: string;
   date: string; // YYYY-MM-DD
   status: 'Upcoming' | 'Running' | 'Completed';
-  image: string[]; // array of image URLs
-  imageLoaded?: boolean[]; // track if each image has loaded
+  category: string;
+  image: string[];
+
+  imageLoaded: boolean[];
+
+  // 🔥 Load-more support
+  visibleImages: number;
+  imagesPerLoad: number;
 }
 
 @Component({
@@ -18,14 +25,14 @@ interface Event {
 })
 export class AllEventsComponent implements OnInit {
 
-  events: any[] = [];
-  filteredEvents: any = [];
-  eventSearch: string = '';
-  selectedTab: number = 0; // 0=All,1=Upcoming/Running,2=Completed
+  events: Event[] = [];
+  filteredEvents: Event[] = [];
+
+  eventSearch = '';
+  selectedTab = 0;
   fromDate: Date | null = null;
   toDate: Date | null = null;
-  loading: boolean = true;
-  nav_module: any = [];
+  loading = true;
 
   constructor(private eventService: EventsService) { }
 
@@ -33,213 +40,126 @@ export class AllEventsComponent implements OnInit {
     this.loadEvents();
   }
 
-
-  eventProfileLink(event: any): any[] {
-    const role = sessionStorage.getItem('role');
-    const roleRouteMap: any = {
-      runner: 'runner',
-      admin: 'admin',
-      masteradmin: 'masteradmin',
-      photographer: 'photographer'
-    };
-    const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
-    return ['/', baseRoute, 'eventprofile', event.title, event.uuid];
-  }
-
-
+  /* ===================== LOAD EVENTS ===================== */
   loadEvents() {
     this.loading = true;
 
     this.eventService.getevents().subscribe({
       next: (res: { events: any[] }) => {
-        this.events = res.events.map(e => ({
-          ...e,
-          image: this.parseImages(e.image),
-          imageLoaded: new Array(this.parseImages2(e.image).length).fill(false)
-        }));
+        this.events = res.events.map(e => {
+          const images = this.parseImages(e.image);
 
-        this.filteredEvents = [...this.events];
-        this.loading = false;
-      },
-      error: err => {
-        console.error('[AllEventsComponent] Error loading events:', err);
-        this.loading = false;
-      }
+          return {
+            ...e,
+            image: images,
+            imageLoaded: new Array(images.length).fill(false),
+            visibleImages: 3,
+            imagesPerLoad: 3
+          };
+
+      });
+
+    this.filteredEvents = [...this.events];
+    this.loading = false;
+  },
+  error: err => {
+  console.error('Error loading events', err);
+  this.loading = false;
+}
     });
   }
 
-  /** Convert DB image JSON into secure URL array */
-  private parseImages2(imageField: any): string[] {
-    try {
-      const images: string[] = Array.isArray(imageField)
-        ? imageField
-        : JSON.parse(imageField || '[]');
+/* ===================== IMAGE HELPERS ===================== */
+parseImages(imageField: any): string[] {
+  try {
+    const images: string[] = Array.isArray(imageField)
+      ? imageField
+      : JSON.parse(imageField || '[]');
 
-      // Secure access: route images via backend API
-      return images.map(img => {
-        // if already full URL, keep it; else use backend secure route
-        return img.startsWith('http')
-          ? img
-          : `https://backend.myracepics.com/${encodeURIComponent(img)}`;
-      });
-
-    } catch (err) {
-      console.error('Error parsing images', err);
-      return [];
-    }
+    return images.map(img =>
+      img.startsWith('http')
+        ? img
+        : `https://backend.myracepics.com/${encodeURIComponent(img)}`
+    );
+  } catch {
+    return [];
   }
-  /** Convert DB image JSON into secure URL array */
-  private parseImages(imageField: any): string[] {
-    try {
-      const images: string[] = Array.isArray(imageField)
-        ? imageField
-        : JSON.parse(imageField || '[]');
+}
 
-      // Secure access: route images via backend API
-      return images.map(img => {
-        // if already full URL, keep it; else use backend secure route
-        return img.startsWith('http')
-          ? img
-          : `https://backend.myracepics.com/${encodeURIComponent(img)}`;
-      });
-
-    } catch (err) {
-      console.error('Error parsing images', err);
-      return [];
-    }
+onImageLoad(event: Event, index: number) {
+  if (!event.imageLoaded) {
+    event.imageLoaded = new Array(event.image.length).fill(false);
   }
-  // loadEvents() {
-  //   this.loading = true;
+  event.imageLoaded[index] = true;
+}
 
-  //   this.eventService.getevents().subscribe({
-  //     next: (res: { events: any[] }) => {
-  //       this.events = res.events.map((e: any) => {
-  //         // Safely parse image array
-  //         let images: string[] = [];
-  //         try {
-  //           images = Array.isArray(e.image) ? e.image : JSON.parse(e.image || '[]');
-  //           // Prepend backend URL if not already full URL
-  //           images = images.map((img: string) => img.startsWith('http') ? img : `https://backend.myracepics.com/${img}`);
-  //         } catch (err) {
-  //           console.error('Error parsing images for event:', e, err);
-  //         }
+allImagesLoaded(event: Event): boolean {
+  return event.imageLoaded?.every(v => v) ?? false;
+}
 
-  //         return {
-  //           ...e,
-  //           uuid: e.uuid,
-  //           title: e.title,
-  //           location: e.location,
-  //           category: e.category,
-  //           image: images,
-  //           imageLoaded: new Array(images.length).fill(false) // track each image load
-  //         };
-  //       });
+/* ===================== LOAD MORE ===================== */
+loadMoreImages(event: any) {
+  if (!event.visibleImages || !event.imagesPerLoad) return;
 
-  //       this.filteredEvents = [...this.events];
-  //       this.loading = false;
-  //     },
-  //     error: (err) => {
-  //       console.error('[AllEventsComponent] Error loading events:', err);
-  //       this.loading = false;
-  //     }
-  //   });
-  // }
+  event.visibleImages = Math.min(
+    event.visibleImages + event.imagesPerLoad,
+    event.image.length
+  );
+}
 
-  filterEvents() {
-    const search = this.eventSearch.toLowerCase();
+hasMoreImages(event: Event): boolean {
+  return (event.visibleImages ?? 0) < event.image.length;
+}
 
-    this.filteredEvents = this.events.filter(event => {
-      const eventDate = new Date(event.date);
+/* ===================== FILTERING ===================== */
+filterEvents() {
+  const search = this.eventSearch.toLowerCase();
 
-      // 🔹 Tab filter
-      const matchesTab =
-        this.selectedTab === 0 ? true :
-          this.selectedTab === 1 ? (event.status === 'Upcoming' || event.status === 'Running') :
-            event.status === 'Completed';
+  this.filteredEvents = this.events.filter(event => {
+    const eventDate = this.stripTime(new Date(event.date));
 
-      // 🔹 Search filter (safe check)
-      const matchesSearch = event.title?.toLowerCase().includes(search) ?? false;
+    const matchesTab =
+      this.selectedTab === 0 ||
+      (this.selectedTab === 1 &&
+        (event.status === 'Upcoming' || event.status === 'Running')) ||
+      (this.selectedTab === 2 && event.status === 'Completed');
 
-      // 🔹 Date range filter
-      let matchesDate = true;
-      if (this.fromDate && eventDate < this.stripTime(this.fromDate)) matchesDate = false;
-      if (this.toDate && eventDate > this.stripTime(this.toDate)) matchesDate = false;
+    const matchesSearch = event.title?.toLowerCase().includes(search);
 
-      return matchesTab && matchesSearch && matchesDate;
-    });
-  }
+    let matchesDate = true;
+    if (this.fromDate && eventDate < this.stripTime(this.fromDate)) matchesDate = false;
+    if (this.toDate && eventDate > this.stripTime(this.toDate)) matchesDate = false;
 
+    return matchesTab && matchesSearch && matchesDate;
+  });
+}
 
-  // Remove time for accurate date comparison
-  stripTime(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
+stripTime(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
 
-  clearSearch() {
-    this.eventSearch = '';
-    this.filterEvents();
-  }
+clearSearch() {
+  this.eventSearch = '';
+  this.filterEvents();
+}
 
-  clearDates() {
-    this.fromDate = null;
-    this.toDate = null;
-    this.filterEvents();
-  }
+onTabChange(tabIndex: number) {
+  this.selectedTab = tabIndex;
+  this.filterEvents();
+}
 
-  onTabChange() {
-    this.filterEvents();
-  }
+/* ===================== ROUTING ===================== */
+eventProfileLink(event: Event): any[] {
+  const role = sessionStorage.getItem('role');
 
-  viewPhotos(event: Event) {
-    console.log('Viewing photos for:', event.title);
-    // You can implement a modal or router navigation here
-  }
+  const roleRouteMap: any = {
+    runner: 'runner',
+    admin: 'admin',
+    masteradmin: 'masteradmin',
+    photographer: 'photographer'
+  };
 
-  shareEvent(event: Event) {
-    console.log('Sharing event:', event.title);
-    // Implement share logic here
-
-  }
-
-
-  getCategoryIcon(category: string): string {
-    switch (category.toLowerCase()) {
-      case 'fun run':
-        return 'directions_run'; // Material icon for running
-      case 'upcoming':
-        return 'schedule'; // clock icon
-      case 'completed':
-        return 'check_circle'; // completed
-      case 'canceled':
-        return 'cancel'; // canceled
-      default:
-        return 'event'; // default calendar icon
-    }
-  }
-
-  getCategoryClass(category: string): string {
-    switch (category.toLowerCase()) {
-      case 'running':
-        return 'badge-running';
-      case 'upcoming':
-        return 'badge-upcoming';
-      case 'completed':
-        return 'badge-completed';
-      case 'canceled':
-        return 'badge-canceled';
-      default:
-        return 'badge-default';
-    }
-  }
-
-  // ✅ Called when an image finishes loading
-  onImageLoad(event: Event, index: number) {
-    if (!event.imageLoaded) event.imageLoaded = [];
-    event.imageLoaded[index] = true;
-  }
-  // Check if all images in this event are loaded
-  // eventLoaded(event: Event): boolean {
-  //   return event.imageLoaded?.every(loaded => loaded) ?? false;
-  // }
-
+  const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
+  return ['/', baseRoute, 'eventprofile', event.title, event.uuid];
+}
 }

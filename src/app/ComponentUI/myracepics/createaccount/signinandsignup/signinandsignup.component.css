@@ -1,23 +1,27 @@
 /* FULL PAGE CENTER */
 .auth-container {
-  min-height: 100vh;
+  min-height: 100vh;          /* allow content to grow */
   background: linear-gradient(135deg, #0d192f, #1197feef);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  margin: auto;
+  overflow-y: auto;           /* allow vertical scroll */
+  padding: 16px;              /* prevent edge cutoff on mobile */
 }
+
 
 /* CARD */
 .auth-card {
   width: 100%;
   max-width: 1000px;
-  height:620px;
+  height:750px;
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
   display: flex;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
 }
 
 .auth-cover {
@@ -139,4 +143,24 @@ mat-radio-button:hover .mat-radio-label-content {
   mat-radio-group.full {
     flex-direction: row; /* Stack vertically on mobile */
   }
+}
+.or-divider {
+  text-align: center;
+  margin: 16px 0;
+  color: #999;
+  font-size: 13px;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 45px;
+  font-weight: 500;
+}
+
+.google-btn img {
+  width: 18px;
+  height: 18px;
 }

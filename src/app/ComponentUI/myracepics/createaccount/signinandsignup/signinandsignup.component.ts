@@ -30,7 +30,7 @@ export class SigninandsignupComponent implements OnInit {
     private sigInService: SigInService,
     private alert: NotificationsService,
     private signupService: SignUpService,
-     private dialog: MatDialog
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -71,16 +71,16 @@ export class SigninandsignupComponent implements OnInit {
     }
   }
 
-// openRoleDialog(role: any) {
-//   const dialogRef = this.dialog.open(RoleselecteduiComponent, {
-//     width: '400px',
-//     data: { role }
-//   });
+  // openRoleDialog(role: any) {
+  //   const dialogRef = this.dialog.open(RoleselecteduiComponent, {
+  //     width: '400px',
+  //     data: { role }
+  //   });
 
-//   dialogRef.afterClosed().subscribe(result => {
-//     console.log('Dialog closed', result);
-//   });
-// }
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     console.log('Dialog closed', result);
+  //   });
+  // }
 
 
 
@@ -213,6 +213,15 @@ export class SigninandsignupComponent implements OnInit {
     const confirm = control.get('password_confirmation')?.value;
     return password === confirm ? null : { passwordMismatch: true };
   }
+
+  signupWithGoogle() {
+    window.location.href = 'https://backend.myracepics.com/auth/google';
+  }
+
+  loginWithGoogle() {
+    window.location.href = 'https://backend.myracepics.com/auth/google';
+  }
+
 
   // openRoleDialog(): void {
   //   const dialogRef = this.dialog.open(RoleselecteduiComponent, {

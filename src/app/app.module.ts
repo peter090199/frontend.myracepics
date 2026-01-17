@@ -140,6 +140,7 @@ import { CreateEventsComponent } from './ComponentUI/myracepics/Events/create-ev
 import { RoleselecteduiComponent } from './ComponentUI/myracepics/createaccount/role/roleselectedui/roleselectedui.component';
 import { RunneruiComponent } from './ComponentUI/myracepics/createaccount/role/runnerui/runnerui.component';
 import { PhotographeruiComponent } from './ComponentUI/myracepics/createaccount/role/photographerui/photographerui.component';
+import { EventPageUIComponent } from './ComponentUI/myracepics/Events/event-page-ui/event-page-ui.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -271,7 +272,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     CreateEventsComponent,
     RoleselecteduiComponent,
     RunneruiComponent,
-    PhotographeruiComponent
+    PhotographeruiComponent,
+    EventPageUIComponent
   ],
   imports: [
     BrowserModule,

@@ -6,6 +6,7 @@
       <img [src]="event.image" alt="Event Image" class="event-cover" />
       <div class="event-header-overlay">
         <h2 class="event-title">{{ event.title }}</h2>
+        <span>  {{ event.category }}</span>
         <span class="event-details">
           📍 {{ event.location }} | 📅 {{ event.date | date:'MMMM d, y' }}
         </span>

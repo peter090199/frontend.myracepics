@@ -31,6 +31,7 @@ import { SecurityRolesComponent } from './ComponentUI/system/security-roles/secu
 import { UsersComponent } from './ComponentUI/system/users/users.component';
 import { MenuComponent } from './ComponentUI/system/menu/menu.component';
 import { RoleComponent } from './ComponentUI/system/role/role.component';
+import { EventPageUIComponent } from './ComponentUI/myracepics/Events/event-page-ui/event-page-ui.component';
 
 const routes: Routes = [
 
@@ -51,8 +52,9 @@ const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['runner'] },
     children: [
+      // { path: 'pageevent', component: EventPageUIComponent },
       { path: 'allevents', component: AllEventsComponent },
-      { path: 'eventprofile/:title/:uuid', component: ProfileEventComponent },
+      { path: 'eventprofile/:title/:uuid', component: EventPageUIComponent },
       { path: 'profile', component: SettingsComponent }
     ]
   },
@@ -66,8 +68,9 @@ const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['photographer'] },
     children: [
+      // { path: 'pageevent', component: EventPageUIComponent },
       { path: 'allevents', component: AllEventsComponent },
-      { path: 'eventprofile/:title/:uuid', component: ProfileEventComponent },
+      { path: 'eventprofile/:title/:uuid', component: EventPageUIComponent },
       { path: 'profile', component: SettingsComponent }
     ]
   },
@@ -82,8 +85,9 @@ const routes: Routes = [
     data: { roles: ['masteradmin'] },
     children: [
       { path: 'createevent', component: CreateEventsComponent },
+    //  { path: 'pageevent', component: EventPageUIComponent },
       { path: 'eventrecords', component: AllEventsComponent },
-      { path: 'eventprofile/:title/:uuid', component: ProfileEventComponent },
+      { path: 'eventprofile/:title/:uuid', component: EventPageUIComponent },
       { path: 'profile', component: SettingsComponent },
       { path: 'admin-dashboard', component: AdminDashboardComponent },
       { path: 'search', component: UserListComponent },

@@ -1,12 +1,6 @@
 /* =========================
    CONTAINER
 ========================= */
-.sidenav-container {
-  height: 100vh;
-  background: #f4f6f8;
-  font-family: 'Roboto', Verdana;
-  overflow-x: hidden;
-}
 
 /* =========================
    SIDEBAR

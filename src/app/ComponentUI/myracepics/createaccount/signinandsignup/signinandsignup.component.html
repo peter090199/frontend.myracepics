@@ -1,18 +1,12 @@
 <div class="auth-container">
     <div class="auth-card">
-
         <div class="auth-cover"></div>
 
         <div class="auth-content">
             <mat-tab-group [(selectedIndex)]="selectedTab" animationDuration="500ms"
                 (selectedIndexChange)="onTabChange($event)">
-
-                <!-- ================= LOGIN ================= -->
                 <mat-tab label="Login">
-                    <br />
                     <h2>Welcome Back</h2>
-                    <br />
-
                     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
                         <mat-form-field appearance="standard" class="full-width">
@@ -46,6 +40,11 @@
                         <button mat-raised-button color="primary" class="full" type="submit"
                             [disabled]="isLoading || loginForm.invalid">
                             Login
+                        </button>
+                         <div class="or-divider">OR</div>
+                        <button mat-stroked-button class="google-btn full" type="button" (click)="loginWithGoogle()">
+                            <img src="assets/google.svg" alt="Google" />
+                            Sign in with Google
                         </button>
 
                     </form>
@@ -110,6 +109,11 @@
                         <button mat-raised-button color="primary" [disabled]="signupForm.invalid" class="btn full"
                             type="button" (click)="onSignup()">
                             Register
+                        </button>
+                        <div class="or-divider">OR</div>
+                        <button mat-stroked-button class="google-btn full" type="button" (click)="signupWithGoogle()">
+                            <img src="assets/google.svg" alt="Google" />
+                            Sign up with Google
                         </button>
 
                     </form>

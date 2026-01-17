@@ -1,16 +1,10 @@
 <div class="section">
-
-  <!-- Cover Photo -->
   <div *ngIf="!isloading; else coverSkeleton" class="cover-photo">
     <img [src]="coverphoto?.coverphoto || 'assets/images/default-cover.png'" alt="Cover Photo" class="cover-photo-img" />
-    <!-- <button *ngIf="profiles?.btnCurriculum === 1" mat-button class="edit-cover-btn">Edit cover photo</button> -->
   </div>
-
   <ng-template #coverSkeleton>
     <div class="skeleton skeleton-img" style="height:200px;width:100%;border-radius:0;"></div>
   </ng-template>
-
-  <!-- Profile Details -->
   <div *ngIf="!isloading; else profileSkeleton" class="profile-details">
     <div class="profile-info" *ngIf="profiles">
        <div class="profile-picture">
