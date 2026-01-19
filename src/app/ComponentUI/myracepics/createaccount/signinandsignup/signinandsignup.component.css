@@ -1,6 +1,6 @@
 /* FULL PAGE CENTER */
 .auth-container {
-  min-height: 100vh;          /* allow content to grow */
+  height: 100vh;          /* allow content to grow */
   background: linear-gradient(135deg, #0d192f, #1197feef);
   display: flex;
   justify-content: center;
@@ -14,18 +14,15 @@
 /* CARD */
 .auth-card {
   width: 100%;
-  max-width: 1000px;
-  height:750px;
+  height:100vh;
   background: #fff;
-  border-radius: 16px;
   overflow: hidden;
   display: flex;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   overflow-y: auto;
 }
 
 .auth-cover {
-  flex: 1;
+  flex: 1.5;
   background: #0f0f10;
   background-image: url('/assets/logo.jpg');
   background-repeat: no-repeat;
@@ -60,7 +57,9 @@
 .auth-content {
   flex: 1;
   padding: 30px;
+  overflow-y: auto;
 }
+
 
 /* FORM STYLES */
 .full {
@@ -80,87 +79,81 @@
   cursor: pointer;
 }
 
-
-
-/* -------------------- */
-/* 📱 MOBILE RESPONSIVE */
-/* -------------------- */
 @media (max-width: 768px) {
-
   .auth-card {
     flex-direction: column;
-    height: auto;
   }
 
   .auth-cover {
+    flex: 0 0 200px;
+    max-width: 100%;
     height: 200px;
-    width: 800px;
   }
 
   .cover-overlay {
-    padding: 30px;
     text-align: center;
   }
 
-  .cover-overlay h1 {
-    font-size: 26px;
-  }
-
-  .auth-content {
-    padding: 25px;
-  }
 }
 
-/* Container for radio buttons */
-mat-radio-group.full {
-  display: flex;            /* Layout radio buttons horizontally */
-  gap: 20px;                /* Space between buttons */
-  margin: 10px 0;           /* Top and bottom spacing */
-  flex-wrap: wrap;          /* Wrap on smaller screens */
+/* RADIO GROUP */
+.role-group {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  flex-wrap: wrap;
 }
 
-/* Individual radio button */
-mat-radio-button {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
+/* RADIO BUTTON CARD STYLE */
+.role-radio {
+  flex: 1;
+  padding: 14px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
-/* Change color when selected */
-mat-radio-button.mat-radio-checked .mat-radio-label-content {
-  color: #1976d2; /* Primary blue */
-  font-weight: 600;
+/* Align radio + text */
+.role-radio .mat-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* Hover effect */
-mat-radio-button:hover .mat-radio-label-content {
-  color: #1565c0; /* Darker blue on hover */
+.role-radio:hover {
+  border-color: #1976d2;
+  background: rgba(25, 118, 210, 0.04);
 }
 
-/* For smaller screens */
-@media (max-width: 600px) {
-  mat-radio-group.full {
-    flex-direction: row; /* Stack vertically on mobile */
-  }
-}
-.or-divider {
-  text-align: center;
-  margin: 16px 0;
-  color: #999;
-  font-size: 13px;
+/* Checked state */
+.role-radio.mat-radio-checked {
+  border-color: #1976d2;
+  background: rgba(25, 118, 210, 0.08);
+  box-shadow: 0 6px 14px rgba(25, 118, 210, 0.15);
 }
 
-.google-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  height: 45px;
+/* Radio circle */
+.role-radio .mat-radio-outer-circle {
+  border-color: #1976d2;
+}
+
+/* Inner dot */
+.role-radio .mat-radio-inner-circle {
+  background-color: #1976d2;
+}
+
+/* Label text */
+.role-radio .mat-radio-label-content {
+  font-size: 15px;
   font-weight: 500;
 }
 
-.google-btn img {
-  width: 18px;
-  height: 18px;
+/* Mobile full width */
+@media (max-width: 600px) {
+  .role-radio {
+    width: 100%;
+  }
 }
+

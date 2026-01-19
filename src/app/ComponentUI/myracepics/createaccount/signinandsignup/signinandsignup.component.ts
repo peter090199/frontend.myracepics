@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -9,13 +9,18 @@ import { RoleComponent } from '../role/role.component';
 import { RoleselecteduiComponent } from '../role/roleselectedui/roleselectedui.component';
 import { RunneruiComponent } from '../role/runnerui/runnerui.component';
 import { PhotographeruiComponent } from '../role/photographerui/photographerui.component';
+import { ActivationService } from 'src/app/services/Activation/activation.service';
+import { GoogleAuthService } from 'src/app/Auth/google-auth.service';
+
+declare const google: any;
+
 
 @Component({
   selector: 'app-signinandsignup',
   templateUrl: './signinandsignup.component.html',
   styleUrls: ['./signinandsignup.component.css'],
 })
-export class SigninandsignupComponent implements OnInit {
+export class SigninandsignupComponent implements OnInit, AfterViewInit {
 
   loginForm!: FormGroup;
   signupForm!: FormGroup;
@@ -30,12 +35,55 @@ export class SigninandsignupComponent implements OnInit {
     private sigInService: SigInService,
     private alert: NotificationsService,
     private signupService: SignUpService,
-    private dialog: MatDialog
+    private dialog: MatDialog, private googleAuth: ActivationService,
+    private googleAuths: GoogleAuthService
   ) { }
 
   ngOnInit(): void {
     this.initForms();
   }
+
+  ngAfterViewInit() {
+    // Initialize Google button for login
+    this.googleAuth.initializeGoogleButton('google-login-btn', (response: any) => {
+      this.handleGoogleResponse(response);
+    });
+
+    // Initialize Google button for signup
+    this.googleAuth.initializeGoogleButton('google-signup-btn', (response: any) => {
+      this.handleGoogleResponse(response);
+    });
+  }
+
+
+  loginWithGoogle2() {
+    // This triggers Google One-Tap / popup
+    google.accounts.id.prompt();
+  }
+
+  signupWithGoogle2() {
+    google.accounts.id.prompt();
+  }
+
+  handleGoogleResponse(response: any) {
+    const idToken = response.credential;
+    this.isLoading = true;
+
+    this.googleAuth.loginWithGoogle(idToken).subscribe({
+      next: (res: any) => {
+        localStorage.setItem('token', res.token);
+        console.log('Google login success', res.user);
+        this.isLoading = false;
+        this.router.navigate(['/dashboard']); // redirect after login
+      },
+      error: (err) => {
+        console.error('Google login error', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+
 
   /** ---------------- FORMS ---------------- */
   private initForms(): void {
@@ -215,29 +263,13 @@ export class SigninandsignupComponent implements OnInit {
   }
 
   signupWithGoogle() {
-    window.location.href = 'https://backend.myracepics.com/auth/google';
+    window.location.href = 'https://backend.myracepics.com/api/auth/google';
   }
+
 
   loginWithGoogle() {
-    window.location.href = 'https://backend.myracepics.com/auth/google';
+   this.googleAuths.loginWithGoogle();
   }
-
-
-  // openRoleDialog(): void {
-  //   const dialogRef = this.dialog.open(RoleselecteduiComponent, {
-  //     width: '900px',
-  //     disableClose: true
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(role => {
-  //     if (!role) return;
-
-  //     this.signupForm.patchValue({ role });
-
-  //     // Now submit normally
-  //     this.onSignup();
-  //   });
-  // }
 
 
 

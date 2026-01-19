@@ -398,6 +398,10 @@ snack-bar-container.notification simple-snack-bar {
   width: 90%;
 }
 
+.w-90 {
+  width: 100%;
+}
+
 .save-button {
   margin: 0;
 }
