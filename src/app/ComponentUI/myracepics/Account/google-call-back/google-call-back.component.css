@@ -1,5 +1,5 @@
 .select-role-container {
-  max-width: 400px;
+  max-width: 600px;
   margin: 50px auto;
   text-align: center;
   padding: 20px;
@@ -15,6 +15,12 @@
 
 mat-radio-button {
   margin: 10px 0;
+  gap: 12px;
+  padding: 20px;
+}
+.button-icon {
+  vertical-align: middle;
+  margin-right: 8px; /* space between icon and text */
 }
 
 .error {

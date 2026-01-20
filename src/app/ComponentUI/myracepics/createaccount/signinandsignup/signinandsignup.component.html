@@ -33,18 +33,19 @@
                             Password is required
                         </mat-error>
                     </mat-form-field>
-
-                    <br /><br />
+                    <br/>
 
                     <button mat-raised-button color="primary" class="full-width" type="submit"
                         [disabled]="isLoading || loginForm.invalid">
                         Login
                     </button>
-                    <div style="text-align: center;margin: 5px;">OR</div>
-                    <button mat-stroked-button class="google-btn full-width" type="button" (click)="loginWithGoogle()">
+                    <div style="text-align: center">OR</div>
+                    <br/>
+                    <button mat-raised-button class="google-btn" type="button" (click)="loginWithGoogle()">
                         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
-                        Sign in with Google
+                        <span>Sign in with Google</span>
                     </button>
+
 
                 </form>
 
@@ -90,7 +91,8 @@
                         <input matInput type="password" formControlName="password_confirmation" />
                     </mat-form-field>
                     <!-- ROLE SELECTION -->
-                    <mat-radio-group   class="role-group" formControlName="role" required (change)="onRoleSelected($event.value)">
+                    <mat-radio-group class="role-group" formControlName="role" required
+                        (change)="onRoleSelected($event.value)">
                         <mat-radio-button value="runner">Runner</mat-radio-button>
                         <mat-radio-button value="photographer">Photographer</mat-radio-button>
                     </mat-radio-group>
@@ -101,9 +103,9 @@
                     </button>
                     <div style="text-align: center;margin: 5px;">OR</div>
 
-                    <button mat-stroked-button class="google-btn full" type="button" (click)="signupWithGoogle()">
-                        <img src="assets/google.svg" alt="Google" />
-                        Sign up with Google
+                     <button mat-raised-button class="google-btn" type="button" (click)="loginWithGoogle()">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+                        <span>Sign up with Google</span>
                     </button>
                 </form>
             </mat-tab>

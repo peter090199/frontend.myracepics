@@ -2,7 +2,7 @@
   <h2>Select Your Role</h2>
 
   <form [formGroup]="roleForm" (ngSubmit)="submitRole()">
-    <mat-radio-group formControlName="role" class="role-options">
+    <mat-radio-group class="role-group" formControlName="role" required (change)="onRoleSelected($event.value)">
       <mat-radio-button value="runner">Runner</mat-radio-button>
       <mat-radio-button value="photographer">Photographer</mat-radio-button>
     </mat-radio-group>
@@ -10,7 +10,10 @@
     <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
     <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+      <mat-icon *ngIf="!loading" class="button-icon">arrow_forward</mat-icon>
+      <mat-icon *ngIf="loading" class="button-icon">hourglass_top</mat-icon>
       {{ loading ? 'Saving...' : 'Continue' }}
     </button>
+
   </form>
 </div>

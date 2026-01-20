@@ -56,6 +56,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAuthService } from 'src/app/services/google/google-auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PhotographeruiComponent } from '../../createaccount/role/photographerui/photographerui.component';
+import { RunneruiComponent } from '../../createaccount/role/runnerui/runnerui.component';
 
 @Component({
   selector: 'app-google-call-back',
@@ -73,7 +76,8 @@ export class GoogleCallbackComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private authService: GoogleAuthService
+    private authService: GoogleAuthService,
+     private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -167,5 +171,19 @@ export class GoogleCallbackComponent implements OnInit {
         }
       });
   }
+
+    onRoleSelected(role: string) {
+      if (role === 'runner') {
+        this.dialog.open(RunneruiComponent, {
+          width: '500px',
+        });
+      } else if (role === 'photographer') {
+        this.dialog.open(PhotographeruiComponent, {
+          width: '500px',
+        });
+      }
+    }
+  
+
 }
 
