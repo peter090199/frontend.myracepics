@@ -1,0 +1,16 @@
+<div class="select-role-container">
+  <h2>Select Your Role</h2>
+
+  <form [formGroup]="roleForm" (ngSubmit)="submitRole()">
+    <mat-radio-group formControlName="role" class="role-options">
+      <mat-radio-button value="runner">Runner</mat-radio-button>
+      <mat-radio-button value="photographer">Photographer</mat-radio-button>
+    </mat-radio-group>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+      {{ loading ? 'Saving...' : 'Continue' }}
+    </button>
+  </form>
+</div>

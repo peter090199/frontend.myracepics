@@ -1,20 +1,23 @@
 /* FULL PAGE CENTER */
 .auth-container {
-  height: 100vh;          /* allow content to grow */
+  height: 100vh;
+  /* allow content to grow */
   background: linear-gradient(135deg, #0d192f, #1197feef);
   display: flex;
   justify-content: center;
   align-items: center;
   margin: auto;
-  overflow-y: auto;           /* allow vertical scroll */
-  padding: 16px;              /* prevent edge cutoff on mobile */
+  overflow-y: auto;
+  /* allow vertical scroll */
+  padding: 16px;
+  /* prevent edge cutoff on mobile */
 }
 
 
 /* CARD */
 .auth-card {
   width: 100%;
-  height:100vh;
+  height: 100vh;
   background: #fff;
   overflow: hidden;
   display: flex;
@@ -85,9 +88,7 @@
   }
 
   .auth-cover {
-    flex: 0 0 200px;
-    max-width: 100%;
-    height: 200px;
+    display: none;
   }
 
   .cover-overlay {
@@ -157,3 +158,23 @@
   }
 }
 
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #4285F4;
+  color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.google-btn img {
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  padding: 3px;
+  border-radius: 2px;
+}

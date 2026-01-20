@@ -8,14 +8,14 @@ import { Observable } from 'rxjs';
 })
 export class GoogleAuthService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   loginWithGoogle(): void {
-    window.location.href = `${_url}auth/google/redirect`;
+    window.location.href = `${_url}auth/google`;
   }
 
-handleGoogleCallback(code: any): Observable<any> {
+  handleGoogleCallback(code: any): Observable<any> {
     return this.http.get(`${_url}auth/google/callback?code=${code}`);
-}
+  }
 
 }
