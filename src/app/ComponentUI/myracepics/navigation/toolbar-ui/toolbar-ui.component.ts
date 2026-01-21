@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, QueryList, ViewChildren, HostListener } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatMenu, MatMenuPanel } from '@angular/material/menu';
@@ -61,7 +61,7 @@ export class ToolbarUIComponent implements OnInit {
     this.loadCartCount();
     this.fetchModules();
     this.detectMobile();
-
+  this.checkScreen();
     // this.cartService.cartItems$.subscribe(items => {
     //   this.cartItems = items;
     //   this.cartCount = items.length;
@@ -72,9 +72,22 @@ export class ToolbarUIComponent implements OnInit {
       this.cartCount = this.cartService.getTotalCount(); // 🔥 Shopee count
     });
   }
+// component.ts
+get eventsLink() {
+  return this.nav_module.find(link => link.description === 'Events');
+}
 
 
+ @HostListener('window:resize')
+  onResize() {
+    this.checkScreen();
+  }
 
+  checkScreen() {
+    this.isMobile = window.innerWidth <= 600;
+  }
+
+  
   /** Detect if screen is mobile */
   private detectMobile(): void {
     this.breakpointObserver.observe([Breakpoints.Handset])

@@ -43,10 +43,50 @@
   <!-- ================= EVENTS ================= -->
   <ng-container *ngIf="!loading && filteredEvents.length > 0">
     <div class="events-grid">
+      <mat-card class="event-card overlay-card" *ngFor="let event of filteredEvents">
 
-      <mat-card class="event-card" *ngFor="let event of filteredEvents">
+        <!-- CARD IMAGE -->
+        <div class="event-banner" *ngIf="event.image && event.image.length; else noImage">
+          <img [src]="event.image[0]" class="banner-main" loading="lazy" alt="{{ event.title }}">
+        </div>
 
-        <!-- IMAGES -->
+        <ng-template #noImage>
+          <div class="event-banner no-image">
+            No Image
+          </div>
+        </ng-template>
+
+        <!-- FULL OVERLAY -->
+        <div class="event-details overlay">
+          <div class="overlay-top">
+            <span class="status-tag">{{ event.status }}</span>
+            <button mat-icon-button class="share-btn">
+              <mat-icon>share</mat-icon>
+            </button>
+          </div>
+
+          <div class="overlay-content">
+            <h1>{{ event.title }}</h1>
+            <div class="info-row">
+              <mat-icon>place</mat-icon> {{ event.location }}
+            </div>
+            <div class="info-row">
+              <mat-icon>calendar_today</mat-icon> {{ event.date | date:'MMM d, y' }}
+            </div>
+            <div class="info-row">
+              <mat-icon>photo</mat-icon> {{ event.image.length }} Photos
+            </div>
+            <button mat-raised-button color="primary" [routerLink]="eventProfileLink(event)">
+              View Photos
+            </button>
+          </div>
+        </div>
+
+      </mat-card>
+
+
+      <!-- <mat-card class="event-card" *ngFor="let event of filteredEvents">
+
         <div class="event-banner" *ngIf="event.image && event.image.length; else noImage">
           <div class="image-track">
             <img *ngFor="let img of event.image | slice:0:event.visibleImages; let i = index" [src]="img" loading="lazy"
@@ -64,7 +104,6 @@
           </div>
         </ng-template>
 
-        <!-- LOAD MORE IMAGES -->
         <button mat-stroked-button color="primary" class="load-more-btn"
           *ngIf="event.visibleImages < event.image.length" (click)="loadMoreImages(event)">
           {{ event.visibleImages + event.imagesPerLoad >= event.image.length
@@ -73,7 +112,6 @@
         </button>
 
 
-        <!-- DETAILS -->
         <div class="event-details">
           <h3>{{ event.title }}</h3>
 
@@ -97,7 +135,7 @@
           </button>
         </div>
 
-      </mat-card>
+      </mat-card> -->
 
     </div>
   </ng-container>

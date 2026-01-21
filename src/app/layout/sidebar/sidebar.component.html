@@ -2,26 +2,32 @@
   <div class="logo">
     <img src="assets/images/logo.png" alt="logo" style="height:20px;">
     exsuz
- </div>
+  </div>
   <!-- Sidebar for mobile -->
   <div class="sidebar" [ngClass]="{'active': isSidebarOpen}">
-    
 
-    <ul class="list-unstyled" *ngFor="let link of nav_module" class="nav-item" [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">
-        <div *ngIf="link.submenus && link.submenus.length > 0; else regularLink">
-          <button mat-button [matMenuTriggerFor]="menu" class="nav-link">{{ link.description }}</button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item *ngFor="let submenu of link.submenus" [routerLinkActive]="[submenu.route]" style="color: black;">
-                    {{submenu.description}}
-                </button>
-              </mat-menu>
-        </div>
-        <ng-template #regularLink>
-          <button mat-button class="nav-link" [routerLink]="[link.route]">
-            <i class="{{ link.icon }}"></i> {{ link.description }}
+
+    <ul class="list-unstyled" *ngFor="let link of nav_module" class="nav-item"
+      [ngClass]="{'dropdown': link.submenus && link.submenus.length > 0}">
+      <div *ngIf="link.submenus && link.submenus.length > 0; else regularLink">
+        <button mat-menu-item routerLink="/cart">
+          <mat-icon>shopping_bag</mat-icon>
+          View Cart
+        </button>
+        <button mat-button [matMenuTriggerFor]="menu" class="nav-link">{{ link.description }}</button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item *ngFor="let submenu of link.submenus" [routerLinkActive]="[submenu.route]"
+            style="color: black;">
+            {{submenu.description}}
           </button>
-        </ng-template>
-       
+        </mat-menu>
+      </div>
+      <ng-template #regularLink>
+        <button mat-button class="nav-link" [routerLink]="[link.route]">
+          <i class="{{ link.icon }}"></i> {{ link.description }}
+        </button>
+      </ng-template>
+
     </ul>
 
   </div>
