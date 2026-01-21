@@ -33,6 +33,7 @@ import { MenuComponent } from './ComponentUI/system/menu/menu.component';
 import { RoleComponent } from './ComponentUI/system/role/role.component';
 import { EventPageUIComponent } from './ComponentUI/myracepics/Events/event-page-ui/event-page-ui.component';
 import { GoogleCallbackComponent } from './ComponentUI/myracepics/Account/google-call-back/google-call-back.component';
+import { GoogleSelectRoleUIComponent } from './ComponentUI/myracepics/Account/google-select-role-ui/google-select-role-ui.component';
 
 
 const routes: Routes = [
@@ -45,7 +46,7 @@ const routes: Routes = [
   { path: 'createaccount', component: SigninandsignupComponent },
   { path: 'publicevents', component: AllEventsComponent },
   { path: 'auth/google/callback', component: GoogleCallbackComponent },
-  { path: 'auth/google/select-role', component: GoogleCallbackComponent },
+  { path: 'auth/google/select-role', component: GoogleSelectRoleUIComponent },
   /* =======================
      RUNNER / USER
   ======================== */

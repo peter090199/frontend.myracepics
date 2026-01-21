@@ -28,6 +28,8 @@ export class SigninandsignupComponent implements OnInit, AfterViewInit {
   passwordVisible = false;
   isLoading = false;
   selectedTab = 0; // 0 = Login, 1 = Register
+  hidePassword = true;
+  hideConfirmPassword = true;
 
   constructor(
     private fb: FormBuilder,
@@ -44,15 +46,15 @@ export class SigninandsignupComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Initialize Google button for login
-    this.googleAuth.initializeGoogleButton('google-login-btn', (response: any) => {
-      this.handleGoogleResponse(response);
-    });
+    // // Initialize Google button for login
+    // this.googleAuth.initializeGoogleButton('google-login-btn', (response: any) => {
+    //   this.handleGoogleResponse(response);
+    // });
 
-    // Initialize Google button for signup
-    this.googleAuth.initializeGoogleButton('google-signup-btn', (response: any) => {
-      this.handleGoogleResponse(response);
-    });
+    // // Initialize Google button for signup
+    // this.googleAuth.initializeGoogleButton('google-signup-btn', (response: any) => {
+    //   this.handleGoogleResponse(response);
+    // });
   }
 
 
@@ -268,7 +270,7 @@ export class SigninandsignupComponent implements OnInit, AfterViewInit {
 
 
   loginWithGoogle() {
-   this.googleAuths.loginWithGoogle();
+    this.googleAuths.loginWithGoogle();
   }
 
 

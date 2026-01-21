@@ -142,6 +142,7 @@ import { RunneruiComponent } from './ComponentUI/myracepics/createaccount/role/r
 import { PhotographeruiComponent } from './ComponentUI/myracepics/createaccount/role/photographerui/photographerui.component';
 import { EventPageUIComponent } from './ComponentUI/myracepics/Events/event-page-ui/event-page-ui.component';
 import { GoogleCallbackComponent } from './ComponentUI/myracepics/Account/google-call-back/google-call-back.component';
+import { GoogleSelectRoleUIComponent } from './ComponentUI/myracepics/Account/google-select-role-ui/google-select-role-ui.component';
 
 
 
@@ -277,7 +278,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     RunneruiComponent,
     PhotographeruiComponent,
     EventPageUIComponent,
-    GoogleCallbackComponent
+    GoogleCallbackComponent,
+    GoogleSelectRoleUIComponent
   ],
   imports: [
     BrowserModule,

@@ -61,7 +61,14 @@
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  max-height: 100vh;
+  height: 100vh;
+}
+@media (max-width: 768px) {
+  .auth-content {
+    flex: unset;
+    width: 100%;
+    flex-direction: column;
+  }
 }
 
 
@@ -102,14 +109,14 @@
 .role-group {
   display: flex;
   gap: 16px;
-  margin: 16px 0;
+  margin: 2px 0;
   flex-wrap: wrap;
 }
 
 /* RADIO BUTTON CARD STYLE */
 .role-radio {
   flex: 1;
-  padding: 14px 18px;
+  padding: 5px;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
   transition: all 0.3s ease;
