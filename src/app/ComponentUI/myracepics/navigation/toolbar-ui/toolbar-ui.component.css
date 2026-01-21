@@ -61,7 +61,9 @@
   color: #fff;          /* icon + text color */
   transition: background 0.3s ease, transform 0.2s ease;
 }
-
+span{
+  color: white;
+}
 /* Hover effect */
 .top-toolbar button.mat-icon-button:hover {
   background: rgba(255, 255, 255, 0.1); /* subtle highlight */

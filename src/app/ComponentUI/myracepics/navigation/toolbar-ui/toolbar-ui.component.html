@@ -14,12 +14,12 @@
       </a>
     </mat-nav-list>
 
-    <div class="logout-section">
+    <!-- <div class="logout-section">
       <button mat-raised-button color="basic" (click)="onLogout()">
         <mat-icon>logout</mat-icon>
         Logout
       </button>
-    </div>
+    </div> -->
   </mat-sidenav>
 
   <!-- MAIN CONTENT -->
@@ -29,6 +29,9 @@
     <mat-toolbar color="primary" class="top-toolbar">
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
+      </button>
+      <button mat-icon-button color="basic" (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
       </button>
       <span class="spacer"></span>
 
