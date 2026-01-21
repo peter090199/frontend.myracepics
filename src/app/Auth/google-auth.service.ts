@@ -11,7 +11,7 @@ export class GoogleAuthService {
   constructor(private http: HttpClient) { }
 
   loginWithGoogle(): void {
-    window.location.href = `${_url}auth/google`;
+    window.location.href = `${_url}auth/google/redirect`;
   }
 
   handleGoogleCallback(code: any): Observable<any> {

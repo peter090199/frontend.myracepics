@@ -1,0 +1,29 @@
+.select-role-container {
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 0 10px #ccc;
+  border-radius: 10px;
+}
+
+.role-options {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+mat-radio-button {
+  margin: 10px 0;
+  gap: 12px;
+  padding: 20px;
+}
+.button-icon {
+  vertical-align: middle;
+  margin-right: 8px; /* space between icon and text */
+}
+
+.error {
+  color: red;
+  margin-bottom: 10px;
+}

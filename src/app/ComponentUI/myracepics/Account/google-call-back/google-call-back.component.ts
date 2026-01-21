@@ -22,7 +22,7 @@ export class GoogleCallbackComponent implements OnInit {
     // ❌ Invalid callback
     if (!token) {
       sessionStorage.clear();
-      this.router.navigate(['/login']);
+      this.router.navigate(['/createaccount']);
       return;
     }
 
