@@ -23,7 +23,7 @@ export class GoogleAuthService {
    * @param userId Google user ID
    * @param role 'runner' | 'photographer'
    */
-  setRole(userId: string, role: string): Observable<any> {
+  setRole(userId: any, role: any): Observable<any> {
     const payload = { user_id: userId, role };
     return this.http.post(`${_url}auth/google/set-role`, payload);
   }

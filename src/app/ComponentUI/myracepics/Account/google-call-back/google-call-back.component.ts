@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-google-call-back',
-  template: `<p>Signing you in...</p>`,
+  templateUrl: './google-call-back.component.html',
   styleUrls: ['./google-call-back.component.css']
 })
 export class GoogleCallbackComponent implements OnInit {

@@ -10,22 +10,51 @@ import Swal from 'sweetalert2';
 })
 export class NotificationsService {
   constructor(
-    private toastr : ToastrService,
+    private toastr: ToastrService,
     private dialog: MatDialog,
-    private dataService:ProfessionalService
+    private dataService: ProfessionalService
   ) { }
 
   toastrSuccess(msg: string): void {
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: msg,
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-        toast: true
-      });
+    Swal.fire({
+      position: 'bottom-end',  // bottom-right
+      icon: 'success',
+      title: msg,
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      toast: true,
+      background: 'rgb(6, 126, 8)', // ✅ valid rgb
+      color: '#ffffff',             // optional: white text
+      iconColor: '#ffffff'          // optional: white icon
+    });
   }
+
+
+  toastrSuccess1(msg: string): void {
+    Swal.fire({
+      position: 'bottom-end', // ✅ bottom-right
+      icon: 'success',
+      title: msg,
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      toast: true
+    });
+  }
+
+
+  // toastrSuccess(msg: string): void {
+  //     Swal.fire({
+  //       position: 'top-end',
+  //       icon: 'success',
+  //       title: msg,
+  //       showConfirmButton: false,
+  //       timer: 1500,
+  //       timerProgressBar: true,
+  //       toast: true
+  //     });
+  // }
 
   // toastrSuccess(msg:any){
   // //  this.toastr.success(msg);
@@ -37,55 +66,55 @@ export class NotificationsService {
   //       timer: 1500
   //     });
   // }
-  toastrError(msg:any){
+  toastrError(msg: any) {
     this.toastr.error(msg);
   }
 
-  toastrWarning(msg:any){
+  toastrWarning(msg: any) {
     this.toastr.warning(msg);
   }
 
-  toastrInfo(msg:any){
+  toastrInfo(msg: any) {
     this.toastr.info(msg);
   }
-  popupWarning(title:string, text:string){
+  popupWarning(title: string, text: string) {
     return Swal.fire({
-            title: title,
-            text: text,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            confirmButtonColor :'#3f51b5',
-            cancelButtonColor :'#f44336',
-            cancelButtonText: 'No'
-          });
+      title: title,
+      text: text,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      confirmButtonColor: '#3f51b5',
+      cancelButtonColor: '#f44336',
+      cancelButtonText: 'No'
+    });
   }
-  popup(title:string, text:string){
+  popup(title: string, text: string) {
     return Swal.fire({
-            title: title,
-            text: text,
-            icon: "warning",
-            showCancelButton: false,
-            confirmButtonText: 'OK',
-            confirmButtonColor :'#3f51b5',
-            cancelButtonColor :'#f44336',
-            cancelButtonText: 'No'
-          });
+      title: title,
+      text: text,
+      icon: "warning",
+      showCancelButton: false,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#3f51b5',
+      cancelButtonColor: '#f44336',
+      cancelButtonText: 'No'
+    });
   }
 
-  popupWarning3Buttons(title:string, text:string){
+  popupWarning3Buttons(title: string, text: string) {
     return Swal.fire({
-            title: title,
-            text: text,
-            icon: "warning",
-            showCancelButton: true,
-            showDenyButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            confirmButtonColor :'#3f51b5',
-            cancelButtonColor :'#f44336',
-            denyButtonText: 'Yes, Remove All'
-          });
+      title: title,
+      text: text,
+      icon: "warning",
+      showCancelButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      confirmButtonColor: '#3f51b5',
+      cancelButtonColor: '#f44336',
+      denyButtonText: 'Yes, Remove All'
+    });
   }
 
   popupWarningDiscard(title: string): Promise<string> {
@@ -123,23 +152,23 @@ export class NotificationsService {
     return education;
   }
 
-toastPopUp(msg:string){
-  return Swal.fire({
-    text: msg,
-    icon: "success"
-  });
-}
-toastPopUpError(msg:string){
-  return Swal.fire({
-    text: msg,
-    icon: "warning",
-    showCancelButton: false,
-    confirmButtonText: 'OK',
-    confirmButtonColor :'#3f51b5',
-    cancelButtonColor :'#f44336',
-    cancelButtonText: 'No',
+  toastPopUp(msg: string) {
+    return Swal.fire({
+      text: msg,
+      icon: "success"
+    });
+  }
+  toastPopUpError(msg: string) {
+    return Swal.fire({
+      text: msg,
+      icon: "warning",
+      showCancelButton: false,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#3f51b5',
+      cancelButtonColor: '#f44336',
+      cancelButtonText: 'No',
 
-  });
-}
+    });
+  }
 
 }
