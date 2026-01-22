@@ -2,12 +2,16 @@
 
   <!-- SIDEBAR -->
   <mat-sidenav mode="side" [(opened)]="sidebarOpen" class="recruit-sidenav">
-
-    <!-- LOGO -->
-    <div class="logo" *ngIf="!isMobile">
-      <img src="assets/images/logo.png" alt="logo">
-      <h3>Recruiter</h3>
+    <div class="sidebar-logo">
+      <img src="assets/logo.jpg" alt="logo" class="logo-img" />
+      <span>MyRacePics</span>
     </div>
+    <span class="spacer"></span>
+    <!-- LOGO -->
+    <!-- <div class="logo" *ngIf="!isMobile">
+      <img src="assets/images/logo.png" alt="logo">
+      <h3>Photo</h3>
+    </div> -->
 
     <!-- MENU LIST -->
     <mat-nav-list class="menu-list">
@@ -24,7 +28,7 @@
         <!-- MAIN MENU WITH SUBMENU -->
         <div *ngIf="item.submenus?.length" class="submenu-wrapper">
           <a mat-list-item (click)="toggleSubmenu(item)">
-           <mat-icon>{{ item.icon }}</mat-icon>
+            <mat-icon>{{ item.icon }}</mat-icon>
             <span class="menu-text">{{ item.label }}</span>
             <span class="spacer"></span>
             <mat-icon class="arrow">{{ item.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
@@ -34,7 +38,7 @@
           <div class="submenu" *ngIf="item.expanded">
             <a mat-list-item *ngFor="let sub of item.submenus" [routerLink]="sub.route" routerLinkActive="active-sub"
               [routerLinkActiveOptions]="{ exact: true }">
-             <mat-icon>{{ item.icon }}</mat-icon>
+              <mat-icon>{{ item.icon }}</mat-icon>
               <span class="submenu-text">{{ sub.label || sub.description }}</span>
             </a>
           </div>
@@ -49,50 +53,64 @@
   <!-- MAIN CONTENT -->
   <mat-sidenav-content>
     <mat-toolbar color="primary" class="topbar">
-      <button mat-icon (click)="toggleSidebar()">
+      <button mat-icon-button (click)="toggleSidebar()" aria-label="Toggle menu">
         <mat-icon>menu</mat-icon>
       </button>
-
       <span class="title">{{ pageTitle }}</span>
       <span class="spacer"></span>
 
-      <!-- SEARCH -->
-      <button mat-icon>
-        <mat-icon>search</mat-icon>
+      <ng-container *ngFor="let item of menuItems">
+        <button mat-button color="primary" *ngIf="item.label?.toLowerCase() === 'events'" [routerLink]="item.route" >
+          {{ item?.label }}
+        </button>
+      </ng-container>
+
+      <button mat-icon-button [matMenuTriggerFor]="cartMenu" matBadge="{{ cartCount }}" matBadgeColor="warn"
+        [matBadgeHidden]="cartCount === 0">
+        <mat-icon>shopping_cart</mat-icon>
       </button>
+      <mat-menu #cartMenu="matMenu">
+        <ng-container *ngIf="cartItems.length > 0; else emptyCart">
+          <div class="cart-item" *ngFor="let item of cartItems">
+            <span>{{ item.title }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/cart">
+            <mat-icon>shopping_bag</mat-icon>
+            View Cart
+          </button>
+        </ng-container>
+        <ng-template #emptyCart>
+          <button mat-menu-item disabled>Cart is empty</button>
+        </ng-template>
+      </mat-menu>
 
       <!-- NOTIFICATIONS -->
-      <button mat-icon matTooltip="View Notifications" (click)="openNotifications()" [matBadge]="unreadCount"
+      <button mat-icon-button matTooltip="View Notifications" (click)="openNotifications()" [matBadge]="unreadCount"
         [matBadgeHidden]="unreadCount === 0" matBadgeColor="warn">
         <mat-icon>notifications</mat-icon>
       </button>
 
       <!-- USER PROFILE BUTTON -->
-      <button mat-icon [matMenuTriggerFor]="userMenu">
+      <!-- <button mat-icon [matMenuTriggerFor]="userMenu">
         <img *ngIf="profile?.coverphoto; else defaultIcon" [src]="profile.coverphoto" alt="Profile"
           class="profile-icon" />
         <ng-template #defaultIcon>
           <mat-icon>account_circle</mat-icon>
         </ng-template>
+      </button> -->
+
+      <button *ngIf="profile" mat-raised-button class="avatar-btn" [matMenuTriggerFor]="profileMenu"
+        matTooltip="{{ profile?.fullname }}">
+        <span class="avatar-initials">
+          {{ getInitials(profile?.fullname)}}
+        </span>
       </button>
-
-
-      <mat-menu #userMenu="matMenu">
-<!-- 
-        <a mat-menu-item [routerLink]="getProfileUrl()">
-          <mat-icon>person</mat-icon>
-          <span>Profile</span>
-        </a> -->
-        <a mat-menu-item [routerLink]="getsettingsUrl()">
-          <mat-icon>settings</mat-icon>
-          <span>Profile</span>
-        </a>
-
+      <mat-menu #profileMenu="matMenu" class="profile-menu-overlay">
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>
-
       </mat-menu>
 
 

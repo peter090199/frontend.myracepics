@@ -41,6 +41,9 @@
   display: flex;
   flex-direction: column;
   height: 500px;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
 }
 
 /* ================= IMAGE AS FULL BACKGROUND ================= */
@@ -82,19 +85,6 @@
   z-index: 3;
 }
 
-/* ================= NO IMAGE PLACEHOLDER ================= */
-.no-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #eee;
-  color: #888;
-  height: 100%;
-  width: 100%;
-  border-radius: 6px;
-  z-index: 1;
-}
-
 /* ================= DETAILS OVERLAY ================= */
 .event-details.overlay {
   position: absolute;
@@ -102,49 +92,83 @@
   left: 0;
   width: 100%;
   padding: 16px;
-  background: linear-gradient(to top, rgba(8, 8, 8, 0.762), rgba(0, 0, 0, 0));
+  background: linear-gradient(to top, rgba(8, 8, 8, 0.76), rgba(7, 6, 6, 0.48));
   z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.event-details.overlay h1 {
-  margin: 10;
-  font-size: 2rem;
+.event-details.overlay h1,
+.event-details.overlay h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
 }
 
 .event-details.overlay span {
   display: flex;
-  align-items: left;
+  align-items: center;
   gap: 6px;
   font-size: 14px;
 }
 
-/* ================= OVERLAY TOP ROW ================= */
 .overlay-top {
   display: flex;
-  justify-content: space-between; /* space between left and right */
-  align-items: center;            /* vertical alignment */
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  padding-bottom: 2px;            /* optional spacing from content below */
 }
 
-/* STATUS TAG */
-.status-tag {
-  background-color: #ff7e5f;      /* orange/red accent */
-  color: #0491dd;
-  font-size: 0.7rem;              /* small text */
-  font-weight: bold;
-  padding: 2px;
+/* ================= OVERLAY CONTENT ================= */
+.overlay-content {
+  position: relative;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.23);
+  color: #fff;
   border-radius: 8px;
-  text-transform: uppercase;      /* optional for status */
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  text-align: left;
+  box-sizing: border-box;
 }
 
-/* SHARE BUTTON */
+.overlay-content h1 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.overlay-content .info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.overlay-content mat-icon {
+  font-size: 20px;
+  vertical-align: middle;
+  color: #ffd700;
+}
+
+/* ================= STATUS TAG ================= */
+.status-tag {
+  background-color: #5357572e;
+  color: #f7ff05;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+
+/* ================= SHARE BUTTON ================= */
 .share-btn {
-  color: #fff;                    /* white icon */
-  background: rgba(255, 255, 255, 0.1);  /* subtle background */
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   transition: background 0.3s ease;
 }
@@ -153,18 +177,7 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* RESPONSIVE ADJUSTMENTS */
-@media (max-width: 600px) {
-  .status-tag {
-    font-size: 0.6rem;
-    padding: 1px 4px;
-  }
-  .share-btn {
-    padding: 4px; /* smaller icon button on mobile */
-  }
-}
-
-/* ================= IMAGE TRACK (SCROLLABLE) ================= */
+/* ================= IMAGE TRACK ================= */
 .image-track {
   display: flex;
   overflow-x: auto;
@@ -240,12 +253,8 @@
 }
 
 @keyframes shimmer {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(300px);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(300px); }
 }
 
 /* ================= RESPONSIVE ================= */
@@ -254,55 +263,159 @@
 @media (max-width: 600px) {
   .event-card.overlay-card {
     height: 320px;
-    width: 100%;
-    max-width:400px;
-    margin-bottom: 20px;
+    max-width: 100%;
     padding: 2px;
+    margin-bottom: 5px;
   }
 
   .event-details.overlay {
-    padding: 12px;
+    padding: 8px;
   }
 
+  .event-details.overlay h1,
   .event-details.overlay h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
-  .event-details.overlay p {
-     font-size: 1rem;
+  .event-details.overlay p,
+  .overlay-content .info-row {
+    font-size: 0.9rem;
+  }
+
+  .status-tag {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+
+  .share-btn {
+    padding: 4px;
   }
 }
 
 /* TABLET */
 @media (min-width: 601px) and (max-width: 992px) {
   .event-card.overlay-card {
-    height: 260px;
+    height: 400px;
+    max-width: 450px;
   }
 
   .event-details.overlay {
-    padding: 14px;
+    padding: 12px;
   }
 
+  .event-details.overlay h1,
   .event-details.overlay h3 {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
-  .event-details.overlay p {
-     font-size: 1rem;
+  .event-details.overlay p,
+  .overlay-content .info-row {
+    font-size: 0.95rem;
   }
 }
 
 /* DESKTOP */
 @media (min-width: 993px) {
   .event-card.overlay-card {
-    height: 300px;
+    height: 500px;
   }
 
+  .event-details.overlay h1,
   .event-details.overlay h3 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
-  .event-details.overlay p {
+  .event-details.overlay p,
+  .overlay-content .info-row {
+    font-size: 1rem;
+  }
+}
+
+
+/* Make buttons full width by default */
+.event-card .mat-raised-button,
+.overlay-content .mat-raised-button {
+  width: 100%;
+  margin-bottom: 2px; /* spacing between buttons */
+  font-size: 1rem;
+  text-transform: uppercase; /* optional */
+}
+
+/* Optional: adjust padding for mobile */
+@media (max-width: 600px) {
+  .event-card .mat-raised-button,
+  .overlay-content .mat-raised-button {
+    font-size: 0.9rem;
+  }
+}
+
+/* Optional: adjust padding for tablets */
+@media (min-width: 601px) and (max-width: 992px) {
+  .event-card .mat-raised-button,
+  .overlay-content .mat-raised-button {
     font-size: 0.95rem;
   }
+}
+
+/* Optional: hover effect override (if needed) */
+.event-card .mat-raised-button:hover,
+.overlay-content .mat-raised-button:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+
+/* ================= FILTER BAR ================= */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Hide entire filter bar on mobile */
+@media (max-width: 600px) {
+  .filters {
+    display: none;
+  }
+}
+
+/* Tablet: show icons only */
+@media (min-width: 601px) and (max-width: 992px) {
+  .filters mat-form-field {
+    width: 50px; /* small square for icon */
+  }
+
+  .filters mat-form-field input {
+    display: none; /* hide input */
+  }
+
+  .filters mat-form-field mat-label {
+    display: none; /* hide label */
+  }
+
+  /* Show only the icon button (suffix) */
+  .filters mat-form-field mat-datepicker-toggle {
+    display: inline-flex;
+  }
+
+  /* Optional: adjust padding */
+  .filters mat-form-field .mat-form-field-wrapper {
+    padding: 0;
+  }
+}
+
+
+/* Only show on mobile */
+@media (min-width: 601px) {
+  .mobile-filters {
+    display: none;
+  }
+}
+
+.mobile-filters {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
 }

@@ -132,7 +132,6 @@ body {
   font-family: Verdana;
   line-height: 1;
   margin: auto !important;
-  background-color: #f4eeee;
   height: 100vh;
 }
 
@@ -340,6 +339,21 @@ app-right-sidebar {
 
 .close-icon {
   transition: 1s ease-in-out;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
 }
 
 snack-bar-container.success {

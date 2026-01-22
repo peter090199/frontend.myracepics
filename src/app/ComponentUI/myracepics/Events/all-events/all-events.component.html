@@ -24,6 +24,15 @@
     </mat-form-field>
   </div>
 
+
+  <!-- Mobile Filter Button -->
+  <div class="mobile-filters">
+    <button mat-fab color="primary" (click)="openMobileFilter()">
+      <mat-icon>filter_alt</mat-icon>
+    </button>
+  </div>
+
+
   <!-- ================= TABS ================= -->
   <mat-tab-group (selectedIndexChange)="onTabChange($event)">
     <mat-tab label="All"></mat-tab>
@@ -59,7 +68,7 @@
         <!-- FULL OVERLAY -->
         <div class="event-details overlay">
           <div class="overlay-top">
-            <span class="status-tag">{{ event.status }}</span>
+            <span class="status-tag">{{ event.category }}</span>
             <button mat-icon-button class="share-btn">
               <mat-icon>share</mat-icon>
             </button>
@@ -76,67 +85,17 @@
             <div class="info-row">
               <mat-icon>photo</mat-icon> {{ event.image.length }} Photos
             </div>
-            <button mat-raised-button color="primary" [routerLink]="eventProfileLink(event)">
-              View Photos
-            </button>
+
           </div>
-        </div>
-
-      </mat-card>
-
-
-      <!-- <mat-card class="event-card" *ngFor="let event of filteredEvents">
-
-        <div class="event-banner" *ngIf="event.image && event.image.length; else noImage">
-          <div class="image-track">
-            <img *ngFor="let img of event.image | slice:0:event.visibleImages; let i = index" [src]="img" loading="lazy"
-              (load)="onImageLoad(event, i)">
-          </div>
-
-          <div class="image-count" *ngIf="event.image.length > 1">
-            {{ event.image.length }} photos
-          </div>
-        </div>
-
-        <ng-template #noImage>
-          <div class="event-banner no-image">
-            No Image
-          </div>
-        </ng-template>
-
-        <button mat-stroked-button color="primary" class="load-more-btn"
-          *ngIf="event.visibleImages < event.image.length" (click)="loadMoreImages(event)">
-          {{ event.visibleImages + event.imagesPerLoad >= event.image.length
-          ? 'Show all images'
-          : 'Load more images' }}
-        </button>
-
-
-        <div class="event-details">
-          <h3>{{ event.title }}</h3>
-
-          <p>
-            <mat-icon>place</mat-icon>
-            {{ event.location }}
-          </p>
-
-          <p>
-            <mat-icon>calendar_today</mat-icon>
-            {{ event.date | date:'MMMM d, y' }}
-          </p>
-
-          <p>
-            <mat-icon>event</mat-icon>
-            {{ event.category }}
-          </p>
-
-          <button mat-raised-button color="primary" class="full-width" [routerLink]="eventProfileLink(event)">
+          <button mat-raised-button color="primary" [routerLink]="eventProfileLink(event)">
             View Photos
           </button>
+          <button mat-raised-button color="basic" [routerLink]="eventProfileLink(event)">
+            Upload Photos
+          </button>
+
         </div>
-
-      </mat-card> -->
-
+      </mat-card>
     </div>
   </ng-container>
 

@@ -1,32 +1,40 @@
-/* Container for the whole profile page */
+/* ================= PROFILE PAGE CONTAINER ================= */
 .profile-page-container {
   max-width: 1200px;
   margin: 0 auto;
-  margin-top:-20px;
+  margin-top: -20px;
   font-family: 'Verdana', sans-serif;
 }
 
-/* COVER PHOTO */
+/* ================= COVER PHOTO ================= */
 .cover-container {
   position: relative;
   width: 100%;
-  height: 600px; /* default height, adjusts with screen */
+  height: 600px; /* default height for desktop */
   overflow: hidden;
 }
 
 .cover-container img.event-cover {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* ensures full cover without stretching */
+  object-fit: cover;
   object-position: center;
   transition: transform 0.3s ease;
 }
 
-.cover-container img.event-cover:hover {
-  transform: scale(1.05); /* subtle zoom on hover */
+.cover-container::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* top:0 right:0 bottom:0 left:0 */
+  background: rgba(0, 0, 0, 0.45); /* overlay color */
+  z-index: 1;
 }
 
-/* Optional: profile picture overlay */
+.cover-container img.event-cover:hover {
+  transform: scale(1.05);
+}
+
+/* ================= PROFILE PICTURE ================= */
 .profile-picture-container {
   position: absolute;
   bottom: -50px;
@@ -45,7 +53,7 @@
   object-fit: cover;
 }
 
-/* USER INFO BELOW COVER */
+/* ================= USER INFO ================= */
 .user-info {
   padding: 70px 30px 20px; /* top padding accounts for profile pic overlay */
   background: #fff;
@@ -59,18 +67,20 @@
   font-weight: 500;
 }
 
-/* Event overlay on cover */
+/* ================= EVENT HEADER OVERLAY ================= */
 .event-header-overlay {
   position: absolute;
-  bottom: 20px;    /* distance from bottom */
-  left: 20px;      /* align overlay to left */
+  bottom: 0; /* stick to bottom */
+  left: 0;   /* start from left edge */
+  right: 0;  /* stretch to right edge */
   color: #fff;
-  text-shadow: 0 0 6px rgba(0,0,0,0.7);
-  text-align: left; 
-  pointer-events: none; /* overlay text won't block clicks */
+  text-align: left;
+  padding: 10px 15px;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent */
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* Event title and details */
 .event-header-overlay .event-title {
   font-size: 42px;
   font-weight: 600;
@@ -81,26 +91,31 @@
   font-size: 20px;
 }
 
-/* Profile action buttons inside overlay */
-.event-header-overlay .profile-actions {
-  display: flex;
-  gap: 10px;                 /* spacing between buttons */
-  justify-content: flex-start; /* align buttons to left */
-  margin-bottom: 10px;        /* spacing below buttons */
-  pointer-events: auto;       /* allow clicks */
+
+.profile-actions button {
+  background-color: rgba(6, 54, 212, 0.75) !important;
+  color: #f8f8f8 !important;
+  border: 1px solid #fff;
+  box-shadow: none !important;
+  text-transform: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* TABS */
+.profile-actions button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* ================= TABS ================= */
 mat-tab-group {
   margin-top: 2px;
 }
 
-/* Tab content */
 .tab-content {
   padding: 10px;
 }
 
-/* Sidebar content in About tab */
 .sidebar-content {
   padding: 10px 0;
 }
@@ -118,20 +133,49 @@ mat-tab-group {
   font-size: 14px;
 }
 
-/* Full width buttons */
+/* ================= FULL WIDTH BUTTONS ================= */
 .full-width {
   width: 100%;
   margin-bottom: 10px;
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
   .cover-container {
-    height: 300px; /* reduced height for smaller screens */
+    height: 450px; /* tablet */
   }
 
   .profile-picture-container {
     bottom: -40px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .user-info h2 {
+    font-size: 24px;
+  }
+
+
+  .event-header-overlay .event-title {
+    font-size: 32px;
+  }
+
+  .event-header-overlay .event-details {
+    font-size: 16px;
+  }
+
+  .event-header-overlay .profile-actions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cover-container {
+    height: 300px; /* mobile */
+  }
+
+  .profile-picture-container {
+    bottom: -35px;
     width: 80px;
     height: 80px;
   }
@@ -140,53 +184,6 @@ mat-tab-group {
     font-size: 22px;
   }
 
-  .event-header-overlay {
-    left: 10px;
-    bottom: 10px;
-  }
-
-  .event-header-overlay .event-title {
-    font-size: 22px;
-  }
-
-  .event-header-overlay .profile-actions {
-    flex-direction: column;
-    gap: 5px;
-  }
-}
-.profile-actions button {
-  background-color: #0636d4be !important;
-  color: #f8f8f8 !important;                  /* text color (white for cover) */
-  border: 1px solid #fff;                  /* optional white border */
-  box-shadow: none !important;             /* remove default shadows */
-  text-transform: none;                     /* keep text normal */
-  font-weight: bold;                        /* make text bold */
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.profile-actions button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;                                /* keep text white */
-}
-.event-header-overlay {
-  position: absolute;
-  bottom: 20px;                       /* distance from bottom */
-  left: 20px;                         /* align overlay to left */
-  color: #fff;
-  text-align: left;
-  padding: 10px 15px;                 /* space around text */
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
-  border-radius: 12px;                 /* rounded corners */
-  max-width: 90%;                      /* prevent overlay from stretching too wide */
-  box-sizing: border-box;
-}
-@media (max-width: 768px) {
-  .event-header-overlay {
-    left: 10px;
-    bottom: 10px;
-    padding: 8px 12px;
-    border-radius: 8px; /* slightly smaller on mobile */
-  }
 
   .event-header-overlay .event-title {
     font-size: 20px;
@@ -194,5 +191,35 @@ mat-tab-group {
 
   .event-header-overlay .event-details {
     font-size: 12px;
+  }
+
+  .event-header-overlay .profile-actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-picture-container {
+    bottom: -30px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .user-info h2 {
+    font-size: 18px;
+  }
+
+  .event-header-overlay .event-title {
+    font-size: 18px;
+  }
+
+  .event-header-overlay .event-details {
+    font-size: 10px;
+  }
+
+  .event-header-overlay .profile-actions button {
+    font-size: 12px;
+    padding: 4px 8px;
   }
 }

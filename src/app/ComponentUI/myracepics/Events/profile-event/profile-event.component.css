@@ -1,9 +1,9 @@
 /* --- Sidenav Container --- */
 .event-sidenav-container {
-  height: 90vh;
+  height: 100vh;
   display: flex;
   font-family: Verdana, sans-serif;
-  background-color: #f5f5f5;
+  background-color: #0804e83e;
 }
 
 /* --- Sidebar --- */
@@ -34,7 +34,7 @@
   position: absolute;
   bottom: 10px;
   left: 15px;
-  color: #fff;
+  color: #15347b;
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 }
 

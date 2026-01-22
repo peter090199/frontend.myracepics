@@ -25,6 +25,9 @@ export class SideBarPanelComponent implements OnInit, OnDestroy {
   unreadCount = 0;
   userName = 'John Doe';
   profile: any;
+  
+  cartItems: any[] = [];
+  cartCount: number = 0;
 
   private countsSubscription?: Subscription;
   private breakpointSubscription?: Subscription;
@@ -56,6 +59,22 @@ export class SideBarPanelComponent implements OnInit, OnDestroy {
     this.fetchModules();
     this.loadRealtimeCounts();
     this.getProfile();
+  }
+
+  getInitials(name?: string): string {
+    if (!name || typeof name !== 'string') return '';
+    const parts = name.trim().split(/\s+/);
+    return parts.length >= 2
+      ? (parts[0][0] + parts[1][0]).toUpperCase()
+      : parts[0][0].toUpperCase();
+  }
+
+  get eventsLink() {
+    return this.menuItems.find(link => link.description === 'Events');
+  }
+
+  get profileLink() {
+    return this.menuItems.find(link => link.description === 'Profile');
   }
 
   getProfile() {
@@ -175,46 +194,46 @@ export class SideBarPanelComponent implements OnInit, OnDestroy {
   //          '/profile';
   // }
 
-//  settingsUrl(): string {
-//     if (!this.profile) return '/profile';
+  //  settingsUrl(): string {
+  //     if (!this.profile) return '/profile';
 
-//     const code = this.profile.code; // or id, depending on your API
+  //     const code = this.profile.code; // or id, depending on your API
 
-//     switch (this.profile.role_code) {
-//       case 'DEF-CLIENT':
-//         return `/recruiter/settings`;
-//       case 'DEF-MASTER-ADMIN':
-//         return `/masteradmin/settings`;
-//       case 'DEF-ADMIN':
-//         return `/admin/settings`;
-//       default:
-//         return `/profile/settings`;
-//     }
-//   }
+  //     switch (this.profile.role_code) {
+  //       case 'DEF-CLIENT':
+  //         return `/recruiter/settings`;
+  //       case 'DEF-MASTER-ADMIN':
+  //         return `/masteradmin/settings`;
+  //       case 'DEF-ADMIN':
+  //         return `/admin/settings`;
+  //       default:
+  //         return `/profile/settings`;
+  //     }
+  //   }
 
-//   getProfileUrl(): string {
-//     if (!this.profile) return '/profile';
+  //   getProfileUrl(): string {
+  //     if (!this.profile) return '/profile';
 
-//     const code = this.profile.code; // or id, depending on your API
+  //     const code = this.profile.code; // or id, depending on your API
 
-//     switch (this.profile.role_code) {
-//       case 'DEF-CLIENT':
-//         return `/recruiter/client_profile/${code}`;
-//       case 'DEF-MASTER-ADMIN':
-//         return `/masteradmin/profile/${code}`;
-//       case 'DEF-ADMIN':
-//         return `/admin/profile/${code}`;
-//       default:
-//         return `/profile/${code}`;
-//     }
-//   }
+  //     switch (this.profile.role_code) {
+  //       case 'DEF-CLIENT':
+  //         return `/recruiter/client_profile/${code}`;
+  //       case 'DEF-MASTER-ADMIN':
+  //         return `/masteradmin/profile/${code}`;
+  //       case 'DEF-ADMIN':
+  //         return `/admin/profile/${code}`;
+  //       default:
+  //         return `/profile/${code}`;
+  //     }
+  //   }
 
 
- getsettingsUrl(): string {
+  getsettingsUrl(): string {
     return this.sharedService.getSettingsUrl(this.profile);
   }
 
- getProfileUrl(): string {
+  getProfileUrl(): string {
     return this.sharedService.getProfileUrl(this.profile);
   }
 

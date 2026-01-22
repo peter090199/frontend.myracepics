@@ -144,6 +144,7 @@
 .title {
   font-weight: 600;
   margin-left: 12px;
+  color: black;
 }
 
 .spacer {
@@ -211,3 +212,110 @@
     padding-left: 12px;
   }
 }
+
+
+
+
+
+/* Avatar button reset */
+.avatar-btn {
+  padding: 0;
+  min-width: unset;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3f51b5; /* Material Indigo */
+  color: #fff;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover & focus effect */
+.avatar-btn:hover,
+.avatar-btn:focus {
+  background-color: #303f9f;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Initials text */
+.avatar-initials {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Optional: active click effect */
+.avatar-btn:active {
+  transform: scale(0.96);
+}
+
+button[mat-icon-button] {
+  color: #0c00f9; /* use if inside mat-toolbar */
+}
+
+/* ================= TOP ICON BUTTONS ================= */
+.top-toolbar button.mat-icon-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;             /* space between icon and text */
+  padding: 4px 8px;     /* adjust clickable area */
+  font-size: 0.875rem;  /* text size */
+  text-transform: none; /* keep original text casing */
+  color: #fff;          /* icon + text color */
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+span{
+  color: white;
+}
+/* Hover effect */
+.top-toolbar button.mat-icon-button:hover {
+  background: rgba(255, 255, 255, 0.1); /* subtle highlight */
+  transform: translateY(-2px);
+}
+
+/* Icon inside the button */
+.top-toolbar button.mat-icon-button mat-icon {
+  font-size: 20px; /* icon size */
+}
+
+/* Badge spacing for cart button */
+.top-toolbar button[matBadge] {
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .top-toolbar button.mat-icon-button {
+    gap: 2px;
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+
+  .top-toolbar button.mat-icon-button mat-icon {
+    font-size: 18px;
+  }
+}
+
+::ng-deep .profile-menu-overlay.mat-menu-panel {
+  background: rgba(0, 0, 0, 0.293); /* overlay background */
+  backdrop-filter: blur(6px);     /* glass effect */
+  border-radius: 12px;
+  padding: 6px 0;
+}
+::ng-deep .profile-menu-overlay .mat-menu-item {
+  color: #fff;
+}
+
+::ng-deep .profile-menu-overlay .mat-menu-item mat-icon {
+  color: #fff;
+}
+
+::ng-deep .profile-menu-overlay .mat-divider {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+

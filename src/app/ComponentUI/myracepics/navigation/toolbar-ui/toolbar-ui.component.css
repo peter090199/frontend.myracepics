@@ -8,21 +8,6 @@
   color: #fff;
 }
 
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.sidebar-logo img {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-}
-
 .logout-section {
   position: absolute;
   bottom: 16px;
@@ -50,6 +35,49 @@
 .app-container {
   padding: 16px;
 }
+
+
+
+
+/* Avatar button reset */
+.avatar-btn {
+  padding: 0;
+  min-width: unset;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3f51b5; /* Material Indigo */
+  color: #fff;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover & focus effect */
+.avatar-btn:hover,
+.avatar-btn:focus {
+  background-color: #303f9f;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Initials text */
+.avatar-initials {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Optional: active click effect */
+.avatar-btn:active {
+  transform: scale(0.96);
+}
+
+
+
 /* ================= TOP ICON BUTTONS ================= */
 .top-toolbar button.mat-icon-button {
   display: flex;
@@ -92,3 +120,22 @@ span{
     font-size: 18px;
   }
 }
+
+::ng-deep .profile-menu-overlay.mat-menu-panel {
+  background: rgba(0, 0, 0, 0.293); /* overlay background */
+  backdrop-filter: blur(6px);     /* glass effect */
+  border-radius: 12px;
+  padding: 6px 0;
+}
+::ng-deep .profile-menu-overlay .mat-menu-item {
+  color: #fff;
+}
+
+::ng-deep .profile-menu-overlay .mat-menu-item mat-icon {
+  color: #fff;
+}
+
+::ng-deep .profile-menu-overlay .mat-divider {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+

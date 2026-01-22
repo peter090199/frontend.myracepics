@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.service';
 import { SigInService } from 'src/app/services/signIn/sig-in.service';
 import { ImagesService } from 'src/app/services/myracepics/cart/images.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 interface MenuItem {
   menuRef: MatMenuPanel<any>;
@@ -50,18 +51,24 @@ export class ToolbarUIComponent implements OnInit {
   isSidebarOpen: any;
   user: any;
   cartItems: any[] = [];
+  users: any = [];
+  userInitials = '';
+
+
 
   constructor(
     private navigationService: TNavigationService,
     private breakpointObserver: BreakpointObserver, private authService: SigInService,
-    private cartService: ImagesService
+    private cartService: ImagesService, private authServices: AuthService,
   ) { }
 
   ngOnInit(): void {
+    this.userInitials = this.getInitials(this.users?.fullname);
     this.loadCartCount();
     this.fetchModules();
     this.detectMobile();
-  this.checkScreen();
+    this.checkScreen();
+    this.getUserAccounts();
     // this.cartService.cartItems$.subscribe(items => {
     //   this.cartItems = items;
     //   this.cartCount = items.length;
@@ -72,13 +79,18 @@ export class ToolbarUIComponent implements OnInit {
       this.cartCount = this.cartService.getTotalCount(); // 🔥 Shopee count
     });
   }
-// component.ts
-get eventsLink() {
-  return this.nav_module.find(link => link.description === 'Events');
-}
 
 
- @HostListener('window:resize')
+  getInitials(name?: string): string {
+    if (!name || typeof name !== 'string') return '';
+    const parts = name.trim().split(/\s+/);
+    return parts.length >= 2
+      ? (parts[0][0] + parts[1][0]).toUpperCase()
+      : parts[0][0].toUpperCase();
+  }
+
+
+  @HostListener('window:resize')
   onResize() {
     this.checkScreen();
   }
@@ -87,7 +99,7 @@ get eventsLink() {
     this.isMobile = window.innerWidth <= 600;
   }
 
-  
+
   /** Detect if screen is mobile */
   private detectMobile(): void {
     this.breakpointObserver.observe([Breakpoints.Handset])
@@ -123,6 +135,15 @@ get eventsLink() {
     }
   }
 
+
+  get eventsLink() {
+    return this.nav_module.find(link => link.description === 'Events');
+  }
+
+  get profileLink() {
+    return this.nav_module.find(link => link.description === 'Profile');
+  }
+
   /** Load cart count from localStorage */
   private loadCartCount(): void {
     try {
@@ -137,6 +158,28 @@ get eventsLink() {
   toggleSidenav(): void {
     if (this.sidenav) {
       this.sidenav.toggle();
+    }
+  }
+
+
+  async getUserAccounts(): Promise<void> {
+    this.isLoading = true;
+    try {
+      const res: any = await firstValueFrom(this.authServices.getProfilecode());
+      this.users = { ...this.users, ...res.message };
+
+      if (!this.users.activity || this.users.activity.length === 0) {
+        this.users.activity = [
+          'Logged in on ' + new Date().toLocaleDateString(),
+          'Updated profile information',
+          'Changed password last week'
+        ];
+      }
+    } catch (err) {
+      console.error('Error loading user:', err);
+      // this.alert.toastrError('Error loading user profile');
+    } finally {
+      this.isLoading = false;
     }
   }
 

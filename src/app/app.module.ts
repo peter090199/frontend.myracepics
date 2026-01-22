@@ -143,7 +143,7 @@ import { PhotographeruiComponent } from './ComponentUI/myracepics/createaccount/
 import { EventPageUIComponent } from './ComponentUI/myracepics/Events/event-page-ui/event-page-ui.component';
 import { GoogleCallbackComponent } from './ComponentUI/myracepics/Account/google-call-back/google-call-back.component';
 import { GoogleSelectRoleUIComponent } from './ComponentUI/myracepics/Account/google-select-role-ui/google-select-role-ui.component';
-
+import { MobileFilterDialogComponent } from './ComponentUI/myracepics/Events/mobile-filter-dialog/mobile-filter-dialog.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -279,7 +279,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     PhotographeruiComponent,
     EventPageUIComponent,
     GoogleCallbackComponent,
-    GoogleSelectRoleUIComponent
+    GoogleSelectRoleUIComponent,
+    MobileFilterDialogComponent
   ],
   imports: [
     BrowserModule,

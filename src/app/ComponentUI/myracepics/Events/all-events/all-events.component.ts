@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventsService } from 'src/app/services/myracepics/MyEvents/events.service';
+import { MobileFilterDialogComponent } from '../mobile-filter-dialog/mobile-filter-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface Event {
   id: number;
@@ -34,7 +36,9 @@ export class AllEventsComponent implements OnInit {
   toDate: Date | null = null;
   loading = true;
 
-  constructor(private eventService: EventsService) { }
+  constructor(private eventService: EventsService, private dialog: MatDialog
+
+  ) { }
 
   ngOnInit(): void {
     this.loadEvents();
@@ -57,109 +61,125 @@ export class AllEventsComponent implements OnInit {
             imagesPerLoad: 3
           };
 
-      });
+        });
 
-    this.filteredEvents = [...this.events];
-    this.loading = false;
-  },
-  error: err => {
-  console.error('Error loading events', err);
-  this.loading = false;
-}
+        this.filteredEvents = [...this.events];
+        this.loading = false;
+      },
+      error: err => {
+        console.error('Error loading events', err);
+        this.loading = false;
+      }
     });
   }
 
-/* ===================== IMAGE HELPERS ===================== */
-parseImages(imageField: any): string[] {
-  try {
-    const images: string[] = Array.isArray(imageField)
-      ? imageField
-      : JSON.parse(imageField || '[]');
+  /* ===================== IMAGE HELPERS ===================== */
+  parseImages(imageField: any): string[] {
+    try {
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : JSON.parse(imageField || '[]');
 
-    return images.map(img =>
-      img.startsWith('http')
-        ? img
-        : `https://backend.myracepics.com/${encodeURIComponent(img)}`
+      return images.map(img =>
+        img.startsWith('http')
+          ? img
+          : `https://backend.myracepics.com/${encodeURIComponent(img)}`
+      );
+    } catch {
+      return [];
+    }
+  }
+
+  onImageLoad(event: Event, index: number) {
+    if (!event.imageLoaded) {
+      event.imageLoaded = new Array(event.image.length).fill(false);
+    }
+    event.imageLoaded[index] = true;
+  }
+
+  allImagesLoaded(event: Event): boolean {
+    return event.imageLoaded?.every(v => v) ?? false;
+  }
+
+  /* ===================== LOAD MORE ===================== */
+  loadMoreImages(event: any) {
+    if (!event.visibleImages || !event.imagesPerLoad) return;
+
+    event.visibleImages = Math.min(
+      event.visibleImages + event.imagesPerLoad,
+      event.image.length
     );
-  } catch {
-    return [];
   }
-}
 
-onImageLoad(event: Event, index: number) {
-  if (!event.imageLoaded) {
-    event.imageLoaded = new Array(event.image.length).fill(false);
+  hasMoreImages(event: Event): boolean {
+    return (event.visibleImages ?? 0) < event.image.length;
   }
-  event.imageLoaded[index] = true;
-}
 
-allImagesLoaded(event: Event): boolean {
-  return event.imageLoaded?.every(v => v) ?? false;
-}
+  /* ===================== FILTERING ===================== */
+  filterEvents() {
+    const search = this.eventSearch.toLowerCase();
 
-/* ===================== LOAD MORE ===================== */
-loadMoreImages(event: any) {
-  if (!event.visibleImages || !event.imagesPerLoad) return;
+    this.filteredEvents = this.events.filter(event => {
+      const eventDate = this.stripTime(new Date(event.date));
 
-  event.visibleImages = Math.min(
-    event.visibleImages + event.imagesPerLoad,
-    event.image.length
-  );
-}
+      const matchesTab =
+        this.selectedTab === 0 ||
+        (this.selectedTab === 1 &&
+          (event.status === 'Upcoming' || event.status === 'Running')) ||
+        (this.selectedTab === 2 && event.status === 'Completed');
 
-hasMoreImages(event: Event): boolean {
-  return (event.visibleImages ?? 0) < event.image.length;
-}
+      const matchesSearch = event.title?.toLowerCase().includes(search);
 
-/* ===================== FILTERING ===================== */
-filterEvents() {
-  const search = this.eventSearch.toLowerCase();
+      let matchesDate = true;
+      if (this.fromDate && eventDate < this.stripTime(this.fromDate)) matchesDate = false;
+      if (this.toDate && eventDate > this.stripTime(this.toDate)) matchesDate = false;
 
-  this.filteredEvents = this.events.filter(event => {
-    const eventDate = this.stripTime(new Date(event.date));
+      return matchesTab && matchesSearch && matchesDate;
+    });
+  }
 
-    const matchesTab =
-      this.selectedTab === 0 ||
-      (this.selectedTab === 1 &&
-        (event.status === 'Upcoming' || event.status === 'Running')) ||
-      (this.selectedTab === 2 && event.status === 'Completed');
+  stripTime(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
 
-    const matchesSearch = event.title?.toLowerCase().includes(search);
+  clearSearch() {
+    this.eventSearch = '';
+    this.filterEvents();
+  }
 
-    let matchesDate = true;
-    if (this.fromDate && eventDate < this.stripTime(this.fromDate)) matchesDate = false;
-    if (this.toDate && eventDate > this.stripTime(this.toDate)) matchesDate = false;
+  onTabChange(tabIndex: number) {
+    this.selectedTab = tabIndex;
+    this.filterEvents();
+  }
 
-    return matchesTab && matchesSearch && matchesDate;
-  });
-}
+  /* ===================== ROUTING ===================== */
+  eventProfileLink(event: Event): any[] {
+    const role = sessionStorage.getItem('role');
 
-stripTime(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
+    const roleRouteMap: any = {
+      runner: 'runner',
+      admin: 'admin',
+      masteradmin: 'masteradmin',
+      photographer: 'photographer'
+    };
 
-clearSearch() {
-  this.eventSearch = '';
-  this.filterEvents();
-}
+    const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
+    return ['/', baseRoute, 'eventprofile', event.title, event.uuid];
+  }
 
-onTabChange(tabIndex: number) {
-  this.selectedTab = tabIndex;
-  this.filterEvents();
-}
+  openMobileFilter() {
+    const dialogRef = this.dialog.open(MobileFilterDialogComponent, {
+      width: '90%',
+      maxWidth: '600px'
+    });
 
-/* ===================== ROUTING ===================== */
-eventProfileLink(event: Event): any[] {
-  const role = sessionStorage.getItem('role');
+    const componentInstance = dialogRef.componentInstance;
+    componentInstance.filtersChanged.subscribe((filters: any) => {
+      this.eventSearch = filters.search;
+      this.fromDate = filters.from;
+      this.toDate = filters.to;
+      this.filterEvents(); // automatically filter events
+    });
+  }
 
-  const roleRouteMap: any = {
-    runner: 'runner',
-    admin: 'admin',
-    masteradmin: 'masteradmin',
-    photographer: 'photographer'
-  };
-
-  const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
-  return ['/', baseRoute, 'eventprofile', event.title, event.uuid];
-}
 }

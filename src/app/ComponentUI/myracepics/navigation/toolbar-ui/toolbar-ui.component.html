@@ -1,40 +1,11 @@
 <mat-sidenav-container class="sidenav-container">
-
-  <!-- SIDEBAR -->
-  <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="app-sidenav">
-    <div class="sidebar-logo">
-      <img src="assets/logo.jpg" alt="logo" class="logo-img" />
-      <span>MYRacePICS</span>
-    </div>
-
-    <mat-nav-list>
-      <a mat-list-item *ngFor="let link of nav_module" [routerLink]="link.route">
-        <mat-icon matListIcon>{{ link.icon }}</mat-icon>
-        <span matLine>{{ link.description }}</span>
-      </a>
-    </mat-nav-list>
-
-    <!-- <div class="logout-section">
-      <button mat-raised-button color="basic" (click)="onLogout()">
-        <mat-icon>logout</mat-icon>
-        Logout
-      </button>
-    </div> -->
-  </mat-sidenav>
-
-  <!-- MAIN CONTENT -->
   <mat-sidenav-content>
-
-    <!-- TOP TOOLBAR -->
     <mat-toolbar color="primary" class="top-toolbar">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <button mat-icon-button color="basic" (click)="onLogout()">
-        <mat-icon>logout</mat-icon>
-      </button>
+      <div class="sidebar-logo">
+        <img src="assets/logo.jpg" alt="logo" class="logo-img" />
+        <span>MyRacePics</span>
+      </div>
       <span class="spacer"></span>
-
       <button *ngIf="eventsLink" mat-button color="basic" [routerLink]="eventsLink.route">
         Events
       </button>
@@ -43,6 +14,32 @@
         [matBadgeHidden]="cartCount === 0">
         <mat-icon>shopping_cart</mat-icon>
       </button>
+
+
+      <button *ngIf="users" mat-raised-button class="avatar-btn" [matMenuTriggerFor]="profileMenu"
+        matTooltip="{{ users?.fullname }}">
+        <span class="avatar-initials">
+          {{ getInitials(users?.fullname)}}
+        </span>
+      </button>
+
+      <!-- Profile Menu -->
+      <mat-menu #profileMenu="matMenu" class="profile-menu-overlay">
+        <button mat-menu-item [routerLink]="profileLink?.route">
+          <mat-icon>person</mat-icon>
+          <span>{{profileLink?.description}}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+
+
+
 
       <mat-menu #cartMenu="matMenu">
         <ng-container *ngIf="cartItems.length > 0; else emptyCart">

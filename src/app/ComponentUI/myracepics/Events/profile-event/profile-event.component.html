@@ -1,12 +1,12 @@
-
 <mat-sidenav-container class="event-sidenav-container">
   <mat-sidenav *ngIf="!isMobile" mode="side" opened class="event-sidebar">
     <!-- EVENT HEADER IMAGE -->
-    <div class="event-header-image">
-      <img [src]="event.image" alt="Event Image" class="event-cover" />
-      <div class="event-header-overlay">
+    <div class="event-header-overlay">
+      <div class="event-header-image">
+        <img [src]="event.image" alt="Event Image" class="event-cover" />
+
         <h2 class="event-title">{{ event.title }}</h2>
-        <span>  {{ event.category }}</span>
+        <span> {{ event.category }}</span>
         <span class="event-details">
           📍 {{ event.location }} | 📅 {{ event.date | date:'MMMM d, y' }}
         </span>
