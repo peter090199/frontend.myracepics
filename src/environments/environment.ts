@@ -23,11 +23,3 @@ export const echo = new Echo({
 });
 
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBM05Q4VufV84DW70N7QSQFYJPDiIo5ki8",
-  authDomain: "racepics-storage.firebaseapp.com",
-  projectId: "racepics-storage",
-  storageBucket: "racepics-storage.firebasestorage.app",
-  messagingSenderId: "679405043618",
-  appId: "1:679405043618:web:7bfab3d27aee02aaaabcfb"
-};

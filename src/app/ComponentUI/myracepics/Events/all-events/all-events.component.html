@@ -87,11 +87,12 @@
             </div>
 
           </div>
+          <button mat-raised-button color="basic" [routerLink]="eventProfileLink(event)"
+            *ngIf="userRole === 'photographer' || userRole === 'admin' || userRole === 'masteradmin'">
+            Upload Photos
+          </button>
           <button mat-raised-button color="primary" [routerLink]="eventProfileLink(event)">
             View Photos
-          </button>
-          <button mat-raised-button color="basic" [routerLink]="eventProfileLink(event)">
-            Upload Photos
           </button>
 
         </div>

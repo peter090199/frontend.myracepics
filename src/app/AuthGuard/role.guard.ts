@@ -43,7 +43,7 @@ export class RoleGuard implements CanActivate {
         return this.router.parseUrl('/photographer');
 
       case 'admin':
-        return this.router.parseUrl('/admin/admin-dashboard');
+        return this.router.parseUrl('/admin');
 
       case 'masteradmin':
         return this.router.parseUrl('/masteradmin/admin-dashboard');

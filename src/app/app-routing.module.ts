@@ -78,6 +78,24 @@ const routes: Routes = [
       { path: 'profile', component: SettingsComponent }
     ]
   },
+    /* =======================
+      ADMIN
+  ======================== */
+  {
+    path: 'admin',
+    component: SideBarPanelComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin'] },
+    children: [
+      { path: 'createevent', component: CreateEventsComponent },
+      { path: 'eventrecords', component: AllEventsComponent },
+      { path: 'eventprofile/:title/:uuid', component: EventPageUIComponent },
+      { path: 'profile', component: SettingsComponent },
+      { path: 'admin-dashboard', component: AdminDashboardComponent },
+      { path: 'search', component: UserListComponent },
+      { path: 'user', component: UsersComponent },
+    ]
+  },
 
   /* =======================
      MASTER ADMIN

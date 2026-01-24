@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { EventsService } from 'src/app/services/myracepics/MyEvents/events.service';
 import { MobileFilterDialogComponent } from '../mobile-filter-dialog/mobile-filter-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationsService } from 'src/app/services/Global/notifications.service';
 
 interface Event {
   id: number;
@@ -36,13 +39,38 @@ export class AllEventsComponent implements OnInit {
   toDate: Date | null = null;
   loading = true;
 
-  constructor(private eventService: EventsService, private dialog: MatDialog
+  constructor(private eventService: EventsService, private dialog: MatDialog,
+    private alert: NotificationsService,
+    private authService: AuthService,
 
   ) { }
 
   ngOnInit(): void {
-    this.loadEvents();
+    this.initPage();
   }
+
+  async initPage(): Promise<void> {
+    await this.loadEvents();
+    await this.getUserAccounts();
+  }
+
+  userRole: string = '';
+  users: any = [];
+  async getUserAccounts(): Promise<void> {
+    this.loading = true;
+    try {
+      const res: any = await firstValueFrom(
+        this.authService.getProfilecode()
+      );
+      this.users = res?.message ?? {};
+      this.userRole = this.users?.role;
+    } catch (err) {
+      this.alert.toastrError('Error loading user profile');
+    } finally {
+      this.loading = false;
+    }
+  }
+
 
   /* ===================== LOAD EVENTS ===================== */
   loadEvents() {

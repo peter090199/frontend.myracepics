@@ -59,6 +59,8 @@ import { ImagePreviewDialogComponent, PreviewImage } from '../image-preview-dial
 import { ImagesService } from 'src/app/services/myracepics/cart/images.service';
 import { EventsService } from 'src/app/services/myracepics/MyEvents/events.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 
 /* =======================
    INTERFACES
@@ -88,30 +90,23 @@ export class EventPageUIComponent implements OnInit {
   loading = true;
   isMobile = false;
   sidebarOpened = false;
-
+  users: any = [];
   uuid!: string;
   event: any = [];
 
   images: any[] = [];
   cart: EventImage[] = [];
- selectedTab = 0;
+  selectedTab = 0;
   @ViewChild('sidenav') sidenav!: MatSidenav;
-
-  /* =======================
-     CONSTRUCTOR
-  ======================= */
 
   constructor(
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private cartService: ImagesService,
     private eventService: EventsService,
-    private alert: NotificationsService
+    private alert: NotificationsService,
+    private authService: AuthService,
   ) { }
-
-  /* =======================
-     LIFECYCLE
-  ======================= */
 
   ngOnInit(): void {
     this.checkScreen();
@@ -120,15 +115,11 @@ export class EventPageUIComponent implements OnInit {
       const uuid = params.get('uuid');
       if (uuid) {
         this.loadEvent(uuid);
+        this.getUserAccounts();
       }
     });
 
   }
-
-  /* =======================
-     RESPONSIVE
-  ======================= */
-
   @HostListener('window:resize')
   checkScreen(): void {
     this.isMobile = window.innerWidth <= 768;
@@ -138,17 +129,25 @@ export class EventPageUIComponent implements OnInit {
     this.sidebarOpened = !this.sidebarOpened;
   }
 
-  // apiBaseUrl = 'http://localhost:4200/'; // Replace with your actual base URL
-  // getImageUrl(path: string): string {
-  //   return `${this.apiBaseUrl}${path}`;
-  // }
+  userRole: string = '';
+  async getUserAccounts(): Promise<void> {
+    this.loading = true;
+    try {
+      const res: any = await firstValueFrom(
+        this.authService.getProfilecode()
+      );
+      this.users = res?.message ?? {};
+      this.userRole = this.users?.role;
+    } catch (err) {
+      this.alert.toastrError('Error loading user profile');
+    } finally {
+      this.loading = false;
+    }
+  }
 
-  /* =======================
-     API
-  ======================= */
+
   loadEvent(uuid: any) {
     this.loading = true;
-
     this.eventService.getEventByUuid(uuid).subscribe({
       next: (res: any) => {
         if (!res.event) {
@@ -156,9 +155,7 @@ export class EventPageUIComponent implements OnInit {
           this.loading = false;
           return;
         }
-
         const images = this.parseImages(res.event.image);
-
         this.event = {
           ...res.event,
           image: images,
