@@ -68,18 +68,12 @@
       </mat-card-content>
     </mat-tab>
 
-    <mat-tab label="Activity">
+    <mat-tab label="Earnings">
       <mat-card-content>
         <div class="profile-row">
-          <p *ngIf="!users?.activity?.length">No recent activity.</p>
-          <ul *ngIf="users?.activity?.length">
-            <li *ngFor="let activity of users.activity">
-              <mat-icon class="profile-icon">history</mat-icon>
-              {{ activity }}
-            </li>
-          </ul>
+        
         </div>
       </mat-card-content>
     </mat-tab>
   </mat-tab-group>
-</div>
+</div> 

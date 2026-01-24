@@ -32,20 +32,45 @@
     </button>
   </div>
 
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label">All</span>
+        <span matBadge="{{ counts.all }}" matBadgeColor="accent" matBadgeSize="medium" matBadgePosition="after"
+          class="tab-badge">
+        </span>
+      </ng-template>
+      <!-- Tab content -->
+    </mat-tab>
 
-  <!-- ================= TABS ================= -->
-  <mat-tab-group (selectedIndexChange)="onTabChange($event)">
-    <mat-tab label="All"></mat-tab>
-    <mat-tab label="Upcoming"></mat-tab>
-    <mat-tab label="Completed"></mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label">Upcoming</span>
+        <span matBadge="{{ counts.upcoming }}" matBadgeColor="warn" matBadgeSize="medium" matBadgePosition="after"
+          class="tab-badge">
+        </span>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label">Completed</span>
+        <span matBadge="{{ counts.completed }}" matBadgeColor="primary" matBadgeSize="medium" matBadgePosition="after"
+          class="tab-badge">
+        </span>
+      </ng-template>
+    </mat-tab>
   </mat-tab-group>
+
+
+
 
   <br>
 
   <!-- ================= LOADING ================= -->
   <ng-container *ngIf="loading">
     <div class="events-grid">
-      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+      <div class="skeleton-card" *ngFor="let i of filteredEvents"></div>
     </div>
   </ng-container>
 
@@ -68,14 +93,14 @@
         <!-- FULL OVERLAY -->
         <div class="event-details overlay">
           <div class="overlay-top">
-            <span class="status-tag">{{ event.category }}</span>
+            <span class="status-tag">{{ event.title }}</span>
             <button mat-icon-button class="share-btn">
               <mat-icon>share</mat-icon>
             </button>
           </div>
 
           <div class="overlay-content">
-            <h1>{{ event.title }}</h1>
+            <h1>{{ event.category }}</h1>
             <div class="info-row">
               <mat-icon>place</mat-icon> {{ event.location }}
             </div>
@@ -87,10 +112,45 @@
             </div>
 
           </div>
-          <button mat-raised-button color="basic" [routerLink]="eventProfileLink(event)"
-            *ngIf="userRole === 'photographer' || userRole === 'admin' || userRole === 'masteradmin'">
-            Upload Photos
+          <button mat-raised-button *ngIf="['photographer','admin','masteradmin'].includes(userRole)" [color]="
+            sharedService.getEventStatus(event.date) === 'completed' ? 'warn' :
+            sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload' ? 'accent' :
+            'primary'
+          " [routerLink]="
+            (sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload') 
+            ? sharedService.eventProfileLink(event) : null
+          " [disabled]="!(sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload')"
+            matTooltip="{{ sharedService.getEventTooltip(event.date) }}">
+
+            {{
+            sharedService.getEventStatus(event.date) === 'completed' ? 'Event Completed' :
+            sharedService.getEventStatus(event.date) === 'today' ? 'Upload Now' :
+            sharedService.getEventStatus(event.date) === 'upload' ? 'Upload Photos' :
+            'Upcoming Event'
+            }}
           </button>
+
+
+
+          <!-- <button mat-raised-button [color]="
+            getEventStatus(event.date) === 'completed' ? 'warn' :
+            getEventStatus(event.date) === 'today' ? 'accent' : 'basic'
+           " [routerLink]="eventProfileLink(event)" *ngIf="['photographer','admin','masteradmin'].includes(userRole)"
+            [disabled]="getEventStatus(event.date) === 'completed'" matTooltip="{{ getEventTooltip(event.date) }}">
+
+            {{
+            getEventStatus(event.date) === 'completed' ? 'Close Event' :
+            getEventStatus(event.date) === 'today' ? 'Upload Now' :
+            'Upcoming Event'
+            }}
+          </button> -->
+
+          <!-- <button mat-raised-button color="warn" [routerLink]="eventProfileLink(event)"
+            [disabled]="isEventExpired(event.date)" matTooltip="{{ getExpiredTooltip(event.date) }}"
+            *ngIf="['photographer','admin','masteradmin'].includes(userRole)">
+            Upload Photos
+          </button> -->
+
           <button mat-raised-button color="primary" [routerLink]="eventProfileLink(event)">
             View Photos
           </button>

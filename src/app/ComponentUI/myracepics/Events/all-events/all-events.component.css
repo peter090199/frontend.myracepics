@@ -158,7 +158,7 @@
 .status-tag {
   background-color: #5357572e;
   color: #f7ff05;
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: bold;
   padding: 2px 4px;
   border-radius: 8px;
@@ -418,4 +418,97 @@
   bottom: 16px;
   right: 16px;
   z-index: 1000;
+}
+
+
+/* Basic disabled button style */
+button[disabled] {
+  background-color: #cccccc !important; /* light grey */
+  color: #ffffff !important;            /* darker grey text */
+  cursor: not-allowed;
+}
+
+/* Example: disabled primary button */
+button.mat-raised-button[disabled].mat-primary {
+  background-color: #b0b0b0 !important; /* custom grey for primary */
+  color: #ffffff !important;
+}
+
+/* Change font size for all tooltips */
+.mat-tooltip {
+  font-size: 20px;       /* Change this to your desired size */
+  font-weight: 500;      /* Optional: make text slightly bold */
+  color: #ffffff;        /* Tooltip text color */
+  background-color: #333333; /* Tooltip background */
+  padding: 8px;     /* Adjust padding */
+  border-radius: 4px;    /* Rounded corners */
+}
+
+
+/* Example: disabled basic/secondary button */
+button.mat-raised-button[disabled].mat-basic {
+  background-color: #6664647d !important;
+  color: #252323 !important;
+}
+
+
+/* Adjust badge position to align vertically */
+.tab-badge .mat-badge-content {
+  top: 80;       /* align with text */
+  right: 120;
+  height: 20px;
+  min-width: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  border-radius: 50%;
+}
+mat-tab-label{
+  display: flex;
+  gap: 20px;
+}
+@media (max-width: 600px) {
+  .tab-label-container {
+    gap: 4px; /* smaller gap on mobile */
+  }
+
+  .tab-badge .mat-badge-content {
+    height: 16px;
+    min-width: 16px;
+    font-size: 10px;
+  }
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+  .mat-tab-label .mat-badge-content {
+    top: -2px;
+    right: -5px;
+    height: 16px;
+    min-width: 16px;
+    line-height: 16px;
+    font-size: 10px;
+  }
+}
+/* Make tab labels responsive */
+.mat-tab-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* On very small screens, allow wrapping */
+@media (max-width: 400px) {
+  .mat-tab-label {
+    white-space: normal;
+    font-size: 12px; /* smaller text */
+  }
+}
+.mat-tab-header {
+  overflow-x: auto;
+  flex-wrap: nowrap; /* horizontal scroll instead of wrapping */
+}
+
+.mat-tab-header-pagination {
+  display: none; /* hide default arrows if you want */
 }

@@ -24,11 +24,29 @@
       <div class="sidebar-content">
         <div class="event-stats">
           <div class="button-end">
-            <button mat-raised-button color="primary"
-              *ngIf="userRole === 'photographer' || userRole === 'admin' || userRole === 'masteradmin'">
+            <!-- <button mat-raised-button color="warn"
+              [disabled]="sharedService.getEventStatus(event.date)" matTooltip="{{sharedService.getEventTooltip(event.date)}}"
+              *ngIf="['photographer','admin','masteradmin'].includes(userRole)">
               Upload Photos
-            </button>
+            </button> -->
 
+            <button mat-raised-button *ngIf="['photographer','admin','masteradmin'].includes(userRole)" [color]="
+            sharedService.getEventStatus(event.date) === 'completed' ? 'warn' :
+            sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload' ? 'accent' :
+            'primary'
+          " [routerLink]="
+            (sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload') 
+            ? sharedService.eventProfileLink(event) : null
+          " [disabled]="!(sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload')"
+              matTooltip="{{ sharedService.getEventTooltip(event.date) }}">
+
+              {{
+              sharedService.getEventStatus(event.date) === 'completed' ? 'Event Completed' :
+              sharedService.getEventStatus(event.date) === 'today' ? 'Upload Photos Now' :
+              sharedService.getEventStatus(event.date) === 'upload' ? 'Upload Photos' :
+              'Upcoming Event'
+              }}
+            </button>
 
             <button mat-raised-button color="basic">
               <mat-icon>share</mat-icon>

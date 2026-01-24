@@ -61,7 +61,7 @@ import { EventsService } from 'src/app/services/myracepics/MyEvents/events.servi
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
-
+import { SharedService } from 'src/app/services/SharedServices/shared.service';
 /* =======================
    INTERFACES
 ======================= */
@@ -106,6 +106,7 @@ export class EventPageUIComponent implements OnInit {
     private eventService: EventsService,
     private alert: NotificationsService,
     private authService: AuthService,
+    public sharedService: SharedService
   ) { }
 
   ngOnInit(): void {

@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationsService } from 'src/app/services/Global/notifications.service';
+import { SharedService } from 'src/app/services/SharedServices/shared.service';
 
 interface Event {
   id: number;
@@ -40,13 +41,15 @@ export class AllEventsComponent implements OnInit {
   loading = true;
 
   constructor(private eventService: EventsService, private dialog: MatDialog,
-    private alert: NotificationsService,
+    private alert: NotificationsService, public sharedService: SharedService,
     private authService: AuthService,
 
   ) { }
 
   ngOnInit(): void {
     this.initPage();
+    this.setInitialTab();
+    this.filterEvents();
   }
 
   async initPage(): Promise<void> {
@@ -71,8 +74,22 @@ export class AllEventsComponent implements OnInit {
     }
   }
 
+  isEventExpiredx(eventDate: string | Date): boolean {
+    const event = new Date(eventDate);
+    const now = new Date();
 
-  /* ===================== LOAD EVENTS ===================== */
+    const diffInDays =
+      (now.getTime() - event.getTime()) / (1000 * 60 * 60 * 24);
+
+    return diffInDays > 4;
+  }
+  getExpiredTooltipx(eventDate: string | Date): string {
+    return this.isEventExpiredx(eventDate)
+      ? 'Event is more than 4 days ago. Upload is disabled.'
+      : '';
+  }
+
+
   loadEvents() {
     this.loading = true;
 
@@ -142,9 +159,74 @@ export class AllEventsComponent implements OnInit {
   hasMoreImages(event: Event): boolean {
     return (event.visibleImages ?? 0) < event.image.length;
   }
+  selectedTabIndex = 0; // Default to "All"
+
+get counts() {
+  const all = this.events.length;
+
+  let upcoming = 0;
+  let completed = 0;
+
+  this.events.forEach(event => {
+    const status = this.sharedService.getEventStatus(event.date); // 'completed' | 'today' | 'upload' | 'upcoming'
+
+    if (status === 'completed') completed++;
+    if (status === 'upcoming' || status === 'today' || status === 'upload') upcoming++;
+  });
+
+  return { all, upcoming, completed };
+}
+
+  // Optional: automatically select tab based on first event
+  setInitialTab() {
+    if (!this.events || this.events.length === 0) return;
+    const firstStatus = this.sharedService.getEventStatus(this.events[0].date);
+    switch (firstStatus) {
+      case 'completed':
+        this.selectedTabIndex = 2; break;
+      case 'upcoming':
+      case 'today':
+      case 'upload':
+        this.selectedTabIndex = 1; break;
+      default:
+        this.selectedTabIndex = 0; break;
+    }
+  }
+
+  // onTabChange(index: number) {
+  //   this.selectedTabIndex = index;
+  //   this.filterEvents(); // Re-filter events for this tab
+  // }
+
+
 
   /* ===================== FILTERING ===================== */
   filterEvents() {
+    const search = this.eventSearch?.toLowerCase() || '';
+    this.filteredEvents = this.events.filter(event => {
+      const eventDate = this.stripTime(new Date(event.date));
+      const status = this.sharedService.getEventStatus(event.date);
+
+      // Tab filtering
+      const matchesTab =
+        this.selectedTab === 0 || // All
+        (this.selectedTab === 1 && (status === 'upcoming' || status === 'today' || status === 'upload')) || // Upcoming / Upload allowed / Today
+        (this.selectedTab === 2 && status === 'completed'); // Completed
+
+      // Search filter
+      const matchesSearch = event.title?.toLowerCase().includes(search);
+
+      // Date range filter
+      let matchesDate = true;
+      if (this.fromDate && eventDate < this.stripTime(this.fromDate)) matchesDate = false;
+      if (this.toDate && eventDate > this.stripTime(this.toDate)) matchesDate = false;
+
+      return matchesTab && matchesSearch && matchesDate;
+    });
+  }
+
+
+  filterEventsx() {
     const search = this.eventSearch.toLowerCase();
 
     this.filteredEvents = this.events.filter(event => {
