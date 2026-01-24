@@ -355,6 +355,10 @@ app-right-sidebar {
   height: 40px;
   border-radius: 8px;
 }
+/* Readonly field */
+input[readonly] {
+  cursor: not-allowed;
+}
 
 snack-bar-container.success {
   background-color: #5cb85c;

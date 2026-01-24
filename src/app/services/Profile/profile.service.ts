@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { _url } from 'src/global-variables';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,22 +35,22 @@ export class ProfileService {
   }
 
 
-getProfileByUser(code:any): Observable<any> {
-  const headers = this.createHeaders();
-  return this.http.get(`${_url}profile/${code}`, { headers }).pipe(
-    catchError(error => this.handleAuthError(error))
-  );
-}
+  getProfileByUser(code: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}profile/${code}`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
 
-getCompanyProfile(code: any): Observable<any> {
-  const headers = this.createHeaders();
-  return this.http.get(`${_url}company/profile/${code}`, { headers }).pipe(
-    catchError(error => this.handleAuthError(error))
-  );
-}
+  getCompanyProfile(code: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}company/profile/${code}`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
+  }
 
 
- uploadCoverPhoto(file: File): Observable<any> {
+  uploadCoverPhoto(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('coverphoto', file);
 
@@ -57,7 +58,7 @@ getCompanyProfile(code: any): Observable<any> {
     return this.http.post<any>(`${_url}uploadCoverPhoto`, formData, { headers });
   }
 
-  getDataPost(code:any): Observable<any> {
+  getDataPost(code: any): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}post/${code}`, { headers }).pipe(
       catchError(error => this.handleAuthError(error))
@@ -72,13 +73,13 @@ getCompanyProfile(code: any): Observable<any> {
     );
   }
 
-    getProfileByBasicInfo(): Observable<any> {
+  getProfileByBasicInfo(): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}getProfileData`, { headers }).pipe(
       catchError(error => this.handleAuthError(error))
     );
   }
-  
+
   //follow users
   AddFollow(code: any): Observable<any> {
     const headers = this.createHeaders();
@@ -91,7 +92,7 @@ getCompanyProfile(code: any): Observable<any> {
   }
 
 
-   getFollowStatus(code:any): Observable<any> {
+  getFollowStatus(code: any): Observable<any> {
     const headers = this.createHeaders();
     return this.http.get(`${_url}follow/${code}`, { headers }).pipe(
       catchError(error => this.handleAuthError(error))
@@ -149,7 +150,20 @@ getCompanyProfile(code: any): Observable<any> {
 
   submitData(formData: any): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.post(`${_url}security`,formData, { headers });
+    return this.http.post(`${_url}security`, formData, { headers });
+  }
+
+
+  updateProfile(formData: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post(`${_url}updateProfile`, formData, { headers });
+  }
+
+  getProfile(): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.get(`${_url}getProfile`, { headers }).pipe(
+      catchError(error => this.handleAuthError(error))
+    );
   }
 
 }

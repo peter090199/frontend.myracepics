@@ -125,6 +125,27 @@ export class SharedService {
     const today = new Date();
     const event = new Date(eventDate);
 
+    // Reset times to midnight to only compare dates
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const eventMidnight = new Date(event.getFullYear(), event.getMonth(), event.getDate());
+
+    // Difference in days
+    const diffTime = todayMidnight.getTime() - eventMidnight.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 4) return 'completed';          // More than 4 days ago
+    if (diffDays >= 1 && diffDays <= 3) return 'upload';  // 1 to 3 days ago
+    if (diffDays === 0) return 'today';            // Today
+    if (diffDays < 0) return 'upcoming';           // Future event
+
+    return 'upcoming';
+  }
+
+
+  getEventStatusXX(eventDate: string | Date): 'completed' | 'today' | 'upload' | 'upcoming' {
+    const today = new Date();
+    const event = new Date(eventDate);
+
     // Difference in days
     const diffTime = today.getTime() - event.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -150,6 +171,41 @@ export class SharedService {
       case 'upcoming': return 'Upcoming event. Upload not allowed yet.';
     }
   }
+
+
+  /* ===================== IMAGE HELPERS ===================== */
+  getImageUrl(path: string | null): string | null {
+    if (!path) return null;
+    const cleanPath = path.replace(/\\/g, '').replace(/\/+/g, '/');
+    if (cleanPath.startsWith('http')) return cleanPath;
+    return `https://backend.myracepics.com${cleanPath}`;
+  }
+  getImagePath(imageField: string | null): string | null {
+    if (!imageField) return null;
+
+    try {
+      // If it’s already an array in JSON string, parse it
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : JSON.parse(imageField || '[]');
+
+      if (!images.length) return null;
+
+      // Return first image path
+      const img = images[0];
+
+      // If already a full URL, return as is, else prepend backend URL
+      return img.startsWith('http')
+        ? img
+        : `https://backend.myracepics.com/${encodeURIComponent(img)}`;
+    } catch {
+      // If not JSON, treat it as a plain string path
+      return imageField.startsWith('http')
+        ? imageField
+        : `https://backend.myracepics.com/${encodeURIComponent(imageField)}`;
+    }
+  }
+
 
 
 
