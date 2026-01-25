@@ -16,7 +16,7 @@
       <!-- AVATAR + INFO -->
       <div class="profile-avatar-info">
 
-        <div class="profile-avatar">
+        <div class="logo-upload">
           <div class="logo-wrapper" >
             <img *ngIf="profilePreview; else defaultAvatar" [src]="profilePreview" class="logo-img" alt="Profile Logo" />
 
@@ -24,7 +24,7 @@
               <mat-icon class="default-avatar">account_circle</mat-icon>
             </ng-template>
 
-            <button mat-icon-button color="primary" class="upload-btn" (click)="fileInput.click()">
+            <button mat-button color="primary" class="upload-btn" (click)="fileInput.click()">
               <mat-icon>photo_camera</mat-icon>
             </button>
           </div>

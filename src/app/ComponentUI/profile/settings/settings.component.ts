@@ -27,16 +27,17 @@ export class SettingsComponent implements OnInit {
   currentUserCode: string | null = null;
 
   profileForm!: FormGroup;
-
+  imageForm!: FormGroup;
   @ViewChild('coverInput') coverInput!: ElementRef<HTMLInputElement>;
 
   // Previews
+
   logoPreview: string | ArrayBuffer | null = null;
   profilePreview: string | ArrayBuffer | null = null;
 
   // Selected files
-  selectedLogo!: File;
-  selectedProfile!: File;
+  selectedLogo: File | null = null;
+  selectedProfile: File | null = null;
 
   constructor(
     private authService: AuthService,
@@ -74,6 +75,12 @@ export class SettingsComponent implements OnInit {
       profile_picture: null
     });
 
+    this.imageForm = this.fb.group({
+      logo: null,
+      profile_picture: null
+    });
+
+    this.imageForm.patchValue(this.users);
     this.profileForm.patchValue(this.users);
   }
 
@@ -93,21 +100,109 @@ export class SettingsComponent implements OnInit {
   // FILE CHANGE / PREVIEW
   // =========================
   onFileChange(event: any, type: 'logo' | 'profile_picture') {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const file = event.target.files?.[0] ?? null; // if no file selected, use null
+
+    if (!file) {
+      // If no file, clear preview and selected
+      if (type === 'logo') {
+        this.selectedLogo = null;
+        this.logoPreview = null;
+      } else if (type === 'profile_picture') {
+        this.selectedProfile = null;
+        this.profilePreview = null;
+      }
+      // Optionally, call API to send null if needed
+      this.autoSaveImages(null, type);
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
       if (type === 'logo') {
         this.selectedLogo = file;
-        this.logoPreview = reader.result;
+        this.logoPreview = reader.result; // base64 preview
       } else if (type === 'profile_picture') {
         this.selectedProfile = file;
         this.profilePreview = reader.result;
       }
+
+      // Automatically save image after selection
+      this.autoSaveImages(file, type);
     };
     reader.readAsDataURL(file);
   }
+
+autoSaveImages(file: File | null, type: 'logo' | 'profile_picture') {
+  this.isLoading = true;
+
+  // Prepare payload
+  const payload: any = {};
+
+  // Helper to convert file to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Array of promises
+  const promises: Promise<void>[] = [];
+
+  // Handle logo
+  if (type === 'logo') {
+    if (file) {
+      // Convert new file to base64
+      promises.push(
+        fileToBase64(file).then(base64 => {
+          payload.logo = base64;
+        })
+      );
+    } else {
+      // No file → set null
+      payload.logo = null;
+    }
+  }
+
+  // Handle profile_picture
+  if (type === 'profile_picture') {
+    if (file) {
+      promises.push(
+        fileToBase64(file).then(base64 => {
+          payload.profile_picture = base64;
+        })
+      );
+    } else {
+      payload.profile_picture = null;
+    }
+  }
+
+  // When all promises finish, call API
+  Promise.all(promises).then(() => {
+    this.profileService.autoSaveImages(payload).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.success == true) {
+            this.alert.toastrSuccess(res.message);
+            this.getProfile();
+        }
+        else
+        {
+           this.alert.toastrError(res.message);
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.alert.toastrError("Upload failed");
+      }
+    });
+  }).catch(err => {
+    this.isLoading = false;
+    console.error('Failed to convert image to base64', err);
+  });
+}
 
   // =========================
   // GET PROFILE
@@ -165,42 +260,7 @@ export class SettingsComponent implements OnInit {
   saveProfile(): void {
     if (this.profileForm.invalid) return;
     const payload = this.profileForm.getRawValue();
-    if (!this.selectedLogo && this.users.logo) {
-      payload.logo = this.users.logo; // existing logo
-    }
-
-    if (!this.selectedProfile && this.users.profile_picture) {
-      payload.profile_picture = this.users.profile_picture; // existing profile picture
-    }
-
-    // Convert selected files to base64 if new files chosen
-    const fileToBase64 = (file: File): Promise<string> => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
-    };
-
     const promises: Promise<void>[] = [];
-
-    if (this.selectedLogo) {
-      promises.push(
-        fileToBase64(this.selectedLogo).then(base64 => {
-          payload.logo = base64;
-        })
-      );
-    }
-
-    if (this.selectedProfile) {
-      promises.push(
-        fileToBase64(this.selectedProfile).then(base64 => {
-          payload.profile_picture = base64;
-        })
-      );
-    }
-
     // After all base64 conversions, call API
     Promise.all(promises)
       .then(() => {

@@ -166,4 +166,9 @@ export class ProfileService {
     );
   }
 
+  autoSaveImages(data: any): Observable<any> {
+    const headers = this.createHeaders();
+    return this.http.post<any>(`${_url}updateImage`, data, { headers });
+  }
+
 }
