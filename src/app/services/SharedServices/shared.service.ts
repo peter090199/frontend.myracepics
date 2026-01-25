@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { _url } from 'src/global-variables';
+import { HttpClient } from '@angular/common/http';
+import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedService {
 
-  constructor() { }
+  constructor(private http: HttpClient, private location: Location,
+
+  ) { }
 
   eventProfileLink(event: any): any[] {
     const role = sessionStorage.getItem('role');
@@ -20,6 +26,20 @@ export class SharedService {
     const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
     return ['/', baseRoute, 'eventprofile', event.title, event.uuid];
   }
+
+
+  eventUploadlink(event: any): any[] {
+
+    const role = sessionStorage.getItem('role');
+    const roleRouteMap: any = {
+      admin: 'admin',
+      masteradmin: 'masteradmin',
+      photographer: 'photographer'
+    };
+    const baseRoute = roleRouteMap[role ?? ''] ?? 'homepage';
+    return ['/', baseRoute, 'photoupload', event.title, event.uuid];
+  }
+
 
   getSettingsUrl(profile: any): string {
     if (!profile) return '/profile';
@@ -207,6 +227,29 @@ export class SharedService {
   }
 
 
+  parseImages(imageField: any): string[] {
+    if (!imageField) return [];
 
+    try {
+      // If the field is JSON array, parse it; else treat as single string
+      const images: string[] = Array.isArray(imageField)
+        ? imageField
+        : imageField.startsWith('[') ? JSON.parse(imageField) : [imageField];
 
+      // Convert each image path to secure backend URL
+      return images.map(img =>
+        img.startsWith('http')
+          ? img
+          : `https://backend.myracepics.com/${encodeURIComponent(img.replace(/^\//, ''))}`
+      );
+
+    } catch (err) {
+      console.error('Error parsing images', err);
+      return [];
+    }
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
 }

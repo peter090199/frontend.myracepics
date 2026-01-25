@@ -210,8 +210,6 @@ export class AppComponent implements OnInit {
     this.showWebsiteChat = localStorage.getItem('chatmessages') === 'true';
 
     // Load user info asynchronously without blocking
-    this.loadUserID();
-
     // Subscribe to notifications
     this.echoService.notificationCount$.subscribe(counts => {
       this.notificationCounts = counts;
@@ -230,14 +228,14 @@ export class AppComponent implements OnInit {
     });
   }
 
-  loadUserID() {
-    this.authService.getData().subscribe(res => {
-      this.userId = res.id;
-      if (this.userId !== null) {
-        sessionStorage.setItem('userId', this.userId.toString());
-      }
-    });
-  }
+  // loadUserID() {
+  //   this.authService.getData().subscribe(res => {
+  //     this.userId = res.id;
+  //     if (this.userId !== null) {
+  //       sessionStorage.setItem('userId', this.userId.toString());
+  //     }
+  //   });
+  // }
 
   switchLanguage(language: string) {
     this.translate.use(language);

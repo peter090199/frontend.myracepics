@@ -1,0 +1,8 @@
+{
+  "/public/api": {
+    "target": "https://backend.myracepics.com/",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

@@ -42,7 +42,8 @@ export class SideBarPanelComponent implements OnInit, OnDestroy {
     private echoService: EchoService,
     private titleService: Title,
     private profileService: ProfileService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    public sharedServices:SharedService
   ) { }
 
   ngOnInit(): void {
@@ -77,11 +78,12 @@ export class SideBarPanelComponent implements OnInit, OnDestroy {
     return this.menuItems.find(link => link.description === 'Profile');
   }
 
+  logoPreview: string | ArrayBuffer | null = null;
   getProfile() {
     this.profileService.getProfileByUserOnly().subscribe({
       next: (res) => {
         this.profile = res.message;
-        console.log(this.profile?.role_code);
+        this.logoPreview = this.sharedServices.getImageUrl(res.message.profile_picture);
       },
       error: (err) => console.error(err)
     });

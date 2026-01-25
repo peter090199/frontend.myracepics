@@ -1,51 +1,52 @@
-  <div class="profile-card mat-elevation-z4">
+<div class="profile-card mat-elevation-z4">
 
-    <!-- Loading -->
-    <mat-card-footer *ngIf="isLoading">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </mat-card-footer>
+  <!-- Loading -->
+  <mat-card-footer *ngIf="isLoading">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </mat-card-footer>
 
-    <!-- HEADER -->
-    <div class="profile-header">
+  <!-- HEADER -->
+  <div class="profile-header">
 
-      <!-- COVER PHOTO -->
-      <div class="cover-photo-container">
-        <img class="cover-photo-img" [src]="'assets/logo.jpg'" alt="Cover Photo" />
-      </div>
-
-      <!-- AVATAR + INFO -->
-      <div class="profile-avatar-info">
-
-        <div class="logo-upload">
-          <div class="logo-wrapper" >
-            <img *ngIf="profilePreview; else defaultAvatar" [src]="profilePreview" class="logo-img" alt="Profile Logo" />
-
-            <ng-template #defaultAvatar>
-              <mat-icon class="default-avatar">account_circle</mat-icon>
-            </ng-template>
-
-            <button mat-button color="primary" class="upload-btn" (click)="fileInput.click()">
-              <mat-icon>photo_camera</mat-icon>
-            </button>
-          </div>
-          <input type="file" #fileInput hidden accept="image/*" (change)="onFileChange($event, 'profile_picture')" />
-
-        </div>
-
-        <div class="profile-info">
-          <h2>{{ users.fullname }}</h2>
-          <span>{{ users.role_code}}</span>
-        </div>
-
-      </div>
+    <!-- COVER PHOTO -->
+    <div class="cover-photo-container">
+      <img class="cover-photo-img" [src]="'assets/logo.jpg'" alt="Cover Photo" />
     </div>
 
-    <mat-divider></mat-divider>
-    <mat-tab-group>
-      <mat-tab label="Profile Details">
+    <!-- AVATAR + INFO -->
+    <div class="profile-avatar-info">
 
-        <mat-card-content *ngIf="profileForm">
-          <form [formGroup]="profileForm">
+      <div class="logo-upload">
+        <div class="logo-wrapper">
+          <img *ngIf="profilePreview; else defaultAvatar" [src]="profilePreview" class="logo-img" alt="Profile Logo" />
+
+          <ng-template #defaultAvatar>
+            <mat-icon class="default-avatar">account_circle</mat-icon>
+          </ng-template>
+
+          <button mat-button color="primary" class="upload-btn" (click)="fileInput.click()">
+            <mat-icon>photo_camera</mat-icon>
+          </button>
+        </div>
+        <input type="file" #fileInput hidden accept="image/*" (change)="onFileChange($event, 'profile_picture')" />
+
+      </div>
+
+      <div class="profile-info">
+        <h2>{{ users.fullname }}</h2>
+        <span>{{ users.role_code}}</span>
+      </div>
+
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+  <mat-tab-group>
+    <mat-tab label="Profile Details">
+
+      <mat-card-content *ngIf="profileForm">
+        <form [formGroup]="profileForm">
+          <div *ngIf="users?.role !== 'runner'">
             <div class="logo-upload">
               <div class="logo-wrapper">
                 <img *ngIf="logoPreview; else defaultAvatar" [src]="logoPreview" class="logo-img" alt="Profile Logo" />
@@ -68,51 +69,51 @@
             <div class="logo-description">
               This logo will appear as a watermark on your photos.
             </div>
+          </div>
 
-            <br>
+          <br>
+          <div class="profile-grid">
+            <mat-form-field appearance="standard" class="full-width" *ngFor="let field of profileFields"
+              [hidden]="field.key === 'textwatermak' && users?.role === 'runner'">
+              <mat-label>{{ field.label }}</mat-label>
 
-            <div class="profile-grid">
-              <mat-form-field appearance="standard" class="full-width" *ngFor="let field of profileFields">
+              <!-- ✅ SELECT (Gender) -->
+              <mat-select *ngIf="field.type === 'select'; else textInput" [formControlName]="field.key" required>
+                <mat-option value="male">Male</mat-option>
+                <mat-option value="female">Female</mat-option>
+                <mat-option value="other">Other</mat-option>
+                <mat-option value="prefer_not_say">Prefer not to say</mat-option>
+              </mat-select>
 
-                <mat-label>{{ field.label }}</mat-label>
+              <!-- ✅ INPUT (Default) -->
+              <ng-template #textInput>
+                <input matInput [formControlName]="field.key" [type]="field.key === 'date_birth' ? 'date' : 'text'"
+                  [readonly]="field.key === 'email'" required />
+              </ng-template>
 
-                <!-- ✅ SELECT (Gender) -->
-                <mat-select *ngIf="field.type === 'select'; else textInput" [formControlName]="field.key" required>
-                  <mat-option value="male">Male</mat-option>
-                  <mat-option value="female">Female</mat-option>
-                  <mat-option value="other">Other</mat-option>
-                  <mat-option value="prefer_not_say">Prefer not to say</mat-option>
-                </mat-select>
+              <mat-icon matSuffix>{{ field.icon }}</mat-icon>
+            </mat-form-field>
 
+          </div>
 
-                <!-- ✅ INPUT (Default) -->
-                <ng-template #textInput>
-                  <input matInput [formControlName]="field.key" [type]="field.key === 'date_birth' ? 'date' : 'text'"
-                    [readonly]="field.key === 'email'" required />
-                </ng-template>
-                <mat-icon matSuffix>{{ field.icon }}</mat-icon>
-              </mat-form-field>
+          <div class="button-end">
+            <button mat-raised-button color="primary" (click)="saveProfile()" [disabled]="profileForm.invalid">
+              Save Changes
+            </button>
+          </div>
 
-            </div>
+        </form>
+      </mat-card-content>
 
-            <div class="button-end">
-              <button mat-raised-button color="primary" (click)="saveProfile()" [disabled]="profileForm.invalid">
-                Save Changes
-              </button>
-            </div>
+    </mat-tab>
 
-          </form>
-        </mat-card-content>
+    <!-- EARNINGS -->
+    <mat-tab label="Earnings" *ngIf="users?.role !== 'runner'">
+      <mat-card-content>
+        <!-- future earnings UI -->
+      </mat-card-content>
+    </mat-tab>
 
-      </mat-tab>
+  </mat-tab-group>
 
-      <!-- EARNINGS -->
-      <mat-tab label="Earnings">
-        <mat-card-content>
-          <!-- future earnings UI -->
-        </mat-card-content>
-      </mat-tab>
-
-    </mat-tab-group>
-
-  </div>
+</div>

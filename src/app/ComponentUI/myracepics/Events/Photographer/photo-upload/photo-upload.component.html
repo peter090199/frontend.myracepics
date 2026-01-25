@@ -1,0 +1,66 @@
+<section class="profile-page-container">
+  <div class="top-bar">
+    <button mat-icon-button aria-label="Back" (click)="this.sharedService.goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+  <div [ngClass]="{ 'drag-over': isDragOver }" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)">
+    <div *ngIf="loading" class="loading">
+      Loading event...
+    </div>
+    <ng-container *ngIf="!loading && event">
+      <h1>{{ event.title }}</h1>
+      <!-- <img [src]="event.image" alt="Event Image" class="event-cover" /> -->
+    </ng-container>
+    <div *ngIf="!loading && !event">
+      Event not found
+    </div>
+
+    <mat-card-header>
+      <mat-card-title>Upload Your Photos</mat-card-title>
+      <mat-card-subtitle>
+        Drag and drop or select from your computer
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="icon-container">
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+      </div><br>
+      <p class="upload-supported">
+        Supported formats: JPEG, PNG (Max size: 10MB per photo)
+      </p>
+
+      <p class="upload-limit">
+        Maximum of 500 photos per batch ({{ files.length }} selected)
+      </p>
+
+      <p class="upload-warning">
+        Photo uploads are only allowed on the event day and beyond
+      </p>
+
+      <!-- File Input -->
+
+      <!-- Preview -->
+      <div class="preview-container" *ngIf="files.length > 0">
+        <div class="preview" *ngFor="let f of files">
+          <img [src]="f.preview" alt="Preview" />
+          <span class="remove" (click)="removeFile(f)">×</span>
+        </div>
+      </div>
+
+    </mat-card-content>
+    <div class="button-end">
+
+      <button mat-stroked-button color="basic" (click)="fileInput.click()">
+        Select Files
+      </button>
+      <input type="file" multiple accept="image/png, image/jpeg" #fileInput hidden (change)="onFileSelected($event)" />
+      
+      <button mat-raised-button color="accent" class="upload-btn" [disabled]="files.length === 0 || !event"
+        (click)="uploadFiles()">
+        Upload {{ files.length }} File(s)
+      </button>
+    </div>
+  </div>
+</section>

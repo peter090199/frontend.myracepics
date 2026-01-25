@@ -35,7 +35,7 @@ export class AuthService {
 
   getData(): Observable<any> {
     const headers = this.createHeaders();
-    return this.http.get(`${_url}user`, { headers });
+    return this.http.get(`${_url}user/profile`, { headers });
   }
 
   getProfilecode(): Observable<any> {

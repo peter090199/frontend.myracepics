@@ -34,6 +34,7 @@ import { RoleComponent } from './ComponentUI/system/role/role.component';
 import { EventPageUIComponent } from './ComponentUI/myracepics/Events/event-page-ui/event-page-ui.component';
 import { GoogleCallbackComponent } from './ComponentUI/myracepics/Account/google-call-back/google-call-back.component';
 import { GoogleSelectRoleUIComponent } from './ComponentUI/myracepics/Account/google-select-role-ui/google-select-role-ui.component';
+import { PhotoUploadComponent } from './ComponentUI/myracepics/Events/Photographer/photo-upload/photo-upload.component';
 
 
 const routes: Routes = [
@@ -75,7 +76,8 @@ const routes: Routes = [
       // { path: 'pageevent', component: EventPageUIComponent },
       { path: 'allevents', component: AllEventsComponent },
       { path: 'eventprofile/:title/:uuid', component: EventPageUIComponent },
-      { path: 'profile', component: SettingsComponent }
+      { path: 'profile', component: SettingsComponent },
+      { path: 'photoupload/:title/:uuid', component: PhotoUploadComponent }
     ]
   },
     /* =======================
@@ -94,6 +96,7 @@ const routes: Routes = [
       { path: 'admin-dashboard', component: AdminDashboardComponent },
       { path: 'search', component: UserListComponent },
       { path: 'user', component: UsersComponent },
+      { path: 'photoupload/:title/:uiid', component: PhotoUploadComponent }
     ]
   },
 
@@ -117,6 +120,7 @@ const routes: Routes = [
       { path: 'user', component: UsersComponent },
       { path: 'menu', component: MenuComponent },
       { path: 'role', component: RoleComponent },
+      { path: 'photoupload/:title/:uiid', component: PhotoUploadComponent }
     ]
   },
 

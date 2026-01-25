@@ -270,7 +270,10 @@ button[mat-icon-button] {
   transition: background 0.3s ease, transform 0.2s ease;
 }
 span{
-  color: white;
+  color: rgb(251, 252, 255);
+}
+.fontcolor{
+  color: rgb(2, 55, 215);
 }
 /* Hover effect */
 .top-toolbar button.mat-icon-button:hover {
@@ -319,3 +322,158 @@ span{
   border-top-color: rgba(255, 255, 255, 0.2);
 }
 
+
+
+.logo-upload {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+  border: 1px solid #72747577;  
+  margin: 10px;
+}
+
+.logo-label {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+.logo-description {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+.logo-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;          /* circular */
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2); /* subtle shadow */
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-avatar {
+  font-size: 120px;
+  color: #bdbdbd;
+}
+
+.upload-btn {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+
+
+.profile-avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.avatar-wrapper:hover {
+  transform: scale(1.05); /* Slight zoom on hover like Facebook */
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.default-avatar {
+  font-size: 80px;
+  color: #ccc;
+}
+
+.upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(25%, 25%);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.avatar-wrapper:hover .upload-btn {
+  opacity: 1; /* Show upload button on hover */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .default-avatar {
+    font-size: 60px;
+  }
+  .upload-btn {
+    transform: translate(20%, 20%);
+  }
+}
+
+@media (max-width: 480px) {
+  .default-avatar {
+    font-size: 40px;
+  }
+  .upload-btn {
+    transform: translate(15%, 15%);
+  }
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between logo image and text */
+  padding: 10px 15px;
+}
+
+.sidebar-logo .logo-img {
+  width: 40px;  /* adjust as needed */
+  height: 40px;
+  object-fit: cover;
+  border-radius: 5px; /* optional rounded corners */
+}
+
+.sidebar-logo span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff; /* text color */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .sidebar-logo .logo-img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .sidebar-logo span {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-logo .logo-img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .sidebar-logo span {
+    font-size: 14px;
+  }
+}

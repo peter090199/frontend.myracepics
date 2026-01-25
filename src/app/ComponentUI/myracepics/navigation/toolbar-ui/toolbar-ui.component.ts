@@ -7,6 +7,7 @@ import { TNavigationService } from 'src/app/services/TNavigation/tnavigation.ser
 import { SigInService } from 'src/app/services/signIn/sig-in.service';
 import { ImagesService } from 'src/app/services/myracepics/cart/images.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { SharedService } from 'src/app/services/SharedServices/shared.service';
 
 interface MenuItem {
   menuRef: MatMenuPanel<any>;
@@ -60,6 +61,7 @@ export class ToolbarUIComponent implements OnInit {
     private navigationService: TNavigationService,
     private breakpointObserver: BreakpointObserver, private authService: SigInService,
     private cartService: ImagesService, private authServices: AuthService,
+    public sharedServices: SharedService
   ) { }
 
   ngOnInit(): void {
@@ -161,20 +163,14 @@ export class ToolbarUIComponent implements OnInit {
     }
   }
 
-
+  logoPreview: string | ArrayBuffer | null = null;
   async getUserAccounts(): Promise<void> {
     this.isLoading = true;
     try {
       const res: any = await firstValueFrom(this.authServices.getProfilecode());
       this.users = { ...this.users, ...res.message };
+      this.logoPreview = this.sharedServices.getImageUrl(res.message.profile_picture);
 
-      if (!this.users.activity || this.users.activity.length === 0) {
-        this.users.activity = [
-          'Logged in on ' + new Date().toLocaleDateString(),
-          'Updated profile information',
-          'Changed password last week'
-        ];
-      }
     } catch (err) {
       console.error('Error loading user:', err);
       // this.alert.toastrError('Error loading user profile');

@@ -15,26 +15,26 @@
         <mat-icon>shopping_cart</mat-icon>
       </button>
 
-
-      <button *ngIf="users" mat-raised-button class="avatar-btn" [matMenuTriggerFor]="profileMenu"
-        matTooltip="{{ users?.fullname }}">
-        <span class="avatar-initials">
-          {{ getInitials(users?.fullname)}}
-        </span>
+      <!-- Profile Avatar Button -->
+      <button mat-button class="profile-avatar-btn" [matMenuTriggerFor]="profileMenu">
+        <img *ngIf="logoPreview; else defaultAvatar" [src]="logoPreview" class="avatar-wrapper" alt="Profile Logo" />
+        <ng-template #defaultAvatar>
+          <mat-icon class="avatar-img default-avatar">account_circle</mat-icon>
+        </ng-template>
       </button>
 
       <!-- Profile Menu -->
-      <mat-menu #profileMenu="matMenu" class="profile-menu-overlay">
+      <mat-menu #profileMenu="matMenu">
         <button mat-menu-item [routerLink]="profileLink?.route">
           <mat-icon>person</mat-icon>
-          <span>{{profileLink?.description}}</span>
+          <span class="fontcolor">{{ profileLink?.description }}</span>
         </button>
 
         <mat-divider></mat-divider>
 
         <button mat-menu-item (click)="onLogout()">
           <mat-icon color="warn">logout</mat-icon>
-          <span>Logout</span>
+          <span class="fontcolor">Logout</span>
         </button>
       </mat-menu>
 

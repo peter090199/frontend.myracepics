@@ -7,13 +7,6 @@
       <span>MyRacePics</span>
     </div>
     <span class="spacer"></span>
-    <!-- LOGO -->
-    <!-- <div class="logo" *ngIf="!isMobile">
-      <img src="assets/images/logo.png" alt="logo">
-      <h3>Photo</h3>
-    </div> -->
-
-    <!-- MENU LIST -->
     <mat-nav-list class="menu-list">
 
       <ng-container *ngFor="let item of menuItems">
@@ -60,7 +53,7 @@
       <span class="spacer"></span>
 
       <ng-container *ngFor="let item of menuItems">
-        <button mat-button color="primary" *ngIf="item.label?.toLowerCase() === 'events'" [routerLink]="item.route" >
+        <button mat-button color="primary" *ngIf="item.label?.toLowerCase() === 'events'" [routerLink]="item.route">
           {{ item?.label }}
         </button>
       </ng-container>
@@ -75,6 +68,7 @@
             <span>{{ item.title }}</span>
           </div>
           <mat-divider></mat-divider>
+
           <button mat-menu-item routerLink="/cart">
             <mat-icon>shopping_bag</mat-icon>
             View Cart
@@ -100,7 +94,31 @@
         </ng-template>
       </button> -->
 
-      <button *ngIf="profile" mat-raised-button class="avatar-btn" [matMenuTriggerFor]="profileMenu"
+      <!-- Profile Avatar Button -->
+      <button mat-button class="profile-avatar-btn" [matMenuTriggerFor]="profileMenu"
+        matTooltip="{{ profile?.fullname }}">
+        <!-- If logo exists, show image -->
+        <img *ngIf="logoPreview; else fallbackAvatar" [src]="logoPreview" class="avatar-wrapper" alt="Profile Logo" />
+
+        <!-- Fallback avatar -->
+        <ng-template #fallbackAvatar>
+          <mat-icon class="avatar-img default-avatar">account_circle</mat-icon>
+          <span class="avatar-initials fontcolor">
+            {{ getInitials(profile?.fullname) }}
+          </span>
+
+        </ng-template>
+
+      </button>
+      <mat-menu #profileMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span class="fontcolor">Logout</span>
+        </button>
+      </mat-menu>
+
+
+      <!-- <button *ngIf="profile" mat-raised-button class="avatar-btn" [matMenuTriggerFor]="profileMenu"
         matTooltip="{{ profile?.fullname }}">
         <span class="avatar-initials">
           {{ getInitials(profile?.fullname)}}
@@ -111,7 +129,7 @@
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>
-      </mat-menu>
+      </mat-menu> -->
 
 
     </mat-toolbar>

@@ -375,4 +375,14 @@ export class EventPageUIComponent implements OnInit {
     this.cart = [image];
     this.checkout();
   }
+
+
+  getEventLink(event: any): any[] | null {
+    const status = this.sharedService.getEventStatus(event.date);
+    if (status === 'today' || status === 'upload') {
+      return this.sharedService.eventUploadlink(event); // your function
+    }
+    return null; 
+  }
+
 }

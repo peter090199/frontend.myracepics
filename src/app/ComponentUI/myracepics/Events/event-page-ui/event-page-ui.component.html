@@ -24,22 +24,13 @@
       <div class="sidebar-content">
         <div class="event-stats">
           <div class="button-end">
-            <!-- <button mat-raised-button color="warn"
-              [disabled]="sharedService.getEventStatus(event.date)" matTooltip="{{sharedService.getEventTooltip(event.date)}}"
-              *ngIf="['photographer','admin','masteradmin'].includes(userRole)">
-              Upload Photos
-            </button> -->
 
             <button mat-raised-button *ngIf="['photographer','admin','masteradmin'].includes(userRole)" [color]="
-            sharedService.getEventStatus(event.date) === 'completed' ? 'warn' :
-            sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload' ? 'accent' :
-            'primary'
-          " [routerLink]="
-            (sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload') 
-            ? sharedService.eventProfileLink(event) : null
-          " [disabled]="!(sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload')"
-              matTooltip="{{ sharedService.getEventTooltip(event.date) }}">
-
+              sharedService.getEventStatus(event.date) === 'completed' ? 'warn' :
+              (sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload') ? 'accent' : 'primary'
+            " [routerLink]="getEventLink(event)"
+              [disabled]="!(sharedService.getEventStatus(event.date) === 'today' || sharedService.getEventStatus(event.date) === 'upload')"
+              [matTooltip]="sharedService.getEventTooltip(event.date)">
               {{
               sharedService.getEventStatus(event.date) === 'completed' ? 'Event Completed' :
               sharedService.getEventStatus(event.date) === 'today' ? 'Upload Photos Now' :
@@ -69,29 +60,29 @@
     </mat-tab>
 
     <!-- <mat-tab label="Upload Photos">
-      <div class="sidebar-content">
-        <div class="event-stats">
-          <div class="stat">
-            <mat-icon color="primary">photo_library</mat-icon>
-            <span>{{ event.photosCount | number }} Photos</span>
-          </div>
-          <div class="stat">
-            <mat-icon color="primary">people</mat-icon>
-            <span>{{ event.participantsCount | number }} Participants</span>
-          </div>
-        </div>
-        <mat-divider></mat-divider>
+<div class="sidebar-content">
+<div class="event-stats">
+<div class="stat">
+<mat-icon color="primary">photo_library</mat-icon>
+<span>{{ event.photosCount | number }} Photos</span>
+</div>
+<div class="stat">
+<mat-icon color="primary">people</mat-icon>
+<span>{{ event.participantsCount | number }} Participants</span>
+</div>
+</div>
+<mat-divider></mat-divider>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Bib Number</mat-label>
-          <input matInput placeholder="Enter your bib #" />
-          <button mat-icon-button matSuffix>
-            <mat-icon>search</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-    </mat-tab>
- -->
+<mat-form-field appearance="outline" class="full-width">
+<mat-label>Bib Number</mat-label>
+<input matInput placeholder="Enter your bib #" />
+<button mat-icon-button matSuffix>
+<mat-icon>search</mat-icon>
+</button>
+</mat-form-field>
+</div>
+</mat-tab>
+-->
 
   </mat-tab-group>
 

@@ -1,0 +1,216 @@
+/* ============================= */
+/* Base Styles for All Screens */
+/* ============================= */
+.profile-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.upload-container {
+  width: 100%;
+  transition: border 0.3s ease;
+  margin: auto;
+}
+
+.upload-container.drag-over {
+  border: 2px dashed #3f51b5;
+  background-color: #f0f0ff;
+}
+
+.upload-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  text-align: center;
+  max-width: 780px;
+  width: 100%;
+  overflow-y: auto;
+}
+h1 {
+  font-weight: 300;   /* light but readable */
+  font-size: 40px;
+  margin: auto 10px;
+  padding: 10px;
+  margin-bottom: 40px;
+
+}
+
+.upload-icon {
+  font-size: 60px;
+  color: #3f51b5;
+  margin-bottom: 15px;
+}
+
+.upload-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 5px 0;
+}
+
+.upload-subtext,
+.upload-supported,
+.upload-limit,
+.upload-warning {
+  font-size: 14px;
+  margin: 3px 0;
+  color: #666666;
+}
+
+button {
+  margin-top: 15px;
+}
+
+/* ============================= */
+/* Preview Styles */
+/* ============================= */
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.preview {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview .remove {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  font-size: 20px;
+  color: #ff4d4f;
+  cursor: pointer;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  padding: 2px 6px;
+}
+
+/* ============================= */
+/* Upload Button Styles */
+/* ============================= */
+.upload-btn {
+  margin-top: 25px;
+  width: 100%;
+  max-width: 250px;
+}
+
+/* ============================= */
+/* Responsive Media Queries */
+/* ============================= */
+
+/* Mobile (max-width: 600px) */
+@media (max-width: 600px) {
+  .upload-card {
+    padding: 20px 15px;
+  }
+
+  .upload-icon {
+    font-size: 50px;
+  }
+
+  .upload-text {
+    font-size: 16px;
+  }
+
+  .upload-subtext,
+  .upload-supported,
+  .upload-limit,
+  .upload-warning {
+    font-size: 12px;
+  }
+
+  .preview {
+    width: 80px;
+    height: 80px;
+  }
+
+  .upload-btn {
+    max-width: 100%;
+  }
+}
+
+/* Tablet (max-width: 900px) */
+@media (max-width: 900px) and (min-width: 601px) {
+  .upload-card {
+    padding: 25px 20px;
+  }
+
+  .upload-icon {
+    font-size: 55px;
+  }
+
+  .upload-text {
+    font-size: 17px;
+  }
+
+  .preview {
+    width: 90px;
+    height: 90px;
+  }
+
+  .upload-btn {
+    max-width: 200px;
+  }
+}
+
+/* Desktop (min-width: 901px) */
+@media (min-width: 901px) {
+  .upload-card {
+    padding: 35px 30px;
+  }
+
+  .upload-icon {
+    font-size: 70px;
+  }
+
+  .upload-text {
+    font-size: 20px;
+  }
+
+  .preview {
+    width: 100px;
+    height: 100px;
+  }
+
+  .upload-btn {
+    max-width: 250px;
+  }
+}
+.top-bar {
+  display: flex;
+  align-items: center;        /* vertical alignment */
+  justify-content: flex-start; /* LEFT position */
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.top-bar button {
+  margin-left: 0;
+}
